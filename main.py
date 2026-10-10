@@ -14,11 +14,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 import ruamel.yaml
 
-from util import log
+from util import log, set_log_sink
 import backends
 import graph as gmod
 import documentation as doc
-from dashboard import Dashboard
+from tui import TUI
 
 
 # ------------------------------------------------------------------ config
@@ -44,7 +44,7 @@ def load_config(path: str) -> dict:
         'documentation': dict(raw.get('documentation') or {}),
         'copy_meta': bool(raw['project'].get('copy_meta', False)),
         'concurrency': int(raw.get('concurrency') or 2),
-        'dashboard': dict(raw.get('dashboard') or {}),
+        'tui': dict(raw.get('tui') or {}),
         'prompts': {k: rp(v) for k, v in (raw.get('prompts') or {}).items()},
     }
 
@@ -246,14 +246,12 @@ def llm_phase(cfg: dict, files, g):
 
     # ---- run the jobs on N parallel agents ------------------------------
     n = max(1, int(cfg.get('concurrency') or 2))
-    dcfg = cfg.get('dashboard') or {}
-    dash = Dashboard(enabled=bool(dcfg.get('enabled', True)),
-                     host=str(dcfg.get('host', '127.0.0.1')),
-                     port=int(dcfg.get('port', 3090)),
-                     worker_count=n, total=len(jobs))
-    dash.start()
-    log(f'dashboard: {dash.url}' if dash.url
-        else 'dashboard: local server unavailable, continuing without it')
+    tcfg = cfg.get('tui') or {}
+    tui = TUI(enabled=bool(tcfg.get('enabled', True)),
+              interval=float(tcfg.get('interval') or 0.5),
+              worker_count=n, total=len(jobs))
+    tui.start()
+    set_log_sink(tui.sink if tui.active else None)
 
     wid_map, wid_lock = {}, threading.Lock()
 
@@ -268,7 +266,7 @@ def llm_phase(cfg: dict, files, g):
         w, f, sym = wid(), job['f'], job['sym']
         tag, rel, name = job['tag'], f['relpath'], sym['name']
         fp = gmod.fingerprint([f])
-        dash.job_start(w, rel, name)
+        tui.job_start(w, rel, name)
         t0 = time.time()
         try:
             cached = False
@@ -278,7 +276,7 @@ def llm_phase(cfg: dict, files, g):
                 cached = prose is not None
                 if prose is None:
                     if maxlines and fn_length(sym) > maxlines:
-                        report = lambda stage: dash.stage(w, rel, name, stage)
+                        report = lambda stage: tui.stage(w, rel, name, stage)
                         body_note = chunk_notes(client, cfg, f, sym, prompts,
                                                 retry, skip, maxchunk, chunktok,
                                                 cpt, stage_cb=report)
@@ -287,7 +285,7 @@ def llm_phase(cfg: dict, files, g):
                             {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
                             cfg['context'], body_note=body_note)
                     else:
-                        dash.stage(w, rel, name, 'describe')
+                        tui.stage(w, rel, name, 'describe')
                         ctx = doc.fn_context_text(
                             {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
                             cfg['context'])
@@ -304,7 +302,7 @@ def llm_phase(cfg: dict, files, g):
                                          name, sym['line'], fp) if skip else None)
                 cached = prose is not None
                 if prose is None:
-                    dash.stage(w, rel, name, 'describe')
+                    tui.stage(w, rel, name, 'describe')
                     ctx = doc.var_context_text({**sym, 'relpath': rel},
                                                cfg['context'])
                     prose = doc.generate(client, 'variable',
@@ -318,7 +316,7 @@ def llm_phase(cfg: dict, files, g):
                                          'file', 1, fp) if skip else None)
                 cached = prose is not None
                 if prose is None:
-                    dash.stage(w, rel, 'file', 'describe')
+                    tui.stage(w, rel, 'file', 'describe')
                     ctx = doc.summary_context_text(f, cfg['context'])
                     prose = doc.generate(client, 'summary',
                                          prompts.get('summary', ''), ctx, retry)
@@ -326,17 +324,18 @@ def llm_phase(cfg: dict, files, g):
                                 prose, fp,
                                 {'file': rel, 'lines': f.get('lines'),
                                  'function_count': len(f.get('functions') or [])})
-            dash.job_end(w, time.time() - t0, generated=not cached, failed=False)
+            tui.job_end(w, time.time() - t0, generated=not cached, failed=False)
             log(f'  {tag} OK' + (' (cached)' if cached else ''))
         except Exception as e:  # noqa: BLE001
-            dash.job_end(w, time.time() - t0, generated=False, failed=True)
+            tui.job_end(w, time.time() - t0, generated=False, failed=True)
             log(f'  {tag} FAILED: {e}')
 
     t_start = time.time()
     with ThreadPoolExecutor(max_workers=n) as ex:
         list(ex.map(run, jobs))
-    dash.stop()
-    s = dash.snapshot()
+    tui.stop()
+    set_log_sink(None)
+    s = tui.snapshot()
     log(f'llm phase: done={s["done"]} skipped={s["skipped"]} '
         f'failed={s["failed"]} in {time.time() - t_start:.0f}s '
         f'with {n} agent{"s" if n != 1 else ""}')

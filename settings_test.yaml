@@ -45,11 +45,10 @@ documentation:
 # how many parallel LLM agents run the task queue (any positive integer)
 concurrency: 4
 
-# local agent dashboard (open in a browser while the LLM phase runs)
-dashboard:
+# terminal UI: live per-agent view while the LLM phase runs
+tui:
   enabled: true
-  host: "127.0.0.1"
-  port: 3090
+  interval: 0.5
 
 prompts:
   function: "./prompts/function.txt"

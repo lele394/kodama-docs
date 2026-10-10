@@ -116,11 +116,10 @@ documentation:
 # how many parallel LLM agents run the task queue (any positive integer)
 concurrency: 2
 
-# local agent dashboard served while the LLM phase runs
-dashboard:
+# terminal UI: live per-agent view while the LLM phase runs
+tui:
   enabled: true
-  host: "127.0.0.1"
-  port: 3090
+  interval: 0.5
 
 prompts:
   function: "./prompts/function.txt"
@@ -349,7 +348,7 @@ Use deterministic Python code for scanning, parsing, graph traversal, validation
 - Do not use generated sibling documentation as function context.
 - Save intermediate JSON so that completed work is not lost.
 - Keep prompts and runtime settings external to the application.
-- Do not implement distributed workers, automated source modification, or advanced incremental updates in this version. (A local single-machine dashboard is the exception; see section 12.)
+- Do not implement distributed workers, automated source modification, or advanced incremental updates in this version. (A live terminal UI is the one UI; see section 12.)
 
 The first objective is to determine whether static analysis plus isolated LLM tasks can produce useful documentation for a real Lua codebase with acceptable context size and inference time.
 
@@ -362,12 +361,13 @@ integer). The LLM client is stateless and each job writes a record file that
 no other job touches, so no cross-job locking is needed; console logging is
 guarded by a lock.
 
-While the LLM phase runs, `dashboard.py` serves a small local page
-(stdlib `http.server` only) on `dashboard.host:dashboard.port`
-(default `127.0.0.1:3090`). If the port is already taken it binds an
-OS-assigned port and prints the actual URL; if no server can be started at
-all, the run continues without the UI. The page shows, per agent, the file
-and symbol it is working on, the current stage (`chunk i/n`, `merge`,
-`describe`) and time on the task / since start; at the bottom, a progress
-bar, a done/total counter with generated/skipped/failed breakdown, the
-average time per task and an ETA. The page polls `/status` once per second.
+While the LLM phase runs, `tui.py` paints a live panel in the terminal
+(stdlib ANSI escapes only, no dependencies, no web server). One line per
+agent shows the file and symbol it is working on, the current stage
+(`chunk i/n`, `merge`, `describe`) and time on the task; below that, a
+progress bar, a done/total counter with generated/cached/failed breakdown,
+the average time per task, elapsed time and an ETA, plus a rolling tail of
+the log. The panel repaints every `tui.interval` seconds and log lines are
+routed into it while it is active, so the layout is never disturbed. When
+stdout is not a TTY (piped or captured run) the panel is skipped and
+logging prints as usual.

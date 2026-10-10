@@ -4,11 +4,22 @@ import threading
 import time
 
 _print_lock = threading.Lock()
+_sink = None  # optional log sink (set by the TUI while it is active)
+
+
+def set_log_sink(fn):
+    """Route log() lines to fn(line) instead of printing (None = print)."""
+    global _sink
+    _sink = fn
 
 
 def log(msg: str) -> None:
     with _print_lock:
-        print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+        line = f"[{time.strftime('%H:%M:%S')}] {msg}"
+        if _sink is not None:
+            _sink(line)
+        else:
+            print(line, flush=True)
 
 
 def sanitize_id(idstr: str) -> str:
