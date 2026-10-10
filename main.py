@@ -8,6 +8,9 @@ import hashlib
 import json
 import os
 import shutil
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 import ruamel.yaml
 
@@ -15,6 +18,7 @@ from util import log
 import backends
 import graph as gmod
 import documentation as doc
+from dashboard import Dashboard
 
 
 # ------------------------------------------------------------------ config
@@ -39,6 +43,8 @@ def load_config(path: str) -> dict:
         'context': dict(raw.get('context') or {}),
         'documentation': dict(raw.get('documentation') or {}),
         'copy_meta': bool(raw['project'].get('copy_meta', False)),
+        'concurrency': int(raw.get('concurrency') or 2),
+        'dashboard': dict(raw.get('dashboard') or {}),
         'prompts': {k: rp(v) for k, v in (raw.get('prompts') or {}).items()},
     }
 
@@ -130,7 +136,7 @@ def fn_length(fn: dict) -> int:
 
 
 def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
-                maxchunk, chunktok, cpt=4):
+                maxchunk, chunktok, cpt=4, stage_cb=None):
     """Summarize a long function body part by part (each part cached
     separately) and return the body_note text for the merge prompt."""
     chunks = doc.fn_chunks(fn.get('body') or '', maxchunk, chunktok, cpt)
@@ -139,6 +145,8 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
     notes = []
     for ci, ct in enumerate(chunks, 1):
         cname = f'{fn["name"]}#c{ci}'
+        if stage_cb is not None:
+            stage_cb(f'chunk {ci}/{len(chunks)}')
         cfp = hashlib.md5(ct.encode('utf-8')).hexdigest()
         cp = (doc.load_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
                               fn['line'], cfp) if skip else None)
@@ -195,118 +203,143 @@ def llm_phase(cfg: dict, files, g):
     skip = bool(doccfg.get('skip_existing', True))
     include_anon = bool(doccfg.get('include_anonymous_functions', False))
     ordered = sorted(files, key=lambda f: -len(f.get('functions') or []))
-    stats = {'done': 0, 'skipped': 0, 'failed': 0}
+    maxlines = int(doccfg.get('max_function_lines') or 0)
+    maxchunk = int(doccfg.get('max_chunk_lines') or 0) or 4000
+    chunktok = int(doccfg.get('chunk_target_tokens') or 0)
+    cpt = int(doccfg.get('chars_per_token') or 4)
 
-    def one(kind, f, sym, ctx, symbol):
-        fp = gmod.fingerprint([f])
-        if skip:
-            prose = doc.load_record(cfg['data_dir'], f['relpath'], kind,
-                                    sym['name'], sym['line'], fp)
-            if prose is not None:
-                stats['skipped'] += 1
-                return
-        prose = doc.generate(client, kind, prompts.get(kind, ''), ctx, retry)
-        doc.save_record(cfg['data_dir'], f['relpath'], kind, sym['name'],
-                        sym['line'], prose, fp, symbol)
-        stats['done'] += 1
-
-    # ---- functions ----------------------------------------------------
+    # ---- build a flat, deterministic job list ---------------------------
+    jobs = []
     if doccfg.get('generate_function_docs'):
-        maxlines = int(doccfg.get('max_function_lines') or 0)
-        maxchunk = int(doccfg.get('max_chunk_lines') or 0) or 4000
-        chunktok = int(doccfg.get('chunk_target_tokens') or 0)
-        cpt = int(doccfg.get('chars_per_token') or 4)
-        tasks = []
-        for f in ordered:
-            for fn in f.get('functions') or []:
-                if not include_anon and fn['name'] == 'anon':
-                    continue
-                tasks.append((f, fn))
+        tasks = [(f, fn) for f in ordered
+                 for fn in f.get('functions') or []
+                 if include_anon or fn['name'] != 'anon']
         maxfn = int(doccfg.get('max_function_tasks') or 0)
         if maxfn:
             tasks = tasks[:maxfn]
-        nchunked = sum(1 for f, fn in tasks if maxlines and fn_length(fn) > maxlines)
-        log(f'function docs: {len(tasks)} tasks '
-            f'({nchunked} via chunk-and-merge)')
-        for i, (f, fn) in enumerate(tasks, 1):
-            nid = gmod.node_id_fn(f['relpath'], fn['name'], fn['line'])
-            fp = gmod.fingerprint([f])
-            calls_in, calls_out = _graph_names(g, nid)
-            fnfull = {**fn, 'relpath': f['relpath']}
-            tag = f'{f["relpath"]}::{fn["name"]}@{fn["line"]}'
-            try:
-                prose = (doc.load_record(cfg['data_dir'], f['relpath'],
-                                         'function', fn['name'], fn['line'], fp)
-                         if skip else None)
-                cached = prose is not None
-                if prose is None:
-                    if maxlines and fn_length(fn) > maxlines:
-                        body_note = chunk_notes(
-                            client, cfg, f, fn, prompts, retry, skip,
-                            maxchunk, chunktok, cpt)
-                        ctx = doc.fn_context_text(fnfull, calls_in, calls_out,
-                                                  cfg['context'],
-                                                  body_note=body_note)
-                    else:
-                        ctx = doc.fn_context_text(fnfull, calls_in, calls_out,
-                                                  cfg['context'])
-                    prose = doc.generate(client, 'function',
-                                         prompts.get('function', ''),
-                                         ctx, retry)
-                doc.save_record(cfg['data_dir'], f['relpath'], 'function',
-                                fn['name'], fn['line'], prose, fp,
-                                {'id': nid, 'qualified': fn.get('qualified'),
-                                 'params': fn.get('params'),
-                                 'vararg': fn.get('vararg')})
-                stats['skipped' if cached else 'done'] += 1
-                log(f'  fn {i}/{len(tasks)} {tag} OK')
-            except Exception as e:  # noqa: BLE001
-                stats['failed'] += 1
-                log(f'  fn {i}/{len(tasks)} {tag} FAILED: {e}')
-
-    # ---- variables ------------------------------------------------------
+        nchunked = sum(1 for _, fn in tasks if maxlines and fn_length(fn) > maxlines)
+        log(f'function docs: {len(tasks)} tasks ({nchunked} via chunk-and-merge)')
+        for f, fn in tasks:
+            jobs.append({'kind': 'function', 'f': f, 'sym': fn,
+                         'nid': gmod.node_id_fn(f['relpath'], fn['name'], fn['line']),
+                         'tag': f'{f["relpath"]}::{fn["name"]}@{fn["line"]}'})
     if doccfg.get('generate_variable_docs'):
-        tasks = []
-        for f in ordered:
-            for v in f.get('file_vars') or []:
-                tasks.append((f, v))
+        tasks = [(f, v) for f in ordered for v in f.get('file_vars') or []]
         maxv = int(doccfg.get('max_variable_tasks') or 0)
         if maxv:
             tasks = tasks[:maxv]
         log(f'variable docs: {len(tasks)} tasks')
-        for i, (f, v) in enumerate(tasks, 1):
-            ctx = doc.var_context_text({**v, 'relpath': f['relpath']},
-                                       cfg['context'])
-            try:
-                one('variable', f, v, ctx,
-                    {'file': f['relpath'], 'name': v['name'], 'line': v['line'],
-                     'init': v.get('init')})
-                log(f'  var {i}/{len(tasks)} {f["relpath"]}::{v["name"]} OK')
-            except Exception as e:  # noqa: BLE001
-                stats['failed'] += 1
-                log(f'  var {i}/{len(tasks)} {f["relpath"]}::{v["name"]} FAILED: {e}')
-
-    # ---- file summaries -------------------------------------------------
+        for f, v in tasks:
+            jobs.append({'kind': 'variable', 'f': f, 'sym': v,
+                         'tag': f'{f["relpath"]}::{v["name"]}@{v["line"]}'})
     if doccfg.get('generate_file_summaries'):
         tasks = list(ordered)
         maxs = int(doccfg.get('max_summary_tasks') or 0)
         if maxs:
             tasks = tasks[:maxs]
         log(f'file summaries: {len(tasks)} tasks')
-        for i, f in enumerate(tasks, 1):
-            sym = {'name': 'file', 'line': 1}
-            ctx = doc.summary_context_text(f, cfg['context'])
-            try:
-                one('summary', f, sym, ctx,
-                    {'file': f['relpath'], 'lines': f.get('lines'),
-                     'function_count': len(f.get('functions') or [])})
-                log(f'  sum {i}/{len(tasks)} {f["relpath"]} OK')
-            except Exception as e:  # noqa: BLE001
-                stats['failed'] += 1
-                log(f'  sum {i}/{len(tasks)} {f["relpath"]} FAILED: {e}')
+        for f in tasks:
+            jobs.append({'kind': 'summary', 'f': f,
+                         'sym': {'name': 'file', 'line': 1}, 'tag': f['relpath']})
+    if not jobs:
+        return
 
-    log(f'llm phase: done={stats["done"]} skipped={stats["skipped"]} '
-        f'failed={stats["failed"]}')
+    # ---- run the jobs on N parallel agents ------------------------------
+    n = max(1, int(cfg.get('concurrency') or 2))
+    dcfg = cfg.get('dashboard') or {}
+    dash = Dashboard(enabled=bool(dcfg.get('enabled', True)),
+                     host=str(dcfg.get('host', '127.0.0.1')),
+                     port=int(dcfg.get('port', 3090)),
+                     worker_count=n, total=len(jobs))
+    dash.start()
+    log(f'dashboard: {dash.url}' if dash.url
+        else 'dashboard: local server unavailable, continuing without it')
+
+    wid_map, wid_lock = {}, threading.Lock()
+
+    def wid():
+        ident = threading.get_ident()
+        with wid_lock:
+            if ident not in wid_map:
+                wid_map[ident] = len(wid_map) + 1
+            return wid_map[ident]
+
+    def run(job):
+        w, f, sym = wid(), job['f'], job['sym']
+        tag, rel, name = job['tag'], f['relpath'], sym['name']
+        fp = gmod.fingerprint([f])
+        dash.job_start(w, rel, name)
+        t0 = time.time()
+        try:
+            cached = False
+            if job['kind'] == 'function':
+                prose = (doc.load_record(cfg['data_dir'], rel, 'function',
+                                         name, sym['line'], fp) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if maxlines and fn_length(sym) > maxlines:
+                        report = lambda stage: dash.stage(w, rel, name, stage)
+                        body_note = chunk_notes(client, cfg, f, sym, prompts,
+                                                retry, skip, maxchunk, chunktok,
+                                                cpt, stage_cb=report)
+                        report('merge')
+                        ctx = doc.fn_context_text(
+                            {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
+                            cfg['context'], body_note=body_note)
+                    else:
+                        dash.stage(w, rel, name, 'describe')
+                        ctx = doc.fn_context_text(
+                            {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
+                            cfg['context'])
+                    prose = doc.generate(client, 'function',
+                                         prompts.get('function', ''), ctx, retry)
+                doc.save_record(cfg['data_dir'], rel, 'function', name,
+                                sym['line'], prose, fp,
+                                {'id': job['nid'],
+                                 'qualified': sym.get('qualified'),
+                                 'params': sym.get('params'),
+                                 'vararg': sym.get('vararg')})
+            elif job['kind'] == 'variable':
+                prose = (doc.load_record(cfg['data_dir'], rel, 'variable',
+                                         name, sym['line'], fp) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    dash.stage(w, rel, name, 'describe')
+                    ctx = doc.var_context_text({**sym, 'relpath': rel},
+                                               cfg['context'])
+                    prose = doc.generate(client, 'variable',
+                                         prompts.get('variable', ''), ctx, retry)
+                doc.save_record(cfg['data_dir'], rel, 'variable', name,
+                                sym['line'], prose, fp,
+                                {'file': rel, 'name': name, 'line': sym['line'],
+                                 'init': sym.get('init')})
+            else:  # file summary
+                prose = (doc.load_record(cfg['data_dir'], rel, 'summary',
+                                         'file', 1, fp) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    dash.stage(w, rel, 'file', 'describe')
+                    ctx = doc.summary_context_text(f, cfg['context'])
+                    prose = doc.generate(client, 'summary',
+                                         prompts.get('summary', ''), ctx, retry)
+                doc.save_record(cfg['data_dir'], rel, 'summary', 'file', 1,
+                                prose, fp,
+                                {'file': rel, 'lines': f.get('lines'),
+                                 'function_count': len(f.get('functions') or [])})
+            dash.job_end(w, time.time() - t0, generated=not cached, failed=False)
+            log(f'  {tag} OK' + (' (cached)' if cached else ''))
+        except Exception as e:  # noqa: BLE001
+            dash.job_end(w, time.time() - t0, generated=False, failed=True)
+            log(f'  {tag} FAILED: {e}')
+
+    t_start = time.time()
+    with ThreadPoolExecutor(max_workers=n) as ex:
+        list(ex.map(run, jobs))
+    dash.stop()
+    s = dash.snapshot()
+    log(f'llm phase: done={s["done"]} skipped={s["skipped"]} '
+        f'failed={s["failed"]} in {time.time() - t_start:.0f}s '
+        f'with {n} agent{"s" if n != 1 else ""}')
 
 
 # ----------------------------------------------------------------- render

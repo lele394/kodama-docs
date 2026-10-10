@@ -1,10 +1,14 @@
 """Small shared helpers: logging, id sanitizing, truncation."""
 import re
+import threading
 import time
+
+_print_lock = threading.Lock()
 
 
 def log(msg: str) -> None:
-    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+    with _print_lock:
+        print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
 def sanitize_id(idstr: str) -> str:

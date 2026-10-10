@@ -113,6 +113,15 @@ documentation:
   chars_per_token: 4
   max_chunk_lines: 4000
 
+# how many parallel LLM agents run the task queue (any positive integer)
+concurrency: 2
+
+# local agent dashboard served while the LLM phase runs
+dashboard:
+  enabled: true
+  host: "127.0.0.1"
+  port: 3090
+
 prompts:
   function: "./prompts/function.txt"
   summary: "./prompts/summary.txt"
@@ -333,12 +342,32 @@ Use deterministic Python code for scanning, parsing, graph traversal, validation
 - Support Lua source files for now; the pipeline is language-agnostic and new
   languages are added as tree-sitter backends (see section 5).
 - Use one local LLM endpoint.
-- Execute one LLM task at a time.
+- Execute LLM tasks concurrently on a configurable pool of worker threads
+  (default 2, see section 12).
 - Do not modify source files.
 - Do not process packed binaries.
 - Do not use generated sibling documentation as function context.
 - Save intermediate JSON so that completed work is not lost.
 - Keep prompts and runtime settings external to the application.
-- Do not implement a web interface, distributed workers, automated source modification, or advanced incremental updates in this version.
+- Do not implement distributed workers, automated source modification, or advanced incremental updates in this version. (A local single-machine dashboard is the exception; see section 12.)
 
 The first objective is to determine whether static analysis plus isolated LLM tasks can produce useful documentation for a real Lua codebase with acceptable context size and inference time.
+
+## 12. Concurrency and agent dashboard
+
+The LLM phase builds one flat job list (functions, then variables, then file
+summaries, in the same deterministic order as before) and runs it on a
+`ThreadPoolExecutor` with `concurrency` workers (default 2, any positive
+integer). The LLM client is stateless and each job writes a record file that
+no other job touches, so no cross-job locking is needed; console logging is
+guarded by a lock.
+
+While the LLM phase runs, `dashboard.py` serves a small local page
+(stdlib `http.server` only) on `dashboard.host:dashboard.port`
+(default `127.0.0.1:3090`). If the port is already taken it binds an
+OS-assigned port and prints the actual URL; if no server can be started at
+all, the run continues without the UI. The page shows, per agent, the file
+and symbol it is working on, the current stage (`chunk i/n`, `merge`,
+`describe`) and time on the task / since start; at the bottom, a progress
+bar, a done/total counter with generated/skipped/failed breakdown, the
+average time per task and an ETA. The page polls `/status` once per second.
