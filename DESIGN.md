@@ -18,36 +18,42 @@ The initial version is experimental. Keep the implementation small and avoid unn
 
 ## 2. Technology
 
-- **Python:** Main application and file processing.
-- **LangChain:** LLM interface and prompt templates.
-- **LangGraph:** Workflow states and transitions.
-- **Lua parser:** Tree-sitter Lua or an equivalent parser for static analysis.
+- **Python 3.14:** Main application and file processing (runtime venv `.venv314`;
+  tree-sitter has no cp315 wheel yet, so the 3.15 default interpreter is not
+  used).
+- **tree-sitter:** Parsing is fully delegated to tree-sitter grammars
+  (`tree-sitter` + `tree-sitter-lua`). The project itself contains no
+  tokenizer or parser; it only walks concrete syntax trees.
 - **NetworkX:** In-memory dependency graph.
-- **Pydantic:** Validation of structured LLM outputs.
-- **PyYAML:** Load configuration from `settings.yaml`.
-- **OpenAI-compatible API:** Connect to a local/remote inference server.
+- **ruamel.yaml:** Load configuration from `settings.yaml`.
+- **OpenAI-compatible API:** Connect to a local/remote inference server via a
+  small hand-rolled HTTP client (no LangChain/LangGraph/Pydantic — the codebase
+  stays small; LLM JSON is validated by a plain schema check with retries).
 
 Run only one LLM task at a time. Keep function tasks independent so that parallel execution can be added later.
 
 ## 3. Directory structure
 
 ```text
-lua-doc-agent/
-├── settings.yaml
-├── main.py
-├── analyzer.py
-├── graph.py
-├── documentation.py
-├── models.py
+doc_maker/
+├── settings.yaml           # + settings_test.yaml
+├── main.py                 # pipeline: scan -> extract -> graph -> LLM -> markdown
+├── backends/
+│   ├── __init__.py         # registry: file extension -> extract(source, relpath)
+│   └── lua.py              # tree-sitter-lua extraction backend
+├── models.py               # output schemas + deterministic JSON validator
+├── graph.py                # networkx MultiDiGraph builder
+├── documentation.py        # LLM client, record cache, markdown rendering
 ├── prompts/
 │   ├── function.txt
+│   ├── variable.txt
 │   └── summary.txt
-├── src/                    # Target repository
+├── src/                    # Target repository (configured)
 ├── data/
 │   ├── symbols.json
 │   ├── graph.json
-│   └── functions/          # Intermediate function records
-└── doc/                    # Generated documentation
+│   └── functions|variables|summaries/   # Intermediate LLM records
+└── doc/                    # Generated documentation (+ doc/meta for graph data)
 ```
 
 The target repository path and output paths must be configurable. The target source tree is read-only.
@@ -113,7 +119,22 @@ Keep API credentials configurable. Do not log secrets.
 
 This part is deterministic and should be not be done with an LLM.
 
-Scan the source directory recursively. Process eligible Lua files only. Ignore packed binaries and excluded directories.
+Scan the source directory recursively. Process files whose extension has a
+registered extraction backend. Ignore packed binaries and excluded directories.
+
+**Parsing lives in per-language backends, not in this project.** Each backend
+(`backends/<lang>.py`) wraps a tree-sitter grammar and projects the concrete
+syntax tree into one common, language-agnostic shape consumed by the rest of
+the pipeline:
+
+```text
+{'functions': [...], 'file_vars': [...], 'calls': [...], 'imports': [...]}
+```
+
+Supporting a new language = one new backend module + its tree-sitter grammar
+package + one registry line in `backends/__init__.py`. Nothing in
+`main.py`, `graph.py`, or `documentation.py` is Lua-specific (the Lua builtin
+name set lives with the Lua backend).
 
 Parse each file and extract:
 
@@ -292,7 +313,8 @@ Use deterministic Python code for scanning, parsing, graph traversal, validation
 
 ## 11. Initial scope and constraints
 
-- Support Lua source files only.
+- Support Lua source files for now; the pipeline is language-agnostic and new
+  languages are added as tree-sitter backends (see section 5).
 - Use one local LLM endpoint.
 - Execute one LLM task at a time.
 - Do not modify source files.

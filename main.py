@@ -12,7 +12,7 @@ import shutil
 import ruamel.yaml
 
 from util import log
-import analyzer
+import backends
 import graph as gmod
 import documentation as doc
 
@@ -45,11 +45,12 @@ def load_config(path: str) -> dict:
 
 def scan_files(cfg: dict):
     excl = set(cfg['exclude'])
+    exts = set(backends.EXTRACTORS)
     out = []
     for dirpath, dirnames, filenames in os.walk(cfg['source_dir']):
         dirnames[:] = sorted(d for d in dirnames if d not in excl)
         for fn in sorted(filenames):
-            if not fn.endswith('.lua'):
+            if os.path.splitext(fn)[1].lower() not in exts:
                 continue
             full = os.path.join(dirpath, fn)
             rel = os.path.relpath(full, cfg['source_dir']).replace('\\', '/')
@@ -85,7 +86,7 @@ def analyze_files(cfg: dict, files):
                 binary += 1
                 continue
             src = open(f['full'], 'r', encoding='utf-8', errors='replace').read()
-            r = analyzer.extract(src, f['relpath'])
+            r = backends.extract(src, f['relpath'])
         except Exception as e:  # noqa: BLE001 - per-file isolation by design
             bad += 1
             if bad <= 10:
@@ -314,7 +315,7 @@ def main():
     cfg = load_config(args.config)
     log(f'source: {cfg["source_dir"]}')
     files = scan_files(cfg)
-    log(f'scanned {len(files)} .lua files')
+    log(f'scanned {len(files)} files')
 
     fp = scan_fingerprint(files)
     cached, cfp = (None, None) if args.fresh else load_symbols(cfg)

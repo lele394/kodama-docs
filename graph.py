@@ -10,7 +10,7 @@ import os
 
 import networkx as nx
 
-from analyzer import BUILTIN_NAMES
+from backends.lua import BUILTIN_NAMES
 
 BUILTIN_SET = set(BUILTIN_NAMES)
 
