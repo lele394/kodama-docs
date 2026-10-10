@@ -1,0 +1,45 @@
+# Test-run settings: small local corpus instead of the game install.
+project:
+  source_dir: "../test_codebase"
+  output_dir: "../test_out/doc"
+  data_dir: "../test_out/data"
+  source_extensions: [".lua"]
+  exclude:
+    - "test_out"
+  max_file_bytes: 26214400
+  copy_meta: true
+
+llm:
+  base_url: "https://ai.nebuleo.org/api/v1"
+  api_key: "env"
+  model: "qwen3.8:27b-mtp-q4_K_M"
+  max_retries: 5
+  temperature: 0.1
+  max_tokens: 900
+  timeout: 300
+
+context:
+  include_imports: true
+  include_call_targets: true
+  include_referenced_variables: true
+  max_symbols_per_list: 25
+  max_source_lines: 300
+
+documentation:
+  generate_function_docs: true
+  generate_variable_docs: true
+  variable_scope: "file"
+  generate_file_summaries: true
+  include_anonymous_functions: false
+  max_function_lines: 20
+  retry_invalid_json: 2
+  skip_existing: true
+  max_function_tasks: 20
+  max_variable_tasks: 10
+  max_summary_tasks: 10
+  file_priority: "function_count"
+
+prompts:
+  function: "./prompts/function.txt"
+  variable: "./prompts/variable.txt"
+  summary: "./prompts/summary.txt"

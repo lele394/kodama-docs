@@ -1,0 +1,8 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# generated artifacts (recreated by running main.py)
+data/
+test_out/

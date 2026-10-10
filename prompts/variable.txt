@@ -1,0 +1,10 @@
+You are documenting a file-level Lua variable from a game installation,
+for a developer reference.
+
+Rules:
+- description: 1-2 sentences stating what the variable holds and how it is
+  used, based only on the visible information.
+- notes: optional short observations (initialization form, caveats).
+  Omit if nothing to note.
+- Do not invent behavior. If unsure, keep the description factual and
+  minimal.
