@@ -10,9 +10,7 @@ import os
 
 import networkx as nx
 
-from backends.lua import BUILTIN_NAMES
-
-BUILTIN_SET = set(BUILTIN_NAMES)
+from backends import builtins_for, module_candidates
 
 
 def node_id_file(relpath):
@@ -84,21 +82,22 @@ def build_graph(files):
     # ---- pass 2: edges --------------------------------------------------
     known_files = {f['relpath'] for f in files}
 
-    def resolve_callee(name):
-        if name in qual_map:
-            return qual_map[name]
-        last = name.rsplit('.', 1)[-1]
-        cands = short_map.get(last)
-        if cands:
-            return cands[0]
-        if name in BUILTIN_SET:
-            return 'builtin:' + name
-        return 'ext:' + name
-
     for f in files:
         rp = f['relpath']
         fid = node_id_file(rp)
         fns = f.get('functions') or []
+        builtins = builtins_for(rp)
+
+        def resolve_callee(name):
+            if name in qual_map:
+                return qual_map[name]
+            last = name.rsplit('.', 1)[-1]
+            cands = short_map.get(last)
+            if cands:
+                return cands[0]
+            if name in builtins:
+                return 'builtin:' + name
+            return 'ext:' + name
 
         def owner(call_line):
             best = None
@@ -123,9 +122,7 @@ def build_graph(files):
 
         for imp in f.get('imports') or []:
             mod = imp['module']
-            cands = [mod + '.lua', mod + '/init.lua',
-                     mod.replace('.', '/') + '.lua',
-                     mod.replace('.', '/') + '/init.lua']
+            cands = module_candidates(mod, rp)
             hit = next((c for c in cands if c in known_files), None)
             if hit:
                 add_edge(fid, node_id_file(hit), 'IMPORTS',

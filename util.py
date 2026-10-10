@@ -1,4 +1,5 @@
 """Small shared helpers: logging, id sanitizing, truncation."""
+import os
 import re
 import threading
 import time
@@ -20,6 +21,12 @@ def log(msg: str) -> None:
             _sink(line)
         else:
             print(line, flush=True)
+
+
+def fence_lang(relpath: str) -> str:
+    """Code-fence language label for a file path ('lua', 'py', ...)."""
+    ext = os.path.splitext(str(relpath))[1].lower().lstrip('.')
+    return ext or 'text'
 
 
 def read_env_file(path: str) -> dict:

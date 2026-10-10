@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import ruamel.yaml
 
-from util import log, read_env_file, set_log_sink
+from util import fence_lang, log, read_env_file, set_log_sink
 import backends
 import graph as gmod
 import documentation as doc
@@ -177,7 +177,7 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
                 f"Parameters: {', '.join(fn.get('params') or []) or '(none)'}"
                 + (' + varargs' if fn.get('vararg') else '')
                 + f"\nBody part {ci}/{len(chunks)} of a long function:\n"
-                  + f"```lua\n{ct}\n```")
+                  + f"```{fence_lang(f['relpath'])}\n{ct}\n```")
             cp = doc.generate(client, 'chunk', prompts.get('chunk', ''),
                               cctx, retry)
             doc.save_record(cfg['data_dir'], f['relpath'], 'chunk', cname,

@@ -1,0 +1,64 @@
+# doc_maker documenting itself (its own Python sources). Scratch config.
+project:
+  source_dir: "."
+  output_dir: "./doc_self"
+  data_dir: "./data_self"
+  source_extensions: [".py"]
+  exclude:
+    - ".git"
+    - ".venv"
+    - ".venv314"
+    - "data"
+    - "data_self"
+    - "doc"
+    - "doc_self"
+    - "test_out"
+  max_file_bytes: 26214400
+  copy_meta: true
+
+llm:
+  # "env" (default) -> read api_key / base_url from .env next to this file
+  base_url: env
+  api_key: env
+  model: "qwen3.8:27b-mtp-q4_K_M"
+  max_retries: 5
+  temperature: 0.1
+  max_tokens: 900
+  timeout: 300
+
+context:
+  include_imports: true
+  include_call_targets: true
+  include_referenced_variables: true
+  max_symbols_per_list: 25
+  max_source_lines: 300
+
+documentation:
+  generate_function_docs: true
+  generate_variable_docs: true
+  variable_scope: "file"
+  generate_file_summaries: true
+  include_anonymous_functions: false
+  max_function_lines: 20
+  chunk_target_tokens: 20000
+  chars_per_token: 4
+  max_chunk_lines: 4000
+  retry_invalid_json: 2
+  skip_existing: true
+  max_function_tasks: 120
+  max_variable_tasks: 40
+  max_summary_tasks: 12
+  file_priority: "function_count"
+
+# more agents for this run (default in other configs is 2)
+concurrency: 4
+
+tui:
+  enabled: true
+  interval: 0.5
+
+prompts:
+  function: "./prompts/function.txt"
+  chunk: "./prompts/function_chunk.txt"
+  variable: "./prompts/variable.txt"
+  summary: "./prompts/summary.txt"

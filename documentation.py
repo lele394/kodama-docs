@@ -9,7 +9,7 @@ import os
 import urllib.request
 
 from models import validate, extract_json_object, schema_text
-from util import log, sanitize_id, trunc
+from util import fence_lang, log, sanitize_id, trunc
 
 USER_AGENT = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
               'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36')
@@ -219,7 +219,8 @@ def fn_context_text(fn: dict, calls_in, calls_out, ctx_cfg: dict,
     if body_note is not None:
         parts.append(body_note)
     else:
-        parts.append('Source (Lua):\n```lua\n' + body + '\n```')
+        lang = fence_lang(fn['relpath'])
+        parts.append(f'Source ({lang}):\n```{lang}\n' + body + '\n```')
     return '\n'.join(parts)
 
 
@@ -345,7 +346,7 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                 lines.append('')
             body = (fn.get('body') or '').strip()
             if body:
-                lines.append('```lua')
+                lines.append('```' + fence_lang(rel))
                 lines.append(body)
                 lines.append('```')
                 lines.append('')
