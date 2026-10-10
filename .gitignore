@@ -7,3 +7,6 @@ __pycache__/
 # generated artifacts (recreated by running main.py)
 data/
 test_out/
+
+# secrets
+.env

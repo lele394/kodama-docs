@@ -22,6 +22,20 @@ def log(msg: str) -> None:
             print(line, flush=True)
 
 
+def read_env_file(path: str) -> dict:
+    """Parse a small .env file (KEY=value lines, # comments) into a dict
+    with lowercased keys. Values may be quoted."""
+    vals = {}
+    with open(path, 'r', encoding='utf-8') as fh:
+        for line in fh:
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            k, v = line.split('=', 1)
+            vals[k.strip().lower()] = v.strip().strip('"').strip("'")
+    return vals
+
+
 def sanitize_id(idstr: str) -> str:
     """Filesystem-safe form of a symbol id (for intermediate file names)."""
     return re.sub(r'[^A-Za-z0-9._@-]', '_', idstr)

@@ -10,8 +10,8 @@ project:
   copy_meta: true
 
 llm:
-  base_url: "https://ai.nebuleo.org/api/v1"
-  api_key: "env"
+  base_url: env
+  api_key: env
   model: "qwen3.8:27b-mtp-q4_K_M"
   max_retries: 5
   temperature: 0.1

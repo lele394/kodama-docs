@@ -77,8 +77,10 @@ project:
     - "bin"
 
 llm:
-  base_url: "http://localhost:11434/v1"
-  api_key: "ollama"
+  # "env" (also the default when the key is absent) -> the value is read
+  # from a .env file (api_key / base_url lines) next to the config file
+  base_url: env
+  api_key: env
   model: "qwen3.8:27b-mtp-q4_K_M"
   max_retries: 5
   temperature: 0.1
