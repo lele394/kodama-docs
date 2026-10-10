@@ -42,8 +42,14 @@ documentation:
   variable_scope: "file"
   generate_file_summaries: true
   include_anonymous_functions: false
-  # functions longer than this many lines are left out of the docs (0 = keep all)
+  # functions longer than this many lines are documented via chunk-and-merge (0 = off)
   max_function_lines: 20
+  # target input tokens per chunk call (budget = tokens x chars_per_token)
+  chunk_target_tokens: 20000
+  # estimated chars per input token (raise to fit bigger chunks, lower for safety)
+  chars_per_token: 4
+  # hard cap on chunk size in lines (tokens budget usually binds first)
+  max_chunk_lines: 4000
   retry_invalid_json: 2
   skip_existing: true
   max_function_tasks: 60
@@ -53,5 +59,6 @@ documentation:
 
 prompts:
   function: "./prompts/function.txt"
+  chunk: "./prompts/function_chunk.txt"
   variable: "./prompts/variable.txt"
   summary: "./prompts/summary.txt"

@@ -32,6 +32,9 @@ documentation:
   generate_file_summaries: true
   include_anonymous_functions: false
   max_function_lines: 20
+  chunk_target_tokens: 20000
+  chars_per_token: 4
+  max_chunk_lines: 4000
   retry_invalid_json: 2
   skip_existing: true
   max_function_tasks: 20
@@ -41,5 +44,6 @@ documentation:
 
 prompts:
   function: "./prompts/function.txt"
+  chunk: "./prompts/function_chunk.txt"
   variable: "./prompts/variable.txt"
   summary: "./prompts/summary.txt"

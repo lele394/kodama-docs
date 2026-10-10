@@ -93,7 +93,7 @@ def generate(client: LLMClient, kind: str, base_prompt: str, user_ctx: str,
 def record_path(data_dir: str, relpath: str, kind: str, name: str,
                 line: int) -> str:
     sub = {'function': 'functions', 'variable': 'variables',
-           'summary': 'summaries'}[kind]
+           'summary': 'summaries', 'chunk': 'chunks'}[kind]
     fhash = hashlib.md5(relpath.encode('utf-8')).hexdigest()[:10]
     fname = f'{kind}_{fhash}_{sanitize_id(name)}_{line}.json'
     return os.path.join(data_dir, sub, fname)
@@ -135,7 +135,7 @@ def load_record(data_dir: str, relpath: str, kind: str, name: str,
 
 def list_records(data_dir: str, kind: str):
     sub = {'function': 'functions', 'variable': 'variables',
-           'summary': 'summaries'}[kind]
+           'summary': 'summaries', 'chunk': 'chunks'}[kind]
     d = os.path.join(data_dir, sub)
     out = {}
     if not os.path.isdir(d):
@@ -154,7 +154,51 @@ def list_records(data_dir: str, kind: str):
 
 # ------------------------------------------------------------- context text
 
-def fn_context_text(fn: dict, calls_in, calls_out, ctx_cfg: dict) -> str:
+def fn_chunks(body: str, max_lines: int, target_tokens: int = 0,
+              chars_per_token: int = 4) -> list:
+    """Split a function body into deterministic chunks.
+
+    A chunk holds at most `max_lines` lines and (if target_tokens > 0) at
+    most ~target_tokens input tokens, estimated with the configured
+    chars-per-token ratio (a conservative upper bound for Lua). Breaks are
+    preferred after top-level statements (indent <= the body's base
+    indent) so chunks rarely start mid-block.
+    """
+    lines = body.splitlines()
+    n = len(lines)
+    cpt = max(1, int(chars_per_token or 4))
+    budget = target_tokens * cpt if target_tokens else None
+    if n == 0 or not any(l.strip() for l in lines):
+        return []
+    if n <= max_lines and (budget is None
+                           or sum(len(l) + 1 for l in lines) <= budget):
+        return [body]
+    base = min((len(l) - len(l.lstrip()) for l in lines if l.strip()),
+               default=0)
+    chunks, i = [], 0
+    while i < n:
+        j, chars, last = i, 0, i
+        while j < n and (j - i) < max_lines:
+            if budget is not None and j > i \
+                    and chars + len(lines[j]) + 1 > budget:
+                break
+            l = lines[j]
+            chars += len(l) + 1
+            if j > i and (len(l) - len(l.lstrip())) <= base:
+                last = j + 1
+            j += 1
+        end = j
+        if end <= i:                      # one line over budget: force progress
+            end = i + 1
+        elif end < n and last > i:        # split after the last top-level stmt
+            end = last
+        chunks.append('\n'.join(lines[i:end]))
+        i = end
+    return chunks
+
+
+def fn_context_text(fn: dict, calls_in, calls_out, ctx_cfg: dict,
+                    body_note: str = None) -> str:
     max_list = int(ctx_cfg.get('max_symbols_per_list', 25))
     max_lines = int(ctx_cfg.get('max_source_lines', 300))
     body = fn.get('body', '')
@@ -172,7 +216,10 @@ def fn_context_text(fn: dict, calls_in, calls_out, ctx_cfg: dict) -> str:
         parts.append('Called by: ' + ', '.join(dict.fromkeys(calls_in))[:500])
     if calls_out:
         parts.append('Calls: ' + ', '.join(dict.fromkeys(calls_out))[:500])
-    parts.append('Source (Lua):\n```lua\n' + body + '\n```')
+    if body_note is not None:
+        parts.append(body_note)
+    else:
+        parts.append('Source (Lua):\n```lua\n' + body + '\n```')
     return '\n'.join(parts)
 
 
@@ -219,7 +266,7 @@ def _fn_anchor(fn: dict) -> str:
 
 
 def render_file_md(finfo: dict, fn_records, var_records, summary,
-                   output_root: str, max_fn_lines: int = 0) -> str:
+                   output_root: str) -> str:
     rel = finfo['relpath']
     lines = [f'# {rel}', '']
     if summary:
@@ -229,9 +276,7 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
     else:
         lines += ['_No summary generated._', '']
 
-    funcs = [fn for fn in (finfo.get('functions') or [])
-             if not (max_fn_lines > 0
-                     and (fn.get('end_line') or fn['line']) - fn['line'] + 1 > max_fn_lines)]
+    funcs = finfo.get('functions') or []
     if funcs:
         lines += ['## Functions', '']
         lines.append('| Function | Line | Parameters | Description |')

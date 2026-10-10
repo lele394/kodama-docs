@@ -29,6 +29,14 @@ SCHEMA = {
             'uncertainties': {'type': 'array', 'maxItems': 32, 'items': {'type': 'string'}},
         },
     },
+    'chunk': {
+        'type': 'object',
+        'required': ['summary'],
+        'additionalProperties': False,
+        'properties': {
+            'summary': {'type': 'string', 'minLength': 12},
+        },
+    },
     'variable': {
         'type': 'object',
         'required': ['description'],

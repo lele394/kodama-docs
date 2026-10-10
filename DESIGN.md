@@ -105,6 +105,13 @@ documentation:
   generate_file_summaries: true
   retry_invalid_json: 2
   skip_existing: false
+  # functions over max_function_lines lines use chunk-and-merge:
+  # chunk_target_tokens x chars_per_token = per-chunk input budget (chars),
+  # max_chunk_lines = hard line cap per chunk
+  max_function_lines: 20
+  chunk_target_tokens: 20000
+  chars_per_token: 4
+  max_chunk_lines: 4000
 
 prompts:
   function: "./prompts/function.txt"
@@ -186,6 +193,16 @@ The task must document:
 Use the source code as the primary authority. Do not invent types, return values, or behaviour. Represent unknown information explicitly.
 
 Validate every result against a structured schema. Retry invalid JSON according to the configuration. Store each successful result separately, keyed by a stable symbol identifier.
+
+**Long functions: chunk-and-merge.** Functions longer than
+`max_function_lines` are not skipped. Their body is split deterministically
+into chunks (statement-aligned breaks, at most `max_chunk_lines` lines and
+~`chunk_target_tokens` x `chars_per_token` chars each). Each chunk gets one
+small LLM task producing a short summary (cached by the chunk text's hash, so
+re-runs only re-run changed chunks). One merge task then writes the standard
+function record from the signature plus the chunk summaries, so the rendered
+page is indistinguishable from a normally-sized function. All chunk
+boundaries, ids, and ordering are deterministic; the LLM only writes prose.
 
 ## 7. Variable documentation
 

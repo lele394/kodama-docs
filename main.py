@@ -129,9 +129,38 @@ def fn_length(fn: dict) -> int:
     return (fn.get('end_line') or fn['line']) - fn['line'] + 1
 
 
-def fn_excluded(fn: dict, max_lines: int) -> bool:
-    """Functions longer than max_lines are left out of the docs (0 = keep all)."""
-    return max_lines > 0 and fn_length(fn) > max_lines
+def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
+                maxchunk, chunktok, cpt=4):
+    """Summarize a long function body part by part (each part cached
+    separately) and return the body_note text for the merge prompt."""
+    chunks = doc.fn_chunks(fn.get('body') or '', maxchunk, chunktok, cpt)
+    if not chunks:
+        return 'Source: (empty body)'
+    notes = []
+    for ci, ct in enumerate(chunks, 1):
+        cname = f'{fn["name"]}#c{ci}'
+        cfp = hashlib.md5(ct.encode('utf-8')).hexdigest()
+        cp = (doc.load_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
+                              fn['line'], cfp) if skip else None)
+        if cp is None:
+            cctx = (
+                f"Symbol: {fn.get('qualified') or fn['name']} "
+                f"(lines {fn['line']}-{fn.get('end_line') or fn['line']}), "
+                f"file {f['relpath']}\n"
+                f"Parameters: {', '.join(fn.get('params') or []) or '(none)'}"
+                + (' + varargs' if fn.get('vararg') else '')
+                + f"\nBody part {ci}/{len(chunks)} of a long function:\n"
+                  + f"```lua\n{ct}\n```")
+            cp = doc.generate(client, 'chunk', prompts.get('chunk', ''),
+                              cctx, retry)
+            doc.save_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
+                            fn['line'], cp, cfp,
+                            {'file': f['relpath'], 'fn': fn['name'],
+                             'part': ci})
+        notes.append(cp.get('summary', ''))
+    return ('The body is long; it was summarized part by part:\n'
+            + '\n'.join(f'{k}. {s}' for k, s in enumerate(notes, 1))
+            + '\nDescribe the WHOLE function, synthesizing these parts.')
 
 
 def _graph_names(g, node_id):
@@ -184,35 +213,56 @@ def llm_phase(cfg: dict, files, g):
     # ---- functions ----------------------------------------------------
     if doccfg.get('generate_function_docs'):
         maxlines = int(doccfg.get('max_function_lines') or 0)
+        maxchunk = int(doccfg.get('max_chunk_lines') or 0) or 4000
+        chunktok = int(doccfg.get('chunk_target_tokens') or 0)
+        cpt = int(doccfg.get('chars_per_token') or 4)
         tasks = []
-        skipped_big = 0
         for f in ordered:
             for fn in f.get('functions') or []:
                 if not include_anon and fn['name'] == 'anon':
                     continue
-                if fn_excluded(fn, maxlines):
-                    skipped_big += 1
-                    continue
                 tasks.append((f, fn))
-        if skipped_big:
-            log(f'  ({skipped_big} functions over {maxlines} lines excluded)')
         maxfn = int(doccfg.get('max_function_tasks') or 0)
         if maxfn:
             tasks = tasks[:maxfn]
-        log(f'function docs: {len(tasks)} tasks')
+        nchunked = sum(1 for f, fn in tasks if maxlines and fn_length(fn) > maxlines)
+        log(f'function docs: {len(tasks)} tasks '
+            f'({nchunked} via chunk-and-merge)')
         for i, (f, fn) in enumerate(tasks, 1):
             nid = gmod.node_id_fn(f['relpath'], fn['name'], fn['line'])
+            fp = gmod.fingerprint([f])
             calls_in, calls_out = _graph_names(g, nid)
-            ctx = doc.fn_context_text({**fn, 'relpath': f['relpath']},
-                                      calls_in, calls_out, cfg['context'])
+            fnfull = {**fn, 'relpath': f['relpath']}
+            tag = f'{f["relpath"]}::{fn["name"]}@{fn["line"]}'
             try:
-                one('function', f, fn, ctx,
-                    {'id': nid, 'qualified': fn.get('qualified'),
-                     'params': fn.get('params'), 'vararg': fn.get('vararg')})
-                log(f'  fn {i}/{len(tasks)} {f["relpath"]}::{fn["name"]}@{fn["line"]} OK')
+                prose = (doc.load_record(cfg['data_dir'], f['relpath'],
+                                         'function', fn['name'], fn['line'], fp)
+                         if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if maxlines and fn_length(fn) > maxlines:
+                        body_note = chunk_notes(
+                            client, cfg, f, fn, prompts, retry, skip,
+                            maxchunk, chunktok, cpt)
+                        ctx = doc.fn_context_text(fnfull, calls_in, calls_out,
+                                                  cfg['context'],
+                                                  body_note=body_note)
+                    else:
+                        ctx = doc.fn_context_text(fnfull, calls_in, calls_out,
+                                                  cfg['context'])
+                    prose = doc.generate(client, 'function',
+                                         prompts.get('function', ''),
+                                         ctx, retry)
+                doc.save_record(cfg['data_dir'], f['relpath'], 'function',
+                                fn['name'], fn['line'], prose, fp,
+                                {'id': nid, 'qualified': fn.get('qualified'),
+                                 'params': fn.get('params'),
+                                 'vararg': fn.get('vararg')})
+                stats['skipped' if cached else 'done'] += 1
+                log(f'  fn {i}/{len(tasks)} {tag} OK')
             except Exception as e:  # noqa: BLE001
                 stats['failed'] += 1
-                log(f'  fn {i}/{len(tasks)} {f["relpath"]}::{fn["name"]}@{fn["line"]} FAILED: {e}')
+                log(f'  fn {i}/{len(tasks)} {tag} FAILED: {e}')
 
     # ---- variables ------------------------------------------------------
     if doccfg.get('generate_variable_docs'):
@@ -262,7 +312,6 @@ def llm_phase(cfg: dict, files, g):
 # ----------------------------------------------------------------- render
 
 def render_all(cfg: dict, files):
-    maxlines = int(cfg['documentation'].get('max_function_lines') or 0)
     fn_recs = doc.list_records(cfg['data_dir'], 'function')
     var_recs = doc.list_records(cfg['data_dir'], 'variable')
     sum_recs = doc.list_records(cfg['data_dir'], 'summary')
@@ -278,7 +327,7 @@ def render_all(cfg: dict, files):
         if summary:
             summary = summary.get('prose')
         out = doc.render_file_md(finfo, fn_recs, var_recs, summary,
-                                 cfg['output_dir'], maxlines)
+                                 cfg['output_dir'])
         doc.write_md(out, cfg['output_dir'], f['relpath'])
         count += 1
     index = doc.render_index(files, cfg['output_dir'])
