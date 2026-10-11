@@ -2,7 +2,6 @@
 __pycache__/
 *.pyc
 .venv/
-.venv314/
 
 # generated artifacts (recreated by running main.py)
 data/

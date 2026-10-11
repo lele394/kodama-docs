@@ -8,7 +8,6 @@ project:
   exclude:
     - ".git"
     - ".venv"
-    - ".venv314"
     - "data"
     - "data_self"
     - "doc"
@@ -18,7 +17,7 @@ project:
   copy_meta: true
 
 llm:
-  # "env" (default) -> read api_key / base_url from .env next to this file
+  # "env" (default) -> read api_key / base_url from .env (project root first, then this directory)
   base_url: env
   api_key: env
   model: "qwen3.8:27b-mtp-q4_K_M"

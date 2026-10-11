@@ -1,0 +1,8 @@
+# doc_maker runtime dependencies (Python 3.14; 3.11+ expected to work).
+# Transitive deps (pygments, markdown-it-py, mdurl) are resolved by pip.
+tree-sitter==0.26.0
+tree-sitter-lua==0.5.0
+tree-sitter-python==0.25.0
+ruamel.yaml==0.19.1
+networkx==3.7
+rich==15.0.0

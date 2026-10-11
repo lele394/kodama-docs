@@ -21,7 +21,7 @@ project:
   copy_meta: true
 
 llm:
-  # "env" -> read the value from .env (api_key / base_url) next to this file
+  # "env" -> read the value from .env (api_key / base_url); lookup: project root first, then the config's directory
   base_url: env
   api_key: env
   model: "qwen3.8:27b-mtp-q4_K_M"
