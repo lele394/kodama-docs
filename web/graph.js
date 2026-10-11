@@ -42,6 +42,17 @@
   var showExt = false;
   var showOrphans = true;
 
+  // The browser restores the radio/checkbox state from before a refresh;
+  // adopt it so the loaded level always matches the visible selection.
+  var _levels = document.querySelectorAll('input[name=level]');
+  for (var _i = 0; _i < _levels.length; _i++) {
+    if (_levels[_i].checked) { level = _levels[_i].value; break; }
+  }
+  showExt = extInput.checked;
+  showOrphans = orphanInput.checked;
+  extInput.disabled = (level === 'files');
+  extChk.classList.toggle('disabled', level === 'files');
+
   // force-layout parameters — tunable at runtime from the right-hand menu
   var SIM_DEFAULTS = {
     repulsion: 2400,   // node-node push (kRep)
@@ -768,6 +779,9 @@
       attributes: true, attributeFilter: ['href'],
     });
   }
+  // pick up the active theme's colors on load (the observer only fires
+  // when the theme link changes)
+  refreshTheme();
 
   // ---------------- init
   fetch('/api/graph')
