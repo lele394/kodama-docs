@@ -76,6 +76,27 @@ CLI flags:
 | `--no-llm` | skip the LLM phase entirely (extraction + graph + render only) |
 | `--purge` | delete all docs/meta/data (output + data dirs) and exit |
 | `--regenerate` | delete all docs/meta/data, then run the whole pipeline fresh |
+| `--serve` | serve the rendered docs over HTTP instead of generating (needs a previous run) |
+
+## Serving the docs (web)
+
+After a run has produced the markdown docs, `--serve` starts a small stdlib
+HTTP server (no extra dependencies) that renders each `*.md` page to themed
+HTML in the browser:
+
+```powershell
+.\.venv\Scripts\python -X utf8 main.py --config settings.yaml --serve
+```
+
+- URLs mirror the docs directory (`/index.md`, `/files/<path>.md`), so all
+  internal links and `#fn-...` anchors work unmodified.
+- Server settings live in `web/web_settings.yaml`: `host`, `port`,
+  `default_theme` (light or dark) and an optional `docs_dir` override.
+- Each page has a light/dark toggle button; the choice is remembered per
+  browser (localStorage). Themes are plain CSS in
+  `web/themes/light/style.css` and `web/themes/dark/style.css`.
+- Rendering is deterministic (`web/render.py`) — only the markdown subset
+  doc_maker itself generates is supported.
 
 ## Configuration
 
@@ -189,6 +210,12 @@ util.py            # logging, id sanitizing, truncation, .env reader, fence lang
 graph.py           # call/import/containment graph (networkx MultiDiGraph)
 documentation.py   # LLM client (urllib), prompt assembly, markdown rendering
 tui.py             # terminal UI for the LLM phase (Rich-based)
+web/
+  server.py        # --serve: stdlib HTTP server + web_settings.yaml loader
+  render.py        # deterministic markdown (doc_maker's subset) -> HTML
+  app.js           # light/dark theme toggle (persisted per browser)
+  web_settings.yaml# host / port / default_theme / docs_dir for the server
+  themes/light/style.css, themes/dark/style.css  # the two themes
 backends/
   __init__.py      # extension -> extractor registry + per-language helpers
   lua.py           # Lua backend (tree-sitter-lua)
@@ -201,8 +228,9 @@ settings_self.yaml # doc_maker documenting itself (Python)
 
 ## Design notes
 
-- **Small on purpose.** No test suite, no framework, no web UI. The whole
-  system is ~2.5k lines of plain Python plus two backend files.
+- **Small on purpose.** No test suite, no framework. The whole system is
+  ~2.5k lines of plain Python plus two backend files; the optional web
+  server is stdlib-only (no Flask).
 - **LLM as a prose oracle, not a parser.** Anything that must be correct
   (names, lines, links, ordering) is computed; the model only explains.
 - **Secrets stay out of the repo.** `.env` is git-ignored; the config only

@@ -592,11 +592,23 @@ def main():
                     help='delete docs/meta/data (output + data dirs) and exit')
     ap.add_argument('--regenerate', action='store_true',
                     help='delete docs/meta/data, then run everything fresh')
+    ap.add_argument('--serve', action='store_true',
+                    help='serve the rendered docs over HTTP instead of '
+                         'generating (needs a previous run)')
     args = ap.parse_args()
     if args.purge and args.regenerate:
         raise SystemExit('--purge and --regenerate are mutually exclusive')
 
     cfg = load_config(args.config)
+
+    if args.serve:
+        from web import server as webserver
+        webdir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              'web')
+        ws = webserver.load_settings(os.path.join(webdir, 'web_settings.yaml'))
+        webserver.serve(ws['docs_dir'] or cfg['output_dir'], ws, webdir)
+        return
+
     log(f'source: {cfg["source_dir"]}')
     files, skipped = scan_files(cfg)
     log(f'scanned {len(files)} files '

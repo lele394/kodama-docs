@@ -358,7 +358,7 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
             if rec and rec.get('prose'):
                 desc = md_escape(trunc(rec['prose'].get('description', ''), 140))
             params = ', '.join(fn.get('params') or [])
-            lines.append(f"| [{fn.get('qualified') or fn['name']}]#{_fn_anchor(fn)} "
+            lines.append(f"| [{fn.get('qualified') or fn['name']}](#{_fn_anchor(fn)}) "
                          f"| {fn['line']} | {md_escape(params)} | {desc} |")
         lines.append('')
         for fn in funcs:

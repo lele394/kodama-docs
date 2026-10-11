@@ -1,0 +1,10 @@
+# Settings for the doc_maker web server (`main.py --serve`).
+# Paths in this file resolve against this file's directory (doc_maker/).
+
+host: 127.0.0.1        # bind address (use 0.0.0.0 to allow other machines)
+port: 8123             # port to listen on
+default_theme: light   # light or dark — the page button switches at runtime
+                       # and remembers the choice per browser (localStorage)
+docs_dir:              # optional: serve this docs directory instead of the
+                       # main config's project.output_dir (absolute, or
+                       # relative to this file)
