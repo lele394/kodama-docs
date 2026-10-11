@@ -226,13 +226,20 @@ body.graph-page {
 
 .graph-panel {
   width: 460px;
-  min-width: 340px;
-  max-width: 62vw;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
   background: var(--bg);
 }
+
+.panel-resizer {
+  flex: none;
+  width: 6px;
+  cursor: col-resize;
+  background: transparent;
+}
+.panel-resizer:hover,
+.panel-resizer.active { background: var(--accent); opacity: .35; }
 
 .panel-bar {
   display: flex;

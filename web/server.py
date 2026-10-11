@@ -90,7 +90,7 @@ GRAPH_PAGE = """<!doctype html>
   <button id="theme-toggle" type="button"></button>
 </header>
 <div class="graph-layout">
-  <aside class="graph-panel">
+  <aside class="graph-panel" id="graph-panel">
     <div class="panel-bar">
       <button id="panel-back" type="button" title="back" hidden>&larr;</button>
       <span id="panel-title" class="panel-title"></span>
@@ -100,6 +100,8 @@ GRAPH_PAGE = """<!doctype html>
       Drag to move nodes, scroll to zoom, drag the background to pan.</p>
     </div>
   </aside>
+  <div id="panel-resizer" class="panel-resizer"
+    title="drag to resize the panel"></div>
   <div id="graph-stage" class="graph-stage">
     <canvas id="graph-canvas"></canvas>
     <div id="graph-tip" class="graph-tip" hidden></div>

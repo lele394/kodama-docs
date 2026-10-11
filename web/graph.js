@@ -418,6 +418,7 @@
       }
       return;
     }
+    if (resizing) return;
     if (e.target !== canvas) {
       // pointer over the top bar / doc panel / menus — no hover there
       if (hover) { hover = null; tip.hidden = true; draw(); }
@@ -455,6 +456,42 @@
   });
 
   window.addEventListener('resize', function () { draw(); });
+
+  // ---------------- panel resize (drag the strip between panel and graph)
+  var resizer = document.getElementById('panel-resizer');
+  var panelEl = document.getElementById('graph-panel');
+  var PANEL_MIN = 280;
+  var PANEL_MAX = Math.min(1400, Math.max(600,
+    Math.floor((window.innerWidth || 1280) * 0.8)));
+  try {
+    var savedW = parseFloat(window.localStorage
+      .getItem('doc-maker:panel-w') || '');
+    if (savedW >= PANEL_MIN) panelEl.style.width = savedW + 'px';
+  } catch (e) { /* storage unavailable — use the default width */ }
+  var resizing = false;
+  resizer.addEventListener('mousedown', function (e) {
+    resizing = true;
+    resizer.classList.add('active');
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!resizing) return;
+    var w = Math.max(PANEL_MIN, Math.min(PANEL_MAX, Math.round(e.clientX)));
+    if (panelEl.style.width !== (w + 'px')) {
+      panelEl.style.width = w + 'px';
+      draw();
+    }
+  });
+  window.addEventListener('mouseup', function () {
+    if (!resizing) return;
+    resizing = false;
+    resizer.classList.remove('active');
+    document.body.style.userSelect = '';
+    try {
+      window.localStorage.setItem('doc-maker:panel-w', panelEl.style.width);
+    } catch (e) { /* ignore */ }
+  });
 
   // ---------------- controls
   var levelRadios = document.querySelectorAll('input[name=level]');
