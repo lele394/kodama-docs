@@ -5,9 +5,11 @@ directory — a request for ``files/game/main.lua.md`` returns that file
 rendered as HTML — so every internal markdown link (relative paths,
 ``#fn-...`` anchors) keeps working unmodified. Static assets (app.js and
 themes/<light|dark>/style.css) come from this web/ folder; the page
-button switches themes and remembers the choice per browser
-(localStorage). Settings: web/web_settings.yaml next to this file.
+button switches themes and the choice is persisted by the server
+(web/theme_state.json) so it survives reloads and applies to every
+browser. Settings: web/web_settings.yaml next to this file.
 """
+import json
 import os
 import threading
 
@@ -159,6 +161,7 @@ class DocsHandler(BaseHTTPRequestHandler):
     docs_root = None
     web_root = None
     default_theme = 'light'
+    theme_state = None  # path of web/theme_state.json (set by serve())
     _cache = {}
     _cache_lock = threading.Lock()
 
@@ -193,6 +196,26 @@ class DocsHandler(BaseHTTPRequestHandler):
         if path.endswith('.md'):
             return self._page(path.lstrip('/'))
         return self._error(404, 'not found')
+
+    def do_POST(self):
+        path = unquote(urlsplit(self.path).path)
+        if path == '/api/theme':
+            return self._set_theme()
+        return self._error(404, 'not found')
+
+    def _set_theme(self):
+        length = int(self.headers.get('Content-Length') or 0)
+        body = self.rfile.read(min(length, 16)).decode('utf-8', 'replace')
+        body = body.strip()
+        if body not in ('light', 'dark'):
+            return self._error(400, 'theme must be light or dark')
+        try:
+            with open(self.theme_state, 'w', encoding='utf-8') as fh:
+                json.dump({'theme': body}, fh)
+        except OSError as e:
+            return self._error(500, str(e))
+        DocsHandler.default_theme = body
+        self._send(200, b'ok', 'text/plain; charset=utf-8')
 
     # ------------------------------------------------------------ handlers
     def _page(self, relpath: str):
@@ -311,6 +334,18 @@ def serve(docs_dir: str, settings: dict, web_root: str):
                          f'run doc_maker (without --serve) first')
     DocsHandler.docs_root = os.path.realpath(docs_dir)
     DocsHandler.web_root = os.path.realpath(web_root)
+    DocsHandler.theme_state = os.path.join(
+        DocsHandler.web_root, 'theme_state.json')
+    # A theme picked earlier (POST /api/theme) wins over the settings
+    # default, so the choice survives server restarts and applies to
+    # every browser.
+    try:
+        with open(DocsHandler.theme_state, 'r', encoding='utf-8') as fh:
+            saved = json.load(fh).get('theme')
+        if saved in ('light', 'dark'):
+            settings['theme'] = saved
+    except (OSError, ValueError):
+        pass
     DocsHandler.default_theme = settings['theme']
     host, port = settings['host'], settings['port']
     httpd = ThreadingHTTPServer((host, port), DocsHandler)

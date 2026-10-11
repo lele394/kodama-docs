@@ -1,4 +1,6 @@
-// doc_maker theme switcher: toggles light/dark, remembers the choice.
+// doc_maker theme switcher: toggles light/dark. The choice is persisted
+// by the server (POST /api/theme -> web/theme_state.json), so it survives
+// reloads and applies to every browser — no per-browser localStorage.
 (function () {
   'use strict';
   // The vendored highlight.js build does not auto-initialize: highlight
@@ -7,7 +9,6 @@
   if (window.hljs && window.hljs.highlightAll) {
     window.hljs.highlightAll();
   }
-  var KEY = 'doc_maker_theme';
   var link = document.getElementById('doc-theme');
   var btn = document.getElementById('theme-toggle');
   if (!link || !btn) return;
@@ -28,13 +29,19 @@
     }
   }
 
-  var saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (e) {}
-  apply(saved === 'dark' || saved === 'light' ? saved : current());
+  // The server already rendered the page with the persisted theme; this
+  // only makes sure the button label matches.
+  apply(current());
 
   btn.addEventListener('click', function () {
     var next = current() === 'dark' ? 'light' : 'dark';
     apply(next);
-    try { localStorage.setItem(KEY, next); } catch (e) {}
+    fetch('/api/theme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: next,
+    }).catch(function () {
+      /* offline — the choice still applies to this page */
+    });
   });
 })();
