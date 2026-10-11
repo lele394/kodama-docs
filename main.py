@@ -13,6 +13,10 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 import ruamel.yaml
+from rich.text import Text as RText
+from rich.table import Table as RTable
+from rich.console import Console as RConsole
+from rich import box
 
 from util import fence_lang, log, read_env_file, set_log_sink
 import backends
@@ -69,26 +73,33 @@ def load_config(path: str) -> dict:
 
 
 def scan_files(cfg: dict):
+    """Walk the source tree. Returns (files, skipped): the accepted file
+    dicts, plus {reason: [relpath, ...]} for files not accepted (excluded
+    by config, unsupported extension, or too large)."""
     excl = set(cfg['exclude'])
     exts = set(backends.EXTRACTORS)
     out = []
+    skipped = {'exclude': [], 'unsupported': [], 'oversize': []}
     for dirpath, dirnames, filenames in os.walk(cfg['source_dir']):
-        dirnames[:] = sorted(d for d in dirnames if d not in excl)
+        dirnames.sort()
         for fn in sorted(filenames):
-            if os.path.splitext(fn)[1].lower() not in exts:
-                continue
             full = os.path.join(dirpath, fn)
             rel = os.path.relpath(full, cfg['source_dir']).replace('\\', '/')
             if any(part in excl for part in rel.split('/')):
+                skipped['exclude'].append(rel)
+                continue
+            if os.path.splitext(fn)[1].lower() not in exts:
+                skipped['unsupported'].append(rel)
                 continue
             try:
                 size = os.path.getsize(full)
             except OSError:
                 continue
             if size > cfg['max_file_bytes']:
+                skipped['oversize'].append(rel)
                 continue
             out.append({'full': full, 'relpath': rel, 'size': size})
-    return out
+    return out, skipped
 
 
 def file_md5(path: str) -> str:
@@ -154,6 +165,88 @@ def load_symbols(cfg: dict):
         return data['files'], data['fingerprint']
     except (ValueError, KeyError, OSError):
         return None, None
+
+
+# --------------------------------------------------------- scan report
+
+def report_scan(cfg: dict, analysis, skipped):
+    """Post-analysis summary table: accepted files per extension, files
+    already fully documented (record cache), and files skipped by the
+    config."""
+    doccfg = cfg['documentation']
+    inc_anon = bool(doccfg.get('include_anonymous_functions', False))
+    want_fn = bool(doccfg.get('generate_function_docs'))
+    want_var = bool(doccfg.get('generate_variable_docs'))
+    want_sum = bool(doccfg.get('generate_file_summaries'))
+    dd = cfg['data_dir']
+
+    exts = {}
+    c_files = c_fn = c_var = 0
+    for f in analysis:
+        rel = f['relpath']
+        ext = os.path.splitext(rel)[1].lower().lstrip('.') or '?'
+        fns = [fn for fn in (f.get('functions') or [])
+               if inc_anon or fn['name'] != 'anon']
+        nvar = len(f.get('file_vars') or [])
+        s = exts.setdefault(ext, [0, 0, 0])
+        s[0] += 1
+        s[1] += len(fns) if want_fn else 0
+        s[2] += nvar if want_var else 0
+        # record cache: is this file already fully documented?
+        fp = gmod.fingerprint([f])
+        tasks = ok = 0
+        for fn in fns:
+            if want_fn:
+                tasks += 1
+                if doc.load_record(dd, rel, 'function', fn['name'],
+                                   fn['line'], fp):
+                    ok += 1
+        for v in f.get('file_vars') or []:
+            if want_var:
+                tasks += 1
+                if doc.load_record(dd, rel, 'variable', v['name'],
+                                   v['line'], fp):
+                    ok += 1
+        if want_sum:
+            tasks += 1
+            if doc.load_record(dd, rel, 'summary', 'file', 1, fp):
+                ok += 1
+        if tasks and ok == tasks:
+            c_files += 1
+            c_fn += len(fns)
+            c_var += nvar
+
+    t = RTable(box=box.SIMPLE, pad_edge=False, padding=(0, 2),
+               header_style='bold')
+    t.add_column('extension')
+    for col in ('files', 'functions', 'vars', 'total tasks'):
+        t.add_column(col, justify='right')
+    for ext in sorted(exts, key=lambda e: (-exts[e][0], e)):
+        nf, fn_, nv = exts[ext]
+        tasks = fn_ + nv + (nf if want_sum else 0)
+        t.add_row(RText(f'.{ext}', style='bold green'),
+                  RText(str(nf), style='green'),
+                  RText(str(fn_), style='green'),
+                  RText(str(nv), style='green'),
+                  RText(str(tasks), style='bold green'))
+    c_tasks = c_fn + c_var + (c_files if want_sum else 0)
+    t.add_row(RText('Skipped (cached)', style='bold orange3'),
+              RText(str(c_files), style='orange3'),
+              RText(str(c_fn), style='orange3'),
+              RText(str(c_var), style='orange3'),
+              RText(str(c_tasks), style='bold orange3'))
+    skip_n = sum(len(v) for v in skipped.values())
+    t.add_row(RText('Skipped (exclude)', style='bold red'),
+              RText(str(skip_n), style='red'),
+              RText('—', style='red'),
+              RText('—', style='red'),
+              RText('—', style='red'))
+    RConsole().print(t)
+    for reason, rels in sorted(skipped.items()):
+        if rels:
+            shown = ', '.join(rels[:5]) + (f' (+{len(rels) - 5} more)'
+                                           if len(rels) > 5 else '')
+            log(f'  skipped {reason}: {len(rels)} — {shown}')
 
 
 # ------------------------------------------------- purge / doc cache
@@ -495,8 +588,9 @@ def main():
 
     cfg = load_config(args.config)
     log(f'source: {cfg["source_dir"]}')
-    files = scan_files(cfg)
-    log(f'scanned {len(files)} files')
+    files, skipped = scan_files(cfg)
+    log(f'scanned {len(files)} files '
+        f'({sum(len(v) for v in skipped.values())} skipped)')
 
     if args.purge or args.regenerate:
         if not purge_outputs(cfg):
@@ -522,6 +616,8 @@ def main():
     gmod.save_graph(g, gpath)
     log(f'graph: {g.number_of_nodes()} nodes / {g.number_of_edges()} edges '
         f'-> {gpath}')
+
+    report_scan(cfg, analysis, skipped)
 
     failed = 0
     if args.no_llm:
