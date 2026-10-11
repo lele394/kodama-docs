@@ -38,6 +38,18 @@ body {
 
 .brand { font-weight: 600; color: var(--accent); }
 
+.topbar .nav {
+  cursor: pointer;
+  font: 13px "Segoe UI", system-ui, sans-serif;
+  padding: 4px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  background: var(--btn-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+.topbar .nav:hover { border-color: var(--accent); color: var(--accent); }
+
 #theme-toggle {
   cursor: pointer;
   font: 13px/1 "Segoe UI", system-ui, sans-serif;

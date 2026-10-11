@@ -42,6 +42,7 @@ PAGE = """<!doctype html>
 <body>
 <header class="topbar">
   <span class="brand">doc_maker</span>
+  <a class="nav" href="/graph">graph</a>
   <button id="theme-toggle" type="button"></button>
 </header>
 <main class="page">
@@ -69,6 +70,7 @@ GRAPH_PAGE = """<!doctype html>
 <body class="graph-page">
 <header class="topbar graph-topbar">
   <a class="brand" href="/index.md">doc_maker</a>
+  <a class="nav" href="/index.md">docs</a>
   <span class="graph-controls">
     <span class="seg">
       <label><input type="radio" name="level" value="files" checked>
