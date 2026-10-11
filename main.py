@@ -517,10 +517,20 @@ def llm_phase(cfg: dict, files, g):
             log(f'  {tag} FAILED: {e}')
 
     t_start = time.time()
-    with ThreadPoolExecutor(max_workers=n) as ex:
+    ex = ThreadPoolExecutor(max_workers=n)
+    try:
         list(ex.map(run, jobs))
-    tui.stop()
-    set_log_sink(None)
+    except KeyboardInterrupt:
+        # cancel everything still queued; let the in-flight tasks (at most
+        # n) finish so their records get saved
+        ex.shutdown(wait=True, cancel_futures=True)
+        s = tui.snapshot()
+        log(f'interrupted: {s["done"]}/{len(jobs)} tasks done, '
+            f'failed={s["failed"]} — saved records kept; rerun to continue')
+        raise
+    finally:
+        tui.stop()
+        set_log_sink(None)
     s = tui.snapshot()
     log(f'llm phase: done={s["done"]} skipped={s["skipped"]} '
         f'failed={s["failed"]} in {time.time() - t_start:.0f}s '
@@ -635,4 +645,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        log('')
+        log('interrupted by user — saved docs and records kept; '
+            '.doc_cache not updated; rerun to continue where it left off')
+        raise SystemExit(130)
