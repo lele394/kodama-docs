@@ -43,7 +43,7 @@ fingerprint.
 
    ```powershell
    python -m venv .venv
-   .\.venv\Scripts\pip install tree-sitter tree-sitter-lua tree-sitter-python ruamel.yaml networkx
+   .\.venv\Scripts\pip install tree-sitter tree-sitter-lua tree-sitter-python ruamel.yaml networkx rich
    ```
 
 2. **Secrets** — never put API keys in the YAML config. Create `.env` next to
@@ -135,11 +135,13 @@ render (markdown)                -> doc/<file>.md + index.md + meta/
 is thread-safe). For big codebases set it to 10, 20, … — the queue size is
 unbounded.
 
-While the LLM phase runs, an ANSI TUI (no dependencies) shows per-agent
-activity, a progress bar, done/skipped/failed counts, average time, elapsed
-time and ETA, plus a log tail. It turns itself off automatically when stdout
-is not a TTY (e.g. when run from this kind of tooling), so log output stays
-plain in both cases.
+While the LLM phase runs, a terminal UI built on [Rich](https://github.com/Textualize/rich)
+shows per-agent activity, a progress bar, done/skipped/failed counts, average
+time, elapsed time and ETA, plus a log tail. Rich re-lays the whole panel out
+on every refresh and measures the terminal itself, so it follows live window
+resizes and is never clipped or misaligned at any width. The TUI turns itself
+off automatically when stdout is not a TTY (e.g. when run from this kind of
+tooling), so log output stays plain in both cases.
 
 ## Adding a language
 
@@ -172,7 +174,7 @@ models.py          # small dataclasses / record helpers
 util.py            # logging, id sanitizing, truncation, .env reader, fence lang
 graph.py           # call/import/containment graph (networkx MultiDiGraph)
 documentation.py   # LLM client (urllib), prompt assembly, markdown rendering
-tui.py             # ANSI terminal UI for the LLM phase
+tui.py             # terminal UI for the LLM phase (Rich-based)
 backends/
   __init__.py      # extension -> extractor registry + per-language helpers
   lua.py           # Lua backend (tree-sitter-lua)

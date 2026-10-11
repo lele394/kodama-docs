@@ -1,23 +1,28 @@
 """doc_maker — live terminal UI (TUI) for the concurrent LLM phase.
 
-Stdlib only: ANSI escape codes painted into a fixed panel in the terminal.
-One line per agent (file, symbol, stage, time on task), a progress bar,
-run stats, and a rolling tail of the log. While the TUI is active, log()
-lines are routed into the panel instead of being printed, so the panel
-geometry is never disturbed by interleaved output.
+Built on Rich (https://github.com/Textualize/rich): one table row per
+agent (file, symbol, stage, time on task), a progress bar, run stats,
+and a rolling tail of the log. Rich measures the terminal itself and
+re-lays everything out on every refresh, so the panel follows live
+window resizes and is never clipped or misaligned, at any width.
+
+While the TUI is active, log() lines are routed into the panel instead
+of being printed, so the panel geometry is never disturbed by
+interleaved output.
 
 If stdout is not a TTY (piped or job-captured run) the panel is skipped
 and logging prints as usual.
 """
 import atexit
-import os
-import re
-import shutil
 import sys
 import threading
 import time
 
-_ANSI = re.compile(r'\x1b\[[0-9;]*m')
+from rich import box
+from rich.console import Console, Group
+from rich.live import Live
+from rich.table import Table
+from rich.text import Text
 
 
 def _fmt_dur(s):
@@ -29,8 +34,12 @@ def _fmt_dur(s):
     return f'{s // 3600}h{(s % 3600) // 60:02d}m'
 
 
+def _stage_style(stage):
+    return {'describe': 'green', 'merge': 'cyan'}.get(stage or '', 'yellow')
+
+
 class TUI:
-    """Thread-safe shared agent state + optional terminal panel."""
+    """Thread-safe shared agent state + Rich-based terminal panel."""
 
     def __init__(self, enabled=True, worker_count=1, total=0,
                  interval=0.5, force=False):
@@ -53,12 +62,8 @@ class TUI:
         }
         self._logs = []
         self._logs_lock = threading.Lock()
-        self._thread = None
-        self._height = 0
-        self._drawn = 0
-        self._cols = 100
-        self._loglines = 4
-        self._restored = False
+        self._console = None
+        self._live = None
 
     # -- lifecycle ---------------------------------------------------------
     def start(self):
@@ -68,127 +73,100 @@ class TUI:
                                      and sys.stdout.isatty())
         if not self.active:
             return False
-        if os.name == 'nt':
-            os.system('')  # enables ANSI VT processing on Windows 10+
-        rows, cols = shutil.get_terminal_size((24, 100))
-        self._cols = max(60, min(cols, 120))
-        self._loglines = max(2, min(6, rows - (self.worker_count + 5)))
-        self._height = self.worker_count + 4 + self._loglines
-        sys.stdout.write('\x1b[?25l')  # hide cursor while painting
-        self._draw()
-        self._thread = threading.Thread(target=self._loop, daemon=True)
-        self._thread.start()
-        atexit.register(self._restore)
+        self._console = Console()
+        self._live = Live(self._render, console=self._console,
+                          refresh_per_second=max(2, 1.0 / self.interval))
+        self._live.start(refresh=True)
+        atexit.register(self._exit)
         return True
+
+    def _exit(self):
+        self.stop()
 
     def stop(self):
         if not self.active:
             return
-        try:
-            self._draw()
-            sys.stdout.write('\n')
-            sys.stdout.flush()
-        except Exception:  # noqa: BLE001
-            pass
         self.active = False
-        self._restore()
-
-    def _restore(self):
-        if self._restored:
-            return
-        self._restored = True
         try:
-            sys.stdout.write('\x1b[?25h')
-            sys.stdout.flush()
+            if self._live:
+                self._live.stop()
+            if self._console:
+                self._console.print()
         except Exception:  # noqa: BLE001
             pass
 
-    def _loop(self):
-        while self.active:
-            time.sleep(self.interval)
-            try:
-                self._draw()
-            except Exception:  # noqa: BLE001
-                break
-
-    # -- painting ----------------------------------------------------------
-    def _draw(self):
-        out = sys.stdout
-        with self.lock:
-            frame = self._frame()
-        if self._drawn:
-            out.write(f'\x1b[{self._height}A')  # back to panel top
-        for line in frame:
-            out.write('\x1b[2K' + line + '\n')
-        out.flush()
-        self._drawn = self._height
-
-    @staticmethod
-    def _clip(s, w):
-        """Truncate to w *visible* columns, keeping ANSI codes intact."""
-        if len(_ANSI.sub('', s)) <= w:
-            return s
-        out, vis, i, n = [], 0, 0, len(s)
-        while i < n and vis < w:
-            m = _ANSI.match(s, i)
-            if m:
-                out.append(m.group(0))
-                i = m.end()
-                continue
-            out.append(s[i])
-            vis += 1
-            i += 1
-        return ''.join(out) + '\x1b[0m'
-
-    def _frame(self):
+    # -- rendering (runs on Rich's refresh thread) --------------------------
+    def _render(self):
         now = time.time()
-        s = self.st
-        w = self._cols - 1
-        L = []
-        head = (f'doc_maker · llm phase · {s["total"]} tasks · '
-                f'{self.worker_count} agents')
-        L.append(self._clip(f'\x1b[1m{head}\x1b[0m', w))
+        s = self.snapshot()
+        width = self._console.width if self._console else 80
+        head = Text(f'doc_maker · llm phase · {s["total"]} tasks · '
+                    f'{self.worker_count} agents', style='bold')
+        head.truncate(width, overflow='ellipsis')
+        parts = [head]
+
+        table = Table(box=box.SIMPLE, pad_edge=False, padding=(0, 1),
+                      header_style='bold', expand=False)
+        table.add_column('agent', width=8, no_wrap=True, overflow='ellipsis')
+        table.add_column('symbol', min_width=12, no_wrap=True,
+                         overflow='ellipsis')
+        table.add_column('stage', min_width=9, no_wrap=True, justify='right')
+        table.add_column('time', min_width=6, no_wrap=True, justify='right')
+        table.add_column('done', min_width=4, no_wrap=True, justify='right')
         for wk in s['workers']:
             if wk['state'] == 'working':
-                mid = f'{wk["file"]} :: {wk["symbol"]}'
+                sym = f'{wk["file"]} :: {wk["symbol"]}'
                 stage = wk['stage'] or '…'
-                color = ('32' if stage == 'describe'
-                         else '36' if stage == 'merge' else '33')
-                right = (f'{_fmt_dur(now - (wk["since"] or now))} on task · '
-                         f'{wk["finished"]} done')
+                t = _fmt_dur(now - (wk['since'] or now))
             else:
-                mid = '\x1b[2m(idle)\x1b[0m'
+                sym = Text('(idle)', style='dim')
                 stage = 'waiting'
-                color = '2'
-                right = (f'{wk["finished"]} done'
-                         + (f' · {wk["failed"]} failed' if wk['failed'] else ''))
-            L.append(self._clip(
-                f'  {wk["name"]:<8} {mid}  \x1b[{color}m[{stage}]\x1b[0m  {right}',
-                w))
-        L.append(self._clip('  ' + '\x1b[2m' + '─' * 48 + '\x1b[0m', w))
+                t = ''
+            done = str(wk['finished'])
+            if wk['failed']:
+                done += f' ({wk["failed"]}✗)'
+            table.add_row(wk['name'], sym,
+                          Text(f'[{stage}]', style=_stage_style(stage)),
+                          t, done)
+        parts.append(table)
+
         total = s['total'] or 1
         frac = min(1.0, s['done'] / total)
-        barw = 32
+        label = f'{s["done"]}/{s["total"]}  {frac * 100:.0f}%'
+        barw = max(8, width - len(label) - 2)
         fill = int(round(barw * frac))
-        bar = '\x1b[1;32m' + '█' * fill + '\x1b[0m\x1b[2m' + '░' * (barw - fill) + '\x1b[0m'
-        L.append(self._clip(f'  {bar}  {s["done"]}/{s["total"]}   '
-                            f'{frac * 100:.0f}%', w))
+        parts.append(Text('█' * fill, style='bold green')
+                     + Text('░' * (barw - fill), style='dim')
+                     + Text(f'  {label}'))
+
         avg = s['time_sum'] / s['done'] if s['done'] else 0.0
-        bits = [f'\x1b[32mgenerated {s["generated"]}\x1b[0m',
-                f'cached {s["skipped"]}',
-                f'\x1b[31mfailed {s["failed"]}\x1b[0m' if s['failed']
-                else f'failed {s["failed"]}',
-                f'avg {_fmt_dur(avg)}/task',
-                f'elapsed {_fmt_dur(now - s["started_at"])}']
+        stats = Text.assemble(
+            ('generated ', 'green'), (str(s['generated']), 'bold green'),
+            ('   ·   cached ', 'dim'), (str(s['skipped']), 'bold'),
+            ('   ·   failed ', 'red' if s['failed'] else 'dim'),
+            (str(s['failed']), 'bold red' if s['failed'] else 'bold'),
+            ('   ·   avg ', 'dim'), (_fmt_dur(avg) + '/task', 'bold'),
+            ('   ·   elapsed ', 'dim'),
+            (_fmt_dur(now - s['started_at']), 'bold'))
         remain = max(0, s['total'] - s['done'])
         if remain and avg:
-            bits.append(f'eta ~{_fmt_dur(remain * avg / self.worker_count)}')
-        L.append(self._clip('  ' + '   ·   '.join(bits), w))
+            stats.append('   ·   eta ~'
+                         + _fmt_dur(remain * avg / self.worker_count),
+                         style='bold')
+        stats.truncate(width, overflow='ellipsis')
+        parts.append(stats)
+
+        height = self._console.height if self._console else None
+        loglines = 4
+        if height:
+            loglines = max(2, min(6, height - (self.worker_count + 8)))
         with self._logs_lock:
-            tail = self._logs[-self._loglines:]
-        for m in tail:
-            L.append(self._clip('  ' + m, w))
-        return L
+            tail = list(self._logs[-loglines:])
+        for line in tail:
+            tline = Text(line, style='dim')
+            tline.truncate(width, overflow='ellipsis')
+            parts.append(tline)
+        return Group(*parts)
 
     # -- reporting (called from worker threads) -----------------------------
     def sink(self, line):
@@ -196,6 +174,8 @@ class TUI:
             self._logs.append(line)
             if len(self._logs) > 60:
                 del self._logs[:len(self._logs) - 60]
+        if self._live:
+            self._live.refresh()
 
     def _w(self, wid):
         for w in self.st['workers']:
