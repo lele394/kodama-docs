@@ -68,6 +68,7 @@
   var nodes = [], edges = [], byId = {};
   var view = { s: 1, ox: 0, oy: 0 };
   var alpha = 0, running = false;
+  var refit = false;
   var hover = null, selected = null, dragNode = null;
   var dpr = 1;
   var fg = '#1f2328';
@@ -151,6 +152,7 @@
     });
     initPositions();
     hover = null;
+    selected = null;
     tip.hidden = true;
   }
 
@@ -253,7 +255,9 @@
         requestAnimationFrame(step);
       } else {
         running = false;
-        fitView();
+        // frame a freshly built layout — but never yank the camera
+        // back after the user has been arranging nodes
+        if (refit) { refit = false; fitView(); }
         draw();
       }
     };
@@ -584,6 +588,7 @@
     buildLevel();
     updateLegend();
     updateCounts();
+    refit = true;
     startSim();
   }
 
