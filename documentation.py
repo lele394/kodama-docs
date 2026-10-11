@@ -338,23 +338,29 @@ def callgraph_section(rel: str, fn: dict, g) -> list:
 
 
 def _symbol_index(g):
-    """Deterministic link targets for References bullets: file relpaths
-    and function nodes keyed by name / qualified name (from the graph)."""
-    files, by_name, by_qname = set(), {}, {}
+    """Deterministic link targets for References bullets: file relpaths,
+    function nodes by name / qualified name, and module namespaces
+    (qualified-name prefixes) -> the file(s) they live in (from the graph)."""
+    files, by_name, by_qname, by_ns = set(), {}, {}, {}
     if g is None:
-        return files, by_name, by_qname
+        return files, by_name, by_qname, by_ns
     for nid, nd in g.nodes(data=True):
         if nd.get('kind') != 'function':
             continue
-        if nd.get('relpath'):
-            files.add(nd['relpath'])
+        rp = nd.get('relpath')
+        if rp:
+            files.add(rp)
         nm = nd.get('name')
         if nm:
             by_name.setdefault(nm, []).append(nd)
         qn = nd.get('qualified') or nm
         if qn:
             by_qname.setdefault(qn, []).append(nd)
-    return files, by_name, by_qname
+            if rp:
+                parts = qn.split('.')
+                for i in range(1, len(parts)):
+                    by_ns.setdefault('.'.join(parts[:i]), set()).add(rp)
+    return files, by_name, by_qname, by_ns
 
 
 def _pick_node(cands, rel):
@@ -366,9 +372,10 @@ def _pick_node(cands, rel):
     return cur[0] if len(cur) == 1 else None
 
 
-def ref_line(rel, ref, files, by_name, by_qname):
+def ref_line(rel, ref, files, by_name, by_qname, by_ns):
     """Markdown bullet for a References entry. Linked when the entry names
-    a known file or function; plain text otherwise (e.g. variables)."""
+    a known file, function, or module namespace; plain text otherwise
+    (e.g. variables, builtins)."""
     text = str(ref).strip()
     t = text[:-2].strip() if text.endswith('()') else text
     ft = t.replace('\\', '/')
@@ -382,17 +389,20 @@ def ref_line(rel, ref, files, by_name, by_qname):
             if all(n is not x for x in cands):
                 cands.append(n)
     node = _pick_node(cands, rel) if cands else None
-    if node is None:
-        return f'- {md_escape(ref)}'
-    link = _rel_link(rel, node['relpath'])
-    link += '#fn-' + sanitize_id(node['name']) + '-' + str(node['line'])
-    return f'- [{md_escape(ref)}]({link})'
+    if node is not None:
+        link = _rel_link(rel, node['relpath'])
+        link += '#fn-' + sanitize_id(node['name']) + '-' + str(node['line'])
+        return f'- [{md_escape(ref)}]({link})'
+    ns = by_ns.get(t)
+    if ns and len(ns) == 1:
+        return f'- [{md_escape(ref)}]({_rel_link(rel, next(iter(ns)))})'
+    return f'- {md_escape(ref)}'
 
 
 def render_file_md(finfo: dict, fn_records, var_records, summary,
                    output_root: str, graph=None) -> str:
     rel = finfo['relpath']
-    files, by_name, by_qname = _symbol_index(graph)
+    files, by_name, by_qname, by_ns = _symbol_index(graph)
     lines = [f'# {rel}', '']
     if summary:
         lines += ['## Summary', '', summary.get('summary', ''),
@@ -459,7 +469,7 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                     lines.append('**References**')
                     lines.append('')
                     for r in p['references']:
-                        lines.append(ref_line(rel, r, files, by_name, by_qname))
+                        lines.append(ref_line(rel, r, files, by_name, by_qname, by_ns))
                     lines.append('')
                 if p.get('uncertainties'):
                     lines.append('**Uncertainties**')
