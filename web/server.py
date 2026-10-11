@@ -90,7 +90,7 @@ class DocsHandler(BaseHTTPRequestHandler):
         if path.startswith('/theme/') and path.endswith('.css'):
             return self._webfile('themes/' + path[len('/theme/'):],
                                  'text/css; charset=utf-8')
-        if path in ('/app.js', '/graph.js'):
+        if path in ('/app.js', '/graph.js') or path.startswith('/graph/'):
             return self._webfile(path[1:], 'text/javascript; charset=utf-8')
         if path.startswith('/lib/'):
             name = path[len('/lib/'):]
