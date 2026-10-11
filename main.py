@@ -339,9 +339,17 @@ def llm_phase(cfg: dict, files, g):
     # ---- run the jobs on N parallel agents ------------------------------
     n = max(1, int(cfg.get('concurrency') or 2))
     tcfg = cfg.get('tui') or {}
+    kind_label = {'function': 'functions', 'variable': 'variables',
+                  'summary': 'files'}
+    kinds = {}
+    for lab, k in (('files', 'summary'), ('functions', 'function'),
+                   ('variables', 'variable')):
+        cnt = sum(1 for j in jobs if j['kind'] == k)
+        if cnt:
+            kinds[lab] = cnt
     tui = TUI(enabled=bool(tcfg.get('enabled', True)),
               interval=float(tcfg.get('interval') or 0.5),
-              worker_count=n, total=len(jobs))
+              worker_count=n, total=len(jobs), kinds=kinds)
     tui.start()
     set_log_sink(tui.sink if tui.active else None)
 
@@ -416,10 +424,12 @@ def llm_phase(cfg: dict, files, g):
                                 prose, fp,
                                 {'file': rel, 'lines': f.get('lines'),
                                  'function_count': len(f.get('functions') or [])})
-            tui.job_end(w, time.time() - t0, generated=not cached, failed=False)
+            tui.job_end(w, time.time() - t0, generated=not cached,
+                        failed=False, kind=kind_label.get(job['kind']))
             log(f'  {tag} OK' + (' (cached)' if cached else ''))
         except Exception as e:  # noqa: BLE001
-            tui.job_end(w, time.time() - t0, generated=False, failed=True)
+            tui.job_end(w, time.time() - t0, generated=False, failed=True,
+                        kind=kind_label.get(job['kind']))
             log(f'  {tag} FAILED: {e}')
 
     t_start = time.time()

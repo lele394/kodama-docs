@@ -52,7 +52,7 @@ class TUI:
     """Thread-safe shared agent state + Rich-based terminal panel."""
 
     def __init__(self, enabled=True, worker_count=1, total=0,
-                 interval=0.5, force=False):
+                 interval=0.5, force=False, kinds=None):
         self.enabled = bool(enabled)
         self.worker_count = max(1, int(worker_count))
         self.interval = max(0.2, float(interval))
@@ -64,6 +64,8 @@ class TUI:
             'total': int(total),
             'done': 0, 'failed': 0, 'skipped': 0, 'generated': 0,
             'time_sum': 0.0,
+            'kinds': [{'label': k, 'total': int(v), 'done': 0}
+                      for k, v in (kinds or {}).items()],
             'workers': [{'id': i + 1, 'name': f'agent-{i + 1}',
                          'state': 'idle', 'file': None, 'symbol': None,
                          'stage': None, 'since': None, 'first_at': None,
@@ -140,14 +142,27 @@ class TUI:
                           t, done)
         parts.append(table)
 
-        total = s['total'] or 1
-        frac = min(1.0, s['done'] / total)
-        label = f'{s["done"]}/{s["total"]}  {frac * 100:.0f}%'
-        barw = max(8, width - len(label) - 2)
-        fill = int(round(barw * frac))
-        parts.append(Text('█' * fill, style='bold green')
-                     + Text('░' * (barw - fill), style='dim')
-                     + Text(f'  {label}'))
+        kinds = s.get('kinds') or []
+        labels = [k['label'] for k in kinds] + ['total']
+        pad = max(len(l) for l in labels) + 2
+
+        def bar(done, total, label):
+            frac = min(1.0, done / total) if total else 0.0
+            tail = f'  {done}/{total}'
+            if label == 'total':
+                tail += f'  {frac * 100:.0f}%'
+            bw = max(8, width - len(label) - pad + 2 - len(tail) - 1)
+            fill = int(round(bw * frac))
+            t = Text(label.ljust(pad), style='bold')
+            t.append('█' * fill, style='bold green')
+            t.append('░' * (bw - fill), style='dim')
+            t.append(tail, style='bold')
+            t.truncate(width, overflow='ellipsis')
+            return t
+
+        for k in kinds:
+            parts.append(bar(k['done'], k['total'], k['label']))
+        parts.append(bar(s['done'], s['total'], 'total'))
 
         avg = s['time_sum'] / s['done'] if s['done'] else 0.0
         stats = Text.assemble(
@@ -206,11 +221,17 @@ class TUI:
             w = self._w(wid)
             w.update(file=file, symbol=symbol, stage=stage)
 
-    def job_end(self, wid, duration, generated=False, failed=False):
+    def job_end(self, wid, duration, generated=False, failed=False,
+                kind=None):
         with self.lock:
             s, w = self.st, self._w(wid)
             s['done'] += 1
             s['time_sum'] += duration
+            if kind is not None:
+                for k in s['kinds']:
+                    if k['label'] == kind:
+                        k['done'] += 1
+                        break
             w['state'] = 'idle'
             w['file'] = w['symbol'] = w['stage'] = w['since'] = None
             w['finished'] += 1
@@ -227,6 +248,7 @@ class TUI:
         with self.lock:
             s = dict(self.st)
             s['workers'] = [dict(x) for x in s['workers']]
+            s['kinds'] = [dict(k) for k in s['kinds']]
         done = s['done']
         s['avg_seconds'] = s['time_sum'] / done if done else 0.0
         remain = max(0, s['total'] - done)
