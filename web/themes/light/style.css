@@ -126,3 +126,38 @@ hr {
   border-top: 1px solid var(--border);
   margin: 36px 0;
 }
+
+/* Collapsible source / call-graph zones (closed by default) */
+details.src {
+  margin: 14px 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bar);
+}
+
+details.src > summary {
+  cursor: pointer;
+  padding: 7px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+  user-select: none;
+}
+
+details.src > summary:hover { color: var(--accent); }
+
+details.src[open] > summary { border-bottom: 1px solid var(--border); }
+
+details.src pre {
+  margin: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  padding: 0;
+  background: none;
+}
+
+details.src pre code.hljs { padding: 12px 14px; }
+
+details.src p { margin: 10px 14px 2px; }
+
+details.src ul { margin: 4px 14px 12px; }

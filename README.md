@@ -95,6 +95,14 @@ HTML in the browser:
 - Each page has a light/dark toggle button; the choice is remembered per
   browser (localStorage). Themes are plain CSS in
   `web/themes/light/style.css` and `web/themes/dark/style.css`.
+- Source code is syntax-highlighted in the browser by
+  [highlight.js](https://highlightjs.org/) 11.11.1 — one vendored UMD bundle
+  plus its light/dark theme CSS in `web/lib/` (served from `/lib/...`). The
+  code theme follows the page theme toggle. The server itself stays
+  stdlib-only; highlight.js is the single third-party client-side asset.
+- Every function's source block — and its call graph, when present — is
+  wrapped in a collapsible `<details>` zone that is **closed by default**, so
+  pages stay readable and the code can be unrolled on demand.
 - Rendering is deterministic (`web/render.py`) — only the markdown subset
   doc_maker itself generates is supported.
 
@@ -216,6 +224,11 @@ web/
   app.js           # light/dark theme toggle (persisted per browser)
   web_settings.yaml# host / port / default_theme / docs_dir for the server
   themes/light/style.css, themes/dark/style.css  # the two themes
+  lib/
+    highlight.min.js   # vendored highlight.js 11.11.1 full UMD build
+    github.min.css     # vendored highlight.js light theme
+    github-dark.min.css# vendored highlight.js dark theme
+    LICENSE            # highlight.js BSD-3-Clause license (required)
 backends/
   __init__.py      # extension -> extractor registry + per-language helpers
   lua.py           # Lua backend (tree-sitter-lua)

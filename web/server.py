@@ -32,6 +32,11 @@ PAGE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <link id="doc-theme" rel="stylesheet" href="/theme/{theme}/style.css">
+<link id="hljs-light" rel="stylesheet"
+      href="/lib/github.min.css"{hljs_light}>
+<link id="hljs-dark" rel="stylesheet"
+      href="/lib/github-dark.min.css"{hljs_dark}>
+<script src="/lib/highlight.min.js" defer></script>
 <script src="/app.js" defer></script>
 </head>
 <body>
@@ -99,6 +104,14 @@ class DocsHandler(BaseHTTPRequestHandler):
                                  'text/css; charset=utf-8')
         if path == '/app.js':
             return self._webfile('app.js', 'text/javascript; charset=utf-8')
+        if path.startswith('/lib/'):
+            name = path[len('/lib/'):]
+            ext = name.rsplit('.', 1)[-1] if '.' in name else ''
+            ctype = {'js': 'text/javascript; charset=utf-8',
+                     'css': 'text/css; charset=utf-8',
+                     'txt': 'text/plain; charset=utf-8'}.get(
+                ext, 'application/octet-stream')
+            return self._webfile('lib/' + name, ctype)
         if path.endswith('.md'):
             return self._page(path.lstrip('/'))
         return self._error(404, 'not found')
@@ -121,8 +134,12 @@ class DocsHandler(BaseHTTPRequestHandler):
             else:
                 body = render_md(md)
                 self._cache[full] = (st.st_mtime, st.st_size, body)
+        dark = self.default_theme == 'dark'
         page = PAGE.format(title=html_escape(_title(md, relpath)),
-                           theme=self.default_theme, body=body)
+                           theme=self.default_theme,
+                           hljs_light=' disabled' if dark else '',
+                           hljs_dark='' if dark else ' disabled',
+                           body=body)
         self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
 
     def _webfile(self, filename: str, ctype: str):

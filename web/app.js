@@ -5,6 +5,8 @@
   var link = document.getElementById('doc-theme');
   var btn = document.getElementById('theme-toggle');
   if (!link || !btn) return;
+  var hljsLight = document.getElementById('hljs-light');
+  var hljsDark = document.getElementById('hljs-dark');
 
   function current() {
     var m = link.getAttribute('href').match(/\/theme\/(light|dark)\//);
@@ -14,6 +16,10 @@
   function apply(name) {
     link.setAttribute('href', '/theme/' + name + '/style.css');
     btn.textContent = name === 'dark' ? '\u263E dark' : '\u2600 light';
+    if (hljsLight && hljsDark) {
+      hljsLight.disabled = name !== 'light';
+      hljsDark.disabled = name !== 'dark';
+    }
   }
 
   var saved = null;

@@ -2,9 +2,12 @@
 
 Supports exactly what documentation.py emits: headings (including raw
 ``<a id="...">`` anchors), paragraphs, **bold**, *italic*, `code`,
-[links](url), fenced code blocks, two-level bullet lists, tables
-(with ``\\|`` escaped pipes) and ``---`` rules. Output is a pure
-function of the input text; no third-party dependencies.
+[links](url), fenced code blocks (wrapped in closed-by-default
+``<details>`` zones, folded together with a following "Call graph"
+list), two-level bullet lists, tables (with ``\\|`` escaped pipes) and
+``---`` rules. Output is a pure function of the input text; no
+third-party dependencies (syntax highlighting is client-side
+highlight.js, loaded by the page).
 """
 import html
 import re
@@ -124,8 +127,33 @@ def render_md(md: str) -> str:
                 i += 1
             i += 1  # skip closing fence
             cls = f' class="lang-{lang}"' if lang else ''
-            out.append(f'<pre><code{cls}>{html.escape(chr(10).join(buf))}'
-                       f'</code></pre>')
+            pre = (f'<pre><code{cls}>'
+                   f'{html.escape(chr(10).join(buf))}</code></pre>')
+            # If a "**Call graph**" paragraph + list follows, fold both
+            # into one collapsible zone (closed by default).
+            j = i
+            while j < n and not lines[j].strip():
+                j += 1
+            if j < n and lines[j].strip() == '**Call graph**':
+                j += 1
+                while j < n and not lines[j].strip():
+                    j += 1
+                items = []
+                while j < n and lines[j].strip().startswith('- '):
+                    raw = lines[j]
+                    items.append((len(raw) - len(raw.lstrip()),
+                                 raw.strip()[2:]))
+                    j += 1
+                if items:
+                    out.append('<details class="src">'
+                               '<summary>Source \u00b7 call graph</summary>\n'
+                               + pre + '\n'
+                               '<p><strong>Call graph</strong></p>\n'
+                               + render_list(items) + '\n</details>')
+                    i = j
+                    continue
+            out.append('<details class="src"><summary>Source</summary>\n'
+                       + pre + '\n</details>')
             continue
         m = _HEAD_RE.match(lines[i])
         if m:
