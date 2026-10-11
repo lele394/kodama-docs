@@ -26,7 +26,7 @@
 
   var COLORS = {
     file: '#3b6fd4', function: '#2e9e63', variable: '#d98a14',
-    module: '#8b5cf6', builtin: '#8a919c', ext: '#b7bdc9',
+    module: '#8b5cf6', builtin: '#12a594', ext: '#d6455c',
   };
   var NAMES = {
     file: 'file', function: 'function', variable: 'variable',
