@@ -337,9 +337,62 @@ def callgraph_section(rel: str, fn: dict, g) -> list:
     return lines
 
 
+def _symbol_index(g):
+    """Deterministic link targets for References bullets: file relpaths
+    and function nodes keyed by name / qualified name (from the graph)."""
+    files, by_name, by_qname = set(), {}, {}
+    if g is None:
+        return files, by_name, by_qname
+    for nid, nd in g.nodes(data=True):
+        if nd.get('kind') != 'function':
+            continue
+        if nd.get('relpath'):
+            files.add(nd['relpath'])
+        nm = nd.get('name')
+        if nm:
+            by_name.setdefault(nm, []).append(nd)
+        qn = nd.get('qualified') or nm
+        if qn:
+            by_qname.setdefault(qn, []).append(nd)
+    return files, by_name, by_qname
+
+
+def _pick_node(cands, rel):
+    """Deterministic choice among matching nodes: the current file wins,
+    then a unique match; anything ambiguous stays unlinked."""
+    if len(cands) == 1:
+        return cands[0]
+    cur = [n for n in cands if n.get('relpath') == rel]
+    return cur[0] if len(cur) == 1 else None
+
+
+def ref_line(rel, ref, files, by_name, by_qname):
+    """Markdown bullet for a References entry. Linked when the entry names
+    a known file or function; plain text otherwise (e.g. variables)."""
+    text = str(ref).strip()
+    t = text[:-2].strip() if text.endswith('()') else text
+    ft = t.replace('\\', '/')
+    while ft.startswith('./'):
+        ft = ft[2:]
+    if ft in files:
+        return f'- [{md_escape(ref)}]({_rel_link(rel, ft)})'
+    cands = []
+    for mapping in (by_name, by_qname):
+        for n in mapping.get(t) or []:
+            if all(n is not x for x in cands):
+                cands.append(n)
+    node = _pick_node(cands, rel) if cands else None
+    if node is None:
+        return f'- {md_escape(ref)}'
+    link = _rel_link(rel, node['relpath'])
+    link += '#fn-' + sanitize_id(node['name']) + '-' + str(node['line'])
+    return f'- [{md_escape(ref)}]({link})'
+
+
 def render_file_md(finfo: dict, fn_records, var_records, summary,
                    output_root: str, graph=None) -> str:
     rel = finfo['relpath']
+    files, by_name, by_qname = _symbol_index(graph)
     lines = [f'# {rel}', '']
     if summary:
         lines += ['## Summary', '', summary.get('summary', ''),
@@ -406,7 +459,7 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                     lines.append('**References**')
                     lines.append('')
                     for r in p['references']:
-                        lines.append(f'- {md_escape(r)}')
+                        lines.append(ref_line(rel, r, files, by_name, by_qname))
                     lines.append('')
                 if p.get('uncertainties'):
                     lines.append('**Uncertainties**')
