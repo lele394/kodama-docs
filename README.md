@@ -31,6 +31,9 @@ doc/
   meta/
     symbols.json           # cached analysis (deterministic extraction)
     graph.json             # call/import/containment graph
+  .doc_cache               # relpath -> md5 of every file, written after a
+                           # clean run; detects changed/removed files on
+                           # startup and re-runs just those
 ```
 
 Plus a `data/` directory of per-record JSON (functions, variables, summaries,
@@ -71,6 +74,8 @@ CLI flags:
 | `--config PATH` | settings file (default `settings.yaml`) |
 | `--fresh` | ignore the analysis cache and re-extract everything |
 | `--no-llm` | skip the LLM phase entirely (extraction + graph + render only) |
+| `--purge` | delete all docs/meta/data (output + data dirs) and exit |
+| `--regenerate` | delete all docs/meta/data, then run the whole pipeline fresh |
 
 ## Configuration
 
@@ -113,6 +118,15 @@ without losing which code was covered.
   its input (function body / variable record / file content). An unchanged
   fingerprint → the record is reused, no API call. A changed one → regenerated.
   `skip_existing: true` makes reruns cheap and resumable.
+- **`.doc_cache` (file-level integrity).** After a clean run (no failed
+  tasks) the tool writes `<output_dir>/.doc_cache`: every documented file's
+  relpath → md5. On startup each hash is compared with the file's current md5;
+  a mismatch (or a file that disappeared) marks the cache dirty — the cached
+  records of *just those files* are deleted, the analysis cache is ignored,
+  and only those files are re-generated. Unchanged files keep their prose.
+  A run with failures does **not** update `.doc_cache`, so an interrupted or
+  partially failed run can never poison the cache: the next run re-tries the
+  missing pieces and reuses everything else.
 - **LLM output is validated JSON** (name + prose); invalid responses are
   retried (`retry_invalid_json`) and rejected, they can never corrupt a record.
 - **Concurrency changes nothing.** Workers only parallelize *which task runs

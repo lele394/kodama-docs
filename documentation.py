@@ -152,6 +152,20 @@ def list_records(data_dir: str, kind: str):
     return out
 
 
+def delete_records_for(data_dir: str, relpaths) -> int:
+    """Delete cached LLM records that belong to the given source files."""
+    removed = 0
+    for kind in ('function', 'variable', 'summary', 'chunk'):
+        for (file, name, line), _rec in list_records(data_dir, kind).items():
+            if file in relpaths:
+                try:
+                    os.remove(record_path(data_dir, file, kind, name, line))
+                    removed += 1
+                except OSError:
+                    pass
+    return removed
+
+
 # ------------------------------------------------------------- context text
 
 def fn_chunks(body: str, max_lines: int, target_tokens: int = 0,
