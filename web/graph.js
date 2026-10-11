@@ -418,6 +418,11 @@
       }
       return;
     }
+    if (e.target !== canvas) {
+      // pointer over the top bar / doc panel / menus — no hover there
+      if (hover) { hover = null; tip.hidden = true; draw(); }
+      return;
+    }
     hover = pick(e.clientX, e.clientY);
     canvas.style.cursor = hover ? 'pointer' : 'grab';
     if (hover) {
