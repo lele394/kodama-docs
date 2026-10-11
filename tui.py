@@ -38,6 +38,16 @@ def _stage_style(stage):
     return {'describe': 'green', 'merge': 'cyan'}.get(stage or '', 'yellow')
 
 
+class _Frame:
+    """Renderable that re-renders the current TUI state each refresh."""
+
+    def __init__(self, tui):
+        self.tui = tui
+
+    def __rich_console__(self, console, options):
+        yield self.tui._render()
+
+
 class TUI:
     """Thread-safe shared agent state + Rich-based terminal panel."""
 
@@ -74,7 +84,7 @@ class TUI:
         if not self.active:
             return False
         self._console = Console()
-        self._live = Live(self._render, console=self._console,
+        self._live = Live(_Frame(self), console=self._console,
                           refresh_per_second=max(2, 1.0 / self.interval))
         self._live.start(refresh=True)
         atexit.register(self._exit)
