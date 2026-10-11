@@ -297,3 +297,62 @@ body.graph-page {
   font-size: 12px;
   color: var(--muted);
 }
+
+.params-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 7;
+  cursor: pointer;
+  font: 13px "Segoe UI", system-ui, sans-serif;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--btn-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+.params-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.params {
+  position: absolute;
+  top: 52px;
+  right: 12px;
+  z-index: 8;
+  width: 252px;
+  background: var(--bar);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .45);
+}
+.params-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+}
+#params-reset {
+  cursor: pointer;
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--btn-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+#params-reset:hover { border-color: var(--accent); color: var(--accent); }
+.params label { display: block; padding: 8px 12px 0; }
+.params .pname {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--fg);
+}
+.params .pname b { color: var(--muted); font-weight: 400; }
+.params input[type=range] {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 4px 0 2px;
+}

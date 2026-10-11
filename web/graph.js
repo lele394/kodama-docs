@@ -7,7 +7,8 @@
 //   symbols — one node per function/variable (plus files); CONTAINS,
 //             CALLS and READS edges; ext/builtin symbols optional
 // Interactions: wheel zoom, background pan, node drag (reheats layout),
-// hover tooltip, click → doc opens in the left panel.
+// hover tooltip, click → doc opens in the left panel, right-hand menu
+// to tune the force-layout parameters (repulsion, spring, …) live.
 (function () {
   'use strict';
 
@@ -39,6 +40,19 @@
   var level = 'files';
   var showExt = false;
   var showOrphans = true;
+
+  // force-layout parameters — tunable at runtime from the right-hand menu
+  var SIM_DEFAULTS = {
+    repulsion: 2400,   // node-node push (kRep)
+    spring: 0.08,      // edge attraction (kSpr)
+    spacing: 1,        // multiplier on the level's base link distance
+    center: 0.003,     // pull towards the origin
+    damping: 0.8,      // velocity decay per tick
+    cooling: 0.99,     // alpha decay per frame (lower = settles faster)
+    speed: 30,         // max velocity per tick
+  };
+  var sim = {};
+  Object.keys(SIM_DEFAULTS).forEach(function (k) { sim[k] = SIM_DEFAULTS[k]; });
   var nodes = [], edges = [], byId = {};
   var view = { s: 1, ox: 0, oy: 0 };
   var alpha = 0, running = false;
@@ -171,8 +185,9 @@
       var k = Math.floor(v.x / CELL) + ',' + Math.floor(v.y / CELL);
       (grid[k] || (grid[k] = [])).push(v);
     }
-    var rest = level === 'files' ? 110 : 70;
-    var kRep = 2400, kSpr = 0.08, damp = 0.8, center = 0.003;
+    var rest = (level === 'files' ? 110 : 70) * sim.spacing;
+    var kRep = sim.repulsion, kSpr = sim.spring,
+        damp = sim.damping, center = sim.center;
     for (i = 0; i < n; i++) {
       v = nodes[i];
       var fx = 0, fy = 0;
@@ -210,7 +225,7 @@
       v = nodes[i];
       if (v === dragNode) continue;
       var sp = Math.sqrt(v.vx * v.vx + v.vy * v.vy);
-      if (sp > 30) { v.vx *= 30 / sp; v.vy *= 30 / sp; }
+      if (sp > sim.speed) { v.vx *= sim.speed / sp; v.vy *= sim.speed / sp; }
       v.x += v.vx; v.y += v.vy;
     }
   }
@@ -221,7 +236,7 @@
     var step = function () {
       tick(); tick();
       draw();
-      alpha *= 0.99;
+      alpha *= sim.cooling;
       if (alpha > 0.02) {
         requestAnimationFrame(step);
       } else {
@@ -461,6 +476,54 @@
   document.getElementById('graph-reset').addEventListener('click', function () {
     fitView();
     draw();
+  });
+
+  // ---------------- layout parameters (right-hand menu)
+  var paramsEl = document.getElementById('params');
+  var paramsToggle = document.getElementById('params-toggle');
+  var paramsReset = document.getElementById('params-reset');
+  var paramsSliders = document.getElementById('params-sliders');
+
+  var SLIDERS = [
+    { key: 'repulsion', min: 0, max: 8000, step: 100 },
+    { key: 'spring', min: 0, max: 0.4, step: 0.005 },
+    { key: 'spacing', min: 0.2, max: 3, step: 0.05 },
+    { key: 'center', min: 0, max: 0.03, step: 0.0005 },
+    { key: 'damping', min: 0.4, max: 0.99, step: 0.01 },
+    { key: 'cooling', min: 0.9, max: 0.999, step: 0.001 },
+    { key: 'speed', min: 5, max: 100, step: 1 },
+  ];
+
+  function syncSliders() {
+    SLIDERS.forEach(function (d) {
+      paramsSliders.querySelector('#in-' + d.key).value = sim[d.key];
+      paramsSliders.querySelector('#val-' + d.key).textContent = sim[d.key];
+    });
+  }
+
+  SLIDERS.forEach(function (d) {
+    var label = document.createElement('label');
+    label.innerHTML =
+      '<span class="pname"><span>' + d.key + '</span><b id="val-' + d.key
+      + '"></b></span>'
+      + '<input type="range" id="in-' + d.key + '" min="' + d.min + '"'
+      + ' max="' + d.max + '" step="' + d.step + '">';
+    paramsSliders.appendChild(label);
+    label.querySelector('input').addEventListener('input', function (e) {
+      sim[d.key] = parseFloat(e.target.value);
+      paramsSliders.querySelector('#val-' + d.key).textContent = sim[d.key];
+      reheat(0.6);
+    });
+  });
+  syncSliders();
+
+  paramsToggle.addEventListener('click', function () {
+    paramsEl.hidden = !paramsEl.hidden;
+  });
+  paramsReset.addEventListener('click', function () {
+    Object.keys(SIM_DEFAULTS).forEach(function (k) { sim[k] = SIM_DEFAULTS[k]; });
+    syncSliders();
+    reheat(0.6);
   });
 
   function rebuild() {

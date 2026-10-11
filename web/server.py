@@ -103,6 +103,15 @@ GRAPH_PAGE = """<!doctype html>
     <div id="graph-tip" class="graph-tip" hidden></div>
     <div id="graph-legend" class="graph-legend"></div>
     <div id="graph-counts" class="graph-counts"></div>
+    <button id="params-toggle" class="params-toggle" type="button"
+      title="tune the layout parameters">&#9881; layout</button>
+    <aside id="params" class="params" hidden>
+      <div class="params-head">
+        <span>layout parameters</span>
+        <button id="params-reset" type="button">reset</button>
+      </div>
+      <div id="params-sliders" class="params-body"></div>
+    </aside>
   </div>
 </div>
 </body>
