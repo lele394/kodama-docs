@@ -22,6 +22,7 @@
   var panelBody = document.getElementById('panel-body');
   var panelTitle = document.getElementById('panel-title');
   var panelBack = document.getElementById('panel-back');
+  var panelOpen = document.getElementById('panel-open');
   var extChk = document.getElementById('ext-chk');
   var extInput = document.getElementById('show-ext');
   var orphanInput = document.getElementById('show-orphans');
@@ -634,6 +635,7 @@
   }
 
   function loadDoc(t, frag) {
+    if (panelOpen) panelOpen.hidden = false;
     afterHtml('<p class="panel-hint">loading…</p>', t.url);
     // body-only endpoint so the panel doesn't embed the page shell
     var fetchUrl = t.url.indexOf('/files/') === 0
@@ -707,6 +709,7 @@
     if (!t) {
       docStack = [];
       panelBack.hidden = true;
+      if (panelOpen) panelOpen.hidden = true;
       afterHtml(infoCard(v), NAMES[v.kind]);
       return;
     }
@@ -743,6 +746,13 @@
       docStack.pop();
       loadDoc(docStack[docStack.length - 1], null);
     }
+  });
+
+  if (panelOpen) panelOpen.addEventListener('click', function () {
+    var top = docStack[docStack.length - 1];
+    if (!top) return;
+    window.open(top.url + (top.frag ? '#' + top.frag : ''), '_blank',
+                'noopener');
   });
 
   // ---------------- theme-aware colors

@@ -262,6 +262,21 @@ body.graph-page {
 }
 #panel-back:hover { border-color: var(--accent); color: var(--accent); }
 
+#panel-open {
+  cursor: pointer;
+  padding: 4px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--btn-bg);
+  color: var(--fg);
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+#panel-open:hover { border-color: var(--accent); color: var(--accent); }
+#panel-open svg { display: block; }
+
 .panel-title {
   font-size: 13px;
   color: var(--muted);
