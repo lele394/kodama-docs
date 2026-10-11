@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph — doc_maker</title>
+<link id="doc-theme" rel="stylesheet" href="/theme/{theme}/style.css">
+<link id="hljs-light" rel="stylesheet"
+      href="/lib/github.min.css"{hljs_light}>
+<link id="hljs-dark" rel="stylesheet"
+      href="/lib/github-dark.min.css"{hljs_dark}>
+<script src="/lib/highlight.min.js" defer></script>
+<script src="/app.js" defer></script>
+<script src="/graph.js" defer></script>
+</head>
+<body class="graph-page">
+<header class="topbar graph-topbar">
+  <a class="brand" href="/index.md">doc_maker</a>
+  <a class="nav" href="/index.md">docs</a>
+  <span class="graph-controls">
+    <span class="seg">
+      <label><input type="radio" name="level" value="files" checked>
+        <span>files</span></label>
+      <label><input type="radio" name="level" value="symbols">
+        <span>functions</span></label>
+    </span>
+    <label class="chk" id="ext-chk">
+      <input type="checkbox" id="show-ext"> <span>external symbols</span>
+    </label>
+    <label class="chk" id="orphan-chk" title="nodes with no edges">
+      <input type="checkbox" id="show-orphans" checked>
+      <span>orphan nodes</span>
+    </label>
+    <button id="graph-reset" type="button">reset view</button>
+  </span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="graph-layout">
+  <aside class="graph-panel" id="graph-panel">
+    <div class="panel-bar">
+      <button id="panel-back" type="button" title="back" hidden>&larr;</button>
+      <span id="panel-title" class="panel-title"></span>
+      <button id="panel-open" type="button" hidden
+        title="open this doc in a new tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+      </button>
+    </div>
+    <div id="panel-body" class="panel-body">
+      <p class="panel-hint">Click a node to open its documentation here.
+      Drag to move nodes, scroll to zoom, drag the background to pan.</p>
+    </div>
+  </aside>
+  <div id="panel-resizer" class="panel-resizer"
+    title="drag to resize the panel"></div>
+  <div id="graph-stage" class="graph-stage">
+    <canvas id="graph-canvas"></canvas>
+    <div id="graph-tip" class="graph-tip" hidden></div>
+    <div id="graph-legend" class="graph-legend"></div>
+    <div id="graph-counts" class="graph-counts"></div>
+    <button id="params-toggle" class="params-toggle" type="button"
+      title="tune the layout parameters">&#9881; layout</button>
+    <aside id="params" class="params" hidden>
+      <div class="params-head">
+        <span>layout parameters</span>
+        <button id="params-reset" type="button">reset</button>
+      </div>
+      <div id="params-sliders" class="params-body"></div>
+    </aside>
+  </div>
+</div>
+</body>
+</html>
