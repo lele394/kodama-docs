@@ -21,7 +21,12 @@ from rich import box
 from util import fence_lang, log, read_env_file, set_log_sink
 import backends
 import graph as gmod
-import documentation as doc
+from llm import LLMClient, generate
+from records import (load_record, save_record, list_records,
+                     delete_records_for)
+from context import (fn_chunks, fn_context_text, var_context_text,
+                     summary_context_text)
+from markdown import render_file_md, render_index, write_md
 from tui import TUI
 
 
@@ -198,18 +203,18 @@ def report_scan(cfg: dict, analysis, skipped):
         for fn in fns:
             if want_fn:
                 tasks += 1
-                if doc.load_record(dd, rel, 'function', fn['name'],
+                if load_record(dd, rel, 'function', fn['name'],
                                    fn['line'], fp):
                     ok += 1
         for v in f.get('file_vars') or []:
             if want_var:
                 tasks += 1
-                if doc.load_record(dd, rel, 'variable', v['name'],
+                if load_record(dd, rel, 'variable', v['name'],
                                    v['line'], fp):
                     ok += 1
         if want_sum:
             tasks += 1
-            if doc.load_record(dd, rel, 'summary', 'file', 1, fp):
+            if load_record(dd, rel, 'summary', 'file', 1, fp):
                 ok += 1
         if tasks and ok == tasks:
             c_files += 1
@@ -306,7 +311,7 @@ def check_doc_cache(cfg: dict, files) -> bool:
     stale = sorted(r for r in cache if r not in cur)
     if not dirty and not stale:
         return False
-    removed = doc.delete_records_for(cfg['data_dir'], set(dirty) | set(stale))
+    removed = delete_records_for(cfg['data_dir'], set(dirty) | set(stale))
     log(f'doc cache stale: {len(dirty)} changed, {len(stale)} removed, '
         f'{removed} cached record(s) deleted -> those files will be re-run')
     for r in (dirty + stale)[:8]:
@@ -324,7 +329,7 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
                 maxchunk, chunktok, cpt=4, stage_cb=None):
     """Summarize a long function body part by part (each part cached
     separately) and return the body_note text for the merge prompt."""
-    chunks = doc.fn_chunks(fn.get('body') or '', maxchunk, chunktok, cpt)
+    chunks = fn_chunks(fn.get('body') or '', maxchunk, chunktok, cpt)
     if not chunks:
         return 'Source: (empty body)'
     notes = []
@@ -333,7 +338,7 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
         if stage_cb is not None:
             stage_cb(f'chunk {ci}/{len(chunks)}')
         cfp = hashlib.md5(ct.encode('utf-8')).hexdigest()
-        cp = (doc.load_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
+        cp = (load_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
                               fn['line'], cfp) if skip else None)
         if cp is None:
             cctx = (
@@ -344,9 +349,9 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
                 + (' + varargs' if fn.get('vararg') else '')
                 + f"\nBody part {ci}/{len(chunks)} of a long function:\n"
                   + f"```{fence_lang(f['relpath'])}\n{ct}\n```")
-            cp = doc.generate(client, 'chunk', prompts.get('chunk', ''),
+            cp = generate(client, 'chunk', prompts.get('chunk', ''),
                               cctx, retry)
-            doc.save_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
+            save_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
                             fn['line'], cp, cfp,
                             {'file': f['relpath'], 'fn': fn['name'],
                              'part': ci})
@@ -383,7 +388,7 @@ def llm_phase(cfg: dict, files, g):
                 prompts[k] = fh.read()
         except OSError:
             log(f'  missing prompt file: {v}')
-    client = doc.LLMClient(cfg['llm'])
+    client = LLMClient(cfg['llm'])
     retry = int(doccfg.get('retry_invalid_json', 2))
     skip = bool(doccfg.get('skip_existing', True))
     include_anon = bool(doccfg.get('include_anonymous_functions', False))
@@ -455,7 +460,7 @@ def llm_phase(cfg: dict, files, g):
         try:
             cached = False
             if job['kind'] == 'function':
-                prose = (doc.load_record(cfg['data_dir'], rel, 'function',
+                prose = (load_record(cfg['data_dir'], rel, 'function',
                                          name, sym['line'], fp) if skip else None)
                 cached = prose is not None
                 if prose is None:
@@ -465,46 +470,46 @@ def llm_phase(cfg: dict, files, g):
                                                 retry, skip, maxchunk, chunktok,
                                                 cpt, stage_cb=report)
                         report('merge')
-                        ctx = doc.fn_context_text(
+                        ctx = fn_context_text(
                             {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
                             cfg['context'], body_note=body_note)
                     else:
                         tui.stage(w, rel, name, 'describe')
-                        ctx = doc.fn_context_text(
+                        ctx = fn_context_text(
                             {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
                             cfg['context'])
-                    prose = doc.generate(client, 'function',
+                    prose = generate(client, 'function',
                                          prompts.get('function', ''), ctx, retry)
-                doc.save_record(cfg['data_dir'], rel, 'function', name,
+                save_record(cfg['data_dir'], rel, 'function', name,
                                 sym['line'], prose, fp,
                                 {'id': job['nid'],
                                  'qualified': sym.get('qualified'),
                                  'params': sym.get('params'),
                                  'vararg': sym.get('vararg')})
             elif job['kind'] == 'variable':
-                prose = (doc.load_record(cfg['data_dir'], rel, 'variable',
+                prose = (load_record(cfg['data_dir'], rel, 'variable',
                                          name, sym['line'], fp) if skip else None)
                 cached = prose is not None
                 if prose is None:
                     tui.stage(w, rel, name, 'describe')
-                    ctx = doc.var_context_text({**sym, 'relpath': rel},
+                    ctx = var_context_text({**sym, 'relpath': rel},
                                                cfg['context'])
-                    prose = doc.generate(client, 'variable',
+                    prose = generate(client, 'variable',
                                          prompts.get('variable', ''), ctx, retry)
-                doc.save_record(cfg['data_dir'], rel, 'variable', name,
+                save_record(cfg['data_dir'], rel, 'variable', name,
                                 sym['line'], prose, fp,
                                 {'file': rel, 'name': name, 'line': sym['line'],
                                  'init': sym.get('init')})
             else:  # file summary
-                prose = (doc.load_record(cfg['data_dir'], rel, 'summary',
+                prose = (load_record(cfg['data_dir'], rel, 'summary',
                                          'file', 1, fp) if skip else None)
                 cached = prose is not None
                 if prose is None:
                     tui.stage(w, rel, 'file', 'describe')
-                    ctx = doc.summary_context_text(f, cfg['context'])
-                    prose = doc.generate(client, 'summary',
+                    ctx = summary_context_text(f, cfg['context'])
+                    prose = generate(client, 'summary',
                                          prompts.get('summary', ''), ctx, retry)
-                doc.save_record(cfg['data_dir'], rel, 'summary', 'file', 1,
+                save_record(cfg['data_dir'], rel, 'summary', 'file', 1,
                                 prose, fp,
                                 {'file': rel, 'lines': f.get('lines'),
                                  'function_count': len(f.get('functions') or [])})
@@ -541,9 +546,9 @@ def llm_phase(cfg: dict, files, g):
 # ----------------------------------------------------------------- render
 
 def render_all(cfg: dict, files, g):
-    fn_recs = doc.list_records(cfg['data_dir'], 'function')
-    var_recs = doc.list_records(cfg['data_dir'], 'variable')
-    sum_recs = doc.list_records(cfg['data_dir'], 'summary')
+    fn_recs = list_records(cfg['data_dir'], 'function')
+    var_recs = list_records(cfg['data_dir'], 'variable')
+    sum_recs = list_records(cfg['data_dir'], 'summary')
     count = 0
     for f in files:
         finfo = {
@@ -555,11 +560,11 @@ def render_all(cfg: dict, files, g):
         summary = sum_recs.get((f['relpath'], 'file', 1))
         if summary:
             summary = summary.get('prose')
-        out = doc.render_file_md(finfo, fn_recs, var_recs, summary,
+        out = render_file_md(finfo, fn_recs, var_recs, summary,
                                  cfg['output_dir'], g)
-        doc.write_md(out, cfg['output_dir'], f['relpath'])
+        write_md(out, cfg['output_dir'], f['relpath'])
         count += 1
-    index = doc.render_index(files, cfg['output_dir'])
+    index = render_index(files, cfg['output_dir'])
     ipath = os.path.join(cfg['output_dir'], 'index.md')
     os.makedirs(cfg['output_dir'], exist_ok=True)
     with open(ipath, 'w', encoding='utf-8') as fh:
