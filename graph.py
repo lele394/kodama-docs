@@ -41,7 +41,8 @@ def build_graph(files):
     edge_keys = set()
 
     def add_edge(src, tgt, etype, **attrs):
-        key = (src, tgt, etype)
+        # include the call/import line so every call site keeps its own edge
+        key = (src, tgt, etype, attrs.get('line'))
         if key in edge_keys:
             return
         edge_keys.add(key)

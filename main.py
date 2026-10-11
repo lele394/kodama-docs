@@ -540,7 +540,7 @@ def llm_phase(cfg: dict, files, g):
 
 # ----------------------------------------------------------------- render
 
-def render_all(cfg: dict, files):
+def render_all(cfg: dict, files, g):
     fn_recs = doc.list_records(cfg['data_dir'], 'function')
     var_recs = doc.list_records(cfg['data_dir'], 'variable')
     sum_recs = doc.list_records(cfg['data_dir'], 'summary')
@@ -556,7 +556,7 @@ def render_all(cfg: dict, files):
         if summary:
             summary = summary.get('prose')
         out = doc.render_file_md(finfo, fn_recs, var_recs, summary,
-                                 cfg['output_dir'])
+                                 cfg['output_dir'], g)
         doc.write_md(out, cfg['output_dir'], f['relpath'])
         count += 1
     index = doc.render_index(files, cfg['output_dir'])
@@ -635,7 +635,7 @@ def main():
     else:
         failed = llm_phase(cfg, analysis, g)
 
-    render_all(cfg, analysis)
+    render_all(cfg, analysis, g)
     if failed:
         log(f'NOT updating .doc_cache ({failed} failed task(s) this run; '
             f'unchanged cached records still reused next time)')

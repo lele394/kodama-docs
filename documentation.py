@@ -8,6 +8,7 @@ import json
 import os
 import urllib.request
 
+from graph import node_id_fn
 from models import validate, extract_json_object, schema_text
 from util import fence_lang, log, sanitize_id, trunc
 
@@ -280,8 +281,63 @@ def _fn_anchor(fn: dict) -> str:
     return f"fn-{sanitize_id(fn['name'])}-{fn['line']}"
 
 
+def _rel_link(from_rel: str, to_rel: str) -> str:
+    """Relative markdown link from files/<from_rel>.md to files/<to_rel>.md."""
+    p = os.path.relpath(to_rel + '.md', os.path.dirname(from_rel) or '.')
+    return p.replace(os.sep, '/')
+
+
+def callers_of(g, fn_id: str):
+    """Deterministic list of call sites targeting a function node.
+
+    Each item is a dict: file (caller relpath), name/qualified/line (the
+    calling function; all None when the call happens at file level) and
+    call (the call-site line). Sorted by (file, call, name).
+    """
+    out = []
+    for u, v, d in g.edges(data=True):
+        if d.get('type') != 'CALLS' or v != fn_id:
+            continue
+        s = g.nodes[u]
+        if s.get('kind') == 'function':
+            out.append({'file': s.get('relpath') or '',
+                        'name': s.get('name') or '',
+                        'qualified': s.get('qualified') or s.get('name') or '',
+                        'line': s.get('line'),
+                        'call': d.get('line')})
+        else:
+            out.append({'file': s.get('relpath') or '',
+                        'name': None, 'qualified': None, 'line': None,
+                        'call': d.get('line')})
+    out.sort(key=lambda c: (c['file'], c['call'] or 0, c['name'] or ''))
+    return out
+
+
+def callgraph_section(rel: str, fn: dict, g) -> list:
+    """Markdown lines for the deterministic Call graph section (or [])."""
+    sites = callers_of(g, node_id_fn(rel, fn['name'], fn['line']))
+    if not sites:
+        return []
+    lines = ['**Call graph**', '']
+    by_file = {}
+    for s in sites:
+        by_file.setdefault(s['file'], []).append(s)
+    for cfile in sorted(by_file):
+        lines.append(f'- `{cfile}`')
+        for s in by_file[cfile]:
+            link = _rel_link(rel, cfile)
+            if s['name']:
+                label = f"{s['qualified'] or s['name']}:{s['call']}"
+                link += '#fn-' + sanitize_id(s['name']) + '-' + str(s['line'])
+            else:
+                label = f'top-level:{s["call"]}'
+            lines.append(f'  - [{label}]({link})')
+    lines.append('')
+    return lines
+
+
 def render_file_md(finfo: dict, fn_records, var_records, summary,
-                   output_root: str) -> str:
+                   output_root: str, graph=None) -> str:
     rel = finfo['relpath']
     lines = [f'# {rel}', '']
     if summary:
@@ -364,6 +420,8 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                 lines.append(body)
                 lines.append('```')
                 lines.append('')
+            if graph is not None:
+                lines += callgraph_section(rel, fn, graph)
 
     vars_ = finfo.get('file_vars') or []
     if vars_:
