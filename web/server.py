@@ -79,6 +79,10 @@ GRAPH_PAGE = """<!doctype html>
     <label class="chk" id="ext-chk">
       <input type="checkbox" id="show-ext"> <span>external symbols</span>
     </label>
+    <label class="chk" id="orphan-chk" title="nodes with no edges">
+      <input type="checkbox" id="show-orphans" checked>
+      <span>orphan nodes</span>
+    </label>
     <button id="graph-reset" type="button">reset view</button>
   </span>
   <button id="theme-toggle" type="button"></button>

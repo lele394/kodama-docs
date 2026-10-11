@@ -23,6 +23,7 @@
   var panelBack = document.getElementById('panel-back');
   var extChk = document.getElementById('ext-chk');
   var extInput = document.getElementById('show-ext');
+  var orphanInput = document.getElementById('show-orphans');
 
   var COLORS = {
     file: '#3b6fd4', function: '#2e9e63', variable: '#d98a14',
@@ -37,6 +38,7 @@
   var raw = null;
   var level = 'files';
   var showExt = false;
+  var showOrphans = true;
   var nodes = [], edges = [], byId = {};
   var view = { s: 1, ox: 0, oy: 0 };
   var alpha = 0, running = false;
@@ -110,6 +112,12 @@
       byId[e.s].adj.push(byId[e.t]);
       byId[e.t].adj.push(byId[e.s]);
     });
+    if (!showOrphans) {
+      // drop nodes with no edges; edges only ever touch kept nodes
+      nodes = nodes.filter(function (v) { return v.deg > 0; });
+      byId = {};
+      nodes.forEach(function (v) { byId[v.id] = v; });
+    }
     var base = level === 'files' ? 4 : 2.6;
     var mult = level === 'files' ? 1.7 : 1.15;
     nodes.forEach(function (v) {
@@ -443,6 +451,11 @@
   extInput.addEventListener('change', function (e) {
     showExt = e.target.checked;
     if (level === 'symbols') rebuild();
+  });
+
+  orphanInput.addEventListener('change', function (e) {
+    showOrphans = e.target.checked;
+    rebuild();
   });
 
   document.getElementById('graph-reset').addEventListener('click', function () {
