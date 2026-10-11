@@ -406,7 +406,8 @@
 
   var drag = null;
   canvas.addEventListener('mousedown', function (e) {
-    var v = pick(e.clientX, e.clientY);
+    // middle button is a dedicated pan: never grabs a node
+    var v = (e.button === 1) ? null : pick(e.clientX, e.clientY);
     drag = {
       node: v,
       sx: e.clientX, sy: e.clientY,
