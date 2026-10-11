@@ -5,7 +5,8 @@ only walks the concrete syntax tree and projects it into the common shape
 documented in backends/__init__.py. No hand-rolled tokenizer/parser.
 
 Record shapes (1-based lines, stable across backends):
-    functions: [{id, name, qualified, line, end_line, params, vararg, body}]
+    functions: [{id, name, qualified, line, end_line, params, vararg, body,
+                 developer_comment: str|None}]
     file_vars: [{name, line, init: empty|table|string|number|function|call|expr}]
     calls:     [{callee, line, method: str|None}]   (method call: callee is
                                                     the object part, method
@@ -14,6 +15,8 @@ Record shapes (1-based lines, stable across backends):
 """
 import tree_sitter_lua as tslua
 from tree_sitter import Language, Parser
+
+from backends import _all_comments, _dev_comment
 
 BUILTIN_NAMES = {
     'print', 'pairs', 'ipairs', 'next', 'type', 'tonumber', 'tostring',
@@ -32,6 +35,15 @@ def _row(node):
 
 def _text(node):
     return node.text.decode('utf-8')
+
+
+def _comment_text(node):
+    """Cleaned comment text: the grammar's comment_content child, stripped
+    (line `--` prefixes and `--[[ ... ]]` markers are not part of it)."""
+    for c in node.children:
+        if c.type == 'comment_content':
+            return _text(c).strip()
+    return _text(node).strip()
 
 
 def _ident(node):
@@ -141,12 +153,13 @@ def extract(source: str, relpath: str) -> dict:
     if source.startswith('\ufeff'):
         source = source[1:]
     root = _parser.parse(source.encode('utf-8')).root_node
+    comments = _all_comments(root)
     lines = source.splitlines()
     fns, file_vars, calls, imports = [], [], [], []
     seen_fn, seen_call = set(), set()
     import_mods = []
 
-    def add_fn(name, qual, line, end_line, params, vararg):
+    def add_fn(name, qual, line, end_line, params, vararg, dev=None):
         fname = name or 'anon'
         fid = f'fn:{relpath}::{fname}@{line}'
         if fid in seen_fn:
@@ -157,7 +170,7 @@ def extract(source: str, relpath: str) -> dict:
         fns.append({'id': fid, 'name': fname, 'qualified': qual or fname,
                     'line': line, 'end_line': end_line,
                     'params': list(params), 'vararg': bool(vararg),
-                    'body': body})
+                    'body': body, 'developer_comment': dev})
 
     def note_call(node):
         name, method = _callee(node)
@@ -229,7 +242,8 @@ def extract(source: str, relpath: str) -> dict:
             if fname:
                 params, vararg = _params(node)
                 add_fn(fname, qual, _row(node), node.end_point[0] + 1,
-                       params, vararg)
+                       params, vararg,
+                       _dev_comment(comments, _row(node), _comment_text))
             body = node.child_by_field_name('body')
             if body is not None:
                 walk(body, depth + 1, None)
@@ -238,7 +252,8 @@ def extract(source: str, relpath: str) -> dict:
         if t == 'function_definition':
             params, vararg = _params(node)
             add_fn(closure_name, closure_name, _row(node),
-                   node.end_point[0] + 1, params, vararg)
+                   node.end_point[0] + 1, params, vararg,
+                   _dev_comment(comments, _row(node), _comment_text))
             body = node.child_by_field_name('body')
             if body is not None:
                 walk(body, depth + 1, None)

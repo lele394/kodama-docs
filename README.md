@@ -26,8 +26,9 @@ doc/
   <path/to/file>.md        # one page per source file:
                            #   - file summary (LLM prose)
                            #   - variables table (name, init kind, doc)
-                           #   - function docs (signature table + prose +
-                           #     source + imports/calls context)
+                           #   - function docs (signature table + developer
+                           #     comment if present + prose + source +
+                           #     imports/calls context)
   meta/
     symbols.json           # cached analysis (deterministic extraction)
     graph.json             # call/import/containment graph
@@ -191,6 +192,9 @@ tooling), so log output stays plain in both cases.
 
 ## Adding a language
 
+The full standard — contract, record shapes, invariants, the
+developer-comment glue rule, registration steps — is in
+[`backends/backend_design.md`](backends/backend_design.md). In short:
 `backends/__init__.py` maps file extensions to an `extract(source, relpath)`
 function returning:
 
@@ -233,9 +237,10 @@ web/
     github-dark.min.css# vendored highlight.js dark theme
     LICENSE            # highlight.js BSD-3-Clause license (required)
 backends/
-  __init__.py      # extension -> extractor registry + per-language helpers
-  lua.py           # Lua backend (tree-sitter-lua)
-  python.py        # Python backend (tree-sitter-python)
+  __init__.py        # extension -> extractor registry + shared helpers
+  backend_design.md  # the backend contract (read this before adding a language)
+  lua.py             # Lua backend (tree-sitter-lua)
+  python.py          # Python backend (tree-sitter-python)
 prompts/           # system prompts: function / chunk / variable / summary
 settings.yaml      # default config (game codebase)
 settings_test.yaml # small local test corpus

@@ -5,15 +5,58 @@ concrete syntax tree and projects it into doc_maker's per-file symbol shape:
 
     {'functions': [...], 'file_vars': [...], 'calls': [...], 'imports': [...]}
 
-The rest of the pipeline (graph, LLM prose, markdown) is language-agnostic
-and sees only that shape. To add a language: drop a module here with an
-``extract(source, relpath)`` function and register its file extension.
+Each function record carries ``developer_comment``: the text of the comment
+block glued directly above the function, or None. The rest of the pipeline
+(graph, LLM prose, markdown) is language-agnostic and sees only that shape.
+
+Full contract: see backends/backend_design.md. To add a language: drop a
+module here with an ``extract(source, relpath)`` function and register its
+file extension.
 """
 import os
 
 
 class UnsupportedLanguage(Exception):
     pass
+
+
+def _all_comments(root, types=('comment',)):
+    """Comment nodes of ``root`` in document order."""
+    out = []
+
+    def w(n):
+        if n.type in types:
+            out.append(n)
+        else:
+            for c in n.children:
+                w(c)
+
+    w(root)
+    return out
+
+
+def _dev_comment(comments, fn_line, clean):
+    """Text of the comment block glued directly above 1-based line
+    ``fn_line``, or None.
+
+    The block is the maximal run of comments whose last line sits exactly
+    on the line immediately above the function (and above each other);
+    any other content or a blank line between comment and function breaks
+    the glue. ``clean`` maps one comment node to its cleaned text.
+    """
+    run = []
+    top = fn_line
+    while True:
+        hit = next((c for c in comments if c.end_point[0] + 1 == top - 1),
+                   None)
+        if hit is None:
+            break
+        run.insert(0, hit)
+        top = hit.start_point[0] + 1
+    if not run:
+        return None
+    text = '\n'.join(clean(c) for c in run).strip()
+    return text or None
 
 
 def _register_lua():

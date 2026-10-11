@@ -5,13 +5,18 @@ only walks the concrete syntax tree and projects it into the common shape
 documented in backends/__init__.py. No hand-rolled tokenizer/parser.
 
 Record shapes (1-based lines, identical to the Lua backend):
-    functions: [{id, name, qualified, line, end_line, params, vararg, body}]
+    functions: [{id, name, qualified, line, end_line, params, vararg, body,
+                 developer_comment: str|None}]
     file_vars: [{name, line, init: empty|table|string|number|function|call|expr}]
     calls:     [{callee, line, method: str|None}]
     imports:   [{module, line}]
 """
+import re
+
 import tree_sitter_python as tspy
 from tree_sitter import Language, Parser
+
+from backends import _all_comments, _dev_comment
 
 BUILTIN_NAMES = {
     # python builtins
@@ -52,6 +57,11 @@ def _row(node):
 
 def _text(node):
     return node.text.decode('utf-8')
+
+
+def _comment_text(node):
+    """Cleaned comment text: leading '#' marker(s) and one space removed."""
+    return re.sub(r'^\s*#+\s?', '', _text(node)).strip()
 
 
 def _dotted(node):
@@ -117,12 +127,13 @@ def extract(source: str, relpath: str) -> dict:
     if source.startswith('\ufeff'):
         source = source[1:]
     root = _parser.parse(source.encode('utf-8')).root_node
+    comments = _all_comments(root)
     lines = source.splitlines()
     fns, file_vars, calls, imports = [], [], [], []
     seen_fn, seen_call, seen_var = set(), set(), set()
     import_mods = []
 
-    def add_fn(name, line, end_line, params, vararg):
+    def add_fn(name, line, end_line, params, vararg, dev=None):
         fid = f'fn:{relpath}::{name}@{line}'
         if fid in seen_fn:
             return
@@ -132,7 +143,7 @@ def extract(source: str, relpath: str) -> dict:
         fns.append({'id': fid, 'name': name, 'qualified': name,
                     'line': line, 'end_line': end_line,
                     'params': list(params), 'vararg': bool(vararg),
-                    'body': body})
+                    'body': body, 'developer_comment': dev})
 
     def note_call(node):
         fn = node.child_by_field_name('function')
@@ -178,7 +189,8 @@ def extract(source: str, relpath: str) -> dict:
                 name = _text(nm)
                 params, vararg = _params(node)
                 add_fn(name, _row(node), node.end_point[0] + 1,
-                       params, vararg)
+                       params, vararg,
+                       _dev_comment(comments, _row(node), _comment_text))
             body = node.child_by_field_name('body')
             if body is not None:
                 walk(body, depth + 1)
