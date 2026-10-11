@@ -1,23 +1,16 @@
-# doc_maker documenting itself (its own Python sources). Scratch config.
+# Test-run settings: small local corpus instead of the game install.
+# Relative paths are resolved against the directory containing this file.
 project:
-  source_dir: "."
-  output_dir: "./doc_self"
-  data_dir: "./data_self"
-  source_extensions: [".py"]
+  source_dir: "../../test_codebase"
+  output_dir: "../../test_codebase/doc"
+  data_dir: "../../test_codebase/data"
+  source_extensions: [".lua"]
   exclude:
-    - ".git"
-    - ".venv"
-    - ".venv314"
-    - "data"
-    - "data_self"
-    - "doc"
-    - "doc_self"
     - "test_out"
   max_file_bytes: 26214400
   copy_meta: true
 
 llm:
-  # "env" (default) -> read api_key / base_url from .env next to this file
   base_url: env
   api_key: env
   model: "qwen3.8:27b-mtp-q4_K_M"
@@ -46,15 +39,17 @@ documentation:
   retry_invalid_json: 2
   skip_existing: true
 
-# more agents for this run (default in other configs is 2)
+
+# how many parallel LLM agents run the task queue (any positive integer)
 concurrency: 4
 
+# terminal UI: live per-agent view while the LLM phase runs
 tui:
   enabled: true
   interval: 0.5
 
 prompts:
-  function: "./prompts/function.txt"
-  chunk: "./prompts/function_chunk.txt"
-  variable: "./prompts/variable.txt"
-  summary: "./prompts/summary.txt"
+  function: "../prompts/function.txt"
+  chunk: "../prompts/function_chunk.txt"
+  variable: "../prompts/variable.txt"
+  summary: "../prompts/summary.txt"

@@ -20,7 +20,7 @@ import ruamel.yaml
 
 try:
     from .render import render_md
-    from util import log
+    from docmaker.util import log
 except ImportError:  # run as a plain script from inside web/
     from render import render_md
 

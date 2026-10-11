@@ -36,14 +36,12 @@ Run only one LLM task at a time. Keep function tasks independent so that paralle
 
 ```text
 doc_maker/
-├── settings.yaml           # + settings_test.yaml
+├── settings.yaml           # + variants under configs/
 ├── main.py                 # pipeline: scan -> extract -> graph -> LLM -> markdown
+├── docmaker/               # pipeline modules (config, scan, graph, llm, markdown, ...)
 ├── backends/
 │   ├── __init__.py         # registry: file extension -> extract(source, relpath)
 │   └── lua.py              # tree-sitter-lua extraction backend
-├── models.py               # output schemas + deterministic JSON validator
-├── graph.py                # networkx MultiDiGraph builder
-├── documentation.py        # LLM client, record cache, markdown rendering
 ├── prompts/
 │   ├── function.txt
 │   ├── variable.txt

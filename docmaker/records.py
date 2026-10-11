@@ -7,7 +7,7 @@ import hashlib
 import json
 import os
 
-from util import sanitize_id
+from docmaker.util import sanitize_id
 
 _SUBDIR = {'function': 'functions', 'variable': 'variables',
            'summary': 'summaries', 'chunk': 'chunks'}

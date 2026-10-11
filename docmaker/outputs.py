@@ -4,9 +4,9 @@ import json
 import os
 import shutil
 
-from records import delete_records_for
-from scan import file_md5
-from util import log
+from docmaker.records import delete_records_for
+from docmaker.scan import file_md5
+from docmaker.util import log
 
 
 def _dangerous_dirs() -> set:

@@ -3,7 +3,7 @@ import os
 
 import ruamel.yaml
 
-from util import read_env_file
+from docmaker.util import read_env_file
 
 
 def load_config(path: str) -> dict:
@@ -19,9 +19,12 @@ def load_config(path: str) -> dict:
     llm = dict(raw.get('llm') or {})
     # api_key / base_url: the literal value "env" (or a missing value, the
     # default) means "read it from a .env file" instead of the config.
+    # .env lives at the project root (next to main.py) no matter which
+    # config file is used; a .env next to the config file also works.
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     envfile = {}
-    for cand in (os.path.join(base, '.env'),
-                 os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')):
+    looked = (os.path.join(root, '.env'), os.path.join(base, '.env'))
+    for cand in looked:
         if os.path.isfile(cand):
             envfile = read_env_file(cand)
             break
@@ -31,8 +34,8 @@ def load_config(path: str) -> dict:
             val = envfile.get(key)
             if not val:
                 raise SystemExit(f'settings: llm.{key} is "env" but {key}'
-                                 f' was not found in .env (looked in: {base},'
-                                 f' {os.path.dirname(os.path.abspath(__file__))})')
+                                 f' was not found in .env (looked in: '
+                                 f'{", ".join(looked)})')
             llm[key] = val
 
     return {

@@ -3,8 +3,8 @@ pages and the index. No LLM prose except the record strings passed in.
 """
 import os
 
-from graph import node_id_fn
-from util import fence_lang, sanitize_id, trunc
+from docmaker.graph import node_id_fn
+from docmaker.util import fence_lang, sanitize_id, trunc
 
 
 def md_escape(s: str) -> str:

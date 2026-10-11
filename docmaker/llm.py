@@ -6,8 +6,8 @@ records are assembled elsewhere in plain Python.
 import json
 import urllib.request
 
-from models import validate, extract_json_object, schema_text
-from util import log
+from docmaker.models import validate, extract_json_object, schema_text
+from docmaker.util import log
 
 USER_AGENT = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
               'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36')

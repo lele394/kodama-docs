@@ -6,13 +6,13 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-import graph as gmod
-from context import (fn_chunks, fn_context_text, var_context_text,
+import docmaker.graph as gmod
+from docmaker.context import (fn_chunks, fn_context_text, var_context_text,
                      summary_context_text)
-from llm import LLMClient, generate
-from records import load_record, save_record
-from tui import TUI
-from util import fence_lang, log, set_log_sink
+from docmaker.llm import LLMClient, generate
+from docmaker.records import load_record, save_record
+from docmaker.tui import TUI
+from docmaker.util import fence_lang, log, set_log_sink
 
 
 def fn_length(fn: dict) -> int:

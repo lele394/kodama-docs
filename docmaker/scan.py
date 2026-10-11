@@ -5,9 +5,9 @@ import json
 import os
 
 import backends
-import graph as gmod
-from records import load_record
-from util import log
+import docmaker.graph as gmod
+from docmaker.records import load_record
+from docmaker.util import log
 from rich.text import Text as RText
 from rich.table import Table as RTable
 from rich.console import Console as RConsole

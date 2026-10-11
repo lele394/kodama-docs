@@ -229,17 +229,27 @@ register its extension in `EXTRACTORS`, install its tree-sitter wheel, done.
 ## Repository layout
 
 ```
-main.py            # CLI, config, scan, pipeline orchestration, render
-models.py          # small dataclasses / record helpers
-util.py            # logging, id sanitizing, truncation, .env reader, fence lang
-graph.py           # call/import/containment graph (networkx MultiDiGraph)
-documentation.py   # LLM client (urllib), prompt assembly, markdown rendering
-tui.py             # terminal UI for the LLM phase (Rich-based)
+main.py            # CLI + pipeline orchestration (thin; the phases live in docmaker/)
+docmaker/          # all pipeline modules
+  config.py        # settings + .env loading
+  scan.py          # file scanning, analysis cache, per-file analysis
+  graph.py         # call/import/containment graph (networkx MultiDiGraph)
+  context.py       # LLM prompt context assembly
+  records.py       # read/write LLM records (data/functions|variables|summaries)
+  outputs.py       # doc cache, purge
+  llm.py           # LLM client (urllib, OpenAI-compatible)
+  llm_phase.py     # LLM task queue + TUI wiring
+  markdown.py      # deterministic markdown rendering
+  models.py        # output schemas + deterministic JSON validator
+  tui.py           # terminal UI for the LLM phase (Rich-based)
+  util.py          # logging, id sanitizing, truncation, .env reader, fence lang
 web/
   server.py        # --serve: stdlib HTTP server + web_settings.yaml loader
   render.py        # deterministic markdown (doc_maker's subset) -> HTML
   app.js           # light/dark theme toggle (persisted per browser)
-  graph.js         # /graph page: dependency graph (canvas) + doc side panel
+  graph.js         # /graph page entry point (thin; the modules live in web/graph/)
+  graph/           # ES modules: state, layout, draw, interact, panel, controls, ...
+  templates/       # page.html, graph.html (the page shells, no server-side HTML)
   web_settings.yaml# host / port / default_theme / docs_dir for the server
   themes/light/style.css, themes/dark/style.css  # the two themes
   lib/
@@ -254,8 +264,9 @@ backends/
   python.py          # Python backend (tree-sitter-python)
 prompts/           # system prompts: function / chunk / variable / summary
 settings.yaml      # default config (game codebase)
-settings_test.yaml # small local test corpus
-settings_self.yaml # doc_maker documenting itself (Python)
+configs/
+  test.yaml        # small local test corpus
+  self.yaml        # doc_maker documenting itself (Python)
 ```
 
 ## Design notes
@@ -267,5 +278,5 @@ settings_self.yaml # doc_maker documenting itself (Python)
   (names, lines, links, ordering) is computed; the model only explains.
 - **Secrets stay out of the repo.** `.env` is git-ignored; the config only
   ever references `env`.
-- **Self-hosting check:** `settings_self.yaml` runs doc_maker on its own
+- **Self-hosting check:** `configs/self.yaml` runs doc_maker on its own
   Python sources — a continuous sanity check that the tool documents code.

@@ -9,15 +9,15 @@ import argparse
 import os
 import shutil
 
-import graph as gmod
-from config import load_config
-from llm_phase import llm_phase
-from markdown import render_file_md, render_index, write_md
-from outputs import check_doc_cache, purge_outputs, write_doc_cache
-from records import list_records
-from scan import (analyze_files, load_symbols, report_scan, save_symbols,
+import docmaker.graph as gmod
+from docmaker.config import load_config
+from docmaker.llm_phase import llm_phase
+from docmaker.markdown import render_file_md, render_index, write_md
+from docmaker.outputs import check_doc_cache, purge_outputs, write_doc_cache
+from docmaker.records import list_records
+from docmaker.scan import (analyze_files, load_symbols, report_scan, save_symbols,
                   scan_files, scan_fingerprint)
-from util import log
+from docmaker.util import log
 
 
 def render_all(cfg: dict, files, g):
