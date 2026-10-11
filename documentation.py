@@ -341,16 +341,21 @@ def _symbol_index(g):
     """Deterministic link targets for References bullets: file relpaths,
     function nodes by name / qualified name, and module namespaces
     (qualified-name prefixes) -> the file(s) they live in (from the graph)."""
-    files, by_name, by_qname, by_ns = set(), {}, {}, {}
+    files, by_name, by_qname, by_ns, by_var = set(), {}, {}, {}, {}
     if g is None:
-        return files, by_name, by_qname, by_ns
+        return files, by_name, by_qname, by_ns, by_var
     for nid, nd in g.nodes(data=True):
-        if nd.get('kind') != 'function':
+        kind = nd.get('kind')
+        if kind not in ('function', 'variable'):
             continue
         rp = nd.get('relpath')
         if rp:
             files.add(rp)
         nm = nd.get('name')
+        if kind == 'variable':
+            if nm and rp:
+                by_var.setdefault(nm, set()).add(rp)
+            continue
         if nm:
             by_name.setdefault(nm, []).append(nd)
         qn = nd.get('qualified') or nm
@@ -360,7 +365,7 @@ def _symbol_index(g):
                 parts = qn.split('.')
                 for i in range(1, len(parts)):
                     by_ns.setdefault('.'.join(parts[:i]), set()).add(rp)
-    return files, by_name, by_qname, by_ns
+    return files, by_name, by_qname, by_ns, by_var
 
 
 def _pick_node(cands, rel):
@@ -372,10 +377,10 @@ def _pick_node(cands, rel):
     return cur[0] if len(cur) == 1 else None
 
 
-def ref_line(rel, ref, files, by_name, by_qname, by_ns):
+def ref_line(rel, ref, files, by_name, by_qname, by_ns, by_var):
     """Markdown bullet for a References entry. Linked when the entry names
-    a known file, function, or module namespace; plain text otherwise
-    (e.g. variables, builtins)."""
+    a known file, function, module namespace, or file-level variable;
+    plain text otherwise (e.g. builtins)."""
     text = str(ref).strip()
     t = text[:-2].strip() if text.endswith('()') else text
     ft = t.replace('\\', '/')
@@ -396,13 +401,18 @@ def ref_line(rel, ref, files, by_name, by_qname, by_ns):
     ns = by_ns.get(t)
     if ns and len(ns) == 1:
         return f'- [{md_escape(ref)}]({_rel_link(rel, next(iter(ns)))})'
+    vs = by_var.get(t)
+    if vs:
+        target = rel if rel in vs else (next(iter(vs)) if len(vs) == 1 else None)
+        if target is not None:
+            return f'- [{md_escape(ref)}]({_rel_link(rel, target)}#variables)'
     return f'- {md_escape(ref)}'
 
 
 def render_file_md(finfo: dict, fn_records, var_records, summary,
                    output_root: str, graph=None) -> str:
     rel = finfo['relpath']
-    files, by_name, by_qname, by_ns = _symbol_index(graph)
+    files, by_name, by_qname, by_ns, by_var = _symbol_index(graph)
     lines = [f'# {rel}', '']
     if summary:
         lines += ['## Summary', '', summary.get('summary', ''),
@@ -469,7 +479,8 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                     lines.append('**References**')
                     lines.append('')
                     for r in p['references']:
-                        lines.append(ref_line(rel, r, files, by_name, by_qname, by_ns))
+                        lines.append(ref_line(rel, r, files, by_name, by_qname,
+                                              by_ns, by_var))
                     lines.append('')
                 if p.get('uncertainties'):
                     lines.append('**Uncertainties**')
@@ -491,7 +502,7 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
 
     vars_ = finfo.get('file_vars') or []
     if vars_:
-        lines += ['## File-level variables', '']
+        lines += ['## File-level variables <a id="variables"></a>', '']
         lines.append('| Variable | Line | Init | Description |')
         lines.append('| --- | --- | --- | --- |')
         for v in vars_:
