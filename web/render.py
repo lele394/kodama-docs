@@ -3,8 +3,8 @@
 Supports exactly what documentation.py emits: headings (including raw
 ``<a id="...">`` anchors), paragraphs, **bold**, *italic*, `code`,
 [links](url), fenced code blocks (wrapped in closed-by-default
-``<details>`` zones, folded together with a following "Call graph"
-list), two-level bullet lists, tables (with ``\\|`` escaped pipes) and
+``<details>`` zones, with a following "Call graph" list in its own
+zone), two-level bullet lists, tables (with ``\\|`` escaped pipes) and
 ``---`` rules. Output is a pure function of the input text; no
 third-party dependencies (syntax highlighting is client-side
 highlight.js, loaded by the page).
@@ -129,8 +129,8 @@ def render_md(md: str) -> str:
             cls = f' class="lang-{lang}"' if lang else ''
             pre = (f'<pre><code{cls}>'
                    f'{html.escape(chr(10).join(buf))}</code></pre>')
-            # If a "**Call graph**" paragraph + list follows, fold both
-            # into one collapsible zone (closed by default).
+            # Two separate collapsible zones, both closed by default:
+            # the source, and (when present) its "Call graph" list.
             j = i
             while j < n and not lines[j].strip():
                 j += 1
@@ -146,9 +146,10 @@ def render_md(md: str) -> str:
                     j += 1
                 if items:
                     out.append('<details class="src">'
-                               '<summary>Source \u00b7 call graph</summary>\n'
-                               + pre + '\n'
-                               '<p><strong>Call graph</strong></p>\n'
+                               '<summary>Source</summary>\n'
+                               + pre + '\n</details>')
+                    out.append('<details class="cg">'
+                               '<summary>Call graph</summary>\n'
                                + render_list(items) + '\n</details>')
                     i = j
                     continue

@@ -96,13 +96,16 @@ HTML in the browser:
   browser (localStorage). Themes are plain CSS in
   `web/themes/light/style.css` and `web/themes/dark/style.css`.
 - Source code is syntax-highlighted in the browser by
-  [highlight.js](https://highlightjs.org/) 11.11.1 — one vendored UMD bundle
-  plus its light/dark theme CSS in `web/lib/` (served from `/lib/...`). The
+  [highlight.js](https://highlightjs.org/) 11.11.1 — one vendored full
+  browser bundle plus its light/dark theme CSS in `web/lib/` (served from
+  `/lib/...`; the build does not auto-init, so `web/app.js` calls
+  `hljs.highlightAll()` on load). The
   code theme follows the page theme toggle. The server itself stays
   stdlib-only; highlight.js is the single third-party client-side asset.
-- Every function's source block — and its call graph, when present — is
-  wrapped in a collapsible `<details>` zone that is **closed by default**, so
-  pages stay readable and the code can be unrolled on demand.
+- Every function's source block is wrapped in a collapsible `<details>` zone
+  that is **closed by default**, and its call graph, when present, gets its
+  own zone right next to it — so pages stay readable and the code can be
+  unrolled on demand.
 - Rendering is deterministic (`web/render.py`) — only the markdown subset
   doc_maker itself generates is supported.
 

@@ -323,9 +323,10 @@ def callgraph_section(rel: str, fn: dict, g) -> list:
     for s in sites:
         by_file.setdefault(s['file'], []).append(s)
     for cfile in sorted(by_file):
-        lines.append(f'- `{cfile}`')
+        file_link = _rel_link(rel, cfile)
+        lines.append(f'- [{cfile}]({file_link})')
         for s in by_file[cfile]:
-            link = _rel_link(rel, cfile)
+            link = file_link
             if s['name']:
                 label = f"{s['qualified'] or s['name']}:{s['call']}"
                 link += '#fn-' + sanitize_id(s['name']) + '-' + str(s['line'])
@@ -361,7 +362,9 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
             lines.append(f"| [{fn.get('qualified') or fn['name']}](#{_fn_anchor(fn)}) "
                          f"| {fn['line']} | {md_escape(params)} | {desc} |")
         lines.append('')
-        for fn in funcs:
+        for idx, fn in enumerate(funcs):
+            if idx:
+                lines += ['---', '']
             rec = fn_records.get((rel, fn['name'], fn['line']))
             lines.append(f"### {fn.get('qualified') or fn['name']}"
                          f" <a id=\"{_fn_anchor(fn)}\"></a>")

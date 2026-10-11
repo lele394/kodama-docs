@@ -1,6 +1,12 @@
 // doc_maker theme switcher: toggles light/dark, remembers the choice.
 (function () {
   'use strict';
+  // The vendored highlight.js build does not auto-initialize: highlight
+  // the code blocks ourselves (safe to call twice — already-highlighted
+  // elements are skipped).
+  if (window.hljs && window.hljs.highlightAll) {
+    window.hljs.highlightAll();
+  }
   var KEY = 'doc_maker_theme';
   var link = document.getElementById('doc-theme');
   var btn = document.getElementById('theme-toggle');
