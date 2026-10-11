@@ -4,7 +4,7 @@
 project:
   source_dir: ".."
   output_dir: "../doc"
-  data_dir: "./data"
+  data_dir: "../data"
   source_extensions: [".lua"]
   exclude:
     - "doc_maker"
@@ -53,10 +53,6 @@ documentation:
   max_chunk_lines: 4000
   retry_invalid_json: 2
   skip_existing: true
-  max_function_tasks: 60
-  max_variable_tasks: 30
-  max_summary_tasks: 12
-  file_priority: "function_count"
 
 # how many parallel LLM agents run the task queue (any positive integer)
 concurrency: 2

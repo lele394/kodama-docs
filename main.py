@@ -306,9 +306,6 @@ def llm_phase(cfg: dict, files, g):
         tasks = [(f, fn) for f in ordered
                  for fn in f.get('functions') or []
                  if include_anon or fn['name'] != 'anon']
-        maxfn = int(doccfg.get('max_function_tasks') or 0)
-        if maxfn:
-            tasks = tasks[:maxfn]
         nchunked = sum(1 for _, fn in tasks if maxlines and fn_length(fn) > maxlines)
         log(f'function docs: {len(tasks)} tasks ({nchunked} via chunk-and-merge)')
         for f, fn in tasks:
@@ -317,18 +314,12 @@ def llm_phase(cfg: dict, files, g):
                          'tag': f'{f["relpath"]}::{fn["name"]}@{fn["line"]}'})
     if doccfg.get('generate_variable_docs'):
         tasks = [(f, v) for f in ordered for v in f.get('file_vars') or []]
-        maxv = int(doccfg.get('max_variable_tasks') or 0)
-        if maxv:
-            tasks = tasks[:maxv]
         log(f'variable docs: {len(tasks)} tasks')
         for f, v in tasks:
             jobs.append({'kind': 'variable', 'f': f, 'sym': v,
                          'tag': f'{f["relpath"]}::{v["name"]}@{v["line"]}'})
     if doccfg.get('generate_file_summaries'):
         tasks = list(ordered)
-        maxs = int(doccfg.get('max_summary_tasks') or 0)
-        if maxs:
-            tasks = tasks[:maxs]
         log(f'file summaries: {len(tasks)} tasks')
         for f in tasks:
             jobs.append({'kind': 'summary', 'f': f,

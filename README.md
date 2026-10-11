@@ -95,7 +95,7 @@ example). Relative paths resolve against the config file's directory.
 | `llm.max_retries` / `timeout` | per-request retry/timeout policy (urllib, 300 s default) |
 | `llm.temperature` / `max_tokens` | generation parameters |
 | `context.*` | how much graph context (imports, call targets, referenced vars) is shown to the LLM per symbol |
-| `documentation.*` | toggles + budgets: `max_function_tasks`, `max_variable_tasks`, `max_summary_tasks`, `file_priority`, `skip_existing`, chunking knobs below |
+| `documentation.*` | toggles + budgets: `skip_existing`, `max_function_lines` (chunk-and-merge threshold), chunking knobs below — **no task caps**: every function, variable and file gets documented |
 | `concurrency` | parallel LLM agents working the task queue (default **2**; any positive integer, 20+ is fine) |
 | `tui.enabled` / `tui.interval` | live terminal UI while the LLM phase runs (auto-off when stdout is not a TTY) |
 | `prompts.*` | system-prompt text files per task kind |

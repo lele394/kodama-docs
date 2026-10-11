@@ -45,10 +45,6 @@ documentation:
   max_chunk_lines: 4000
   retry_invalid_json: 2
   skip_existing: true
-  max_function_tasks: 120
-  max_variable_tasks: 40
-  max_summary_tasks: 12
-  file_priority: "function_count"
 
 # more agents for this run (default in other configs is 2)
 concurrency: 4
