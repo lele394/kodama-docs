@@ -556,8 +556,7 @@ def render_all(cfg: dict, files, g):
         if summary:
             summary = summary.get('prose')
         out = doc.render_file_md(finfo, fn_recs, var_recs, summary,
-                                 cfg['output_dir'], g,
-                                 model=(cfg.get('llm') or {}).get('model'))
+                                 cfg['output_dir'], g)
         doc.write_md(out, cfg['output_dir'], f['relpath'])
         count += 1
     index = doc.render_index(files, cfg['output_dir'])
