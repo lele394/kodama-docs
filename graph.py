@@ -2,11 +2,13 @@
 
 Node kinds: file, function, variable, builtin, external, module.
 Edge kinds: CONTAINS (file -> fn/var), CALLS (fn/file -> fn/ext/builtin),
-IMPORTS (file -> file/module).
+IMPORTS (file -> file/module), READS (fn -> var: the function body
+references a file-level variable).
 """
 import hashlib
 import json
 import os
+import re
 
 import networkx as nx
 
@@ -23,6 +25,25 @@ def node_id_fn(relpath, name, line):
 
 def node_id_var(relpath, name, line):
     return f'var:{relpath}::{name}@{line}'
+
+
+def _var_reads(body: str, name: str, is_py: bool) -> bool:
+    """True if `body` references file variable `name`.
+
+    A reference is a bare identifier use: `x.name` (method/namespace
+    access) and longer identifiers never count. A reference is not
+    counted when the function shadows the name itself — its own
+    parameter, or a local declared/assigned in its body.
+    """
+    e = re.escape(name)
+    if not re.search(r'(?<![\w.])' + e + r'(?!\w)', body):
+        return False
+    if is_py:
+        shadowed = re.search(r'(?m)^\s*' + e + r'\s*=[^=]', body) \
+            or re.search(r'\b' + e + r'\s*[-+*/%&|^]=', body)
+    else:
+        shadowed = re.search(r'\blocal\s+' + e + r'\b', body)
+    return not shadowed
 
 
 def fingerprint(files):
@@ -120,6 +141,23 @@ def build_graph(files):
             if fn is not None:
                 src = node_id_fn(rp, fn['name'], fn['line'])
             add_edge(src, tgt, 'CALLS', line=c['line'])
+
+        # variable references: fn body -> file-level variable
+        vmap = {v['name']: v['line'] for v in f.get('file_vars') or []}
+        if vmap:
+            is_py = rp.endswith('.py')
+            for fn in fns:
+                body = fn.get('body') or ''
+                if not body:
+                    continue
+                params = set(fn.get('params') or [])
+                src = node_id_fn(rp, fn['name'], fn['line'])
+                for vname in sorted(vmap):
+                    if vname in params:
+                        continue
+                    if _var_reads(body, vname, is_py):
+                        add_edge(src, node_id_var(rp, vname, vmap[vname]),
+                                 'READS')
 
         for imp in f.get('imports') or []:
             mod = imp['module']

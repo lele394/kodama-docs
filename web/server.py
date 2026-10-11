@@ -51,6 +51,60 @@ PAGE = """<!doctype html>
 </html>
 """
 
+GRAPH_PAGE = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph — doc_maker</title>
+<link id="doc-theme" rel="stylesheet" href="/theme/{theme}/style.css">
+<link id="hljs-light" rel="stylesheet"
+      href="/lib/github.min.css"{hljs_light}>
+<link id="hljs-dark" rel="stylesheet"
+      href="/lib/github-dark.min.css"{hljs_dark}>
+<script src="/lib/highlight.min.js" defer></script>
+<script src="/app.js" defer></script>
+<script src="/graph.js" defer></script>
+</head>
+<body class="graph-page">
+<header class="topbar graph-topbar">
+  <a class="brand" href="/index.md">doc_maker</a>
+  <span class="graph-controls">
+    <span class="seg">
+      <label><input type="radio" name="level" value="files" checked>
+        <span>files</span></label>
+      <label><input type="radio" name="level" value="symbols">
+        <span>functions</span></label>
+    </span>
+    <label class="chk" id="ext-chk">
+      <input type="checkbox" id="show-ext"> <span>external symbols</span>
+    </label>
+    <button id="graph-reset" type="button">reset view</button>
+  </span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="graph-layout">
+  <aside class="graph-panel">
+    <div class="panel-bar">
+      <button id="panel-back" type="button" title="back" hidden>&larr;</button>
+      <span id="panel-title" class="panel-title"></span>
+    </div>
+    <div id="panel-body" class="panel-body">
+      <p class="panel-hint">Click a node to open its documentation here.
+      Drag to move nodes, scroll to zoom, drag the background to pan.</p>
+    </div>
+  </aside>
+  <div id="graph-stage" class="graph-stage">
+    <canvas id="graph-canvas"></canvas>
+    <div id="graph-tip" class="graph-tip" hidden></div>
+    <div id="graph-legend" class="graph-legend"></div>
+    <div id="graph-counts" class="graph-counts"></div>
+  </div>
+</div>
+</body>
+</html>
+"""
+
 
 def load_settings(path: str) -> dict:
     yaml = ruamel.yaml.YAML()
@@ -102,8 +156,8 @@ class DocsHandler(BaseHTTPRequestHandler):
         if path.startswith('/theme/') and path.endswith('.css'):
             return self._webfile('themes/' + path[len('/theme/'):],
                                  'text/css; charset=utf-8')
-        if path == '/app.js':
-            return self._webfile('app.js', 'text/javascript; charset=utf-8')
+        if path in ('/app.js', '/graph.js'):
+            return self._webfile(path[1:], 'text/javascript; charset=utf-8')
         if path.startswith('/lib/'):
             name = path[len('/lib/'):]
             ext = name.rsplit('.', 1)[-1] if '.' in name else ''
@@ -112,34 +166,79 @@ class DocsHandler(BaseHTTPRequestHandler):
                      'txt': 'text/plain; charset=utf-8'}.get(
                 ext, 'application/octet-stream')
             return self._webfile('lib/' + name, ctype)
+        if path == '/graph':
+            return self._graph_page()
+        if path == '/api/graph':
+            return self._docfile('meta/graph.json',
+                                 'application/json; charset=utf-8')
+        if path.startswith('/page/') and path.endswith('.md'):
+            return self._page_body(path[len('/page/'):])
         if path.endswith('.md'):
             return self._page(path.lstrip('/'))
         return self._error(404, 'not found')
 
     # ------------------------------------------------------------ handlers
     def _page(self, relpath: str):
-        full = self._safe(self.docs_root, relpath)
-        if full is None or not os.path.isfile(full):
-            return self._error(404, f'no such doc: {relpath}')
-        try:
-            st = os.stat(full)
-            with open(full, 'r', encoding='utf-8') as fh:
-                md = fh.read()
-        except OSError as e:
-            return self._error(500, str(e))
-        with self._cache_lock:
-            hit = self._cache.get(full)
-            if hit and hit[0] == st.st_mtime and hit[1] == st.st_size:
-                body = hit[2]
-            else:
-                body = render_md(md)
-                self._cache[full] = (st.st_mtime, st.st_size, body)
+        full, md, st = self._load_doc(relpath)
+        if full is None:
+            return
+        body = self._rendered(full, md, st)
         dark = self.default_theme == 'dark'
         page = PAGE.format(title=html_escape(_title(md, relpath)),
                            theme=self.default_theme,
                            hljs_light=' disabled' if dark else '',
                            hljs_dark='' if dark else ' disabled',
                            body=body)
+        self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
+
+    def _page_body(self, relpath: str):
+        """Rendered doc body without the page shell — for the /graph
+        left panel."""
+        full, md, st = self._load_doc(relpath)
+        if full is None:
+            return
+        body = self._rendered(full, md, st)
+        self._send(200, body.encode('utf-8'), 'text/html; charset=utf-8')
+
+    def _load_doc(self, relpath: str):
+        """(full_path, md_text, stat) or (None, None, None) — errors sent."""
+        full = self._safe(self.docs_root, relpath)
+        if full is None or not os.path.isfile(full):
+            self._error(404, f'no such doc: {relpath}')
+            return None, None, None
+        try:
+            st = os.stat(full)
+            with open(full, 'r', encoding='utf-8') as fh:
+                md = fh.read()
+        except OSError as e:
+            self._error(500, str(e))
+            return None, None, None
+        return full, md, st
+
+    def _rendered(self, full: str, md: str, st) -> str:
+        with self._cache_lock:
+            hit = self._cache.get(full)
+            if hit and hit[0] == st.st_mtime and hit[1] == st.st_size:
+                return hit[2]
+            body = render_md(md)
+            self._cache[full] = (st.st_mtime, st.st_size, body)
+            return body
+
+    def _docfile(self, rel: str, ctype: str):
+        """Serve a raw file from the docs root (meta/graph.json)."""
+        full = self._safe(self.docs_root, rel)
+        if full is None or not os.path.isfile(full):
+            return self._error(404, f'no such file: {rel}')
+        with open(full, 'rb') as fh:
+            data = fh.read()
+        self._send(200, data, ctype)
+
+    def _graph_page(self):
+        dark = self.default_theme == 'dark'
+        page = GRAPH_PAGE.format(
+            theme=self.default_theme,
+            hljs_light=' disabled' if dark else '',
+            hljs_dark='' if dark else ' disabled')
         self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
 
     def _webfile(self, filename: str, ctype: str):
@@ -160,11 +259,13 @@ class DocsHandler(BaseHTTPRequestHandler):
             return None
         return full
 
-    def _send(self, code, data, ctype):
+    def _send(self, code, data, ctype, extra=None):
         self.send_response(code)
         self.send_header('Content-Type', ctype)
         self.send_header('Content-Length', str(len(data)))
         self.send_header('Cache-Control', 'no-cache')
+        for k, v in (extra or {}).items():
+            self.send_header(k, v)
         self.end_headers()
         self.wfile.write(data)
 

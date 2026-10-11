@@ -107,6 +107,16 @@ HTML in the browser:
   that is **closed by default**, and its call graph, when present, gets its
   own zone right next to it — so pages stay readable and the code can be
   unrolled on demand.
+- **`/graph` — interactive dependency graph.** Built from `meta/graph.json`
+  by `web/graph.js` (vanilla JS + canvas, no libraries), with two levels:
+  **files** (one node per file; imports kept, calls re-aggregated
+  file→file) and **functions** (functions and variables as nodes with
+  CONTAINS / CALLS / READS edges; external and built-in symbols can be
+  toggled on). Clicking a node opens its documentation in the left panel —
+  in-panel links navigate within the panel, with a back button. Drag to
+  move nodes, scroll to zoom, drag the background to pan. The layout is a
+  force simulation with a fixed seed, so the same graph always settles into
+  the same arrangement.
 - Rendering is deterministic (`web/render.py`) — only the markdown subset
   doc_maker itself generates is supported.
 
@@ -170,7 +180,7 @@ The pipeline stages:
 ```
 scan (os.walk, sorted)            -> file list + scan fingerprint
 extract (tree-sitter backend)     -> functions / file_vars / calls / imports
-build_graph (networkx MultiDiGraph) -> CONTAINS, CALLS, IMPORTS edges
+build_graph (networkx MultiDiGraph) -> CONTAINS, CALLS, IMPORTS, READS edges
 llm_phase (ThreadPool workers)   -> prose records, cached by fingerprint
 render (markdown)                -> doc/<file>.md + index.md + meta/
 ```
@@ -229,6 +239,7 @@ web/
   server.py        # --serve: stdlib HTTP server + web_settings.yaml loader
   render.py        # deterministic markdown (doc_maker's subset) -> HTML
   app.js           # light/dark theme toggle (persisted per browser)
+  graph.js         # /graph page: dependency graph (canvas) + doc side panel
   web_settings.yaml# host / port / default_theme / docs_dir for the server
   themes/light/style.css, themes/dark/style.css  # the two themes
   lib/

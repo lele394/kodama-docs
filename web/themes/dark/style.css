@@ -161,3 +161,139 @@ details.src pre code.hljs, details.cg pre code.hljs { padding: 12px 14px; }
 details.src p, details.cg p { margin: 10px 14px 2px; }
 
 details.src ul, details.cg ul { margin: 4px 14px 12px; }
+
+/* ------- graph page (/graph) ------- */
+body.graph-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.graph-topbar { position: static; justify-content: flex-start; gap: 16px; }
+
+.graph-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 auto;
+}
+
+.seg { display: inline-flex; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { position: relative; }
+.seg span {
+  display: inline-block;
+  padding: 5px 13px;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid var(--border);
+  background: var(--btn-bg);
+  color: var(--fg);
+}
+.seg label:first-child span { border-radius: 6px 0 0 6px; border-right: none; }
+.seg label:last-child span { border-radius: 0 6px 6px 0; }
+.seg input:checked + span { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.chk { font-size: 13px; color: var(--fg); cursor: pointer; user-select: none; }
+.chk.disabled { opacity: .45; pointer-events: none; }
+
+#graph-reset {
+  cursor: pointer;
+  font: 13px "Segoe UI", system-ui, sans-serif;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--btn-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+#graph-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+.graph-layout { display: flex; flex: 1; min-height: 0; }
+
+.graph-panel {
+  width: 460px;
+  min-width: 340px;
+  max-width: 62vw;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.panel-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bar);
+}
+
+#panel-back {
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--btn-bg);
+  color: var(--fg);
+}
+#panel-back:hover { border-color: var(--accent); color: var(--accent); }
+
+.panel-title {
+  font-size: 13px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-body { flex: 1; overflow-y: auto; padding: 20px 24px 60px; }
+.panel-hint { color: var(--muted); }
+.panel-err { color: #e57373; }
+
+.graph-stage { position: relative; flex: 1; min-width: 0; background: var(--bg); }
+
+#graph-canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+
+.graph-tip {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+  max-width: 360px;
+  padding: 4px 9px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  background: var(--bar);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+}
+
+.graph-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.graph-legend .lg i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.graph-counts {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
