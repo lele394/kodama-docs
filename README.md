@@ -76,7 +76,7 @@ CLI flags:
 |---|---|
 | `--config PATH` | settings file (default `settings.yaml`) |
 | `--fresh` | ignore the analysis cache and re-extract everything |
-| `--no-llm` | skip the LLM phase entirely (extraction + graph + render only) |
+| `--no-llm` | skip the LLM **model calls** only: placeholder prose is cached (flagged), all deterministic sections — parameters, references, call graph — are still generated |
 | `--purge` | delete all docs/meta/data (output + data dirs) and exit |
 | `--regenerate` | delete all docs/meta/data, then run the whole pipeline fresh |
 | `--serve` | serve the rendered docs over HTTP instead of generating (needs a previous run) |
@@ -109,6 +109,21 @@ HTML in the browser:
   that is **closed by default**, and its call graph, when present, gets its
   own zone right next to it — so pages stay readable and the code can be
   unrolled on demand.
+- **Sidebar — file tree + fuzzy search** (docs pages only; `web/sidebar.js`).
+  A collapsible left sidebar (the `☰ files` button in the top bar toggles
+  it) shows the hierarchy of the doc files with per-directory and
+  per-file collapse, each file's function and variable symbols, and an
+  `index` row at the top. The search box at its top fuzzy-matches files,
+  functions and variables (same subsequence scorer as the `/graph` bar,
+  `web/fuzzy.js`) and replaces the tree with the ranked hits; `Enter`
+  opens the first hit, `Esc` clears, and `/` focuses the box. Function
+  rows link to their `#fn-…` anchor; variable rows link to the page's
+  `#variables` section (markdown only generates one anchor per
+  file's variables). Sidebar open/closed and expanded state are stored
+  per browser (localStorage: `kodama.sidebar.open`, `kodama.sidebar.expand`)
+  — deliberately unlike the theme, which the server persists for all
+  browsers. Data comes from a slim `/api/symbols` endpoint (a trimmed
+  `meta/symbols.json` with function bodies stripped).
 - **`/graph` — interactive dependency graph.** Built from `meta/graph.json`
   by `web/graph.js` (vanilla JS + canvas, no libraries), with two levels:
   **files** (one node per file; imports kept, calls re-aggregated
@@ -149,8 +164,9 @@ Notes:
   sample configs pick it up, config directory first, then repo root.
 - Runs are fingerprint-cached, so re-running is cheap — unchanged symbols are
   never re-generated. `--fresh` re-extracts from scratch, `--no-llm` skips
-  the LLM phase (extraction + graph + render only), `--regenerate` wipes
-  `docs/` + `data/` and rebuilds everything.
+  the LLM model calls (placeholder prose is cached with a `stubbed` flag,
+  which a full run treats as a cache miss and overwrites with real prose),
+  `--regenerate` wipes `docs/` + `data/` and rebuilds everything.
 - The samples are small on purpose so a full run (a few dozen LLM tasks at
   `concurrency: 4`) finishes quickly even on a slow local endpoint.
 
@@ -281,6 +297,8 @@ web/
   server.py        # --serve: stdlib HTTP server + web_settings.yaml loader
   render.py        # deterministic markdown (kodama-docs's subset) -> HTML
   app.js           # light/dark theme toggle (persisted per browser)
+  sidebar.js       # docs-page sidebar: file tree + fuzzy symbol search
+  fuzzy.js         # shared fuzzy subsequence scorer (sidebar + /graph bar)
   graph.js         # /graph page entry point (thin; the modules live in web/graph/)
   graph/           # ES modules: state, layout, draw, interact, panel, controls, ...
   templates/       # page.html, graph.html (the page shells, no server-side HTML)

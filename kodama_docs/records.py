@@ -22,7 +22,11 @@ def record_path(data_dir: str, relpath: str, kind: str, name: str,
 
 
 def save_record(data_dir: str, relpath: str, kind: str, name: str, line: int,
-                prose: dict, fingerprint: str, symbol: dict):
+                prose: dict, fingerprint: str, symbol: dict,
+                stubbed: bool = False):
+    """Save one record. `stubbed=True` marks it as `--no-llm` placeholder
+    prose: full-mode runs treat such records as cache misses (and overwrite
+    them), --no-llm runs may reuse them."""
     path = record_path(data_dir, relpath, kind, name, line)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     rec = {
@@ -35,13 +39,18 @@ def save_record(data_dir: str, relpath: str, kind: str, name: str, line: int,
         'prose': prose,
         'fingerprint': fingerprint,
     }
+    if stubbed:
+        rec['stubbed'] = True
     with open(path, 'w', encoding='utf-8') as fh:
         json.dump(rec, fh, ensure_ascii=False, indent=1)
     return path
 
 
 def load_record(data_dir: str, relpath: str, kind: str, name: str,
-                line: int, fingerprint: str):
+                line: int, fingerprint: str, accept_stub: bool = False):
+    """Load a cached record's prose, or None on miss. Records flagged
+    `stubbed` (i.e. `--no-llm` placeholders) count as a miss unless
+    `accept_stub=True`, so a full run regenerates real prose over them."""
     path = record_path(data_dir, relpath, kind, name, line)
     if not os.path.exists(path):
         return None
@@ -51,6 +60,8 @@ def load_record(data_dir: str, relpath: str, kind: str, name: str,
     except (ValueError, OSError):
         return None
     if rec.get('fingerprint') != fingerprint:
+        return None
+    if rec.get('stubbed') and not accept_stub:
         return None
     return rec.get('prose')
 

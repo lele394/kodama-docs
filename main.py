@@ -12,7 +12,8 @@ import shutil
 import kodama_docs.graph as gmod
 from kodama_docs.config import load_config
 from kodama_docs.llm_phase import llm_phase
-from kodama_docs.markdown import render_file_md, render_index, write_md
+from kodama_docs.markdown import (build_call_indexes, render_file_md,
+                                  render_index, symbol_index, write_md)
 from kodama_docs.outputs import check_doc_cache, purge_outputs, write_doc_cache
 from kodama_docs.records import list_records
 from kodama_docs.scan import (analyze_files, load_symbols, report_scan, save_symbols,
@@ -24,6 +25,10 @@ def render_all(cfg: dict, files, g):
     fn_recs = list_records(cfg['data_dir'], 'function')
     var_recs = list_records(cfg['data_dir'], 'variable')
     sum_recs = list_records(cfg['data_dir'], 'summary')
+    # One O(E) pass over the graph for the whole render, instead of a full
+    # edge scan per function (O(F×E) — the 10+ minute render tail).
+    call_idx = build_call_indexes(g)
+    sym_idx = symbol_index(g)
     count = 0
     for f in files:
         finfo = {
@@ -36,7 +41,7 @@ def render_all(cfg: dict, files, g):
         if summary:
             summary = summary.get('prose')
         out = render_file_md(finfo, fn_recs, var_recs, summary,
-                             cfg['output_dir'], g)
+                             cfg['output_dir'], g, call_idx, sym_idx)
         write_md(out, cfg['output_dir'], f['relpath'])
         count += 1
     index = render_index(files, cfg['output_dir'])
@@ -65,7 +70,8 @@ def main():
     ap.add_argument('--fresh', action='store_true',
                     help='ignore analysis cache')
     ap.add_argument('--no-llm', action='store_true',
-                    help='skip the LLM phase entirely')
+                    help='skip the LLM model calls only (stub prose cached; '
+                         'all deterministic sections are still generated)')
     ap.add_argument('--purge', action='store_true',
                     help='delete docs/meta/data (output + data dirs) and exit')
     ap.add_argument('--regenerate', action='store_true',
@@ -119,11 +125,7 @@ def main():
 
     report_scan(cfg, analysis, skipped)
 
-    failed = 0
-    if args.no_llm:
-        log('skipping LLM phase (--no-llm)')
-    else:
-        failed = llm_phase(cfg, analysis, g)
+    failed = llm_phase(cfg, analysis, g, no_llm=args.no_llm)
 
     render_all(cfg, analysis, g)
     if failed:

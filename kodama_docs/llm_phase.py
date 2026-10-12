@@ -20,7 +20,7 @@ def fn_length(fn: dict) -> int:
 
 
 def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
-                maxchunk, chunktok, cpt=4, stage_cb=None):
+                maxchunk, chunktok, cpt=4, stage_cb=None, no_llm=False):
     """Summarize a long function body part by part (each part cached
     separately) and return the body_note text for the merge prompt."""
     chunks = fn_chunks(fn.get('body') or '', maxchunk, chunktok, cpt)
@@ -33,7 +33,8 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
             stage_cb(f'chunk {ci}/{len(chunks)}')
         cfp = hashlib.md5(ct.encode('utf-8')).hexdigest()
         cp = (load_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
-                          fn['line'], cfp) if skip else None)
+                          fn['line'], cfp, accept_stub=no_llm) if skip
+              else None)
         if cp is None:
             cctx = (
                 f"Symbol: {fn.get('qualified') or fn['name']} "
@@ -44,11 +45,11 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
                 + f"\nBody part {ci}/{len(chunks)} of a long function:\n"
                   + f"```{fence_lang(f['relpath'])}\n{ct}\n```")
             cp = generate(client, 'chunk', prompts.get('chunk', ''),
-                          cctx, retry)
+                          cctx, retry, no_llm=no_llm)
             save_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
                         fn['line'], cp, cfp,
                         {'file': f['relpath'], 'fn': fn['name'],
-                         'part': ci})
+                         'part': ci}, stubbed=no_llm)
         notes.append(cp.get('summary', ''))
     return ('The body is long; it was summarized part by part:\n'
             + '\n'.join(f'{k}. {s}' for k, s in enumerate(notes, 1))
@@ -69,7 +70,7 @@ def _graph_names(g, node_id):
     return ins, outs
 
 
-def llm_phase(cfg: dict, files, g):
+def llm_phase(cfg: dict, files, g, no_llm: bool = False):
     doccfg = cfg['documentation']
     if not (doccfg.get('generate_function_docs') or
             doccfg.get('generate_variable_docs') or
@@ -83,6 +84,9 @@ def llm_phase(cfg: dict, files, g):
         except OSError:
             log(f'  missing prompt file: {v}')
     client = LLMClient(cfg['llm'])
+    if no_llm:
+        log('llm phase: --no-llm mode — model calls skipped, '
+            'stub prose cached (deterministic sections still rendered)')
     retry = int(doccfg.get('retry_invalid_json', 2))
     skip = bool(doccfg.get('skip_existing', True))
     include_anon = bool(doccfg.get('include_anonymous_functions', False))
@@ -155,61 +159,91 @@ def llm_phase(cfg: dict, files, g):
             cached = False
             if job['kind'] == 'function':
                 prose = (load_record(cfg['data_dir'], rel, 'function',
-                                     name, sym['line'], fp) if skip else None)
+                                     name, sym['line'], fp,
+                                     accept_stub=no_llm) if skip else None)
                 cached = prose is not None
                 if prose is None:
-                    if maxlines and fn_length(sym) > maxlines:
-                        report = lambda stage: tui.stage(w, rel, name, stage)
-                        body_note = chunk_notes(client, cfg, f, sym, prompts,
-                                                retry, skip, maxchunk, chunktok,
-                                                cpt, stage_cb=report)
-                        report('merge')
-                        ctx = fn_context_text(
-                            {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
-                            cfg['context'], body_note=body_note)
+                    if no_llm:
+                        prose = generate(client, 'function', '', '', retry,
+                                         no_llm=True)
                     else:
-                        tui.stage(w, rel, name, 'describe')
-                        ctx = fn_context_text(
-                            {**sym, 'relpath': rel}, *_graph_names(g, job['nid']),
-                            cfg['context'])
-                    prose = generate(client, 'function',
-                                     prompts.get('function', ''), ctx, retry)
-                save_record(cfg['data_dir'], rel, 'function', name,
-                            sym['line'], prose, fp,
-                            {'id': job['nid'],
-                             'qualified': sym.get('qualified'),
-                             'params': sym.get('params'),
-                             'vararg': sym.get('vararg')})
+                        if maxlines and fn_length(sym) > maxlines:
+                            report = lambda stage: tui.stage(w, rel, name, stage)
+                            body_note = chunk_notes(client, cfg, f, sym,
+                                                    prompts, retry, skip,
+                                                    maxchunk, chunktok,
+                                                    cpt, stage_cb=report)
+                            report('merge')
+                            ctx = fn_context_text(
+                                {**sym, 'relpath': rel},
+                                *_graph_names(g, job['nid']),
+                                cfg['context'], body_note=body_note)
+                        else:
+                            tui.stage(w, rel, name, 'describe')
+                            ctx = fn_context_text(
+                                {**sym, 'relpath': rel},
+                                *_graph_names(g, job['nid']),
+                                cfg['context'])
+                        prose = generate(client, 'function',
+                                         prompts.get('function', ''), ctx,
+                                         retry)
+                    # Save only newly generated prose (never rewrite a cache
+                    # hit — that would also drop the `stubbed` flag from a
+                    # stub loaded in --no-llm mode). In --no-llm mode the
+                    # generated prose is always a flagged stub.
+                    save_record(cfg['data_dir'], rel, 'function', name,
+                                sym['line'], prose, fp,
+                                {'id': job['nid'],
+                                 'qualified': sym.get('qualified'),
+                                 'params': sym.get('params'),
+                                 'vararg': sym.get('vararg')},
+                                stubbed=no_llm)
             elif job['kind'] == 'variable':
                 prose = (load_record(cfg['data_dir'], rel, 'variable',
-                                     name, sym['line'], fp) if skip else None)
+                                     name, sym['line'], fp,
+                                     accept_stub=no_llm) if skip else None)
                 cached = prose is not None
                 if prose is None:
-                    tui.stage(w, rel, name, 'describe')
-                    ctx = var_context_text({**sym, 'relpath': rel},
-                                           cfg['context'])
-                    prose = generate(client, 'variable',
-                                     prompts.get('variable', ''), ctx, retry)
-                save_record(cfg['data_dir'], rel, 'variable', name,
-                            sym['line'], prose, fp,
-                            {'file': rel, 'name': name, 'line': sym['line'],
-                             'init': sym.get('init')})
+                    if no_llm:
+                        prose = generate(client, 'variable', '', '', retry,
+                                         no_llm=True)
+                    else:
+                        tui.stage(w, rel, name, 'describe')
+                        ctx = var_context_text({**sym, 'relpath': rel},
+                                               cfg['context'])
+                        prose = generate(client, 'variable',
+                                         prompts.get('variable', ''), ctx,
+                                         retry)
+                    save_record(cfg['data_dir'], rel, 'variable', name,
+                                sym['line'], prose, fp,
+                                {'file': rel, 'name': name, 'line': sym['line'],
+                                 'init': sym.get('init')},
+                                stubbed=no_llm)
             else:  # file summary
                 prose = (load_record(cfg['data_dir'], rel, 'summary',
-                                     'file', 1, fp) if skip else None)
+                                     'file', 1, fp,
+                                     accept_stub=no_llm) if skip else None)
                 cached = prose is not None
                 if prose is None:
-                    tui.stage(w, rel, 'file', 'describe')
-                    ctx = summary_context_text(f, cfg['context'])
-                    prose = generate(client, 'summary',
-                                     prompts.get('summary', ''), ctx, retry)
-                save_record(cfg['data_dir'], rel, 'summary', 'file', 1,
-                            prose, fp,
-                            {'file': rel, 'lines': f.get('lines'),
-                             'function_count': len(f.get('functions') or [])})
+                    if no_llm:
+                        prose = generate(client, 'summary', '', '', retry,
+                                         no_llm=True)
+                    else:
+                        tui.stage(w, rel, 'file', 'describe')
+                        ctx = summary_context_text(f, cfg['context'])
+                        prose = generate(client, 'summary',
+                                         prompts.get('summary', ''), ctx,
+                                         retry)
+                    save_record(cfg['data_dir'], rel, 'summary', 'file', 1,
+                                prose, fp,
+                                {'file': rel, 'lines': f.get('lines'),
+                                 'function_count': len(f.get('functions') or [])},
+                                stubbed=no_llm)
             tui.job_end(w, time.time() - t0, generated=not cached,
                         failed=False, kind=kind_label.get(job['kind']))
-            log(f'  {tag} OK' + (' (cached)' if cached else ''))
+            note = (' (cached)' if cached
+                    else ' (stub, --no-llm)' if no_llm else '')
+            log(f'  {tag} OK' + note)
         except Exception as e:  # noqa: BLE001
             tui.job_end(w, time.time() - t0, generated=False, failed=True,
                         kind=kind_label.get(job['kind']))

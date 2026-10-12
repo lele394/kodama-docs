@@ -58,9 +58,32 @@ class LLMClient:
         raise LLMError('LLM call failed after retries: %r' % (last_err,))
 
 
+NO_LLM_DESCRIPTION = 'No description generated (`--no-llm`)'
+NO_LLM_SUMMARY = 'No summary generated (`--no-llm`)'
+
+# Per-kind placeholder prose for --no-llm runs: schema-consistent stubs so the
+# whole document still renders (description/summary slots), with the
+# deterministic sections (parameters, references, call graph) coming from the
+# static analysis + graph instead.
+NO_LLM_PROSE = {
+    'function': {'description': NO_LLM_DESCRIPTION},
+    'variable': {'description': NO_LLM_DESCRIPTION},
+    'chunk': {'summary': NO_LLM_DESCRIPTION},
+    'summary': {'summary': NO_LLM_SUMMARY,
+                'main_purpose': NO_LLM_SUMMARY,
+                'role': NO_LLM_SUMMARY},
+}
+
+
 def generate(client: LLMClient, kind: str, base_prompt: str, user_ctx: str,
-             max_invalid_retries: int = 2):
-    """Ask the LLM for a JSON object of the given kind; validate; retry."""
+             max_invalid_retries: int = 2, no_llm: bool = False):
+    """Ask the LLM for a JSON object of the given kind; validate; retry.
+
+    With no_llm=True the model call is skipped entirely and a per-kind stub
+    object is returned (no network, no retries).
+    """
+    if no_llm:
+        return dict(NO_LLM_PROSE.get(kind, {'description': NO_LLM_DESCRIPTION}))
     system = (
         base_prompt.rstrip()
         + '\n\nReturn ONLY one JSON object, no markdown fences, matching this '

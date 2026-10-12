@@ -90,7 +90,8 @@ class DocsHandler(BaseHTTPRequestHandler):
         if path.startswith('/theme/') and path.endswith('.css'):
             return self._webfile('themes/' + path[len('/theme/'):],
                                  'text/css; charset=utf-8')
-        if path in ('/app.js', '/graph.js') or path.startswith('/graph/'):
+        if (path in ('/app.js', '/graph.js', '/sidebar.js', '/fuzzy.js')
+                or path.startswith('/graph/')):
             return self._webfile(path[1:], 'text/javascript; charset=utf-8')
         if path.startswith('/lib/'):
             name = path[len('/lib/'):]
@@ -105,6 +106,8 @@ class DocsHandler(BaseHTTPRequestHandler):
         if path == '/api/graph':
             return self._docfile('meta/graph.json',
                                  'application/json; charset=utf-8')
+        if path == '/api/symbols':
+            return self._symbols_index()
         if path.startswith('/page/') and path.endswith('.md'):
             return self._page_body(path[len('/page/'):])
         if path.endswith('.md'):
@@ -177,6 +180,47 @@ class DocsHandler(BaseHTTPRequestHandler):
             body = render_md(md)
             self._cache[full] = (st.st_mtime, st.st_size, body)
             return body
+
+    def _symbols_index(self):
+        """Slim symbol index for the docs sidebar (web/sidebar.js).
+
+        meta/symbols.json also carries every function body — far too heavy
+        for a sidebar payload — so this keeps only names, lines and file
+        paths. Cached by (mtime, size) like the rendered pages."""
+        full = self._safe(self.docs_root, 'meta/symbols.json')
+        if full is None or not os.path.isfile(full):
+            return self._error(404, 'no symbols index — run the pipeline '
+                                    'first')
+        try:
+            st = os.stat(full)
+            with self._cache_lock:
+                hit = self._cache.get(full)
+                if (hit and hit[0] == st.st_mtime
+                        and hit[1] == st.st_size):
+                    return self._send(
+                        200, hit[2], 'application/json; charset=utf-8')
+            with open(full, 'r', encoding='utf-8') as fh:
+                src = json.load(fh)
+            slim = {
+                'file_count': src.get('file_count') or 0,
+                'files': [
+                    {'relpath': f.get('relpath'),
+                     'lines': f.get('lines'),
+                     'functions': [{'name': s.get('name'),
+                                    'qualified': s.get('qualified'),
+                                    'line': s.get('line')}
+                                   for s in (f.get('functions') or [])],
+                     'vars': [{'name': v.get('name'),
+                               'line': v.get('line')}
+                              for v in (f.get('file_vars') or [])]}
+                    for f in (src.get('files') or [])],
+            }
+            data = json.dumps(slim).encode('utf-8')
+            with self._cache_lock:
+                self._cache[full] = (st.st_mtime, st.st_size, data)
+        except (OSError, ValueError) as e:
+            return self._error(500, str(e))
+        self._send(200, data, 'application/json; charset=utf-8')
 
     def _docfile(self, rel: str, ctype: str):
         """Serve a raw file from the docs root (meta/graph.json)."""

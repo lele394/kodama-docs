@@ -68,6 +68,25 @@ ordered by priority; each item says *where* to look.
 
 ## Done
 
+- [x] **`--no-llm` redesign** (this session): the flag now skips only the
+      LLM *model calls* (`kodama_docs/llm.py:generate(no_llm=True)` returns
+      per-kind placeholder prose, no network). The whole document still
+      renders: descriptions get the explicit "No description generated
+      (`--no-llm`)" stub, **Parameters** come from the static analysis
+      (`markdown.py:render_file_md`), **References** fall back to the graph
+      (call targets + read file vars, `markdown.py:static_references`),
+      call graphs were already deterministic. Stubs are cached with a
+      `stubbed` flag (`kodama_docs/records.py`); full runs treat them as
+      cache misses and regenerate real prose over them — the cache is never
+      poisoned. Verified on both test corpora (lua: byte-identical LLM-mode
+      output; python: stub run → full run regenerates every task).
+- [x] **Render-phase performance** (this session): `render_all` no longer
+      pays O(F×E) — `markdown.py:build_call_indexes` makes one O(E) pass
+      over the graph and `callers_of`/`callgraph_section` become
+      O(in-degree) lookups; the symbol index is built once per run.
+      Benchmark (20k nodes / 120k edges, 2k functions documented): old
+      per-function edge scan 56.5s → new 0.15s (~380× faster), identical
+      results.
 - [x] **Environment rebuild** (this session): removed `.venv` (py3.15) and
       `.venv314` (py3.14), created a fresh `.venv` from Python 3.14.8 with
       a pinned `requirements.txt`, verified pipeline + imports.

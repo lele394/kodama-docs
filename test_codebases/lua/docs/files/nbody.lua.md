@@ -127,6 +127,10 @@ Advances the state of all bodies in the simulation by one time step using semi-i
 
 - Mutates every body in the passed-in bodies array by updating its velocity components (vx, vy, vz) and then its position components (x, y, z).
 
+**References**
+
+- [NBody](nbody.lua.md)
+
 **Uncertainties**
 
 - Acceleration fields (ax, ay, az) are read but never set here; they are presumably computed by the caller (tick) or another function before step is invoked.

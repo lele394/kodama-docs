@@ -79,6 +79,10 @@ Performs component-wise subtraction of two 3-component vectors, returning a new 
 | --- | --- |
 | `return value` | A new 3-element table {a[1]-b[1], a[2]-b[2], a[3]-b[3]} representing the component-wise difference. |
 
+**References**
+
+- [V](vec3.lua.md)
+
 **Uncertainties**
 
 - Input vectors are assumed to be 3-element tables, but no type checking or validation is performed in the code.

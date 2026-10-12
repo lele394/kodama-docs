@@ -21,35 +21,60 @@ def _rel_link(from_rel: str, to_rel: str) -> str:
     return p.replace(os.sep, '/')
 
 
-def callers_of(g, fn_id: str):
+def build_call_indexes(g):
+    """One O(E) pass over the graph, used at render time instead of a full
+    edge scan per function (O(F×E) on a big corpus):
+
+    - ``out[u] = [(v, line), ...]`` — CALLS and READS edges leaving u
+      (the function's deterministic references);
+    - ``in[v]  = [(u, line), ...]`` — CALLS edges entering v
+      (the function's call sites).
+    """
+    out, inc = {}, {}
+    if g is None:
+        return out, inc
+    for u, v, d in g.edges(data=True):
+        t = d.get('type')
+        if t == 'CALLS':
+            out.setdefault(u, []).append((v, d.get('line')))
+            inc.setdefault(v, []).append((u, d.get('line')))
+        elif t == 'READS':
+            out.setdefault(u, []).append((v, d.get('line')))
+    return out, inc
+
+
+def callers_of(g, fn_id: str, call_in=None):
     """Deterministic list of call sites targeting a function node.
 
     Each item is a dict: file (caller relpath), name/qualified/line (the
     calling function; all None when the call happens at file level) and
     call (the call-site line). Sorted by (file, call, name).
+
+    With a prebuilt ``call_in`` index (from :func:`build_call_indexes`) this
+    is an O(in-degree) lookup; without one it builds the index on the fly.
     """
+    if call_in is None:
+        _, call_in = build_call_indexes(g)
     out = []
-    for u, v, d in g.edges(data=True):
-        if d.get('type') != 'CALLS' or v != fn_id:
-            continue
+    for u, line in call_in.get(fn_id, ()):
         s = g.nodes[u]
         if s.get('kind') == 'function':
             out.append({'file': s.get('relpath') or '',
                         'name': s.get('name') or '',
                         'qualified': s.get('qualified') or s.get('name') or '',
                         'line': s.get('line'),
-                        'call': d.get('line')})
+                        'call': line})
         else:
             out.append({'file': s.get('relpath') or '',
                         'name': None, 'qualified': None, 'line': None,
-                        'call': d.get('line')})
+                        'call': line})
     out.sort(key=lambda c: (c['file'], c['call'] or 0, c['name'] or ''))
     return out
 
 
-def callgraph_section(rel: str, fn: dict, g) -> list:
+def callgraph_section(rel: str, fn: dict, g, call_in=None) -> list:
     """Markdown lines for the deterministic Call graph section (or [])."""
-    sites = callers_of(g, node_id_fn(rel, fn['name'], fn['line']))
+    sites = callers_of(g, node_id_fn(rel, fn['name'], fn['line']), call_in)
     if not sites:
         return []
     lines = ['**Call graph**', '']
@@ -71,7 +96,7 @@ def callgraph_section(rel: str, fn: dict, g) -> list:
     return lines
 
 
-def _symbol_index(g):
+def symbol_index(g):
     """Deterministic link targets for References bullets: file relpaths,
     function nodes by name / qualified name, and module namespaces
     (qualified-name prefixes) -> the file(s) they live in (from the graph)."""
@@ -143,10 +168,42 @@ def ref_line(rel, ref, files, by_name, by_qname, by_ns, by_var):
     return f'- {md_escape(ref)}'
 
 
+def static_references(rel: str, fn: dict, g, call_out,
+                      files, by_name, by_qname, by_ns, by_var) -> list:
+    """Deterministic **References** section straight from the graph: the
+    function's call targets plus the file-level variables it reads, in
+    source order (deduped by name). Used when the function has no LLM
+    prose (e.g. a ``--no-llm`` run). Returns [] when it references nothing.
+    """
+    fid = node_id_fn(rel, fn['name'], fn['line'])
+    refs, seen = [], set()
+    entries = sorted(call_out.get(fid, ()),
+                     key=lambda t: (t[1] or 0, str(g.nodes[t[0]].get('name') or t[0])))
+    for v, _line in entries:
+        nm = g.nodes[v].get('name') or v
+        if nm not in seen:
+            seen.add(nm)
+            refs.append(nm)
+    if not refs:
+        return []
+    lines = ['**References**', '']
+    for r in refs:
+        lines.append(ref_line(rel, r, files, by_name, by_qname, by_ns, by_var))
+    lines.append('')
+    return lines
+
+
 def render_file_md(finfo: dict, fn_records, var_records, summary,
-                   output_root: str, graph=None) -> str:
+                   output_root: str, graph=None, call_indexes=None,
+                   sym_index=None) -> str:
     rel = finfo['relpath']
-    files, by_name, by_qname, by_ns, by_var = _symbol_index(graph)
+    if sym_index is None:
+        sym_index = symbol_index(graph)
+    files, by_name, by_qname, by_ns, by_var = sym_index
+    if call_indexes is None:
+        call_out, call_in = build_call_indexes(graph)
+    else:
+        call_out, call_in = call_indexes
     lines = [f'# {rel}', '']
     if summary:
         lines += ['## Summary', '', summary.get('summary', ''),
@@ -186,51 +243,68 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                 for dl in dev.splitlines():
                     lines.append('> ' + dl if dl.strip() else '>')
                 lines.append('')
-            if rec and rec.get('prose'):
-                p = rec['prose']
-                if p.get('description'):
-                    lines += ['**Description**', '',
-                              md_escape(p['description']), '']
-                if p.get('arguments'):
-                    lines.append('**Parameters**')
-                    lines.append('')
-                    lines.append('| Name | Description |')
-                    lines.append('| --- | --- |')
-                    for a in p['arguments']:
-                        lines.append(f"| `{a.get('name', '')}` "
-                                     f"| {md_escape(a.get('description', ''))} |")
-                    lines.append('')
-                if p.get('outputs'):
-                    lines.append('**Outputs**')
-                    lines.append('')
-                    lines.append('| Name | Description |')
-                    lines.append('| --- | --- |')
-                    for o in p['outputs']:
-                        nm = o.get('name') or 'return value'
-                        lines.append(f"| `{md_escape(nm)}` "
-                                     f"| {md_escape(o.get('description', ''))} |")
-                    lines.append('')
-                if p.get('side_effects'):
-                    lines.append('**Side effects**')
-                    lines.append('')
-                    for s in p['side_effects']:
-                        lines.append(f'- {md_escape(s)}')
-                    lines.append('')
-                if p.get('references'):
-                    lines.append('**References**')
-                    lines.append('')
-                    for r in p['references']:
-                        lines.append(ref_line(rel, r, files, by_name, by_qname,
-                                              by_ns, by_var))
-                    lines.append('')
-                if p.get('uncertainties'):
-                    lines.append('**Uncertainties**')
-                    lines.append('')
-                    for u in p['uncertainties']:
-                        lines.append(f'- {md_escape(u)}')
-                    lines.append('')
+            p = (rec.get('prose') if rec and isinstance(rec.get('prose'), dict)
+                 else {})
+            if p.get('description'):
+                lines += ['**Description**', '',
+                          md_escape(p['description']), '']
             else:
                 lines.append('_No description generated._')
+                lines.append('')
+            # Parameters: names always come from the static analysis (the
+            # LLM never decides which parameters exist); prose only adds
+            # descriptions. Extra prose arguments are appended after the
+            # static ones.
+            pargs = {}
+            for a in p.get('arguments') or []:
+                nm = a.get('name')
+                if nm:
+                    pargs[str(nm)] = a
+            pnames = [str(n) for n in (fn.get('params') or [])]
+            for n in pargs:
+                if n not in pnames:
+                    pnames.append(n)
+            if pnames:
+                lines.append('**Parameters**')
+                lines.append('')
+                lines.append('| Name | Description |')
+                lines.append('| --- | --- |')
+                for nm in pnames:
+                    d = pargs.get(nm, {}).get('description', '')
+                    lines.append(f"| `{nm}` | {md_escape(d)} |")
+                lines.append('')
+            if p.get('outputs'):
+                lines.append('**Outputs**')
+                lines.append('')
+                lines.append('| Name | Description |')
+                lines.append('| --- | --- |')
+                for o in p['outputs']:
+                    nm = o.get('name') or 'return value'
+                    lines.append(f"| `{md_escape(nm)}` "
+                                 f"| {md_escape(o.get('description', ''))} |")
+                lines.append('')
+            if p.get('side_effects'):
+                lines.append('**Side effects**')
+                lines.append('')
+                for s in p['side_effects']:
+                    lines.append(f'- {md_escape(s)}')
+                lines.append('')
+            if p.get('references'):
+                lines.append('**References**')
+                lines.append('')
+                for r in p['references']:
+                    lines.append(ref_line(rel, r, files, by_name, by_qname,
+                                          by_ns, by_var))
+                lines.append('')
+            elif graph is not None:
+                lines += static_references(rel, fn, graph, call_out,
+                                           files, by_name, by_qname,
+                                           by_ns, by_var)
+            if p.get('uncertainties'):
+                lines.append('**Uncertainties**')
+                lines.append('')
+                for u in p['uncertainties']:
+                    lines.append(f'- {md_escape(u)}')
                 lines.append('')
             body = (fn.get('body') or '').strip()
             if body:
@@ -239,7 +313,7 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                 lines.append('```')
                 lines.append('')
             if graph is not None:
-                lines += callgraph_section(rel, fn, graph)
+                lines += callgraph_section(rel, fn, graph, call_in)
 
     vars_ = finfo.get('file_vars') or []
     if vars_:
