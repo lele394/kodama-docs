@@ -43,12 +43,14 @@ fingerprint.
 
 ## Quickstart
 
-1. **Python 3.11+ venv** (3.14 used here):
+1. **Python 3.11+ venv** (Linux/macOS; 3.14 used here):
 
-   ```powershell
-   python -m venv .venv
-   .\.venv\Scripts\pip install tree-sitter tree-sitter-lua tree-sitter-python ruamel.yaml networkx rich
+   ```bash
+   python3 -m venv .venv
+   .venv/bin/pip install -r requirements.txt
    ```
+
+   (or `uv venv .venv && uv pip install --python .venv/bin/python -r requirements.txt`)
 
 2. **Secrets** — never put API keys in the YAML config. Create `.env` next to
    the config file:
@@ -64,8 +66,8 @@ fingerprint.
 
 3. **Run**:
 
-   ```powershell
-   .\.venv\Scripts\python -X utf8 main.py --config settings.yaml
+   ```bash
+   .venv/bin/python -X utf8 main.py --config settings.yaml
    ```
 
 CLI flags:
@@ -85,8 +87,8 @@ After a run has produced the markdown docs, `--serve` starts a small stdlib
 HTTP server (no extra dependencies) that renders each `*.md` page to themed
 HTML in the browser:
 
-```powershell
-.\.venv\Scripts\python -X utf8 main.py --config settings.yaml --serve
+```bash
+.venv/bin/python -X utf8 main.py --config settings.yaml --serve
 ```
 
 - URLs mirror the docs directory (`/index.md`, `/files/<path>.md`), so all
