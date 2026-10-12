@@ -5,7 +5,7 @@
 <h1 align="center">kodama-docs</h1>
 
 <p align="center">
-  <strong>Deterministic documentation generator for codebases.</strong><br>
+  <strong>Deterministic documentation generator for codebases.</strong><br />
   <sub>Icon by <a href="https://github.com/lele394">@lele394</a></sub>
 </p>
 
