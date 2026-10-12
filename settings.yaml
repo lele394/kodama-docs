@@ -7,12 +7,10 @@ project:
   data_dir: "../data"
   source_extensions: [".lua"]
   exclude:
-    - "doc_maker"
     - "vendor"
     - "generated"
     - "packed"
     - "bin"
-    - "EmptySteamDepot"
     - "win64"
     - ".tmp"
     - "doc"
