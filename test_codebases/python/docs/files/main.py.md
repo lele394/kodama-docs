@@ -2,18 +2,18 @@
 
 ## Summary
 
-This is the entry-point script for a small N-body simulation demo. It defines two body-configuration generators (a circular orbital system with a central mass and a seeded random scatter), a tick function that computes total energy, updates accelerations and positions, and renders a frame, and a main function that instantiates the NBody simulator and Renderer, selects a body set based on the MODE constant, and advances the simulation for a fixed number of time steps.
-**Main purpose:** To provide the executable entry point that sets up an N-body system, steps it forward in time, and produces rendered output for a configurable number of frames.
-**Role in project:** Serves as the top-level driver script that wires together the NBody simulator, body constructors, and Renderer into a single runnable demonstration.
+This is the entry-point module for a small N-body simulation demo. It defines two system-construction helpers (a circular orbital system and a random system), a single-step tick function that computes energy, accelerations, integration, and rendering, and a main() that wires an NBody simulator and Renderer together and runs the simulation for a fixed number of frames. File-level constants FPS, RUNS, and MODE control the simulation speed, duration, and initial condition mode.
+**Main purpose:** Provide the top-level driver that constructs an N-body system, steps the simulation, and renders frames for a short demo run.
+**Role in project:** Serves as the project's main entry point, orchestrating the NBody simulator, Renderer, and body-system generators imported from sibling modules.
 
 ## Functions
 
 | Function | Line | Parameters | Description |
 | --- | --- | --- | --- |
-| [make_circular_system](#fn-make_circular_system-16) | 16 | n | Creates a system of n+1 bodies: one central body of mass 1000 at the origin and n lighter bodies (mass 1) arranged on concentric circular or … |
-| [make_random_system](#fn-make_random_system-29) | 29 | n, seed | Creates and returns a list of n randomly initialized Body objects with positions in [-10, 10], velocities in [-0.1, 0.1], a fixed zero value … |
-| [tick](#fn-tick-43) | 43 | sim, bodies, renderer, dt | Advances the N-body simulation by one time step: computes total energy, updates accelerations, integrates positions/velocities, renders the  … |
-| [main](#fn-main-51) | 51 |  | Initializes an N-body simulation and a renderer, populates the system with either 8 circular or 12 random bodies depending on MODE, advances … |
+| [make_circular_system](#fn-make_circular_system-16) | 16 | n | Creates a system of n+1 bodies for an N-body simulation: one central mass of 1000 at the origin and n smaller bodies (mass 1) arranged in a  … |
+| [make_random_system](#fn-make_random_system-29) | 29 | n, seed | Creates and returns a list of n randomly configured Body instances, using a seeded random number generator to determine their parameters (po … |
+| [tick](#fn-tick-43) | 43 | sim, bodies, renderer, dt | Executes one simulation tick: computes total energy, updates accelerations, advances all bodies by dt, renders the resulting frame, and retu … |
+| [main](#fn-main-51) | 51 |  | Initializes an N-body simulation with either a circular or random body system, runs a fixed number of simulation ticks, and returns the numb … |
 
 ### make_circular_system <a id="fn-make_circular_system-16"></a>
 
@@ -25,29 +25,29 @@ This is the entry-point script for a small N-body simulation demo. It defines tw
 
 **Description**
 
-Creates a system of n+1 bodies: one central body of mass 1000 at the origin and n lighter bodies (mass 1) arranged on concentric circular orbits with tangential velocities appropriate for circular motion.
+Creates a system of n+1 bodies for an N-body simulation: one central mass of 1000 at the origin and n smaller bodies (mass 1) arranged in a circular orbit with per-body radii and tangential velocities derived from a circular-orbit approximation.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `n` | Number of orbiting bodies to create around the central body. |
+| `n` | Number of orbiting bodies to create (excluding the central mass). |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `bodies` | A list of n+1 Body instances: one central body and n orbiting bodies with circular-orbit positions and tangential velocities. |
+| `return value` | A list of n+1 Body objects: one central body at the origin with mass 1000, followed by n bodies placed at radius 10+i*2 with tangential velocity sqrt(1000/r) and mass 1. |
 
 **References**
 
 - Body
+- math
 
 **Uncertainties**
 
-- The exact signature and semantics of the Body constructor (7 positional arguments: likely x, y, z, vx, vy, vz, mass) is inferred from usage but not defined in this snippet.
-- Whether the z-component of velocity is always zero implies a planar (2D) simulation, but this is assumed rather than stated.
-- The gravitational constant used in the velocity formula v = sqrt(1000/r) is implicitly 1, which may be a project-wide convention not visible here.
+- The exact meaning and order of Body constructor parameters (assumed x, y, z, vx, vy, vz, mass based on argument count).
+- Whether the central body is intended to be fixed or also participates in N-body gravitational forces.
 
 ```py
 def make_circular_system(n):
@@ -79,33 +79,35 @@ def make_circular_system(n):
 
 **Description**
 
-Creates and returns a list of n randomly initialized Body objects with positions in [-10, 10], velocities in [-0.1, 0.1], a fixed zero value, and a mass/parameter of 1 + random.random(), using a seeded RNG for reproducibility.
+Creates and returns a list of n randomly configured Body instances, using a seeded random number generator to determine their parameters (positions, velocities, and a final numeric attribute).
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `n` | Number of Body objects to create in the system. |
-| `seed` | Seed value passed to random.seed for deterministic random number generation. |
+| `n` | Number of Body objects to generate. |
+| `seed` | Integer seed value passed to random.seed() to make the generated system reproducible. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `bodies` | A list of n Body instances with randomly assigned properties. |
+| `return value` | A list of n Body objects with random positions (uniform in [-10, 10]), small random velocities (uniform in [-0.1, 0.1]), a zero value, and a value in the range [1, 2). |
 
 **Side effects**
 
-- Seeds the global random module via random.seed(seed), affecting subsequent random number generation in the process.
+- Sets the global random module seed via random.seed(seed).
+- Instantiates n new Body objects.
 
 **References**
 
+- random
 - Body
 
 **Uncertainties**
 
-- The exact parameter names and semantic meaning of each of the 7 arguments passed to the Body constructor are not visible from this function alone.
-- Whether the 6th argument (0) and 7th argument (1 + random.random()) represent mass, charge, or other physical properties is unknown without the Body class definition.
+- The exact semantic meaning of each of the 7 positional arguments passed to the Body constructor (e.g., which are position, velocity, mass, or other properties).
+- Whether the local `import random` shadows or reuses a module-level import of the random module.
 
 ```py
 def make_random_system(n, seed):
@@ -138,44 +140,44 @@ def make_random_system(n, seed):
 
 **Description**
 
-Advances the N-body simulation by one time step: computes total energy, updates accelerations, integrates positions/velocities, renders the frame, and returns energy, the rendered frame text, and a statistics line.
+Executes one simulation tick: computes total energy, updates accelerations, advances all bodies by dt, renders the resulting frame, and returns the energy, rendered frame text, and a stats line.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
 | `sim` | Simulation object providing total_energy, accelerations, and step methods. |
-| `bodies` | Collection of body objects representing the particles in the system. |
-| `renderer` | Renderer object responsible for drawing bodies and producing a stats line. |
-| `dt` | Time-step size for the integration step. |
+| `bodies` | List of body objects to be simulated in this tick. |
+| `renderer` | Renderer object providing draw_all and stats_line methods. |
+| `dt` | Time step (in seconds or simulation units) to advance the simulation. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A tuple of (total_energy, joined_frame_string, stats_line). |
+| `e` | Total energy of the system computed before the step. |
+| `return value` | A string formed by joining the renderer's frame output with newline characters. |
+| `return value` | A stats line string generated by renderer.stats_line with body count and energy. |
 
 **Side effects**
 
-- Mutates the bodies collection via sim.accelerations(bodies) (presumably sets acceleration attributes).
-- Mutates the bodies collection via sim.step(bodies, dt) (presumably updates positions and velocities).
-- Calls renderer.draw_all(bodies), which may update renderer internal display state.
+- Mutates the bodies list via sim.accelerations(bodies) (likely in-place velocity/position updates).
+- Mutates the bodies list via sim.step(bodies, dt) (advances positions/velocities).
+- Invokes renderer.draw_all(bodies), which may produce rendering side effects.
 
 **References**
 
-- sim.total_energy
-- sim.accelerations
-- sim.step
-- renderer.draw_all
-- renderer.stats_line
+- [total_energy](nbody.py.md#fn-total_energy-62)
+- [accelerations](nbody.py.md#fn-accelerations-22)
+- [step](nbody.py.md#fn-step-50)
+- [draw_all](render.py.md#fn-draw_all-21)
+- [stats_line](render.py.md#fn-stats_line-29)
 
 **Uncertainties**
 
-- Whether sim.accelerations and sim.step modify bodies in place or replace elements.
-- What renderer.draw_all returns internally (assumed to be an iterable of strings based on the join).
-- The exact format and content of renderer.stats_line output.
-- The type and structure of the bodies collection (list, tuple, custom container).
-- Whether sim.total_energy is computed before or after the step (it is computed before in this code, but physical intent is unclear).
+- Whether sim.accelerations and sim.step modify bodies in-place or rely on internal state; return values are not captured.
+- The exact type/structure of the object returned by renderer.draw_all (assumed an iterable of strings based on '\n'.join usage).
+- Whether renderer.stats_line returns a plain string or some other text type.
 
 ```py
 def tick(sim, bodies, renderer, dt):
@@ -199,36 +201,36 @@ def tick(sim, bodies, renderer, dt):
 
 **Description**
 
-Initializes an N-body simulation and a renderer, populates the system with either 8 circular or 12 random bodies depending on MODE, advances the simulation for RUNS ticks at a fixed timestep, and returns the total number of bodies.
+Initializes an N-body simulation with either a circular or random body system, runs a fixed number of simulation ticks, and returns the number of bodies in the system.
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | Integer count of bodies in the simulation (8 if MODE is 'circular', 12 otherwise), returned via len(bodies). |
+| `return` | The number of bodies in the system (8 for circular mode, 12 for random mode), via len(bodies). |
 
 **Side effects**
 
-- Instantiates NBody and Renderer objects.
-- Calls tick(sim, bodies, renderer, dt) RUNS times, which likely mutates simulation state, body positions/velocities, and renders frames.
+- Mutates the bodies list over RUNS iterations through repeated calls to tick (presumably updating positions, velocities, or internal NBody state).
+- Creates and uses Renderer and NBody instances whose internal state may be modified by tick.
 
 **References**
 
 - NBody
 - Renderer
+- [MODE](main.py.md#variables)
 - [make_circular_system](main.py.md#fn-make_circular_system-16)
 - [make_random_system](main.py.md#fn-make_random_system-29)
-- [tick](main.py.md#fn-tick-43)
-- [MODE](main.py.md#variables)
+- os
 - [FPS](main.py.md#variables)
 - [RUNS](main.py.md#variables)
-- os.time
+- [tick](main.py.md#fn-tick-43)
 
 **Uncertainties**
 
-- The runtime values of the module-level constants MODE, FPS, and RUNS are not visible in this snippet.
-- Whether 'os.time()' refers to the standard library time module or a project-specific os module is unclear (standard os has no time() function).
-- The exact state mutations performed by tick (e.g., position integration, rendering to a window) are not visible here.
+- The exact runtime value of MODE, FPS, and RUNS (likely module-level constants not visible in this snippet).
+- The specific mutations tick performs on NBody, bodies, and Renderer (e.g., position integration, force calculation, rendering).
+- Whether NBody or Renderer hold persistent state that accumulates across tick calls.
 
 ```py
 def main():
@@ -255,9 +257,9 @@ def main():
 
 | Variable | Line | Init | Description |
 | --- | --- | --- | --- |
-| `FPS` | 10 | number | A numeric constant named FPS that most likely defines the target frames-per-second rate for the simulation or rendering loop in the N-body d … |
-| `RUNS` | 11 | number | A module-level numeric constant in main.py, likely used to specify how many simulation runs or iterations to perform. |
-| `MODE` | 12 | string | A string variable defined in main.py that holds a mode identifier, likely used to select the simulation or execution mode for the N-body dem … |
+| `FPS` | 10 | number | A numeric constant representing the target frames per second (FPS) for the N-body simulation's render or update loop. |
+| `RUNS` | 11 | number | A module-level numeric constant in main.py that specifies the number of simulation runs to perform in the N-body demo. Typically read by the … |
+| `MODE` | 12 | string | String variable that holds the current operational mode of the N-body simulation (e.g., running, paused, or setup), used to gate which behav … |
 
 ---
 _Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically._

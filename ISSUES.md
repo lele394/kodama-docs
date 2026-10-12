@@ -99,7 +99,7 @@ callers in `main.lua`/`nbody.lua`.
 
 ## 6. MINOR (Python) — method calls with plain-name receivers dropped
 
-**Status: OPEN (root-caused, fix pending)**
+**Status: FIXED (verified — see "Fixes landed")**
 
 In the Python sample, calls whose receiver is a plain name are dropped
 entirely: `b.kinetic_energy()` in `nbody.py`, `math.sqrt(d2)`, and
@@ -108,13 +108,23 @@ bare-name calls like `len`, `range`, `Vec3` are recorded). So `NBody.total_energ
 has no outgoing CALLS edge to `Body.kinetic_energy` or `Vec3.length`.
 
 **Root cause (identified in `backends/python.py`):** `note_call()` records an
-`attribute` callee only when `_dotted()` can resolve its receiver; with
-tree-sitter-python 0.25 a plain receiver is a `name` node, which `_dotted()`
-does not follow, so the receiver becomes `expr` and `note_call()` bails out.
+`attribute` callee only when `_dotted()` can resolve its receiver; the
+receiver was read through the `value` field, but in tree-sitter-python 0.25
+the `attribute` node exposes `object` (and `attribute`), so the receiver was
+always `None`, the callee fell back to `expr`, and `note_call()` bailed out.
 
 **Fix plan:** accept `name` as a base node in `_dotted()` (recording the
 receiver as a bare name, e.g. callee `b` + method `kinetic_energy`), letting
 graph resolution in issue 5 link unique method names.
+
+**Fix landed:** `backends/python.py` — `note_call()` now reads the receiver
+from the `object` field (`value` kept as a fallback) and `_dotted()` accepts
+a plain `name`/`identifier` base. Verified: `b.kinetic_energy()`,
+`sim.accelerations/step/total_energy`, `renderer.draw_all/stats_line`,
+`self.draw_body`, `self.dot/length/scale` are all recorded; the generated
+pages now show cross-file callers (e.g. `Body.kinetic_energy` lists
+`NBody.total_energy:63` in `nbody.py`, and `Renderer.draw_body` lists
+`Renderer.draw_all` in `render.py`).
 
 ## 4. NOTE (Python) — class methods are not qualified with the class name
 
@@ -129,15 +139,20 @@ use per-file node ids, but the limitation is documented here for awareness.
 ## Verified-correct behaviour (both samples)
 
 - All non-method functions and all file variables extracted, with correct
-  names, line numbers, parameters, and init kinds (modulo issue 3).
+  names, line numbers, parameters, and init kinds (modulo issue 3, now fixed).
 - Developer-comment gluing works as designed: the comment block immediately
   above a definition is attached (multi-line blocks joined, rendered under
   "Developer comment"), and the negative case (comment separated by a blank
   line) is correctly *not* glued — verified in `vec3.lua` / `vec3.py`
   `normalize`.
 - Chunk-and-merge path exercised by Python `NBody.accelerations` (26 lines >
-  `max_function_lines: 20`): chunk records written to `data/chunks/`, merged
-  doc produced, 0 failed tasks.
+  `max_function_lines: 20`) **and** Lua `NBody.accelerations` once colon
+  methods extract: chunk records written to `data/chunks/`, merged doc
+  produced, 0 failed tasks.
 - External modules (`require "log"` / `import random`) produce `mod:*` graph
   nodes without fabricating file pages.
-- LLM runs: Lua 31 tasks / Python 43 tasks, `failed=0` on both.
+- Cross-file method callers are linked on both samples (issue 5/6 fixes),
+  including `Body.new` ← `make_circular_system`/`make_random_system` (lua)
+  and `Body.kinetic_energy` ← `NBody.total_energy` (python).
+- LLM runs: first pass Lua 31 tasks / Python 43 tasks, `failed=0` on both;
+  fix-round re-runs Lua 38 tasks + Python (all cached), `failed=0`.

@@ -2,17 +2,17 @@
 
 ## Summary
 
-Defines three methods—accelerations, step, and total_energy—that form the core physics of an N-body gravitational simulation. The accelerations method computes pairwise gravitational forces with a MIN_DIST softening threshold, step applies a simple velocity-then-position Euler integration over a time step dt, and total_energy sums kinetic and pairwise potential energies for conservation checks. Module-level constants G, MIN_DIST, and PARAMS configure the gravitational constant, softening distance, and simulation parameters.
-**Main purpose:** Implements the gravitational force calculation, time-integration step, and total energy computation for an N-body system.
-**Role in project:** Acts as the core physics computation module within the N-body simulation demo, providing the routines that advance body states and verify energy conservation.
+nbody.py implements the core physics routines for an N-body gravitational simulation. It defines a class with three methods: `accelerations` (pairwise gravitational acceleration computation with a minimum-distance clamp), `step` (Euler integration of velocities and positions), and `total_energy` (sum of kinetic and pairwise gravitational potential energies). Module-level constants G, MIN_DIST, and PARAMS supply the gravitational constant, softening distance, and simulation parameters used by these methods.
+**Main purpose:** To provide the gravitational force calculation, time-step integration, and energy computation for a multi-body simulation.
+**Role in project:** Core physics engine of the N-body simulation project, supplying the numerical methods that advance the state of all bodies and track system energy.
 
 ## Functions
 
 | Function | Line | Parameters | Description |
 | --- | --- | --- | --- |
-| [accelerations](#fn-accelerations-22) | 22 | self, bodies | Computes the gravitational acceleration on every body in the simulation by iterating over all unique pairs, applying Newton's law of univers … |
-| [step](#fn-step-50) | 50 | self, bodies, dt | Advances each body in the simulation by one time step using a semi-implicit (symplectic) Euler integrator: first updates velocities from acc … |
-| [total_energy](#fn-total_energy-62) | 62 | self, bodies | Computes the total energy of a system of N bodies by summing their individual kinetic energies and subtracting the pairwise gravitational po … |
+| [accelerations](#fn-accelerations-22) | 22 | self, bodies | Resets the ax, ay, and az components of every body in the bodies list to zero, then iterates over all unique body pairs to compute pairwise  … |
+| [step](#fn-step-50) | 50 | self, bodies, dt | Performs one semi-implicit (symplectic) Euler integration step: first updates each body's velocity from its acceleration, then updates each  … |
+| [total_energy](#fn-total_energy-62) | 62 | self, bodies | Computes the total mechanical energy of an N-body system by summing the kinetic energy of all bodies and subtracting the pairwise gravitatio … |
 
 ### accelerations <a id="fn-accelerations-22"></a>
 
@@ -25,37 +25,40 @@ Defines three methods—accelerations, step, and total_energy—that form the co
 
 **Description**
 
-Computes the gravitational acceleration on every body in the simulation by iterating over all unique pairs, applying Newton's law of universal gravitation with equal-and-opposite contributions (Newton's third law), and writing the results directly into each body's acceleration components.
+Resets the ax, ay, and az components of every body in the bodies list to zero, then iterates over all unique body pairs to compute pairwise gravitational accelerations via Newton's law of universal gravitation, clamping the squared distance to MIN_DIST to avoid division by zero, and applies equal-and-opposite acceleration updates to both bodies in place.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The NBody simulation instance, providing access to the gravitational constant G and possibly MIN_DIST. |
-| `bodies` | A list of body objects, each carrying position (x, y, z), mass, and acceleration (ax, ay, az) attributes. |
+| `self` | The simulation instance (provides access to constants such as the gravitational constant or MIN_DIST). |
+| `bodies` | A list of body objects, each carrying mass, position (x, y, z), and acceleration (ax, ay, az) attributes. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | Returns the same list of bodies that was passed in, with each body's ax, ay, az attributes updated in place. |
+| `return value` | The same bodies list is returned, with each body's ax, ay, and az attributes mutated to reflect the summed pairwise gravitational accelerations. |
 
 **Side effects**
 
-- Resets ax, ay, az of every body in the list to zero before computing.
-- Mutates ax, ay, az of every body to accumulate pairwise gravitational acceleration contributions.
+- Mutates the ax, ay, and az attributes of every body object in the bodies list (first zeroed, then updated with pairwise gravitational terms).
+- Writes equal-and-opposite acceleration contributions for each body pair directly into the body objects.
 
 **References**
 
 - [MIN_DIST](nbody.py.md#variables)
-- [G](nbody.py.md#variables)
+- math
+- [tick](main.py.md#fn-tick-43)
+- len
+- range
 
 **Uncertainties**
 
-- Whether G is an attribute of self (e.g. self.G) or a module-level constant.
-- Whether MIN_DIST is defined on self or at module scope.
-- Exact attribute names for position and mass on the body objects (assumed x/y/z and mass from the summary).
-- Whether the displacement components use body.position.x or body.x or some other accessor.
+- Whether the gravitational constant G is read from self, a module-level constant, or a class attribute.
+- The exact numeric value of MIN_DIST and whether it is a class attribute, module constant, or local default.
+- Whether bodies is expected to be a list or any sequence, and the exact class/structure of individual body objects.
+- Whether the method handles a single-body or empty-list edge case explicitly beyond the loop bounds.
 
 ```py
 def accelerations(self, bodies):
@@ -86,6 +89,11 @@ def accelerations(self, bodies):
         return bodies
 ```
 
+**Call graph**
+
+- [main.py](main.py.md)
+  - [tick:45](main.py.md#fn-tick-43)
+
 ---
 
 ### step <a id="fn-step-50"></a>
@@ -98,34 +106,26 @@ def accelerations(self, bodies):
 
 **Description**
 
-Advances each body in the simulation by one time step using a semi-implicit (symplectic) Euler integrator: first updates velocities from accelerations, then updates positions from the new velocities.
+Performs one semi-implicit (symplectic) Euler integration step: first updates each body's velocity from its acceleration, then updates each body's position from its new velocity, over a time step dt.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The integrator/stepper instance (class unknown). |
-| `bodies` | An iterable of body objects, each exposing x, y, z, vx, vy, vz, ax, ay, az attributes. |
-| `dt` | Time-step size (duration) to apply to the velocity and position updates. |
-
-**Outputs**
-
-| Name | Description |
-| --- | --- |
-| `return value` | Returns None (no explicit return statement). |
+| `self` | The integrator instance on which the method is called. |
+| `bodies` | Iterable of body objects, each carrying x/y/z position, vx/vy/vz velocity, and ax/ay/az acceleration attributes. |
+| `dt` | Time-step duration used to scale the velocity and position updates. |
 
 **Side effects**
 
-- Mutates each body's velocity components (vx, vy, vz) by adding acceleration × dt.
-- Mutates each body's position components (x, y, z) by adding updated velocity × dt.
+- Mutates vx, vy, vz (velocity) attributes of every body in bodies using the body's acceleration multiplied by dt.
+- Mutates x, y, z (position) attributes of every body in bodies using the body's (newly updated) velocity multiplied by dt.
 
 **Uncertainties**
 
-- The class that owns this method (self's type) is not visible in the provided snippet.
-- The concrete type of the bodies iterable (list, tuple, set, generator) is not stated.
-- The units of dt (e.g. seconds, milliseconds) are not specified.
-- Whether the two-pass ordering is intentional (symplectic Euler) or incidental cannot be confirmed without broader context.
-- Whether bodies is expected to be a fixed-length collection or could be mutated externally during iteration is unclear.
+- The concrete class of the body objects is not visible in this snippet; assumed to be a project-local Body or similar class.
+- Whether dt is expressed in seconds or an arbitrary simulation unit is not stated in the code.
+- Whether accelerations (ax, ay, az) are expected to be set externally before calling step is not shown here.
 
 ```py
 def step(self, bodies, dt):
@@ -140,6 +140,11 @@ def step(self, bodies, dt):
             b.z += b.vz * dt
 ```
 
+**Call graph**
+
+- [main.py](main.py.md)
+  - [tick:46](main.py.md#fn-tick-43)
+
 ---
 
 ### total_energy <a id="fn-total_energy-62"></a>
@@ -152,36 +157,33 @@ def step(self, bodies, dt):
 
 **Description**
 
-Computes the total energy of a system of N bodies by summing their individual kinetic energies and subtracting the pairwise gravitational potential energy for every unique pair.
+Computes the total mechanical energy of an N-body system by summing the kinetic energy of all bodies and subtracting the pairwise gravitational potential energy.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The instance this method is bound to (no state is read or mutated). |
-| `bodies` | A sequence of body objects, each exposing .x, .y, .z, .mass, and .kinetic_energy(). |
+| `self` | The instance of the class containing this method (implicit). |
+| `bodies` | A collection (e.g. list) of body objects, each having x, y, z, mass attributes and a kinetic_energy() method. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A numeric value representing the total energy: sum of kinetic energies minus the sum of G*mi*mj/d over all unique pairs. |
+| `return value` | A numeric value (float) representing the total energy: sum of kinetic energies minus sum of pairwise gravitational potential energies (G*m_i*m_j/d). |
 
 **References**
 
+- [kinetic_energy](body.py.md#fn-kinetic_energy-29)
 - Vec3
 - [G](nbody.py.md#variables)
-- bodies[i].kinetic_energy
-- bodies[i].mass
-- bodies[i].x
-- bodies[i].y
-- bodies[i].z
 
 **Uncertainties**
 
-- The exact type of the bodies sequence (list, tuple, custom iterable) is not visible in this snippet.
-- The value and units of the module-level constant G are not shown.
-- The implementation of kinetic_energy() on each body is not visible here.
+- The value and scope of the gravitational constant G (module-level or class-level) are not visible in this snippet.
+- The exact container type of `bodies` (list, tuple, etc.) is not specified.
+- The implementation of `kinetic_energy()` on body objects is not shown.
+- Whether bodies is mutated or merely iterated cannot be confirmed beyond the visible read-only access.
 
 ```py
 def total_energy(self, bodies):
@@ -197,13 +199,18 @@ def total_energy(self, bodies):
         return e
 ```
 
+**Call graph**
+
+- [main.py](main.py.md)
+  - [tick:44](main.py.md#fn-tick-43)
+
 ## File-level variables <a id="variables"></a>
 
 | Variable | Line | Init | Description |
 | --- | --- | --- | --- |
-| `G` | 7 | number | Numeric constant representing the gravitational constant used in the N-body simulation's force calculations. |
-| `MIN_DIST` | 8 | number | A numeric constant that sets a lower bound on inter-body distance, used to prevent singularities (division by zero or extremely small values … |
-| `PARAMS` | 10 | table | A module-level parameter table (dictionary) in nbody.py that holds configuration values for the N-body simulation. |
+| `G` | 7 | number | Holds the gravitational constant used in the N-body simulation, typically multiplied with mass terms to compute pairwise gravitational force … |
+| `MIN_DIST` | 8 | number | A numeric constant in the N-body simulation that defines a minimum distance threshold, typically used to avoid singularities in pairwise for … |
+| `PARAMS` | 10 | table | A table-like collection of simulation parameters used by the N-body simulation in nbody.py. |
 
 ---
 _Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically._

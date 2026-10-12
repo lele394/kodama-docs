@@ -2,18 +2,18 @@
 
 ## Summary
 
-This file defines a Body class for an N-body simulation, providing a constructor (Body.new) that stores position, velocity, mass, and zeroed acceleration, a reset method, a method to apply an external force over a time step (Body.apply_force), and a method to compute kinetic energy (Body.kinetic_energy). It also declares file-level constants G (gravitational constant) and SOFTENING (gravitational softening parameter), which are presumably used by other modules for pairwise force calculations.
-**Main purpose:** To encapsulate the state and basic dynamics of a single simulated body (position, velocity, mass, and force application).
-**Role in project:** Serves as the core data-and-dynamics object for each particle in the N-body simulation, referenced by force-calculation and integration modules.
+Defines the Body object for an N-body simulation, storing position, velocity, mass, and acceleration for a single celestial body. Provides methods to construct a new body (Body.new), reset its kinematic state (Body.reset), apply an external force over a time step to update velocity via F=ma (Body.apply_force), and compute its kinetic energy (Body.kinetic_energy). The file also declares file-level constants G (gravitational constant) and SOFTENING (a softening parameter for gravitational calculations).
+**Main purpose:** Provides the fundamental Body class representing a single mass in the N-body simulation with methods for initialization, state reset, force integration, and kinetic-energy calculation.
+**Role in project:** Serves as the core per-body data model and physics primitive that other modules in the simulation (e.g., force computation, integration loops, or rendering) operate on.
 
 ## Functions
 
 | Function | Line | Parameters | Description |
 | --- | --- | --- | --- |
-| [Body.new](#fn-new-9) | 9 | self, x, y, z, vx, vy, vz, mass | Constructor for a Body object in the N-body simulation. Creates a new table with position, velocity, and mass fields initialised from the ar … |
-| [Body.reset](#fn-reset-19) | 19 | self, x, y, z, vx, vy, vz | Resets the position, velocity, and acceleration of a Body instance to the supplied coordinate and velocity values, zeroing all acceleration  … |
-| [Body.apply_force](#fn-apply_force-26) | 26 | self, fx, fy, fz, dt | Applies a force vector (fx, fy, fz) over a time step dt to the body by updating its velocity components according to F = m·a, assuming a sim … |
-| [Body.kinetic_energy](#fn-kinetic_energy-33) | 33 | self | Calculates and returns the kinetic energy of the body using the standard formula 0.5 * mass * (vx² + vy² + vz²). |
+| [Body.new](#fn-new-9) | 9 | self, x, y, z, vx, vy, vz, mass | Constructor that creates a new Body instance with the given position, velocity, and mass, initializing acceleration components to zero and s … |
+| [Body.reset](#fn-reset-19) | 19 | self, x, y, z, vx, vy, vz | Resets the Body's position and velocity to the supplied values and zeroes its acceleration fields. |
+| [Body.apply_force](#fn-apply_force-26) | 26 | self, fx, fy, fz, dt | Updates the body's velocity components (vx, vy, vz) by integrating an applied force over a time step, using the relation v += F * dt / m. |
+| [Body.kinetic_energy](#fn-kinetic_energy-33) | 33 | self | Computes and returns the kinetic energy of the body using the standard 3D formula (1/2 * mass * v²), where v is the magnitude of the velocit … |
 
 ### Body.new <a id="fn-new-9"></a>
 
@@ -25,34 +25,31 @@ This file defines a Body class for an N-body simulation, providing a constructor
 
 **Description**
 
-Constructor for a Body object in the N-body simulation. Creates a new table with position, velocity, and mass fields initialised from the arguments, sets acceleration components to zero, and returns the instance with Body as its metatable.
+Constructor that creates a new Body instance with the given position, velocity, and mass, initializing acceleration components to zero and setting up the metatable for class inheritance.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `x` | Initial x-coordinate of the body. |
-| `y` | Initial y-coordinate of the body. |
-| `z` | Initial z-coordinate of the body. |
-| `vx` | Initial velocity in the x-axis. |
-| `vy` | Initial velocity in the y-axis. |
-| `vz` | Initial velocity in the z-axis. |
+| `self` | The Body class table (passed implicitly via ':' syntax); used as the metatable __index target. |
+| `x` | Initial x position coordinate. |
+| `y` | Initial y position coordinate. |
+| `z` | Initial z position coordinate. |
+| `vx` | Initial x velocity component. |
+| `vy` | Initial y velocity component. |
+| `vz` | Initial z velocity component. |
 | `mass` | Mass of the body. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `self` | A new Body instance (a plain table with Body as its metatable) carrying x, y, z, vx, vy, vz, mass, and zeroed ax, ay, az fields. |
+| `self` | A new Body instance (a table) with position, velocity, mass, and zeroed acceleration fields. |
 
 **References**
 
 - [Body](body.lua.md)
 - setmetatable
-
-**Uncertainties**
-
-- Whether other methods on Body (e.g., a step or force-accumulation method) expect ax/ay/az to be pre-initialised to zero here or whether this is merely defensive.
 
 ```lua
 function Body:new(x, y, z, vx, vy, vz, mass)
@@ -84,29 +81,25 @@ end
 
 **Description**
 
-Resets the position, velocity, and acceleration of a Body instance to the supplied coordinate and velocity values, zeroing all acceleration components.
+Resets the Body's position and velocity to the supplied values and zeroes its acceleration fields.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The Body instance to reset. |
-| `x` | New x position coordinate. |
-| `y` | New y position coordinate. |
-| `z` | New z position coordinate. |
-| `vx` | New x velocity component. |
-| `vy` | New y velocity component. |
-| `vz` | New z velocity component. |
-
-**Outputs**
-
-| Name | Description |
-| --- | --- |
-| `return value` | Returns no explicit value (implicit nil in Lua). |
+| `self` | The Body instance being reset (implicit via colon syntax). |
+| `x` | New x-coordinate position. |
+| `y` | New y-coordinate position. |
+| `z` | New z-coordinate position. |
+| `vx` | New x-component of velocity. |
+| `vy` | New y-component of velocity. |
+| `vz` | New z-component of velocity. |
 
 **Side effects**
 
-- Mutates the self body object by overwriting its x, y, z, vx, vy, vz, ax, ay, and az fields.
+- Mutates self.x, self.y, self.z to the supplied position values.
+- Mutates self.vx, self.vy, self.vz to the supplied velocity values.
+- Sets self.ax, self.ay, self.az to 0.
 
 **References**
 
@@ -132,38 +125,39 @@ end
 
 **Description**
 
-Applies a force vector (fx, fy, fz) over a time step dt to the body by updating its velocity components according to F = m·a, assuming a simple Euler integration step.
+Updates the body's velocity components (vx, vy, vz) by integrating an applied force over a time step, using the relation v += F * dt / m.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `fx` | Force component along the x-axis applied to the body. |
-| `fy` | Force component along the y-axis applied to the body. |
-| `fz` | Force component along the z-axis applied to the body. |
-| `dt` | Time step (duration) over which the force is applied. |
+| `self` | The Body instance whose velocity is to be updated. |
+| `fx` | Force component along the x-axis. |
+| `fy` | Force component along the y-axis. |
+| `fz` | Force component along the z-axis. |
+| `dt` | Time step (duration over which the force is applied). |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | No value is returned; the function mutates the body's velocity in place. |
+| `return value` | No return value; the function mutates self.vx, self.vy, and self.vz in place. |
 
 **Side effects**
 
-- Mutates self.vx by adding fx * dt / self.mass.
-- Mutates self.vy by adding fy * dt / self.mass.
-- Mutates self.vz by adding fz * dt / self.mass.
+- Mutates self.vx, self.vy, and self.vz (the body's velocity state).
 
 **References**
 
-- [Body](body.lua.md)
+- Body.mass
+- Body.vx
+- Body.vy
+- Body.vz
 
 **Uncertainties**
 
-- Units of mass, force, and dt are not specified in this snippet.
-- Whether this is part of a larger integrator (e.g., velocity Verlet) or a standalone Euler step cannot be confirmed from this function alone.
-- Whether self.mass can be zero or negative is not guarded here.
+- Whether self.mass is guaranteed to be non-zero at call time; division by zero is not guarded.
+- The expected units or magnitude conventions for force components and dt are not stated in this snippet.
 
 ```lua
 function Body:apply_force(fx, fy, fz, dt)
@@ -185,23 +179,27 @@ end
 
 **Description**
 
-Calculates and returns the kinetic energy of the body using the standard formula 0.5 * mass * (vx² + vy² + vz²).
+Computes and returns the kinetic energy of the body using the standard 3D formula (1/2 * mass * v²), where v is the magnitude of the velocity vector (vx, vy, vz).
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The Body instance whose mass and velocity components are used. |
+| `self` | The Body instance whose kinetic energy is being computed (implicit via Lua colon syntax). |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return` | A numeric value equal to 0.5 * mass * (vx² + vy² + vz²), representing the body's kinetic energy. |
+| `return value` | A numeric value equal to 0.5 * mass * (vx² + vy² + vz²), representing the body's kinetic energy. |
+
+**References**
+
+- [Body](body.lua.md)
 
 **Uncertainties**
 
-- Whether mass and velocity components are expected to be positive; the formula assumes standard SI-style units but no validation is visible.
+- Units of mass and velocity are not specified in the code; kinetic energy units depend on those choices.
 
 ```lua
 function Body:kinetic_energy()
@@ -215,9 +213,9 @@ end
 
 | Variable | Line | Init | Description |
 | --- | --- | --- | --- |
-| `G` | 3 | number | A numeric constant (likely the gravitational constant) defined at module level in body.lua for use in the N-body simulation's force calculat … |
-| `SOFTENING` | 4 | number | A numeric softening constant used in the N-body simulation to avoid zero-division singularities when computing pairwise gravitational forces … |
-| `Body` | 6 | table | A table defined in body.lua that serves as the class or module table for body (celestial object) definitions in the N-body simulation demo. |
+| `G` | 3 | number | Numeric value representing the gravitational constant used in force calculations between bodies in the N-body simulation. |
+| `SOFTENING` | 4 | number | A numeric softening parameter in the N-body simulation, used to regularize gravitational force calculations and prevent singularities when b … |
+| `Body` | 6 | table | A table defined in body.lua that serves as the data structure or prototype for an individual body (e.g., position, velocity, mass) in the N- … |
 
 ---
 _Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically._

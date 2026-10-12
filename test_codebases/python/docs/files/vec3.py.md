@@ -2,23 +2,23 @@
 
 ## Summary
 
-vec3.py defines a lightweight Vec3 class representing a 3D vector with x, y, and z floating-point components. It provides standard vector arithmetic operations including addition, subtraction, scalar multiplication, dot product, length calculation, and normalization. The module also defines file-level constants (EPS, ZERO, TAG) and a tag() helper function for identifying vector instances.
-**Main purpose:** To supply a basic 3D vector type with common mathematical operations used throughout the simulation.
-**Role in project:** Serves as a low-level utility module that provides the Vec3 data type and arithmetic primitives consumed by other parts of the N-body simulation.
+The file defines a Vec3 class representing a 3D vector with float x, y, z components and provides standard vector arithmetic operations including addition, subtraction, scalar multiplication, dot product, length, and normalization. It also declares module-level constants EPS and ZERO, and a tag() function that returns a type identifier string. The class implements __repr__ for readable string output of vector values.
+**Main purpose:** To provide a lightweight 3D vector type with the essential arithmetic and geometric operations needed for physics computations.
+**Role in project:** It serves as a foundational math utility module within the N-body simulation project, supplying the vector type and operations used to represent positions, velocities, and forces.
 
 ## Functions
 
 | Function | Line | Parameters | Description |
 | --- | --- | --- | --- |
-| [tag](#fn-tag-8) | 8 |  | Returns the module-level constant TAG defined in vec3.py. |
-| [__init__](#fn-__init__-15) | 15 | self, x, y, z | Constructor for a 3D vector class that initializes the x, y, and z components from the provided arguments, converting each to a float. |
+| [tag](#fn-tag-8) | 8 |  | Returns the module-level constant TAG, which likely identifies the file or module for debugging or logging purposes. |
+| [__init__](#fn-__init__-15) | 15 | self, x, y, z | Constructor for a 3D vector object that stores three scalar components (x, y, z), each coerced to a float. All three components default to 0 … |
 | [add](#fn-add-21) | 21 | self, other | Performs component-wise addition of two 3D vectors and returns a new Vec3 instance representing the sum. |
-| [sub](#fn-sub-25) | 25 | self, other | Subtracts the components of another vector from this Vec3 and returns a new Vec3 containing the component-wise differences. |
-| [scale](#fn-scale-29) | 29 | self, s | Creates and returns a new Vec3 instance whose x, y, and z components are each multiplied by the scalar s. The original Vec3 is not modified. |
-| [dot](#fn-dot-33) | 33 | self, other | Computes the dot product of two 3D vectors by summing the products of their corresponding x, y, and z components. |
-| [length](#fn-length-37) | 37 | self | Computes the Euclidean length (magnitude) of the vector by taking the square root of its dot product with itself, returning at least the con … |
-| [normalize](#fn-normalize-45) | 45 | self | Normalizes the vector by scaling it to unit length. If the vector's length is at or below the EPS threshold, returns a zero vector instead o … |
-| [__repr__](#fn-__repr__-51) | 51 | self | Returns a human-readable string representation of the Vec3 instance, formatted as 'Vec3(x, y, z)' using the instance's coordinate attributes … |
+| [sub](#fn-sub-25) | 25 | self, other | Performs component-wise subtraction of another Vec3 from this instance, returning a new Vec3 whose x, y, and z components are the difference … |
+| [scale](#fn-scale-29) | 29 | self, s | Returns a new Vec3 whose x, y, and z components are each multiplied by the scalar s, effectively producing a scaled copy of the vector. |
+| [dot](#fn-dot-33) | 33 | self, other | Computes the scalar dot product of this 3D vector with another vector by summing the products of corresponding x, y, and z components. |
+| [length](#fn-length-37) | 37 | self | Computes the Euclidean norm (magnitude) of the vector by taking the square root of the dot product with itself. Returns the result clamped t … |
+| [normalize](#fn-normalize-45) | 45 | self | Returns a normalized (unit-length) copy of the vector by dividing it by its own magnitude. If the vector's length is at or below a small eps … |
+| [__repr__](#fn-__repr__-51) | 51 | self | Returns a human-readable string representation of the Vec3 instance, formatted as 'Vec3(x, y, z)' showing its three components. |
 
 ### tag <a id="fn-tag-8"></a>
 
@@ -26,7 +26,7 @@ vec3.py defines a lightweight Vec3 class representing a 3D vector with x, y, and
 
 **Description**
 
-Returns the module-level constant TAG defined in vec3.py.
+Returns the module-level constant TAG, which likely identifies the file or module for debugging or logging purposes.
 
 **Outputs**
 
@@ -40,7 +40,8 @@ Returns the module-level constant TAG defined in vec3.py.
 
 **Uncertainties**
 
-- The value or type of TAG is not visible in this snippet; it is defined elsewhere in vec3.py.
+- The actual value and type of TAG are not visible in the provided source.
+- The intended purpose of TAG (e.g., logging identifier, version string, debug marker) is not stated in the code.
 
 ```py
 def tag():
@@ -55,26 +56,30 @@ def tag():
 
 **Description**
 
-Constructor for a 3D vector class that initializes the x, y, and z components from the provided arguments, converting each to a float.
+Constructor for a 3D vector object that stores three scalar components (x, y, z), each coerced to a float. All three components default to 0.0.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | Instance reference. |
-| `x` | X component of the vector (default 0.0). |
-| `y` | Y component of the vector (default 0.0). |
-| `z` | Z component of the vector (default 0.0). |
+| `self` | The Vec3 instance being initialized. |
+| `x` | X component of the vector (default 0.0). Coerced to float. |
+| `y` | Y component of the vector (default 0.0). Coerced to float. |
+| `z` | Z component of the vector (default 0.0). Coerced to float. |
+
+**Outputs**
+
+| Name | Description |
+| --- | --- |
+| `return value` | Sets self.x, self.y, and self.z as float attributes on the instance. Returns None (implicit). |
 
 **Side effects**
 
-- Sets self.x to float(x).
-- Sets self.y to float(y).
-- Sets self.z to float(z).
+- Mutates the instance by setting .x, .y, and .z attributes to float values.
 
-**Uncertainties**
+**References**
 
-- The class name is not visible in the provided snippet; inferred to be a 3D vector class from the filename vec3.py.
+- float
 
 ```py
 def __init__(self, x=0.0, y=0.0, z=0.0):
@@ -101,22 +106,18 @@ Performs component-wise addition of two 3D vectors and returns a new Vec3 instan
 
 | Name | Description |
 | --- | --- |
-| `self` | The Vec3 instance whose components (x, y, z) are the left operand of the addition. |
-| `other` | Another object with x, y, z attributes representing the right operand of the addition. |
+| `self` | The current Vec3 instance whose components are added. |
+| `other` | A Vec3 instance whose x, y, and z components are added to self. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A new Vec3 instance whose x, y, z components are the element-wise sums of self and other. |
+| `Vec3` | A new Vec3 whose x, y, z components are the sums of the corresponding components of self and other. |
 
 **References**
 
 - Vec3
-
-**Uncertainties**
-
-- The exact type or class of the `other` parameter is not declared; only its x, y, z attributes are used.
 
 ```py
 def add(self, other):
@@ -135,20 +136,20 @@ def add(self, other):
 
 **Description**
 
-Subtracts the components of another vector from this Vec3 and returns a new Vec3 containing the component-wise differences.
+Performs component-wise subtraction of another Vec3 from this instance, returning a new Vec3 whose x, y, and z components are the differences of the corresponding components.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The Vec3 instance whose components are the left operand. |
-| `other` | A Vec3 (or compatible object) whose components are subtracted component-wise. |
+| `self` | The Vec3 instance from which components are subtracted. |
+| `other` | The Vec3 instance whose components are subtracted from self. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A new Vec3 instance with x = self.x - other.x, y = self.y - other.y, z = self.z - other.z. |
+| `return` | A new Vec3 with components (self.x - other.x, self.y - other.y, self.z - other.z). |
 
 **References**
 
@@ -156,7 +157,7 @@ Subtracts the components of another vector from this Vec3 and returns a new Vec3
 
 **Uncertainties**
 
-- Whether `other` is strictly typed as Vec3 or could be any object with x, y, z attributes.
+- Whether 'other' is type-checked or expected to be a Vec3 specifically, or if any object with x, y, z attributes would work.
 
 ```py
 def sub(self, other):
@@ -175,33 +176,34 @@ def sub(self, other):
 
 **Description**
 
-Creates and returns a new Vec3 instance whose x, y, and z components are each multiplied by the scalar s. The original Vec3 is not modified.
+Returns a new Vec3 whose x, y, and z components are each multiplied by the scalar s, effectively producing a scaled copy of the vector.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The Vec3 instance to scale. |
-| `s` | Scalar value to multiply each component by. |
+| `self` | The Vec3 instance providing the original x, y, z components. |
+| `s` | Scalar factor to multiply each component by. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `Vec3` | A new Vec3 with components (x*s, y*s, z*s). |
+| `return value` | A new Vec3 instance with components (self.x*s, self.y*s, self.z*s). |
 
 **References**
 
 - Vec3
 
-**Uncertainties**
-
-- The type of s is not annotated; it could be int, float, or another numeric type.
-
 ```py
 def scale(self, s):
         return Vec3(self.x * s, self.y * s, self.z * s)
 ```
+
+**Call graph**
+
+- [vec3.py](vec3.py.md)
+  - [normalize:49](vec3.py.md#fn-normalize-45)
 
 ---
 
@@ -215,30 +217,36 @@ def scale(self, s):
 
 **Description**
 
-Computes the dot product of two 3D vectors by summing the products of their corresponding x, y, and z components.
+Computes the scalar dot product of this 3D vector with another vector by summing the products of corresponding x, y, and z components.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The vector instance on which the method is called; provides x, y, z components. |
-| `other` | Another vector-like object with x, y, z components to take the dot product with. |
+| `self` | The Vec3 instance providing the first vector's x, y, z components. |
+| `other` | Another vector-like object with x, y, z attributes to dot with self. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return` | A scalar numeric value equal to self.x * other.x + self.y * other.y + self.z * other.z. |
+| `return value` | A scalar numeric value equal to self.x*other.x + self.y*other.y + self.z*other.z. |
 
 **Uncertainties**
 
-- The exact numeric type of the return value depends on the types of the x, y, z components (int vs float).
-- The type of 'other' is not enforced; any object with x, y, z attributes would work.
+- The exact class of 'other' is not annotated; it is assumed to be a Vec3 or Vec3-like object.
+- The class name (e.g. Vec3) is not visible in the provided snippet.
+- Whether x, y, z are plain floats or numpy/scipy types is not specified.
 
 ```py
 def dot(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
 ```
+
+**Call graph**
+
+- [vec3.py](vec3.py.md)
+  - [length:38](vec3.py.md#fn-length-37)
 
 ---
 
@@ -252,19 +260,19 @@ def dot(self, other):
 
 **Description**
 
-Computes the Euclidean length (magnitude) of the vector by taking the square root of its dot product with itself, returning at least the constant EPS to prevent a zero result.
+Computes the Euclidean norm (magnitude) of the vector by taking the square root of the dot product with itself. Returns the result clamped to a minimum value of EPS to guard against zero-length vectors.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The vector instance whose magnitude is being computed. |
+| `self` | The Vec3 instance whose length is computed. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return` | A float representing the vector's length, clamped to a minimum of EPS. |
+| `return value` | A float representing the vector's magnitude, guaranteed to be at least EPS. |
 
 **References**
 
@@ -273,14 +281,19 @@ Computes the Euclidean length (magnitude) of the vector by taking the square roo
 
 **Uncertainties**
 
-- The numeric value of EPS is defined elsewhere (likely a module-level constant in vec3.py).
-- The exact class name is not visible in the provided snippet, though the file name suggests a Vec3 type.
+- The numeric value of EPS is not visible in this snippet; it is presumably a module-level constant defined elsewhere in vec3.py.
+- Whether `dot` performs any additional side effects (e.g., validation) cannot be confirmed from this code alone.
 
 ```py
 def length(self):
         d = (self.dot(self)) ** 0.5
         return d if d >= EPS else EPS
 ```
+
+**Call graph**
+
+- [vec3.py](vec3.py.md)
+  - [normalize:46](vec3.py.md#fn-normalize-45)
 
 ---
 
@@ -294,32 +307,32 @@ def length(self):
 
 **Description**
 
-Normalizes the vector by scaling it to unit length. If the vector's length is at or below the EPS threshold, returns a zero vector instead of performing the division to avoid division by near-zero.
+Returns a normalized (unit-length) copy of the vector by dividing it by its own magnitude. If the vector's length is at or below a small epsilon threshold, a zero vector is returned instead to avoid division by zero.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The vector instance to normalize. |
+| `self` | The vec3 instance to normalize. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A zero vector (ZERO) if the length is <= EPS, otherwise a new vector scaled to unit length. |
+| `return value` | A unit-length vec3 (self scaled by 1/length), or the ZERO constant if the vector's length is <= EPS. |
 
 **References**
 
 - [EPS](vec3.py.md#variables)
 - [ZERO](vec3.py.md#variables)
-- self.length()
-- self.scale()
+- vec3.length
+- vec3.scale
 
 **Uncertainties**
 
-- The exact numeric value of the EPS constant.
-- Whether ZERO is a shared singleton or constructed per access.
-- Whether self.scale() returns a new vector or mutates in place and returns self.
+- Whether self.scale() mutates self in place or returns a new vector; the code treats the result as a return value but the internal implementation is not visible.
+- The exact value of EPS (module-level constant, not shown in this snippet).
+- The exact representation of ZERO (likely a vec3(0,0,0) constant, but not confirmed).
 
 ```py
 def normalize(self):
@@ -337,29 +350,25 @@ def normalize(self):
 
 **Description**
 
-Returns a human-readable string representation of the Vec3 instance, formatted as 'Vec3(x, y, z)' using the instance's coordinate attributes.
+Returns a human-readable string representation of the Vec3 instance, formatted as 'Vec3(x, y, z)' showing its three components.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The Vec3 instance whose coordinates are formatted into the string. |
+| `self` | The Vec3 instance whose components are displayed. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return` | A string of the form 'Vec3(x, y, z)' containing the values of the instance's x, y, and z attributes. |
+| `return value` | A string in the form 'Vec3({x}, {y}, {z})' where x, y, z are the attribute values of the instance. |
 
 **References**
 
 - Vec3.x
 - Vec3.y
 - Vec3.z
-
-**Uncertainties**
-
-- Whether x, y, z are plain numbers or nested objects; their string formatting depends on their own __str__ or __repr__.
 
 ```py
 def __repr__(self):
@@ -370,9 +379,9 @@ def __repr__(self):
 
 | Variable | Line | Init | Description |
 | --- | --- | --- | --- |
-| `EPS` | 3 | number | A numeric constant (likely a small floating-point epsilon threshold) defined in the vec3 module for use in numerical comparisons or toleranc … |
-| `ZERO` | 4 | table | A zero vector constant in the vec3 module, representing a 3D vector with all components set to zero, used as a neutral or default value in v … |
-| `TAG` | 5 | string | A string constant assigned in vec3.py, likely used as a short tag or label for logging or debugging output within the vector3 module. |
+| `EPS` | 3 | number | A numeric constant (EPS) defined in vec3.py, typically used as a small floating-point tolerance for near-equality comparisons on vector comp … |
+| `ZERO` | 4 | table | A module-level constant in the 3D vector (vec3) module representing the zero vector, initialized as a table (likely a tuple or list of three … |
+| `TAG` | 5 | string | A string constant defined in vec3.py, likely used as a tag or label identifier for the module or its logging output within the N-body simula … |
 
 ---
 _Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically._

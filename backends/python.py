@@ -65,10 +65,13 @@ def _comment_text(node):
 
 
 def _dotted(node):
-    """dotted_name / identifier -> ['a', 'b', 'c']; None if not a plain chain."""
+    """dotted_name / identifier / name -> ['a', 'b', 'c']; None otherwise.
+
+    `name` is the tree-sitter-python 0.25 node for a plain identifier
+    (e.g. the receiver of `obj.method()` or `math.sqrt()`)."""
     parts = []
-    while node is not None and node.type in ('dotted_name', 'identifier'):
-        if node.type == 'identifier':
+    while node is not None and node.type in ('dotted_name', 'identifier', 'name'):
+        if node.type in ('identifier', 'name'):
             parts.insert(0, _text(node))
             return parts
         ident = node.child_by_field_name('attribute')
@@ -156,7 +159,10 @@ def extract(source: str, relpath: str) -> dict:
             method = fn.child_by_field_name('attribute')
             if method is not None:
                 method = _text(method)
-                parts = _dotted(fn.child_by_field_name('value'))
+                receiver = fn.child_by_field_name('object')
+                if receiver is None:  # older grammar field name
+                    receiver = fn.child_by_field_name('value')
+                parts = _dotted(receiver)
                 if parts:
                     name = '.'.join(parts)
                 else:

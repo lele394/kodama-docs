@@ -2,17 +2,17 @@
 
 ## Summary
 
-nbody.lua defines the NBody module containing the core physics computations for a gravitational N-body simulation. It provides three methods: accelerations (pairwise gravitational acceleration with a MIN_DIST softening floor), step (a semi-implicit Euler integrator that updates velocities then positions), and total_energy (sum of kinetic and pairwise potential energy). The file also declares shared constants G and MIN_DIST and depends on an external vec3 helper for vector operations.
-**Main purpose:** To implement the gravitational force calculation, time-stepping, and energy computation for a small N-body system.
-**Role in project:** Serves as the core physics module of the demo project, supplying the force model and integrator that a driver or visualization layer would call to advance the simulation.
+Defines the NBody module containing the core physics routines for a 3D gravitational N-body simulation. It provides three methods: computing pairwise gravitational accelerations between bodies (with a minimum-distance cutoff to prevent singularities), performing a semi-implicit Euler integration step to advance velocities and positions, and calculating the total mechanical energy as the sum of kinetic and gravitational potential terms. The module relies on a global gravitational constant G, a vec3 helper library, and a MIN_DIST safety threshold.
+**Main purpose:** Implements the gravitational physics—acceleration calculation, time-stepping integration, and total energy computation—for an N-body system.
+**Role in project:** Acts as the physics engine module of the N-body simulation demo, supplying the core computational routines that drive gravitational interactions and system evolution.
 
 ## Functions
 
 | Function | Line | Parameters | Description |
 | --- | --- | --- | --- |
-| [NBody.accelerations](#fn-accelerations-18) | 18 | self, bodies | Computes pairwise gravitational accelerations for every body using Newton's inverse-square law, applying Newton's third law so each pair of  … |
-| [NBody.step](#fn-step-52) | 52 | self, bodies, dt | Advances an array of N-body particles by one time step using semi-implicit Euler integration, first updating velocities from accelerations a … |
-| [NBody.total_energy](#fn-total_energy-69) | 69 | self, bodies | Computes the total energy of an N-body system by summing the kinetic energy of each body and the negative gravitational potential energy bet … |
+| [NBody.accelerations](#fn-accelerations-18) | 18 | self, bodies | Computes the gravitational acceleration for every pair of bodies in the supplied array using Newton's law of universal gravitation. Each bod … |
+| [NBody.step](#fn-step-52) | 52 | self, bodies, dt | Advances the state of all bodies in the simulation by one time step using semi-implicit Euler integration: first updates velocities from acc … |
+| [NBody.total_energy](#fn-total_energy-69) | 69 | self, bodies | Computes the total mechanical energy of an N-body system by summing the kinetic energy of every body and the pairwise gravitational potentia … |
 
 ### NBody.accelerations <a id="fn-accelerations-18"></a>
 
@@ -25,24 +25,24 @@ nbody.lua defines the NBody module containing the core physics computations for 
 
 **Description**
 
-Computes pairwise gravitational accelerations for every body using Newton's inverse-square law, applying Newton's third law so each pair of bodies receives equal-and-opposite updates to their ax, ay, and az fields in place, with a MIN_DIST floor on the squared distance to prevent singularities.
+Computes the gravitational acceleration for every pair of bodies in the supplied array using Newton's law of universal gravitation. Each body's ax, ay, az fields are first zeroed, then updated with the net pairwise acceleration (equal-and-opposite contributions from every other body), with the inter-body distance clamped to MIN_DIST to prevent division by zero.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The NBody table (object) on which this method is called; carries configuration or constants such as MIN_DIST. |
-| `bodies` | Array of body objects, each expected to have position (x, y, z), mass, and acceleration (ax, ay, az) fields. |
+| `self` | The NBody instance; may carry the gravitational constant G or other simulation parameters. |
+| `bodies` | Array of body tables (each with mass, position, and acceleration fields) to which pairwise gravitational accelerations are applied. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | Returns the same `bodies` table with all bodies' ax, ay, and az fields populated (zeroed first, then filled with the net gravitational acceleration). |
+| `bodies` | The same bodies table, now with ax, ay, az fields populated with the computed net gravitational acceleration for each body. |
 
 **Side effects**
 
-- Mutates each body's ax, ay, and az fields in place (zeroed at the start, then accumulated over all pairs).
+- Mutates every body in the bodies array by writing to its ax, ay, and az fields.
 
 **References**
 
@@ -51,9 +51,9 @@ Computes pairwise gravitational accelerations for every body using Newton's inve
 
 **Uncertainties**
 
-- The exact role of math.sqrt in the force computation (e.g., computing distance from squared distance for the unit direction vector) is inferred, not directly visible.
-- Whether `self` is used to look up MIN_DIST or a gravitational constant G, or whether those are globals.
-- The exact structure of each body object beyond x, y, z, mass, ax, ay, az is not confirmed by the summary alone.
+- The exact gravitational constant G used in the formula is not visible; it may be stored on self or as a module-level constant.
+- The numeric value of MIN_DIST is not shown in the summarized code.
+- Whether self carries any other state (e.g., a softening parameter beyond MIN_DIST) is unknown.
 
 ```lua
 function NBody:accelerations(bodies)
@@ -107,32 +107,30 @@ end
 
 **Description**
 
-Advances an array of N-body particles by one time step using semi-implicit Euler integration, first updating velocities from accelerations and then updating positions from the new velocities.
+Advances the state of all bodies in the simulation by one time step using semi-implicit Euler integration: first updates velocities from accumulated accelerations, then updates positions from the new velocities.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
 | `self` | The NBody instance (method receiver). |
-| `bodies` | Array of body objects, each having x, y, z, vx, vy, vz, ax, ay, az numeric fields. |
-| `dt` | Time-step size for the integration update. |
+| `bodies` | Array of body objects, each carrying x/y/z position, vx/vy/vz velocity, and ax/ay/az acceleration fields. |
+| `dt` | Time-step duration for the integration step. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | No explicit return value; the function mutates the bodies array in place. |
+| `return value` | No explicit return value; the function returns nil but mutates each element of the bodies array in place (x, y, z, vx, vy, vz). |
 
 **Side effects**
 
-- Mutates each body's velocity components (vx, vy, vz) by adding acceleration times dt.
-- Mutates each body's position components (x, y, z) by adding the updated velocity times dt.
+- Mutates every body in the passed-in bodies array by updating its velocity components (vx, vy, vz) and then its position components (x, y, z).
 
 **Uncertainties**
 
-- The exact structure/type of each body object is not defined in this snippet; field names are inferred from usage.
-- Whether the function is intended to be called at a fixed or variable dt is not clear from this code alone.
-- No return value is explicitly declared; it is assumed to return nil as is typical in Lua when no return statement is present.
+- Acceleration fields (ax, ay, az) are read but never set here; they are presumably computed by the caller (tick) or another function before step is invoked.
+- Whether the two-loop structure (all velocities before all positions) is intentional to avoid order-dependent coupling or simply a readability choice.
 
 ```lua
 function NBody:step(bodies, dt)
@@ -169,32 +167,34 @@ end
 
 **Description**
 
-Computes the total energy of an N-body system by summing the kinetic energy of each body and the negative gravitational potential energy between every unique pair of bodies.
+Computes the total mechanical energy of an N-body system by summing the kinetic energy of every body and the pairwise gravitational potential energy between all unique body pairs.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The NBody instance (implicit receiver via colon call syntax); not directly used in the body. |
-| `bodies` | Array of body objects, each exposing x, y, z, mass fields and a kinetic_energy() method. |
+| `self` | The NBody instance (implicit method receiver); not directly used in the body of the function. |
+| `bodies` | Array of body objects, each expected to expose x, y, z, mass fields and a kinetic_energy() method. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A number representing the total energy: sum of all kinetic energies minus the sum of G*m_i*m_j/d over all pairs. |
+| `e` | Total energy: sum of all bodies' kinetic energies plus the sum of -G*m_i*m_j/d over all unique pairs (i<j). |
 
 **References**
 
 - vec3.length
 - vec3.sub
 - [G](nbody.lua.md#variables)
-- bodies[i].kinetic_energy
+- [NBody.total_energy](nbody.lua.md#fn-total_energy-69)
+- bodies[i]:kinetic_energy
 
 **Uncertainties**
 
-- The value and origin of the global constant G (gravitational constant) are not defined in this snippet.
-- The exact interface of body objects (kinetic_energy method signature, field layout) is inferred only from usage here.
+- The implementation of kinetic_energy() on individual body objects is not visible.
+- G is referenced as a global constant but its definition is not shown in this snippet.
+- The full structure of body objects (e.g., whether mass is a number or a method) is inferred only from usage.
 
 ```lua
 function NBody:total_energy(bodies)
@@ -225,10 +225,10 @@ end
 
 | Variable | Line | Init | Description |
 | --- | --- | --- | --- |
-| `vec3` | 3 | call | A 3D vector type or factory produced by a function call, used as the basic vector representation for positions, velocities, or accelerations … |
-| `G` | 5 | number | Holds the gravitational constant (G) used in the N-body simulation to compute pairwise gravitational forces between bodies. |
-| `MIN_DIST` | 6 | number | A numeric constant representing the minimum distance threshold used in the N-body simulation, typically to avoid singularities or numerical  … |
-| `NBody` | 8 | table | A table in nbody.lua that serves as the container for body data (e.g., positions, velocities, masses) used in the N-body simulation. |
+| `vec3` | 3 | call | File-level reference in the N-body simulation module, initialized by a function call, likely providing 3D vector operations (position, veloc … |
+| `G` | 5 | number | Numeric constant representing the gravitational constant used in the N-body simulation's force calculations between bodies. |
+| `MIN_DIST` | 6 | number | A numeric constant in nbody.lua that defines a minimum distance threshold, typically used to clamp pairwise body separations and avoid divis … |
+| `NBody` | 8 | table | A table that holds the state data (such as position, velocity, mass) of a body within the N-body simulation. |
 
 ---
 _Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically._

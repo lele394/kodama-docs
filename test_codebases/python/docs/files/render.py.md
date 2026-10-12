@@ -2,17 +2,17 @@
 
 ## Summary
 
-render.py provides a lightweight text-based renderer for an N-body simulation. It maps body positions and masses onto a fixed-size character grid (WIDTH x HEIGHT) using a color palette of symbols, and formats a title/stats line showing body count and total energy. The module exposes three methods: draw_body for a single body's grid cell and mark, draw_all to composite all bodies into a frame of strings, and stats_line for the header display.
-**Main purpose:** To convert N-body simulation state into a simple ASCII grid frame and a formatted stats line for terminal display.
-**Role in project:** Serves as the rendering/display layer in the small N-body simulation demo, translating numeric simulation data into a character-grid output without performing any physics computation.
+This module provides terminal-based rendering for an N-body simulation. It maps body coordinates to a fixed-width text grid using a linear coordinate transformation and assigns character marks based on body mass via a palette. It also formats a status line containing the simulation title, body count, and total energy.
+**Main purpose:** To render N-body simulation state as a text-grid display and a summary status line for terminal output.
+**Role in project:** Serves as the display/output layer of the N-body simulation demo, converting internal simulation state into human-readable terminal graphics.
 
 ## Functions
 
 | Function | Line | Parameters | Description |
 | --- | --- | --- | --- |
-| [draw_body](#fn-draw_body-13) | 13 | self, body | Converts a simulation body's world coordinates into screen-pixel coordinates and selects a display mark from PALETTE based on the body's mas … |
-| [draw_all](#fn-draw_all-21) | 21 | self, bodies | Renders a list of bodies onto a fixed-size text grid and returns the grid as a list of row strings. Each body's character mark is placed at  … |
-| [stats_line](#fn-stats_line-29) | 29 | self, n, energy | Returns a formatted status line string displaying the simulation title, the number of bodies, and the total energy in scientific notation wi … |
+| [draw_body](#fn-draw_body-13) | 13 | self, body | Converts a body's world coordinates into clamped pixel coordinates for rendering and selects a palette mark based on the body's mass. Return … |
+| [draw_all](#fn-draw_all-21) | 21 | self, bodies | Renders all simulation bodies onto a character grid of fixed dimensions and returns the grid as a list of strings, one per row. |
+| [stats_line](#fn-stats_line-29) | 29 | self, n, energy | Formats and returns a human-readable status string containing the simulation title, the number of bodies, and the total energy in scientific … |
 
 ### draw_body <a id="fn-draw_body-13"></a>
 
@@ -24,20 +24,20 @@ render.py provides a lightweight text-based renderer for an N-body simulation. I
 
 **Description**
 
-Converts a simulation body's world coordinates into screen-pixel coordinates and selects a display mark from PALETTE based on the body's mass. Returns a tuple of (clamped_x, clamped_y, mark).
+Converts a body's world coordinates into clamped pixel coordinates for rendering and selects a palette mark based on the body's mass. Returns a tuple of (x_pixel, y_pixel, mark).
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | Instance of the render class (implicit). |
-| `body` | A body object providing .x, .y (world coordinates) and .mass attributes. |
+| `self` | Instance of the containing render class. |
+| `body` | A body object with x, y, and mass attributes to be rendered. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A 3-tuple: (clamped_ix, clamped_iy, mark), where ix/iy are integer pixel coordinates clamped to [0, WIDTH-1]/[0, HEIGHT-1] and mark is an entry from PALETTE selected by body.mass. |
+| `return value` | A 3-element tuple: (clamped_x_pixel, clamped_y_pixel, mark) where coordinates are clamped to [0, WIDTH-1] / [0, HEIGHT-1] and mark is a palette entry chosen by abs(body.mass) % len(PALETTE). |
 
 **References**
 
@@ -47,8 +47,8 @@ Converts a simulation body's world coordinates into screen-pixel coordinates and
 
 **Uncertainties**
 
-- The type and structure of PALETTE entries (e.g., RGB tuple, string, drawing primitive) is not visible in this function.
-- The exact coordinate system convention (e.g., whether origin is top-left) is not stated here.
+- The exact types of WIDTH, HEIGHT, and PALETTE are not visible (presumably module-level constants or class attributes).
+- The structure of the body object (e.g., whether x, y, mass are simple attributes or properties) is not defined in this snippet.
 
 ```py
 def draw_body(self, body):
@@ -58,6 +58,11 @@ def draw_body(self, body):
         return (min(max(ix, 0), WIDTH - 1),
                 min(max(iy, 0), HEIGHT - 1), mark)
 ```
+
+**Call graph**
+
+- [render.py](render.py.md)
+  - [draw_all:24](render.py.md#fn-draw_all-21)
 
 ---
 
@@ -71,33 +76,31 @@ def draw_body(self, body):
 
 **Description**
 
-Renders a list of bodies onto a fixed-size text grid and returns the grid as a list of row strings. Each body's character mark is placed at the coordinates returned by draw_body.
+Renders all simulation bodies onto a character grid of fixed dimensions and returns the grid as a list of strings, one per row.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The renderer instance that provides draw_body. |
-| `bodies` | Iterable of body objects to be rendered onto the grid. |
+| `self` | Instance of the renderer class that provides the draw_body method. |
+| `bodies` | Iterable of body objects to be rendered; each is passed to self.draw_body. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A list of strings, one per grid row, representing the rendered scene. |
+| `return value` | A list of strings, each representing one row of the rendered grid (HEIGHT strings, each WIDTH characters long). |
 
 **References**
 
 - [WIDTH](render.py.md#variables)
 - [HEIGHT](render.py.md#variables)
-- self.draw_body
+- [draw_body](render.py.md#fn-draw_body-13)
 
 **Uncertainties**
 
-- The values and origin of WIDTH and HEIGHT (likely module-level constants in render.py).
-- The exact return signature of draw_body (inferred as a 3-tuple of int, int, str).
-- Whether ix or iy can fall outside grid bounds, which would raise an IndexError.
-- The concrete type of elements in the bodies iterable (likely a Body class from another module).
+- The exact values or definitions of WIDTH and HEIGHT (presumably module-level constants in render.py).
+- What self.draw_body returns for ix, iy, mark and whether it mutates the body object.
 
 ```py
 def draw_all(self, bodies):
@@ -107,6 +110,11 @@ def draw_all(self, bodies):
             grid[iy][ix] = mark
         return ["".join(row) for row in grid]
 ```
+
+**Call graph**
+
+- [main.py](main.py.md)
+  - [tick:47](main.py.md#fn-tick-43)
 
 ---
 
@@ -120,43 +128,44 @@ def draw_all(self, bodies):
 
 **Description**
 
-Returns a formatted status line string displaying the simulation title, the number of bodies, and the total energy in scientific notation with three decimal places.
+Formats and returns a human-readable status string containing the simulation title, the number of bodies, and the total energy in scientific notation.
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `self` | The renderer instance owning this method. |
+| `self` | Instance of the render class calling this method. |
 | `n` | Number of bodies in the simulation. |
-| `energy` | Total energy of the simulation. |
+| `energy` | Total energy value to be formatted in scientific notation. |
 
 **Outputs**
 
 | Name | Description |
 | --- | --- |
-| `return value` | A formatted string in the form '<TITLE>: <n> bodies, E=<energy:.3e>'. |
+| `return value` | A formatted string like '<TITLE>: <n> bodies, E=<energy in 3-dig sci-notation>'. |
 
 **References**
 
 - [TITLE](render.py.md#variables)
-
-**Uncertainties**
-
-- The exact value of the TITLE constant used in the format string.
 
 ```py
 def stats_line(self, n, energy):
         return f"{TITLE}: {n} bodies, E={energy:.3e}"
 ```
 
+**Call graph**
+
+- [main.py](main.py.md)
+  - [tick:48](main.py.md#fn-tick-43)
+
 ## File-level variables <a id="variables"></a>
 
 | Variable | Line | Init | Description |
 | --- | --- | --- | --- |
-| `WIDTH` | 3 | number | A numeric constant defining the pixel width of the rendering area used by the N-body simulation visualization in render.py. |
-| `HEIGHT` | 4 | number | A numeric constant defining the height (in pixels) of the rendering surface used to draw the N-body simulation. It is referenced within the  … |
-| `TITLE` | 5 | string | A string constant defined in render.py that holds a title, most likely used as the display or window title for the simulation's rendering su … |
-| `PALETTE` | 6 | table | A color palette definition in render.py, likely holding a sequence of color values used when drawing the N-body simulation objects. |
+| `WIDTH` | 3 | number | Numeric constant in render.py that defines the width dimension (likely of the rendering canvas or display window) for the N-body simulation  … |
+| `HEIGHT` | 4 | number | Numeric value defining the vertical dimension (height) of the render area used in the N-body simulation visualization. |
+| `TITLE` | 5 | string | A string constant holding the title displayed for the simulation's rendering window or frame in the N-body demo project. |
+| `PALETTE` | 6 | table | A color palette (tabular collection of colors) defined in render.py, likely used to map simulation states or bodies to visual colors during  … |
 
 ---
 _Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically._
