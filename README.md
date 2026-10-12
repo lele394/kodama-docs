@@ -122,6 +122,38 @@ HTML in the browser:
 - Rendering is deterministic (`web/render.py`) — only the markdown subset
   kodama-docs itself generates is supported.
 
+## Testing on the sample codebases
+
+`test_codebases/` holds two small, self-contained **N-body simulation**
+samples — one per supported language — built to exercise every feature:
+file/variable/function extraction, developer-comment gluing (including a
+deliberate negative case), long functions for chunk-and-merge, method and
+class style OOP, and external-module imports. Generated docs land in
+`test_codebases/<lang>/docs/`, the LLM cache in `test_codebases/<lang>/data/`.
+
+To run the tool on a sample (from the repo root):
+
+```bash
+source .venv/bin/activate
+python main.py --config test_codebases/lua/settings.yaml
+python main.py --config test_codebases/python/settings.yaml
+
+# then browse the results in the browser:
+python main.py --config test_codebases/lua/settings.yaml --serve
+```
+
+Notes:
+
+- The LLM phase needs an `.env` (it already exists in both sample dirs and at
+  the repo root — all git-ignored); `base_url: env` / `api_key: env` in the
+  sample configs pick it up, config directory first, then repo root.
+- Runs are fingerprint-cached, so re-running is cheap — unchanged symbols are
+  never re-generated. `--fresh` re-extracts from scratch, `--no-llm` skips
+  the LLM phase (extraction + graph + render only), `--regenerate` wipes
+  `docs/` + `data/` and rebuilds everything.
+- The samples are small on purpose so a full run (a few dozen LLM tasks at
+  `concurrency: 4`) finishes quickly even on a slow local endpoint.
+
 ## Configuration
 
 Everything lives in one YAML file (see `settings.yaml` for a fully annotated
@@ -266,6 +298,7 @@ backends/
   python.py          # Python backend (tree-sitter-python)
 prompts/           # system prompts: function / chunk / variable / summary
 settings.yaml      # default config (game codebase)
+test_codebases/    # small lua + python N-body samples for end-to-end testing
 configs/
   test.yaml        # small local test corpus
   self.yaml        # kodama-docs documenting itself (Python)
