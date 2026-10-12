@@ -22,15 +22,47 @@ tree-sitter grammar; adding a language is a single small backend file).
 
 ---
 
-## Planned future addition
+## Developper notes 
+
+Hi, I'm a PhD student working in sustainable computing. In the last few years,
+I've seen AI get thrown at tasks for no real reasons other than for the sake
+of it. Lots of code is being generated everyday without any care in the world
+for who will actually read it, if anyone actually does. I am myself a victim 
+of such crimes, and I hate spending time documenting. This project aims to
+provide a tool that uses AI in a smart way: instead of throwing compute at 
+the problem, deterministic parts of the workflow is done with good old logic.
+AI is here to provide overviews and descriptions, to augment the documentation,
+not be its source of truth. I hope this project can help some of you stuck in 
+the bowels of strange and unfamiliar code. Cheers!
+
+---
+
+## Planned future 
+
+### Features
+
+- [ ] Manual documentation
+- [ ] Graph mode optimizations (high node counts)
+
+### Planned language support 
 
 - [ ] C support
 - [ ] C++ support
 - [ ] Fortran support
 - [ ] Rust support
 
-- [ ] 
+### Long-term planned feature
 
+- [ ] Smart Git integration (use diffs to decide what to reprocess)
+
+### Planned review
+
+I will experiment a lot with how the system handles context for the summaries.
+This is bound to potentiall change a lot. Same goes for pronts, where sometimes,
+I expect the need for language-specific prompts. This will also be addressed.
+
+Due to the limited amount of time that me, and my trusty Qwen3.8 27b with its 
+RTX3090 have, dev might be slow. Helping hands are always welcome!
 
 ---
 
