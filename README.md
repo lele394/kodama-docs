@@ -22,7 +22,7 @@ tree-sitter grammar; adding a language is a single small backend file).
 
 ---
 
-## Developper notes 
+## Developer notes 
 
 Hi, I'm a PhD student working in sustainable computing. In the last few years,
 I've seen AI get thrown at tasks for no real reasons other than for the sake
