@@ -110,7 +110,7 @@ def _classify(node):
     if node is None:
         return 'empty'
     t = node.type
-    if t in ('dictionary', 'list_display', 'set_display', 'tuple'):
+    if t in ('dictionary', 'list', 'set', 'list_display', 'set_display', 'tuple'):
         return 'table'
     if t == 'string':
         return 'string'

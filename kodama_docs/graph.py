@@ -110,7 +110,18 @@ def build_graph(files):
         fns = f.get('functions') or []
         builtins = builtins_for(rp)
 
-        def resolve_callee(name):
+        def resolve_callee(name, method=None):
+            if method:
+                # method call `x:m(...)`: prefer an exact qualified match
+                # (`x.m` known), then a method name unique across the
+                # project; anything ambiguous stays unlinked below
+                if name:
+                    qn = f'{name}.{method}'
+                    if qn in qual_map:
+                        return qual_map[qn]
+                cands = short_map.get(method)
+                if cands and len(cands) == 1:
+                    return cands[0]
             if name in qual_map:
                 return qual_map[name]
             last = name.rsplit('.', 1)[-1]
@@ -131,7 +142,7 @@ def build_graph(files):
             return best[1] if best else None
 
         for c in f.get('calls') or []:
-            tgt = resolve_callee(c['callee'])
+            tgt = resolve_callee(c['callee'], c.get('method'))
             if not g.has_node(tgt) and any(
                     tgt.startswith(p) for p in ('builtin:', 'ext:', 'mod:')):
                 kind, nm = tgt.split(':', 1)

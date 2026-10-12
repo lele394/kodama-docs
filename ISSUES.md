@@ -6,7 +6,7 @@ updated as fixes land.
 
 ## 1. CRITICAL (Lua) — colon-method function definitions are dropped entirely
 
-**Status: OPEN (reproduced, root-caused)**
+**Status: FIXED (verified — see "Fixes landed")**
 
 Lua `function T:m(...)` (colon / method-definition) syntax produces no
 function record at all. Consequences observed in the generated docs:
@@ -36,6 +36,14 @@ silently skipped in `walk()`.
 e.g. `Body.new`, and prepend the implicit `self` parameter so Lua method docs
 match Python's explicit `self`.
 
+**Fix landed:** `backends/lua.py` — `_dotted()` gained an `allow_method`
+mode following `method_index_expression`, and the `function_declaration` case
+in `walk()` now names colon methods `Table.method` and prepends the implicit
+`self` parameter. Verified: body.lua 4/4 and nbody.lua 3/3 methods extracted
+(e.g. `Body.new(self, x, y, z, vx, vy, vz, mass)`,
+`NBody.accelerations(self, bodies)`), including the multi-line developer
+comment on `NBody:accelerations` and the chunk-and-merge path for it.
+
 ## 2. MINOR (Lua) — method calls on indexed tables not recorded
 
 **Status: OPEN (accepted limitation for now)**
@@ -60,6 +68,53 @@ tree-sitter-python 0.25 the literal node types are `list` and `set`
 (verified by dumping parse trees). Dictionary and tuple still map correctly.
 
 **Fix plan:** add `list` and `set` to the `table` branch of `_classify()`.
+
+**Fix landed:** `backends/python.py` — `_classify()` now maps `list` and
+`set` (with the legacy `list_display`/`set_display` names kept for
+compatibility) to `table`. Verified: `PALETTE` renders as init `table` in
+`render.py`'s variables table.
+
+## 5. MINOR (both) — method-call edges never linked to the method
+
+**Status: FIXED (verified — see "Fixes landed")**
+
+Even when a method call was recorded (Lua `sim:accelerations(bodies)`,
+`Body:new(...)`; Python dotted calls), the graph resolver only used the
+receiver name and ignored the recorded `method` field, so every call on an
+instance resolved to an `ext:` node (`ext:sim`, `ext:Body`). Methods
+therefore had no "Call graph" (callers) section at all — e.g. `Body.new` and
+`NBody.accelerations` showed none despite being called from `main.lua`.
+
+**Root cause (identified in `kodama_docs/graph.py`):** `resolve_callee()`
+was called with `c['callee']` only; `c['method']` was unused.
+
+**Fix landed:** `resolve_callee(name, method)` now tries, for method calls,
+(1) an exact qualified match `name.method` in the qualified-name map (covers
+`Body:new` → `Body.new`), then (2) a method name that is unique across the
+project (`accelerations` → `NBody.accelerations`). Ambiguous method names
+fall through to the previous receiver-based resolution, keeping the
+conservative "ambiguous stays unlinked" policy. Verified: `Body.new`,
+`NBody.accelerations`, `NBody.step`, `NBody.total_energy` now list their
+callers in `main.lua`/`nbody.lua`.
+
+## 6. MINOR (Python) — method calls with plain-name receivers dropped
+
+**Status: OPEN (root-caused, fix pending)**
+
+In the Python sample, calls whose receiver is a plain name are dropped
+entirely: `b.kinetic_energy()` in `nbody.py`, `math.sqrt(d2)`, and
+`renderer.draw(...)`-style instance calls never reach the calls list (only
+bare-name calls like `len`, `range`, `Vec3` are recorded). So `NBody.total_energy`
+has no outgoing CALLS edge to `Body.kinetic_energy` or `Vec3.length`.
+
+**Root cause (identified in `backends/python.py`):** `note_call()` records an
+`attribute` callee only when `_dotted()` can resolve its receiver; with
+tree-sitter-python 0.25 a plain receiver is a `name` node, which `_dotted()`
+does not follow, so the receiver becomes `expr` and `note_call()` bails out.
+
+**Fix plan:** accept `name` as a base node in `_dotted()` (recording the
+receiver as a bare name, e.g. callee `b` + method `kinetic_energy`), letting
+graph resolution in issue 5 link unique method names.
 
 ## 4. NOTE (Python) — class methods are not qualified with the class name
 

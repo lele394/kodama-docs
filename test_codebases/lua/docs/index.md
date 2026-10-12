@@ -4,9 +4,9 @@
 
 | File | Lines | Functions | Variables |
 | --- | --- | --- | --- |
-| [body.lua](files/body.lua.md) | 39 | 0 | 3 |
+| [body.lua](files/body.lua.md) | 39 | 4 | 3 |
 | [main.lua](files/main.lua.md) | 62 | 4 | 6 |
-| [nbody.lua](files/nbody.lua.md) | 87 | 0 | 4 |
+| [nbody.lua](files/nbody.lua.md) | 87 | 3 | 4 |
 | [vec3.lua](files/vec3.lua.md) | 50 | 6 | 4 |
 
 ---

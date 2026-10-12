@@ -376,7 +376,7 @@
    "relpath": "render.py",
    "name": "PALETTE",
    "line": 6,
-   "init": "expr",
+   "init": "table",
    "file_id": "file:render.py",
    "id": "var:render.py::PALETTE@6"
   },

@@ -97,7 +97,7 @@ end
 **Call graph**
 
 - [nbody.lua](nbody.lua.md)
-  - [top-level:77](nbody.lua.md)
+  - [NBody.total_energy:77](nbody.lua.md#fn-total_energy-69)
 
 ---
 
@@ -239,7 +239,7 @@ end
 **Call graph**
 
 - [nbody.lua](nbody.lua.md)
-  - [top-level:77](nbody.lua.md)
+  - [NBody.total_energy:77](nbody.lua.md#fn-total_energy-69)
 - [vec3.lua](vec3.lua.md)
   - [V.normalize:43](vec3.lua.md#fn-normalize-42)
 

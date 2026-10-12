@@ -41,7 +41,7 @@ Constructs a table of Body objects representing an N-body system with one massiv
 
 **References**
 
-- [Body](main.lua.md#variables)
+- [Body](body.lua.md)
 - math.sqrt
 - math.cos
 - math.sin
@@ -109,7 +109,7 @@ Creates a table of n randomly-generated Body objects by seeding the pseudo-rando
 
 - math.randomseed
 - table.insert
-- [Body](main.lua.md#variables)
+- [Body](body.lua.md)
 - math.random
 
 **Uncertainties**
@@ -224,7 +224,7 @@ Initialises an N-body system (circular or random based on the global MODE), then
 - [make_random_system](main.lua.md#fn-make_random_system-26)
 - [FPS](main.lua.md#variables)
 - [RUNS](main.lua.md#variables)
-- [NBody](main.lua.md#variables)
+- [NBody](nbody.lua.md)
 - [tick](main.lua.md#fn-tick-39)
 - os.time
 

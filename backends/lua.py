@@ -50,8 +50,13 @@ def _ident(node):
     return _text(node) if node is not None and node.type == 'identifier' else None
 
 
-def _dotted(node):
-    """dot_index_expression -> ['a', 'b', 'c']; None if not a plain chain."""
+def _dotted(node, allow_method=False):
+    """dot_index_expression -> ['a', 'b', 'c']; None if not a plain chain.
+
+    With allow_method=True, a trailing method_index_expression (the colon
+    form used in method definitions, e.g. `Body:new`) is also followed,
+    with the method name becoming the last part.
+    """
     parts = []
     while node is not None:
         if node.type == 'identifier':
@@ -63,6 +68,13 @@ def _dotted(node):
                 return None
             parts.insert(0, _text(name))
             node = node.children[0]
+            continue
+        if allow_method and node.type == 'method_index_expression':
+            method = node.child_by_field_name('method')
+            if method is None or method.type != 'identifier':
+                return None
+            parts.insert(0, _text(method))
+            node = node.child_by_field_name('table')
             continue
         return None
     return None
@@ -232,15 +244,19 @@ def extract(source: str, relpath: str) -> dict:
         if t == 'function_declaration':
             nm = node.child_by_field_name('name')
             fname = qual = None
+            is_method = nm is not None and nm.type == 'method_index_expression'
             ident = _ident(nm)
             if ident:
                 fname = qual = ident
             else:
-                parts = _dotted(nm) if nm is not None else None
+                parts = _dotted(nm, allow_method=is_method) if nm is not None else None
                 if parts:
                     fname, qual = parts[-1], '.'.join(parts)
             if fname:
                 params, vararg = _params(node)
+                if is_method and (not params or params[0] != 'self'):
+                    # colon methods receive an implicit `self` first argument
+                    params = ['self'] + list(params)
                 add_fn(fname, qual, _row(node), node.end_point[0] + 1,
                        params, vararg,
                        _dev_comment(comments, _row(node), _comment_text))
