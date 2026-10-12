@@ -111,19 +111,52 @@ HTML in the browser:
   unrolled on demand.
 - **Sidebar — file tree + fuzzy search** (docs pages only; `web/sidebar.js`).
   A collapsible left sidebar (the `☰ files` button in the top bar toggles
-  it) shows the hierarchy of the doc files with per-directory and
-  per-file collapse, each file's function and variable symbols, and an
-  `index` row at the top. The search box at its top fuzzy-matches files,
-  functions and variables (same subsequence scorer as the `/graph` bar,
-  `web/fuzzy.js`) and replaces the tree with the ranked hits; `Enter`
-  opens the first hit, `Esc` clears, and `/` focuses the box. Function
-  rows link to their `#fn-…` anchor; variable rows link to the page's
-  `#variables` section (markdown only generates one anchor per
-  file's variables). Sidebar open/closed and expanded state are stored
-  per browser (localStorage: `kodama.sidebar.open`, `kodama.sidebar.expand`)
-  — deliberately unlike the theme, which the server persists for all
-  browsers. Data comes from a slim `/api/symbols` endpoint (a trimmed
-  `meta/symbols.json` with function bodies stripped).
+  it) spans the full page height: the search box is pinned at the top, the
+  file tree fills the remaining space and scrolls internally (no page-level
+  scrollbars), and the sidebar can be **resized** by dragging its right
+  edge (5px `col-resize` handle, clamped 200–640px, remembered per browser
+  in `kodama.sidebar.width`). It mirrors the doc directory hierarchy with
+  per-directory and per-file collapse, each file's function and variable
+  symbols, and an `index` row at the top — so multi-level folders
+  (`physics/body.lua`, `sim/render.py`, …) render as nested, expandable
+  branches.
+
+  **Search.** The box fuzzy-matches files, functions and variables (same
+  subsequence scorer as the `/graph` bar, `web/fuzzy.js`) and replaces the
+  tree with the ranked hits, **grouped by file** — each file is one header
+  row (clicking it opens that file's page) followed by its matching
+  symbols. `Enter` opens the first hit, `Esc` clears, `/` focuses the box.
+  Function rows link to their `#fn-…` anchor; variable rows link to the
+  page's `#variables` section (markdown only generates one anchor per
+  file's variables). The active query is kept in the URL as `?q=…`
+  (`history.replaceState`), so a result can be shared and survives a
+  reload; clearing the search removes it.
+
+  **Query grammar** — whitespace-separated tokens are ANDed together:
+
+  | token | meaning |
+  | --- | --- |
+  | `word` | fuzzy-matches any candidate's name (or a function's qualified name) |
+  | `@fn` / `@var` / `@file` | pure **type filter** — only that kind of symbol matches |
+  | `@fn:word` `@var:word` | that kind, whose **name** fuzzy-matches `word` |
+  | `@file:word` | **path scope** — files whose path matches `word` match, and non-file candidates are kept only if their file's path matches `word` |
+  | `@unknown` | treated as the bare word `unknown` |
+
+  Examples: `@file:physics @fn step` → the `step` function, but only under
+  files whose path matches `physics`; `@var buf` → variables named ~`buf`;
+  `connect @file:net` → `connect`-like symbols scoped to `…/net/…`. (A bare
+  `@file` matches files only and does *not* scope other kinds.)
+
+  **Clicking a file row** is context-aware: if that file is the page you're
+  already on, the click just toggles its expansion (no reload, so you stay
+  exactly where you were); otherwise it navigates to the file *and* expands
+  it, so its symbols are visible on arrival.
+
+  Sidebar open/closed, expanded state and width are stored per browser
+  (localStorage: `kodama.sidebar.open`, `kodama.sidebar.expand`,
+  `kodama.sidebar.width`) — deliberately unlike the theme, which the server
+  persists for all browsers. Data comes from a slim `/api/symbols`
+  endpoint (a trimmed `meta/symbols.json` with function bodies stripped).
 - **`/graph` — interactive dependency graph.** Built from `meta/graph.json`
   by `web/graph.js` (vanilla JS + canvas, no libraries), with two levels:
   **files** (one node per file; imports kept, calls re-aggregated
@@ -143,8 +176,15 @@ HTML in the browser:
 samples — one per supported language — built to exercise every feature:
 file/variable/function extraction, developer-comment gluing (including a
 deliberate negative case), long functions for chunk-and-merge, method and
-class style OOP, and external-module imports. Generated docs land in
-`test_codebases/<lang>/docs/`, the LLM cache in `test_codebases/<lang>/data/`.
+class style OOP, and external-module imports. The sources are organised in
+**nested folders** (e.g. `codebase/physics/`, `codebase/sim/`) and their
+`require`/`import` statements use dotted module paths (`physics.nbody`,
+`physics.body`, `sim.render`), so the samples also exercise multi-level
+directory handling and nested-import resolution end to end (the graph's
+IMPORTS edges resolve to the real file nodes, and the sidebar renders the
+folders as a nested tree). Generated docs land in
+`test_codebases/<lang>/docs/` (mirroring the nesting under `docs/files/`),
+the LLM cache in `test_codebases/<lang>/data/`.
 
 To run the tool on a sample (from the repo root):
 

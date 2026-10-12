@@ -13,7 +13,7 @@
 <script src="/app.js" defer></script>
 <script type="module" src="/sidebar.js"></script>
 </head>
-<body>
+<body class="docs-page">
 <header class="topbar">
   <span class="topbar-left">
     <button id="sidebar-toggle" type="button"
@@ -26,10 +26,11 @@
 <div class="docs-layout">
 <aside class="sidebar" id="sidebar">
   <input id="sb-search" class="sb-search" type="text"
-    placeholder="search files, functions, vars…"
+    placeholder="search…  @fn  @var  @file:path"
     autocomplete="off" spellcheck="false"
-    title="fuzzy search — / focuses, Enter opens the first hit, Esc clears">
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
   <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
 </aside>
 <main class="page">
 {body}

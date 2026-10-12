@@ -5,109 +5,6 @@
  "nodes": [
   {
    "kind": "file",
-   "relpath": "body.py",
-   "lines": 31,
-   "function_count": 4,
-   "variable_count": 2,
-   "id": "file:body.py"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.py",
-   "name": "__init__",
-   "qualified": "__init__",
-   "line": 10,
-   "end_line": 14,
-   "params": [
-    "self",
-    "x",
-    "y",
-    "z",
-    "vx",
-    "vy",
-    "vz",
-    "mass"
-   ],
-   "vararg": false,
-   "file_id": "file:body.py",
-   "body": "    def __init__(self, x, y, z, vx, vy, vz, mass):\n        self.x, self.y, self.z = x, y, z\n        self.vx, self.vy, self.vz = vx, vy, vz\n        self.mass = mass\n        self.ax, self.ay, self.az = 0.0, 0.0, 0.0",
-   "id": "fn:body.py::__init__@10"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.py",
-   "name": "reset",
-   "qualified": "reset",
-   "line": 17,
-   "end_line": 20,
-   "params": [
-    "self",
-    "x",
-    "y",
-    "z",
-    "vx",
-    "vy",
-    "vz"
-   ],
-   "vararg": false,
-   "file_id": "file:body.py",
-   "body": "    def reset(self, x, y, z, vx, vy, vz):\n        self.x, self.y, self.z = x, y, z\n        self.vx, self.vy, self.vz = vx, vy, vz\n        self.ax, self.ay, self.az = 0.0, 0.0, 0.0",
-   "id": "fn:body.py::reset@17"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.py",
-   "name": "apply_force",
-   "qualified": "apply_force",
-   "line": 23,
-   "end_line": 26,
-   "params": [
-    "self",
-    "fx",
-    "fy",
-    "fz",
-    "dt"
-   ],
-   "vararg": false,
-   "file_id": "file:body.py",
-   "body": "    def apply_force(self, fx, fy, fz, dt):\n        self.vx += fx * dt / self.mass\n        self.vy += fy * dt / self.mass\n        self.vz += fz * dt / self.mass",
-   "id": "fn:body.py::apply_force@23"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.py",
-   "name": "kinetic_energy",
-   "qualified": "kinetic_energy",
-   "line": 29,
-   "end_line": 31,
-   "params": [
-    "self"
-   ],
-   "vararg": false,
-   "file_id": "file:body.py",
-   "body": "    def kinetic_energy(self):\n        v2 = self.vx * self.vx + self.vy * self.vy + self.vz * self.vz\n        return 0.5 * self.mass * v2",
-   "id": "fn:body.py::kinetic_energy@29"
-  },
-  {
-   "kind": "variable",
-   "relpath": "body.py",
-   "name": "G",
-   "line": 3,
-   "init": "number",
-   "file_id": "file:body.py",
-   "id": "var:body.py::G@3"
-  },
-  {
-   "kind": "variable",
-   "relpath": "body.py",
-   "name": "SOFTENING",
-   "line": 4,
-   "init": "number",
-   "file_id": "file:body.py",
-   "id": "var:body.py::SOFTENING@4"
-  },
-  {
-   "kind": "file",
    "relpath": "main.py",
    "lines": 67,
    "function_count": 4,
@@ -205,15 +102,118 @@
   },
   {
    "kind": "file",
-   "relpath": "nbody.py",
-   "lines": 72,
-   "function_count": 3,
-   "variable_count": 3,
-   "id": "file:nbody.py"
+   "relpath": "physics/body.py",
+   "lines": 31,
+   "function_count": 4,
+   "variable_count": 2,
+   "id": "file:physics/body.py"
   },
   {
    "kind": "function",
-   "relpath": "nbody.py",
+   "relpath": "physics/body.py",
+   "name": "__init__",
+   "qualified": "__init__",
+   "line": 10,
+   "end_line": 14,
+   "params": [
+    "self",
+    "x",
+    "y",
+    "z",
+    "vx",
+    "vy",
+    "vz",
+    "mass"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.py",
+   "body": "    def __init__(self, x, y, z, vx, vy, vz, mass):\n        self.x, self.y, self.z = x, y, z\n        self.vx, self.vy, self.vz = vx, vy, vz\n        self.mass = mass\n        self.ax, self.ay, self.az = 0.0, 0.0, 0.0",
+   "id": "fn:physics/body.py::__init__@10"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/body.py",
+   "name": "reset",
+   "qualified": "reset",
+   "line": 17,
+   "end_line": 20,
+   "params": [
+    "self",
+    "x",
+    "y",
+    "z",
+    "vx",
+    "vy",
+    "vz"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.py",
+   "body": "    def reset(self, x, y, z, vx, vy, vz):\n        self.x, self.y, self.z = x, y, z\n        self.vx, self.vy, self.vz = vx, vy, vz\n        self.ax, self.ay, self.az = 0.0, 0.0, 0.0",
+   "id": "fn:physics/body.py::reset@17"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/body.py",
+   "name": "apply_force",
+   "qualified": "apply_force",
+   "line": 23,
+   "end_line": 26,
+   "params": [
+    "self",
+    "fx",
+    "fy",
+    "fz",
+    "dt"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.py",
+   "body": "    def apply_force(self, fx, fy, fz, dt):\n        self.vx += fx * dt / self.mass\n        self.vy += fy * dt / self.mass\n        self.vz += fz * dt / self.mass",
+   "id": "fn:physics/body.py::apply_force@23"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/body.py",
+   "name": "kinetic_energy",
+   "qualified": "kinetic_energy",
+   "line": 29,
+   "end_line": 31,
+   "params": [
+    "self"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.py",
+   "body": "    def kinetic_energy(self):\n        v2 = self.vx * self.vx + self.vy * self.vy + self.vz * self.vz\n        return 0.5 * self.mass * v2",
+   "id": "fn:physics/body.py::kinetic_energy@29"
+  },
+  {
+   "kind": "variable",
+   "relpath": "physics/body.py",
+   "name": "G",
+   "line": 3,
+   "init": "number",
+   "file_id": "file:physics/body.py",
+   "id": "var:physics/body.py::G@3"
+  },
+  {
+   "kind": "variable",
+   "relpath": "physics/body.py",
+   "name": "SOFTENING",
+   "line": 4,
+   "init": "number",
+   "file_id": "file:physics/body.py",
+   "id": "var:physics/body.py::SOFTENING@4"
+  },
+  {
+   "kind": "file",
+   "relpath": "physics/nbody.py",
+   "lines": 72,
+   "function_count": 3,
+   "variable_count": 3,
+   "id": "file:physics/nbody.py"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/nbody.py",
    "name": "accelerations",
    "qualified": "accelerations",
    "line": 22,
@@ -223,13 +223,13 @@
     "bodies"
    ],
    "vararg": false,
-   "file_id": "file:nbody.py",
+   "file_id": "file:physics/nbody.py",
    "body": "    def accelerations(self, bodies):\n        for b in bodies:\n            b.ax = b.ay = b.az = 0.0\n\n        n = len(bodies)\n        for i in range(n - 1):\n            for j in range(i + 1, n):\n                bi, bj = bodies[i], bodies[j]\n                dx = bj.x - bi.x\n                dy = bj.y - bi.y\n                dz = bj.z - bi.z\n                d2 = dx * dx + dy * dy + dz * dz\n                if d2 < MIN_DIST:\n                    d2 = MIN_DIST\n                dist = math.sqrt(d2)\n                inv3 = 1.0 / (dist * d2)\n                fi = G * bj.mass * inv3\n                fj = G * bi.mass * inv3\n                bi.ax += fi * dx\n                bi.ay += fi * dy\n                bi.az += fi * dz\n                bj.ax -= fj * dx\n                bj.ay -= fj * dy\n                bj.az -= fj * dz\n\n        return bodies",
-   "id": "fn:nbody.py::accelerations@22"
+   "id": "fn:physics/nbody.py::accelerations@22"
   },
   {
    "kind": "function",
-   "relpath": "nbody.py",
+   "relpath": "physics/nbody.py",
    "name": "step",
    "qualified": "step",
    "line": 50,
@@ -240,13 +240,13 @@
     "dt"
    ],
    "vararg": false,
-   "file_id": "file:nbody.py",
+   "file_id": "file:physics/nbody.py",
    "body": "    def step(self, bodies, dt):\n        for b in bodies:\n            b.vx += b.ax * dt\n            b.vy += b.ay * dt\n            b.vz += b.az * dt\n\n        for b in bodies:\n            b.x += b.vx * dt\n            b.y += b.vy * dt\n            b.z += b.vz * dt",
-   "id": "fn:nbody.py::step@50"
+   "id": "fn:physics/nbody.py::step@50"
   },
   {
    "kind": "function",
-   "relpath": "nbody.py",
+   "relpath": "physics/nbody.py",
    "name": "total_energy",
    "qualified": "total_energy",
    "line": 62,
@@ -256,154 +256,61 @@
     "bodies"
    ],
    "vararg": false,
-   "file_id": "file:nbody.py",
+   "file_id": "file:physics/nbody.py",
    "body": "    def total_energy(self, bodies):\n        e = sum(b.kinetic_energy() for b in bodies)\n\n        n = len(bodies)\n        for i in range(n - 1):\n            for j in range(i + 1, n):\n                bi, bj = bodies[i], bodies[j]\n                d = Vec3(bj.x - bi.x, bj.y - bi.y, bj.z - bi.z).length()\n                e -= G * bi.mass * bj.mass / d\n\n        return e",
-   "id": "fn:nbody.py::total_energy@62"
+   "id": "fn:physics/nbody.py::total_energy@62"
   },
   {
    "kind": "variable",
-   "relpath": "nbody.py",
+   "relpath": "physics/nbody.py",
    "name": "G",
    "line": 7,
    "init": "number",
-   "file_id": "file:nbody.py",
-   "id": "var:nbody.py::G@7"
+   "file_id": "file:physics/nbody.py",
+   "id": "var:physics/nbody.py::G@7"
   },
   {
    "kind": "variable",
-   "relpath": "nbody.py",
+   "relpath": "physics/nbody.py",
    "name": "MIN_DIST",
    "line": 8,
    "init": "number",
-   "file_id": "file:nbody.py",
-   "id": "var:nbody.py::MIN_DIST@8"
+   "file_id": "file:physics/nbody.py",
+   "id": "var:physics/nbody.py::MIN_DIST@8"
   },
   {
    "kind": "variable",
-   "relpath": "nbody.py",
+   "relpath": "physics/nbody.py",
    "name": "PARAMS",
    "line": 10,
    "init": "table",
-   "file_id": "file:nbody.py",
-   "id": "var:nbody.py::PARAMS@10"
+   "file_id": "file:physics/nbody.py",
+   "id": "var:physics/nbody.py::PARAMS@10"
   },
   {
    "kind": "file",
-   "relpath": "render.py",
-   "lines": 30,
-   "function_count": 3,
-   "variable_count": 4,
-   "id": "file:render.py"
-  },
-  {
-   "kind": "function",
-   "relpath": "render.py",
-   "name": "draw_body",
-   "qualified": "draw_body",
-   "line": 13,
-   "end_line": 18,
-   "params": [
-    "self",
-    "body"
-   ],
-   "vararg": false,
-   "file_id": "file:render.py",
-   "body": "    def draw_body(self, body):\n        ix = int((body.x / 20.0 + 1.0) * (WIDTH - 1) / 2.0)\n        iy = int((body.y / 20.0 + 1.0) * (HEIGHT - 1) / 2.0)\n        mark = PALETTE[int(abs(body.mass) % len(PALETTE))]\n        return (min(max(ix, 0), WIDTH - 1),\n                min(max(iy, 0), HEIGHT - 1), mark)",
-   "id": "fn:render.py::draw_body@13"
-  },
-  {
-   "kind": "function",
-   "relpath": "render.py",
-   "name": "draw_all",
-   "qualified": "draw_all",
-   "line": 21,
-   "end_line": 26,
-   "params": [
-    "self",
-    "bodies"
-   ],
-   "vararg": false,
-   "file_id": "file:render.py",
-   "body": "    def draw_all(self, bodies):\n        grid = [[\" \"] * WIDTH for _ in range(HEIGHT)]\n        for body in bodies:\n            ix, iy, mark = self.draw_body(body)\n            grid[iy][ix] = mark\n        return [\"\".join(row) for row in grid]",
-   "id": "fn:render.py::draw_all@21"
-  },
-  {
-   "kind": "function",
-   "relpath": "render.py",
-   "name": "stats_line",
-   "qualified": "stats_line",
-   "line": 29,
-   "end_line": 30,
-   "params": [
-    "self",
-    "n",
-    "energy"
-   ],
-   "vararg": false,
-   "file_id": "file:render.py",
-   "body": "    def stats_line(self, n, energy):\n        return f\"{TITLE}: {n} bodies, E={energy:.3e}\"",
-   "id": "fn:render.py::stats_line@29"
-  },
-  {
-   "kind": "variable",
-   "relpath": "render.py",
-   "name": "WIDTH",
-   "line": 3,
-   "init": "number",
-   "file_id": "file:render.py",
-   "id": "var:render.py::WIDTH@3"
-  },
-  {
-   "kind": "variable",
-   "relpath": "render.py",
-   "name": "HEIGHT",
-   "line": 4,
-   "init": "number",
-   "file_id": "file:render.py",
-   "id": "var:render.py::HEIGHT@4"
-  },
-  {
-   "kind": "variable",
-   "relpath": "render.py",
-   "name": "TITLE",
-   "line": 5,
-   "init": "string",
-   "file_id": "file:render.py",
-   "id": "var:render.py::TITLE@5"
-  },
-  {
-   "kind": "variable",
-   "relpath": "render.py",
-   "name": "PALETTE",
-   "line": 6,
-   "init": "table",
-   "file_id": "file:render.py",
-   "id": "var:render.py::PALETTE@6"
-  },
-  {
-   "kind": "file",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "lines": 52,
    "function_count": 9,
    "variable_count": 3,
-   "id": "file:vec3.py"
+   "id": "file:physics/vec3.py"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "tag",
    "qualified": "tag",
    "line": 8,
    "end_line": 9,
    "params": [],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "def tag():\n    return TAG",
-   "id": "fn:vec3.py::tag@8"
+   "id": "fn:physics/vec3.py::tag@8"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "__init__",
    "qualified": "__init__",
    "line": 15,
@@ -415,13 +322,13 @@
     "z"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def __init__(self, x=0.0, y=0.0, z=0.0):\n        self.x = float(x)\n        self.y = float(y)\n        self.z = float(z)",
-   "id": "fn:vec3.py::__init__@15"
+   "id": "fn:physics/vec3.py::__init__@15"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "add",
    "qualified": "add",
    "line": 21,
@@ -431,13 +338,13 @@
     "other"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def add(self, other):\n        return Vec3(self.x + other.x, self.y + other.y, self.z + other.z)",
-   "id": "fn:vec3.py::add@21"
+   "id": "fn:physics/vec3.py::add@21"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "sub",
    "qualified": "sub",
    "line": 25,
@@ -447,13 +354,13 @@
     "other"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def sub(self, other):\n        return Vec3(self.x - other.x, self.y - other.y, self.z - other.z)",
-   "id": "fn:vec3.py::sub@25"
+   "id": "fn:physics/vec3.py::sub@25"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "scale",
    "qualified": "scale",
    "line": 29,
@@ -463,13 +370,13 @@
     "s"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def scale(self, s):\n        return Vec3(self.x * s, self.y * s, self.z * s)",
-   "id": "fn:vec3.py::scale@29"
+   "id": "fn:physics/vec3.py::scale@29"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "dot",
    "qualified": "dot",
    "line": 33,
@@ -479,13 +386,13 @@
     "other"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def dot(self, other):\n        return self.x * other.x + self.y * other.y + self.z * other.z",
-   "id": "fn:vec3.py::dot@33"
+   "id": "fn:physics/vec3.py::dot@33"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "length",
    "qualified": "length",
    "line": 37,
@@ -494,13 +401,13 @@
     "self"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def length(self):\n        d = (self.dot(self)) ** 0.5\n        return d if d >= EPS else EPS",
-   "id": "fn:vec3.py::length@37"
+   "id": "fn:physics/vec3.py::length@37"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "normalize",
    "qualified": "normalize",
    "line": 45,
@@ -509,13 +416,13 @@
     "self"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def normalize(self):\n        d = self.length()\n        if d <= EPS:\n            return ZERO\n        return self.scale(1.0 / d)",
-   "id": "fn:vec3.py::normalize@45"
+   "id": "fn:physics/vec3.py::normalize@45"
   },
   {
    "kind": "function",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "__repr__",
    "qualified": "__repr__",
    "line": 51,
@@ -524,36 +431,129 @@
     "self"
    ],
    "vararg": false,
-   "file_id": "file:vec3.py",
+   "file_id": "file:physics/vec3.py",
    "body": "    def __repr__(self):\n        return f\"Vec3({self.x}, {self.y}, {self.z})\"",
-   "id": "fn:vec3.py::__repr__@51"
+   "id": "fn:physics/vec3.py::__repr__@51"
   },
   {
    "kind": "variable",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "EPS",
    "line": 3,
    "init": "number",
-   "file_id": "file:vec3.py",
-   "id": "var:vec3.py::EPS@3"
+   "file_id": "file:physics/vec3.py",
+   "id": "var:physics/vec3.py::EPS@3"
   },
   {
    "kind": "variable",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "ZERO",
    "line": 4,
    "init": "table",
-   "file_id": "file:vec3.py",
-   "id": "var:vec3.py::ZERO@4"
+   "file_id": "file:physics/vec3.py",
+   "id": "var:physics/vec3.py::ZERO@4"
   },
   {
    "kind": "variable",
-   "relpath": "vec3.py",
+   "relpath": "physics/vec3.py",
    "name": "TAG",
    "line": 5,
    "init": "string",
-   "file_id": "file:vec3.py",
-   "id": "var:vec3.py::TAG@5"
+   "file_id": "file:physics/vec3.py",
+   "id": "var:physics/vec3.py::TAG@5"
+  },
+  {
+   "kind": "file",
+   "relpath": "sim/render.py",
+   "lines": 30,
+   "function_count": 3,
+   "variable_count": 4,
+   "id": "file:sim/render.py"
+  },
+  {
+   "kind": "function",
+   "relpath": "sim/render.py",
+   "name": "draw_body",
+   "qualified": "draw_body",
+   "line": 13,
+   "end_line": 18,
+   "params": [
+    "self",
+    "body"
+   ],
+   "vararg": false,
+   "file_id": "file:sim/render.py",
+   "body": "    def draw_body(self, body):\n        ix = int((body.x / 20.0 + 1.0) * (WIDTH - 1) / 2.0)\n        iy = int((body.y / 20.0 + 1.0) * (HEIGHT - 1) / 2.0)\n        mark = PALETTE[int(abs(body.mass) % len(PALETTE))]\n        return (min(max(ix, 0), WIDTH - 1),\n                min(max(iy, 0), HEIGHT - 1), mark)",
+   "id": "fn:sim/render.py::draw_body@13"
+  },
+  {
+   "kind": "function",
+   "relpath": "sim/render.py",
+   "name": "draw_all",
+   "qualified": "draw_all",
+   "line": 21,
+   "end_line": 26,
+   "params": [
+    "self",
+    "bodies"
+   ],
+   "vararg": false,
+   "file_id": "file:sim/render.py",
+   "body": "    def draw_all(self, bodies):\n        grid = [[\" \"] * WIDTH for _ in range(HEIGHT)]\n        for body in bodies:\n            ix, iy, mark = self.draw_body(body)\n            grid[iy][ix] = mark\n        return [\"\".join(row) for row in grid]",
+   "id": "fn:sim/render.py::draw_all@21"
+  },
+  {
+   "kind": "function",
+   "relpath": "sim/render.py",
+   "name": "stats_line",
+   "qualified": "stats_line",
+   "line": 29,
+   "end_line": 30,
+   "params": [
+    "self",
+    "n",
+    "energy"
+   ],
+   "vararg": false,
+   "file_id": "file:sim/render.py",
+   "body": "    def stats_line(self, n, energy):\n        return f\"{TITLE}: {n} bodies, E={energy:.3e}\"",
+   "id": "fn:sim/render.py::stats_line@29"
+  },
+  {
+   "kind": "variable",
+   "relpath": "sim/render.py",
+   "name": "WIDTH",
+   "line": 3,
+   "init": "number",
+   "file_id": "file:sim/render.py",
+   "id": "var:sim/render.py::WIDTH@3"
+  },
+  {
+   "kind": "variable",
+   "relpath": "sim/render.py",
+   "name": "HEIGHT",
+   "line": 4,
+   "init": "number",
+   "file_id": "file:sim/render.py",
+   "id": "var:sim/render.py::HEIGHT@4"
+  },
+  {
+   "kind": "variable",
+   "relpath": "sim/render.py",
+   "name": "TITLE",
+   "line": 5,
+   "init": "string",
+   "file_id": "file:sim/render.py",
+   "id": "var:sim/render.py::TITLE@5"
+  },
+  {
+   "kind": "variable",
+   "relpath": "sim/render.py",
+   "name": "PALETTE",
+   "line": 6,
+   "init": "table",
+   "file_id": "file:sim/render.py",
+   "id": "var:sim/render.py::PALETTE@6"
   },
   {
    "kind": "ext",
@@ -627,6 +627,11 @@
   },
   {
    "kind": "builtin",
+   "name": "float",
+   "id": "builtin:float"
+  },
+  {
+   "kind": "builtin",
    "name": "int",
    "id": "builtin:int"
   },
@@ -644,50 +649,9 @@
    "kind": "builtin",
    "name": "max",
    "id": "builtin:max"
-  },
-  {
-   "kind": "builtin",
-   "name": "float",
-   "id": "builtin:float"
   }
  ],
  "edges": [
-  {
-   "type": "CONTAINS",
-   "source": "file:body.py",
-   "target": "fn:body.py::__init__@10",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.py",
-   "target": "fn:body.py::reset@17",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.py",
-   "target": "fn:body.py::apply_force@23",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.py",
-   "target": "fn:body.py::kinetic_energy@29",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.py",
-   "target": "var:body.py::G@3",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.py",
-   "target": "var:body.py::SOFTENING@4",
-   "key": 0
-  },
   {
    "type": "CONTAINS",
    "source": "file:main.py",
@@ -756,25 +720,25 @@
   {
    "type": "IMPORTS",
    "line": 6,
-   "module": "body",
+   "module": "physics.body",
    "source": "file:main.py",
-   "target": "file:body.py",
+   "target": "file:physics/body.py",
    "key": 0
   },
   {
    "type": "IMPORTS",
    "line": 7,
-   "module": "nbody",
+   "module": "physics.nbody",
    "source": "file:main.py",
-   "target": "file:nbody.py",
+   "target": "file:physics/nbody.py",
    "key": 0
   },
   {
    "type": "IMPORTS",
    "line": 8,
-   "module": "render",
+   "module": "sim.render",
    "source": "file:main.py",
-   "target": "file:render.py",
+   "target": "file:sim/render.py",
    "key": 0
   },
   {
@@ -887,35 +851,35 @@
    "type": "CALLS",
    "line": 44,
    "source": "fn:main.py::tick@43",
-   "target": "fn:nbody.py::total_energy@62",
+   "target": "fn:physics/nbody.py::total_energy@62",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 45,
    "source": "fn:main.py::tick@43",
-   "target": "fn:nbody.py::accelerations@22",
+   "target": "fn:physics/nbody.py::accelerations@22",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 46,
    "source": "fn:main.py::tick@43",
-   "target": "fn:nbody.py::step@50",
+   "target": "fn:physics/nbody.py::step@50",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 47,
    "source": "fn:main.py::tick@43",
-   "target": "fn:render.py::draw_all@21",
+   "target": "fn:sim/render.py::draw_all@21",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 48,
    "source": "fn:main.py::tick@43",
-   "target": "fn:render.py::stats_line@29",
+   "target": "fn:sim/render.py::stats_line@29",
    "key": 0
   },
   {
@@ -1001,456 +965,492 @@
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.py",
-   "target": "fn:nbody.py::accelerations@22",
+   "source": "file:physics/body.py",
+   "target": "fn:physics/body.py::__init__@10",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.py",
-   "target": "fn:nbody.py::step@50",
+   "source": "file:physics/body.py",
+   "target": "fn:physics/body.py::reset@17",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.py",
-   "target": "fn:nbody.py::total_energy@62",
+   "source": "file:physics/body.py",
+   "target": "fn:physics/body.py::apply_force@23",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.py",
-   "target": "var:nbody.py::G@7",
+   "source": "file:physics/body.py",
+   "target": "fn:physics/body.py::kinetic_energy@29",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.py",
-   "target": "var:nbody.py::MIN_DIST@8",
+   "source": "file:physics/body.py",
+   "target": "var:physics/body.py::G@3",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.py",
-   "target": "var:nbody.py::PARAMS@10",
+   "source": "file:physics/body.py",
+   "target": "var:physics/body.py::SOFTENING@4",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.py",
+   "target": "fn:physics/nbody.py::accelerations@22",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.py",
+   "target": "fn:physics/nbody.py::step@50",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.py",
+   "target": "fn:physics/nbody.py::total_energy@62",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.py",
+   "target": "var:physics/nbody.py::G@7",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.py",
+   "target": "var:physics/nbody.py::MIN_DIST@8",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.py",
+   "target": "var:physics/nbody.py::PARAMS@10",
    "key": 0
   },
   {
    "type": "IMPORTS",
    "line": 3,
    "module": "math",
-   "source": "file:nbody.py",
+   "source": "file:physics/nbody.py",
    "target": "mod:math",
    "key": 0
   },
   {
    "type": "IMPORTS",
    "line": 5,
-   "module": "vec3",
-   "source": "file:nbody.py",
-   "target": "file:vec3.py",
+   "module": "physics.vec3",
+   "source": "file:physics/nbody.py",
+   "target": "file:physics/vec3.py",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 26,
-   "source": "fn:nbody.py::accelerations@22",
+   "source": "fn:physics/nbody.py::accelerations@22",
    "target": "builtin:len",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 27,
-   "source": "fn:nbody.py::accelerations@22",
+   "source": "fn:physics/nbody.py::accelerations@22",
    "target": "builtin:range",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 28,
-   "source": "fn:nbody.py::accelerations@22",
+   "source": "fn:physics/nbody.py::accelerations@22",
    "target": "builtin:range",
    "key": 1
   },
   {
    "type": "CALLS",
    "line": 36,
-   "source": "fn:nbody.py::accelerations@22",
+   "source": "fn:physics/nbody.py::accelerations@22",
    "target": "builtin:math",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.py::accelerations@22",
-   "target": "var:nbody.py::G@7",
+   "source": "fn:physics/nbody.py::accelerations@22",
+   "target": "var:physics/nbody.py::G@7",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.py::accelerations@22",
-   "target": "var:nbody.py::MIN_DIST@8",
+   "source": "fn:physics/nbody.py::accelerations@22",
+   "target": "var:physics/nbody.py::MIN_DIST@8",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 63,
-   "source": "fn:nbody.py::total_energy@62",
+   "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:sum",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 63,
-   "source": "fn:nbody.py::total_energy@62",
-   "target": "fn:body.py::kinetic_energy@29",
+   "source": "fn:physics/nbody.py::total_energy@62",
+   "target": "fn:physics/body.py::kinetic_energy@29",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 65,
-   "source": "fn:nbody.py::total_energy@62",
+   "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:len",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 66,
-   "source": "fn:nbody.py::total_energy@62",
+   "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:range",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 67,
-   "source": "fn:nbody.py::total_energy@62",
+   "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:range",
    "key": 1
   },
   {
    "type": "CALLS",
    "line": 69,
-   "source": "fn:nbody.py::total_energy@62",
+   "source": "fn:physics/nbody.py::total_energy@62",
    "target": "ext:Vec3",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.py::total_energy@62",
-   "target": "var:nbody.py::G@7",
+   "source": "fn:physics/nbody.py::total_energy@62",
+   "target": "var:physics/nbody.py::G@7",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:render.py",
-   "target": "fn:render.py::draw_body@13",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::tag@8",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:render.py",
-   "target": "fn:render.py::draw_all@21",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::__init__@15",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:render.py",
-   "target": "fn:render.py::stats_line@29",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::add@21",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:render.py",
-   "target": "var:render.py::WIDTH@3",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::sub@25",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:render.py",
-   "target": "var:render.py::HEIGHT@4",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::scale@29",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:render.py",
-   "target": "var:render.py::TITLE@5",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::dot@33",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:render.py",
-   "target": "var:render.py::PALETTE@6",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::length@37",
    "key": 0
   },
   {
-   "type": "CALLS",
-   "line": 14,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:int",
+   "type": "CONTAINS",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::normalize@45",
    "key": 0
   },
   {
-   "type": "CALLS",
-   "line": 15,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:int",
-   "key": 1
-  },
-  {
-   "type": "CALLS",
-   "line": 16,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:int",
-   "key": 2
-  },
-  {
-   "type": "CALLS",
-   "line": 16,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:abs",
+   "type": "CONTAINS",
+   "source": "file:physics/vec3.py",
+   "target": "fn:physics/vec3.py::__repr__@51",
    "key": 0
   },
   {
-   "type": "CALLS",
-   "line": 16,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:len",
+   "type": "CONTAINS",
+   "source": "file:physics/vec3.py",
+   "target": "var:physics/vec3.py::EPS@3",
    "key": 0
   },
   {
-   "type": "CALLS",
-   "line": 17,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:min",
+   "type": "CONTAINS",
+   "source": "file:physics/vec3.py",
+   "target": "var:physics/vec3.py::ZERO@4",
    "key": 0
   },
   {
-   "type": "CALLS",
-   "line": 18,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:min",
-   "key": 1
-  },
-  {
-   "type": "CALLS",
-   "line": 17,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:max",
-   "key": 0
-  },
-  {
-   "type": "CALLS",
-   "line": 18,
-   "source": "fn:render.py::draw_body@13",
-   "target": "builtin:max",
-   "key": 1
-  },
-  {
-   "type": "READS",
-   "source": "fn:render.py::draw_body@13",
-   "target": "var:render.py::HEIGHT@4",
+   "type": "CONTAINS",
+   "source": "file:physics/vec3.py",
+   "target": "var:physics/vec3.py::TAG@5",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:render.py::draw_body@13",
-   "target": "var:render.py::PALETTE@6",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:render.py::draw_body@13",
-   "target": "var:render.py::WIDTH@3",
-   "key": 0
-  },
-  {
-   "type": "CALLS",
-   "line": 22,
-   "source": "fn:render.py::draw_all@21",
-   "target": "builtin:range",
-   "key": 0
-  },
-  {
-   "type": "CALLS",
-   "line": 24,
-   "source": "fn:render.py::draw_all@21",
-   "target": "fn:render.py::draw_body@13",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:render.py::draw_all@21",
-   "target": "var:render.py::HEIGHT@4",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:render.py::draw_all@21",
-   "target": "var:render.py::WIDTH@3",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:render.py::stats_line@29",
-   "target": "var:render.py::TITLE@5",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::tag@8",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::__init__@15",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::add@21",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::sub@25",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::scale@29",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::dot@33",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::length@37",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::normalize@45",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "fn:vec3.py::__repr__@51",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "var:vec3.py::EPS@3",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "var:vec3.py::ZERO@4",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:vec3.py",
-   "target": "var:vec3.py::TAG@5",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:vec3.py::tag@8",
-   "target": "var:vec3.py::TAG@5",
+   "source": "fn:physics/vec3.py::tag@8",
+   "target": "var:physics/vec3.py::TAG@5",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 16,
-   "source": "fn:vec3.py::__init__@15",
+   "source": "fn:physics/vec3.py::__init__@15",
    "target": "builtin:float",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 17,
-   "source": "fn:vec3.py::__init__@15",
+   "source": "fn:physics/vec3.py::__init__@15",
    "target": "builtin:float",
    "key": 1
   },
   {
    "type": "CALLS",
    "line": 18,
-   "source": "fn:vec3.py::__init__@15",
+   "source": "fn:physics/vec3.py::__init__@15",
    "target": "builtin:float",
    "key": 2
   },
   {
    "type": "CALLS",
    "line": 22,
-   "source": "fn:vec3.py::add@21",
+   "source": "fn:physics/vec3.py::add@21",
    "target": "ext:Vec3",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 26,
-   "source": "fn:vec3.py::sub@25",
+   "source": "fn:physics/vec3.py::sub@25",
    "target": "ext:Vec3",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 30,
-   "source": "fn:vec3.py::scale@29",
+   "source": "fn:physics/vec3.py::scale@29",
    "target": "ext:Vec3",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 38,
-   "source": "fn:vec3.py::length@37",
-   "target": "fn:vec3.py::dot@33",
+   "source": "fn:physics/vec3.py::length@37",
+   "target": "fn:physics/vec3.py::dot@33",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.py::length@37",
-   "target": "var:vec3.py::EPS@3",
+   "source": "fn:physics/vec3.py::length@37",
+   "target": "var:physics/vec3.py::EPS@3",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 46,
-   "source": "fn:vec3.py::normalize@45",
-   "target": "fn:vec3.py::length@37",
+   "source": "fn:physics/vec3.py::normalize@45",
+   "target": "fn:physics/vec3.py::length@37",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 49,
-   "source": "fn:vec3.py::normalize@45",
-   "target": "fn:vec3.py::scale@29",
+   "source": "fn:physics/vec3.py::normalize@45",
+   "target": "fn:physics/vec3.py::scale@29",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.py::normalize@45",
-   "target": "var:vec3.py::EPS@3",
+   "source": "fn:physics/vec3.py::normalize@45",
+   "target": "var:physics/vec3.py::EPS@3",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.py::normalize@45",
-   "target": "var:vec3.py::ZERO@4",
+   "source": "fn:physics/vec3.py::normalize@45",
+   "target": "var:physics/vec3.py::ZERO@4",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:sim/render.py",
+   "target": "fn:sim/render.py::draw_body@13",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:sim/render.py",
+   "target": "fn:sim/render.py::draw_all@21",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:sim/render.py",
+   "target": "fn:sim/render.py::stats_line@29",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:sim/render.py",
+   "target": "var:sim/render.py::WIDTH@3",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:sim/render.py",
+   "target": "var:sim/render.py::HEIGHT@4",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:sim/render.py",
+   "target": "var:sim/render.py::TITLE@5",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:sim/render.py",
+   "target": "var:sim/render.py::PALETTE@6",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 14,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:int",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 15,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:int",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 16,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:int",
+   "key": 2
+  },
+  {
+   "type": "CALLS",
+   "line": 16,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:abs",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 16,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:len",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 17,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:min",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 18,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:min",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 17,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:max",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 18,
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "builtin:max",
+   "key": 1
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "var:sim/render.py::HEIGHT@4",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "var:sim/render.py::PALETTE@6",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "var:sim/render.py::WIDTH@3",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 22,
+   "source": "fn:sim/render.py::draw_all@21",
+   "target": "builtin:range",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 24,
+   "source": "fn:sim/render.py::draw_all@21",
+   "target": "fn:sim/render.py::draw_body@13",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::draw_all@21",
+   "target": "var:sim/render.py::HEIGHT@4",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::draw_all@21",
+   "target": "var:sim/render.py::WIDTH@3",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::stats_line@29",
+   "target": "var:sim/render.py::TITLE@5",
    "key": 0
   }
  ]

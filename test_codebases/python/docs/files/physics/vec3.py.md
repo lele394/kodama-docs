@@ -1,4 +1,4 @@
-# vec3.py
+# physics/vec3.py
 
 ## Summary
 
@@ -22,7 +22,7 @@ No summary generated (`--no-llm`)
 
 ### tag <a id="fn-tag-8"></a>
 
-*vec3.py:8-9*
+*physics/vec3.py:8-9*
 
 **Description**
 
@@ -41,7 +41,7 @@ def tag():
 
 ### __init__ <a id="fn-__init__-15"></a>
 
-*vec3.py:15-18*
+*physics/vec3.py:15-18*
 
 **Description**
 
@@ -71,7 +71,7 @@ def __init__(self, x=0.0, y=0.0, z=0.0):
 
 ### add <a id="fn-add-21"></a>
 
-*vec3.py:21-22*
+*physics/vec3.py:21-22*
 
 **Developer comment**
 
@@ -101,7 +101,7 @@ def add(self, other):
 
 ### sub <a id="fn-sub-25"></a>
 
-*vec3.py:25-26*
+*physics/vec3.py:25-26*
 
 **Developer comment**
 
@@ -131,7 +131,7 @@ def sub(self, other):
 
 ### scale <a id="fn-scale-29"></a>
 
-*vec3.py:29-30*
+*physics/vec3.py:29-30*
 
 **Developer comment**
 
@@ -159,14 +159,14 @@ def scale(self, s):
 
 **Call graph**
 
-- [vec3.py](vec3.py.md)
+- [physics/vec3.py](vec3.py.md)
   - [normalize:49](vec3.py.md#fn-normalize-45)
 
 ---
 
 ### dot <a id="fn-dot-33"></a>
 
-*vec3.py:33-34*
+*physics/vec3.py:33-34*
 
 **Developer comment**
 
@@ -190,14 +190,14 @@ def dot(self, other):
 
 **Call graph**
 
-- [vec3.py](vec3.py.md)
+- [physics/vec3.py](vec3.py.md)
   - [length:38](vec3.py.md#fn-length-37)
 
 ---
 
 ### length <a id="fn-length-37"></a>
 
-*vec3.py:37-39*
+*physics/vec3.py:37-39*
 
 **Developer comment**
 
@@ -226,14 +226,14 @@ def length(self):
 
 **Call graph**
 
-- [vec3.py](vec3.py.md)
+- [physics/vec3.py](vec3.py.md)
   - [normalize:46](vec3.py.md#fn-normalize-45)
 
 ---
 
 ### normalize <a id="fn-normalize-45"></a>
 
-*vec3.py:45-49*
+*physics/vec3.py:45-49*
 
 **Developer comment**
 
@@ -268,7 +268,7 @@ def normalize(self):
 
 ### __repr__ <a id="fn-__repr__-51"></a>
 
-*vec3.py:51-52*
+*physics/vec3.py:51-52*
 
 **Description**
 

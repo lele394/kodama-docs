@@ -1,4 +1,4 @@
-# nbody.py
+# physics/nbody.py
 
 ## Summary
 
@@ -16,7 +16,7 @@ No summary generated (`--no-llm`)
 
 ### accelerations <a id="fn-accelerations-22"></a>
 
-*nbody.py:22-47*
+*physics/nbody.py:22-47*
 
 **Developer comment**
 
@@ -73,14 +73,14 @@ def accelerations(self, bodies):
 
 **Call graph**
 
-- [main.py](main.py.md)
-  - [tick:45](main.py.md#fn-tick-43)
+- [main.py](../main.py.md)
+  - [tick:45](../main.py.md#fn-tick-43)
 
 ---
 
 ### step <a id="fn-step-50"></a>
 
-*nbody.py:50-59*
+*physics/nbody.py:50-59*
 
 **Developer comment**
 
@@ -113,14 +113,14 @@ def step(self, bodies, dt):
 
 **Call graph**
 
-- [main.py](main.py.md)
-  - [tick:46](main.py.md#fn-tick-43)
+- [main.py](../main.py.md)
+  - [tick:46](../main.py.md#fn-tick-43)
 
 ---
 
 ### total_energy <a id="fn-total_energy-62"></a>
 
-*nbody.py:62-72*
+*physics/nbody.py:62-72*
 
 **Developer comment**
 
@@ -162,8 +162,8 @@ def total_energy(self, bodies):
 
 **Call graph**
 
-- [main.py](main.py.md)
-  - [tick:44](main.py.md#fn-tick-43)
+- [main.py](../main.py.md)
+  - [tick:44](../main.py.md#fn-tick-43)
 
 ## File-level variables <a id="variables"></a>
 

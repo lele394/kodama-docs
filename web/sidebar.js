@@ -1,5 +1,5 @@
 // web/sidebar.js — docs-mode sidebar: a collapsible file hierarchy plus
-// a fuzzy search over files, functions and variables.
+// a filterable fuzzy search over files, functions and variables.
 //
 // Data: GET /api/symbols — a slim index of meta/symbols.json (files ->
 // functions/variables with name + line; function bodies are not sent).
@@ -11,14 +11,26 @@
 //   functions  /files/<relpath>.md#fn-<name>-<line>
 //   variables  /files/<relpath>.md#variables   (the variables table)
 //
-// Typing in the search box switches the tree to a ranked flat list of
-// fuzzy matches (the same scorer as the /graph bar, web/fuzzy.js);
-// clearing the box restores the tree. "/" focuses the box, Enter opens
-// the first hit, Escape clears.
+// Search grammar (tokens are whitespace-separated, combined with AND):
+//   word                 fuzzy-match a symbol/file's own name
+//   @fn  @var            type filter: functions / variables only
+//   @file                type filter: files only
+//   @fn:con              fuzzy-match function names matching "con"
+//   @var:i               fuzzy-match variable names matching "i"
+//   @file:src            a path scope: matches files under ~src, and (when
+//                        combined with a symbol type) restricts that type to
+//                        files under ~src
+// So "@file:src @var:i" = variables named ~i in files under ~src. Plain words and typed filters freely mix.
+// Results are grouped by file; the search query is carried in the URL
+// (?q=…) so clicking a result opens the target without clearing the box.
 //
-// The open/closed state and per-node expansion are per-browser UI
-// preferences, so they live in localStorage — unlike the theme, which
-// is a server-wide choice persisted in web/theme_state.json.
+// File-row click: on the page of a file, clicking its name toggles the
+// node open/closed (no reload, scroll position kept); elsewhere it
+// navigates and expands. The chevron always just toggles.
+//
+// The open/closed state, per-node expansion and the sidebar width are
+// per-browser UI preferences, so they live in localStorage — unlike the
+// theme, which is a server-wide choice persisted in web/theme_state.json.
 //
 // All names are inserted with textContent (no innerHTML), so symbol
 // names can never inject markup.
@@ -28,8 +40,11 @@ import { sanitize } from './graph/util.js';
 
 const LS_OPEN = 'kodama.sidebar.open';
 const LS_EXPAND = 'kodama.sidebar.expand';
+const LS_WIDTH = 'kodama.sidebar.width';
 const SEARCH_CAP = 50;
 const MOBILE = 860;
+const MIN_W = 200;
+const MAX_W = 640;
 
 // ---------------------------------------------------------------- helpers
 function el(tag, cls, text) {
@@ -65,6 +80,7 @@ const current = detectCurrent();
 let expanded = new Set();   // dir:<path> | file:<relpath>
 let cands = [];             // precomputed search candidates
 let treeEl = null;
+let currentQuery = '';      // live search text (carried in the URL)
 
 // ------------------------------------------------------------ rendering
 // build a nested tree of the files: node = {name, children: {name: node},
@@ -120,6 +136,10 @@ function dirRow(id, name, count) {
   return row;
 }
 
+// A file row. Clicking the name (or the row body) is "smart":
+//   - on this file's own page  -> toggle open/closed, no reload
+//   - any other page           -> expand (persist) + navigate
+// The chevron always just toggles.
 function fileRow(rp, count) {
   const id = 'file:' + rp;
   const row = el('div',
@@ -132,16 +152,25 @@ function fileRow(rp, count) {
   row.appendChild(tw);
   row.appendChild(a);
   if (ct) row.appendChild(ct);
+
   tw.addEventListener('click', e => {
     e.preventDefault();
     e.stopPropagation();
     toggleRow(row);
   });
-  // clicking the row background also opens the file
   row.addEventListener('click', e => {
-    if (e.target === a) return;   // the anchor navigates itself
-    e.preventDefault();
-    location.href = a.href;
+    if (current === rp) {
+      e.preventDefault();      // stay on this page, just toggle
+      toggleRow(row);
+    } else {
+      expanded.add(id);        // open it once we land there
+      saveExpanded();
+      if (e.target !== a) {    // row body: navigate manually
+        e.preventDefault();
+        location.href = a.href;
+      }
+      // e.target === a: let the anchor navigate (with our saved expansion)
+    }
   });
   return row;
 }
@@ -218,40 +247,134 @@ function buildCandidates() {
                    order: cands.length }));
     (f.vars || []).forEach(v =>
       cands.push({ kind: 'var', label: v.name, text: v.name,
-                   href: varHref(rp), path: rp, order: cands.length }));
+                   href: varHref(rp), path: rp,
+                   order: cands.length }));
   }
 }
 
-function search(q) {
+// Parse the query into constraint tokens. Each token is
+//   { type: 'file'|'fn'|'var'|null, query: string }
+// A null type is a plain (untyped) word. A token with an empty query is
+// a bare type filter (e.g. "@fn").
+const TYPE_ALIASES = {
+  file: 'file', fn: 'fn', func: 'fn', function: 'fn', functions: 'fn',
+  var: 'var', variable: 'var', variables: 'var',
+};
+function parseQuery(q) {
+  const tokens = [];
+  for (const raw of String(q).trim().split(/\s+/)) {
+    if (!raw) continue;
+    if (raw[0] === '@') {
+      const m = raw.match(/^@([A-Za-z]+)(?::([\s\S]+))?$/);
+      if (m) {
+        const t = TYPE_ALIASES[m[1].toLowerCase()];
+        if (t) { tokens.push({ type: t, query: m[2] || '' }); continue; }
+      }
+      const word = raw.slice(1);
+      if (word) tokens.push({ type: null, query: word });
+    } else {
+      tokens.push({ type: null, query: raw });
+    }
+  }
+  return tokens;
+}
+
+// Score one candidate against every token; -1 means it cannot satisfy
+// the constraint set. A typed token matches the candidate's own field
+// when the types agree, and a "@file:" token scopes by the parent path.
+function scoreCandidate(c, tokens) {
+  let total = 0;
+  for (const tk of tokens) {
+    let s;
+    if (tk.type === null || tk.type === c.kind) {
+      s = fuzzyScore(tk.query, c.text);
+      if (c.kind === 'fn' && c.qtext)
+        s = Math.max(s, fuzzyScore(tk.query, c.qtext));
+    } else if (tk.type === 'file') {
+      if (!tk.query) return -1;   // bare "@file" filters to files, never a scope
+      s = fuzzyScore(tk.query, c.path);
+    } else {
+      return -1;   // e.g. an @fn constraint cannot match a variable
+    }
+    if (s < 0) return -1;
+    total += s;
+  }
+  return total;
+}
+
+function rankCandidates(tokens) {
   const out = [];
   for (const c of cands) {
-    let s = fuzzyScore(q, c.text);
-    if (c.qtext) s = Math.max(s, fuzzyScore(q, c.qtext));
+    const s = scoreCandidate(c, tokens);
     if (s >= 0) out.push({ c: c, s: s });
   }
   out.sort((a, b) => (b.s - a.s) || (a.c.order - b.c.order));
   return out.slice(0, SEARCH_CAP);
 }
 
+// Group ranked hits by their file so the results read as file > symbols.
+const KIND_ORDER = { fn: 0, var: 1, file: 2 };
+function groupByFile(hits) {
+  const groups = new Map();
+  for (const h of hits) {
+    let g = groups.get(h.c.path);
+    if (!g) { g = { rp: h.c.path, fileHit: null, syms: [] };
+              groups.set(h.c.path, g); }
+    if (h.c.kind === 'file') g.fileHit = h;
+    else g.syms.push(h);
+  }
+  for (const g of groups.values())
+    g.syms.sort((a, b) => (b.s - a.s)
+      || (KIND_ORDER[a.c.kind] - KIND_ORDER[b.c.kind])
+      || (a.c.label < b.c.label ? -1 : 1));
+  const best = g => Math.max(
+    g.fileHit ? g.fileHit.s : -1,
+    ...g.syms.map(h => h.s));
+  return Array.from(groups.values())
+    .sort((a, b) => (best(b) - best(a)) || (a.rp < b.rp ? -1 : 1));
+}
+
+// Carry the live query into a result link so clicking it keeps the search.
+function withQ(href) {
+  if (!currentQuery) return href;
+  const i = href.indexOf('#');
+  const path = i >= 0 ? href.slice(0, i) : href;
+  const hash = i >= 0 ? href.slice(i) : '';
+  return path + '?q=' + encodeURIComponent(currentQuery) + hash;
+}
+
 function renderSearch(container, q) {
   container.textContent = '';
-  const hits = search(q);
+  const tokens = parseQuery(q);
+  const hits = tokens.length ? rankCandidates(tokens) : [];
   if (!hits.length) {
-    container.appendChild(
-      el('div', 'sb-empty', 'no matches for "' + q + '"'));
+    container.appendChild(el('div', 'sb-empty', 'no matches for "' + q + '"'));
     return;
   }
+  const groups = groupByFile(hits);
   container.appendChild(el('div', 'sb-hint',
     hits.length + ' match' + (hits.length === 1 ? '' : 'es') +
+    ' in ' + groups.length + ' file' + (groups.length === 1 ? '' : 's') +
     ' — Enter opens the first'));
-  for (const h of hits) {
-    const a = el('a', 'sb-row sb-hit');
-    a.href = h.c.href;
-    a.appendChild(el('span', 'sb-kind', h.c.kind));
-    a.appendChild(el('span', 'sb-name', h.c.label));
-    if (h.c.path !== h.c.label)
-      a.appendChild(el('span', 'sb-path', h.c.path));
-    container.appendChild(a);
+  for (const g of groups) {
+    const hdr = el('a', 'sb-row sb-group');
+    hdr.href = withQ(fileHref(g.rp));
+    hdr.appendChild(el('span', 'sb-tw', ''));
+    hdr.appendChild(el('span', 'sb-name', g.rp));
+    hdr.appendChild(el('span', 'sb-kind', 'file'));
+    container.appendChild(hdr);
+    if (g.syms.length) {
+      const kids = el('div', 'sb-kids sb-results');
+      for (const h of g.syms) {
+        const a = el('a', 'sb-row sb-hit');
+        a.href = withQ(h.c.href);
+        a.appendChild(el('span', 'sb-tw', ''));
+        a.appendChild(el('span', 'sb-name', h.c.label));
+        a.appendChild(el('span', 'sb-kind', h.c.kind));
+        kids.appendChild(a);
+      }
+      container.appendChild(kids);
+    }
   }
 }
 
@@ -302,6 +425,38 @@ function loadExpanded() {
   saveExpanded();
 }
 
+// -------------------------------------------------------------- resizer
+function initResizer(aside) {
+  const rz = aside.querySelector('.sb-resizer');
+  if (!rz) return;
+  try {
+    const saved = localStorage.getItem(LS_WIDTH);
+    if (saved) aside.style.width = saved;
+  } catch (e) { /* ignore */ }
+
+  let dragging = false, startX = 0, startW = 0;
+  rz.addEventListener('pointerdown', e => {
+    dragging = true;
+    startX = e.clientX;
+    startW = aside.getBoundingClientRect().width;
+    try { rz.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+    document.body.classList.add('sb-resizing');
+  });
+  rz.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const w = Math.max(MIN_W, Math.min(MAX_W, startW + (e.clientX - startX)));
+    aside.style.width = w + 'px';
+  });
+  const stop = () => {
+    if (!dragging) return;
+    dragging = false;
+    document.body.classList.remove('sb-resizing');
+    try { localStorage.setItem(LS_WIDTH, aside.style.width); } catch (e) { /* ignore */ }
+  };
+  rz.addEventListener('pointerup', stop);
+  rz.addEventListener('pointercancel', stop);
+}
+
 // ----------------------------------------------------------------- init
 function init() {
   const aside = document.getElementById('sidebar');
@@ -327,6 +482,16 @@ function init() {
     if (next && document.activeElement !== input) input.focus();
   });
 
+  initResizer(aside);
+
+  // restore a query carried in the URL (?q=…) — e.g. after clicking a hit
+  let initialQ = '';
+  try {
+    initialQ = (new URLSearchParams(location.search).get('q')) || '';
+  } catch (e) { /* ignore */ }
+  currentQuery = initialQ;
+  input.value = initialQ;
+
   // fetch the index, then draw
   fetch('/api/symbols', { credentials: 'same-origin' })
     .then(r => {
@@ -337,7 +502,8 @@ function init() {
       data.files = Array.isArray(src.files) ? src.files : [];
       loadExpanded();
       buildCandidates();
-      renderTree(treeEl);
+      if (currentQuery) renderSearch(treeEl, currentQuery);
+      else renderTree(treeEl);
       // scroll the current file into view if the tree is long
       const cr = treeEl.querySelector('.sb-file.current');
       if (cr && cr.scrollIntoView)
@@ -350,17 +516,29 @@ function init() {
     });
 
   // search box
+  const updateURLQuery = q => {
+    try {
+      const u = new URL(location.href);
+      if (q) u.searchParams.set('q', q); else u.searchParams.delete('q');
+      history.replaceState(null, '', u);
+    } catch (e) { /* ignore */ }
+  };
   input.addEventListener('input', () => {
     const q = String(input.value || '').trim();
+    currentQuery = q;
+    updateURLQuery(q);
     if (q) renderSearch(treeEl, q);
     else renderTree(treeEl);
   });
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
-      const a = treeEl.querySelector('a.sb-hit');
+      const a = treeEl.querySelector('a.sb-hit')
+            || treeEl.querySelector('a.sb-group');
       if (a) location.href = a.getAttribute('href');
     } else if (e.key === 'Escape') {
       input.value = '';
+      currentQuery = '';
+      updateURLQuery('');
       renderTree(treeEl);
       input.blur();
     }

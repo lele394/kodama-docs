@@ -130,12 +130,12 @@ No description generated (`--no-llm`)
 
 **References**
 
-- [total_energy](nbody.py.md#fn-total_energy-62)
-- [accelerations](nbody.py.md#fn-accelerations-22)
-- [step](nbody.py.md#fn-step-50)
-- [draw_all](render.py.md#fn-draw_all-21)
+- [total_energy](physics/nbody.py.md#fn-total_energy-62)
+- [accelerations](physics/nbody.py.md#fn-accelerations-22)
+- [step](physics/nbody.py.md#fn-step-50)
+- [draw_all](sim/render.py.md#fn-draw_all-21)
 - len
-- [stats_line](render.py.md#fn-stats_line-29)
+- [stats_line](sim/render.py.md#fn-stats_line-29)
 
 ```py
 def tick(sim, bodies, renderer, dt):

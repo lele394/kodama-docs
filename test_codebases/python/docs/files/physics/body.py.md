@@ -1,4 +1,4 @@
-# body.py
+# physics/body.py
 
 ## Summary
 
@@ -17,7 +17,7 @@ No summary generated (`--no-llm`)
 
 ### __init__ <a id="fn-__init__-10"></a>
 
-*body.py:10-14*
+*physics/body.py:10-14*
 
 **Description**
 
@@ -48,7 +48,7 @@ def __init__(self, x, y, z, vx, vy, vz, mass):
 
 ### reset <a id="fn-reset-17"></a>
 
-*body.py:17-20*
+*physics/body.py:17-20*
 
 **Developer comment**
 
@@ -81,7 +81,7 @@ def reset(self, x, y, z, vx, vy, vz):
 
 ### apply_force <a id="fn-apply_force-23"></a>
 
-*body.py:23-26*
+*physics/body.py:23-26*
 
 **Developer comment**
 
@@ -112,7 +112,7 @@ def apply_force(self, fx, fy, fz, dt):
 
 ### kinetic_energy <a id="fn-kinetic_energy-29"></a>
 
-*body.py:29-31*
+*physics/body.py:29-31*
 
 **Developer comment**
 
@@ -136,7 +136,7 @@ def kinetic_energy(self):
 
 **Call graph**
 
-- [nbody.py](nbody.py.md)
+- [physics/nbody.py](nbody.py.md)
   - [total_energy:63](nbody.py.md#fn-total_energy-62)
 
 ## File-level variables <a id="variables"></a>

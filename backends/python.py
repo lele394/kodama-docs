@@ -68,24 +68,20 @@ def _dotted(node):
     """dotted_name / identifier / name -> ['a', 'b', 'c']; None otherwise.
 
     `name` is the tree-sitter-python 0.25 node for a plain identifier
-    (e.g. the receiver of `obj.method()` or `math.sqrt()`)."""
-    parts = []
-    while node is not None and node.type in ('dotted_name', 'identifier', 'name'):
-        if node.type in ('identifier', 'name'):
-            parts.insert(0, _text(node))
-            return parts
-        ident = node.child_by_field_name('attribute')
-        if ident is None:  # single-identifier dotted_name
-            for c in node.children:
-                if c.type == 'identifier':
-                    parts.insert(0, _text(c))
-                    return parts
-            return None
-        parts.insert(0, _text(ident))
-        node = node.child_by_field_name('object')
-        if node is None:
-            return parts
-    return parts or None
+    (e.g. the receiver of `obj.method()` or `math.sqrt()`). A
+    `dotted_name` is split on its dots: this is robust across grammar
+    builds where the `object`/`attribute` fields are absent, and yields the
+    full path (`a.b.c` -> ['a', 'b', 'c']) so nested-package imports like
+    `from physics.body import Body` resolve to the real module."""
+    if node is None:
+        return None
+    if node.type in ('identifier', 'name'):
+        t = _text(node).strip()
+        return [t] if t else None
+    if node.type == 'dotted_name':
+        parts = [p for p in _text(node).split('.') if p]
+        return parts or None
+    return None
 
 
 def _params(node):

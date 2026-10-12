@@ -2,7 +2,7 @@
 
 import math
 
-from vec3 import Vec3
+from physics.vec3 import Vec3
 
 G = 6.674e-11
 MIN_DIST = 1e-9

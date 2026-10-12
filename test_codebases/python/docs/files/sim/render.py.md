@@ -1,4 +1,4 @@
-# render.py
+# sim/render.py
 
 ## Summary
 
@@ -16,7 +16,7 @@ No summary generated (`--no-llm`)
 
 ### draw_body <a id="fn-draw_body-13"></a>
 
-*render.py:13-18*
+*sim/render.py:13-18*
 
 **Developer comment**
 
@@ -55,14 +55,14 @@ def draw_body(self, body):
 
 **Call graph**
 
-- [render.py](render.py.md)
+- [sim/render.py](render.py.md)
   - [draw_all:24](render.py.md#fn-draw_all-21)
 
 ---
 
 ### draw_all <a id="fn-draw_all-21"></a>
 
-*render.py:21-26*
+*sim/render.py:21-26*
 
 **Developer comment**
 
@@ -97,14 +97,14 @@ def draw_all(self, bodies):
 
 **Call graph**
 
-- [main.py](main.py.md)
-  - [tick:47](main.py.md#fn-tick-43)
+- [main.py](../main.py.md)
+  - [tick:47](../main.py.md#fn-tick-43)
 
 ---
 
 ### stats_line <a id="fn-stats_line-29"></a>
 
-*render.py:29-30*
+*sim/render.py:29-30*
 
 **Developer comment**
 
@@ -133,8 +133,8 @@ def stats_line(self, n, energy):
 
 **Call graph**
 
-- [main.py](main.py.md)
-  - [tick:48](main.py.md#fn-tick-43)
+- [main.py](../main.py.md)
+  - [tick:48](../main.py.md#fn-tick-43)
 
 ## File-level variables <a id="variables"></a>
 

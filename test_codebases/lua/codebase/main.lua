@@ -1,7 +1,7 @@
 -- main.lua — entry point: builds a body system and runs a fixed number of steps.
 
-local NBody = require("nbody")
-local Body = require("body")
+local NBody = require("physics.nbody")
+local Body = require("physics.body")
 local log = require("log")
 
 local FPS = 60

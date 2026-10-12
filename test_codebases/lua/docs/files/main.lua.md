@@ -2,18 +2,18 @@
 
 ## Summary
 
-This is the main entry-point script for an N-body simulation demo written in Lua. It provides two system generators—make_circular_system (n bodies in circular orbits around a central mass of 1000) and make_random_system (n bodies with seeded random positions and velocities)—and a tick function that logs total energy, computes accelerations, and integrates bodies forward by one timestep. The main function selects a mode, initializes the body list, and runs a fixed number of simulation steps.
-**Main purpose:** To set up an N-body system (circular or random) and execute a configurable number of simulation timesteps while logging total energy at each step.
-**Role in project:** As main.lua, it is the top-level script that orchestrates the N-body simulation by wiring together the Body, NBody, and log modules for a demo run.
+No summary generated (`--no-llm`)
+**Main purpose:** No summary generated (`--no-llm`)
+**Role in project:** No summary generated (`--no-llm`)
 
 ## Functions
 
 | Function | Line | Parameters | Description |
 | --- | --- | --- | --- |
-| [make_circular_system](#fn-make_circular_system-12) | 12 | n | Creates a table of Body objects representing a central body (mass 1000 at the origin) plus n smaller bodies (mass 1) arranged in circular or … |
-| [make_random_system](#fn-make_random_system-26) | 26 | n, seed | Creates a table of n randomly generated Body objects with positions in [-10,10], small in-plane velocities in [-0.1,0.1], zero z-velocity, a … |
-| [tick](#fn-tick-39) | 39 | sim, bodies, dt | Performs one tick of the N-body simulation by recording the current total energy, computing accelerations, advancing the bodies by the time  … |
-| [main](#fn-main-46) | 46 |  | Initializes an N-body system (circular or random) based on the MODE setting, advances the simulation for RUNS timesteps using tick, and retu … |
+| [make_circular_system](#fn-make_circular_system-12) | 12 | n | No description generated (`--no-llm`) |
+| [make_random_system](#fn-make_random_system-26) | 26 | n, seed | No description generated (`--no-llm`) |
+| [tick](#fn-tick-39) | 39 | sim, bodies, dt | No description generated (`--no-llm`) |
+| [main](#fn-main-46) | 46 |  | No description generated (`--no-llm`) |
 
 ### make_circular_system <a id="fn-make_circular_system-12"></a>
 
@@ -25,28 +25,22 @@ This is the main entry-point script for an N-body simulation demo written in Lua
 
 **Description**
 
-Creates a table of Body objects representing a central body (mass 1000 at the origin) plus n smaller bodies (mass 1) arranged in circular orbits with evenly spaced angles and tangential velocities consistent with a circular orbital speed of sqrt(1000/r).
+No description generated (`--no-llm`)
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `n` | Number of orbiting bodies to create in addition to the central body. |
-
-**Outputs**
-
-| Name | Description |
-| --- | --- |
-| `return value` | A Lua table containing 1 + n Body instances: the first is the central body at the origin, the rest are orbiting bodies with computed positions and tangential velocities. |
+| `n` |  |
 
 **References**
 
-- [Body](body.lua.md)
-
-**Uncertainties**
-
-- The exact constructor signature of Body:new is inferred from positional arguments (x, y, z, vx, vy, vz, mass) but not explicitly documented in this snippet.
-- The gravitational constant G is implicitly 1 based on v = sqrt(1000/r); it is not referenced as a named symbol in the code.
+- [Body](physics/body.lua.md)
+- [new](physics/body.lua.md#fn-new-9)
+- math.sqrt
+- table.insert
+- math.cos
+- math.sin
 
 ```lua
 local function make_circular_system(n)
@@ -80,36 +74,22 @@ end
 
 **Description**
 
-Creates a table of n randomly generated Body objects with positions in [-10,10], small in-plane velocities in [-0.1,0.1], zero z-velocity, and masses in [1,2], using the given seed for reproducibility.
+No description generated (`--no-llm`)
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `n` | Number of Body objects to create. |
-| `seed` | Value passed to math.randomseed to initialise the PRNG. |
-
-**Outputs**
-
-| Name | Description |
-| --- | --- |
-| `bodies` | A table containing n newly constructed Body instances with random position, velocity, and mass. |
-
-**Side effects**
-
-- Sets the global Lua random-number-generator state via math.randomseed(seed).
+| `n` |  |
+| `seed` |  |
 
 **References**
 
-- [Body](body.lua.md)
+- [Body](physics/body.lua.md)
 - math.randomseed
-- math.random
+- [new](physics/body.lua.md#fn-new-9)
 - table.insert
-
-**Uncertainties**
-
-- The exact field names and semantics of the seven positional arguments accepted by Body:new (assumed to be x, y, z, vx, vy, vz, mass).
-- Whether Body:new performs any additional internal initialisation beyond storing the given parameters.
+- math.random
 
 ```lua
 local function make_random_system(n, seed)
@@ -142,33 +122,24 @@ end
 
 **Description**
 
-Performs one tick of the N-body simulation by recording the current total energy, computing accelerations, advancing the bodies by the time step dt, and logging the energy value.
+No description generated (`--no-llm`)
 
 **Parameters**
 
 | Name | Description |
 | --- | --- |
-| `sim` | Simulation object providing total_energy, accelerations, and step methods. |
-| `bodies` | Collection of bodies whose positions/velocities are updated by the simulation step. |
-| `dt` | Time-step duration used to integrate the bodies forward. |
-
-**Side effects**
-
-- Mutates the bodies collection via sim:accelerations and sim:step (updates positions/velocities).
-- Writes a log line via log.info reporting the total energy.
+| `sim` |  |
+| `bodies` |  |
+| `dt` |  |
 
 **References**
 
-- sim:total_energy
-- sim:accelerations
-- sim:step
+- [log](main.lua.md#variables)
+- [total_energy](physics/nbody.lua.md#fn-total_energy-69)
+- [accelerations](physics/nbody.lua.md#fn-accelerations-18)
+- [step](physics/nbody.lua.md#fn-step-52)
 - log.info
 - tostring
-
-**Uncertainties**
-
-- The exact fields mutated on each body (e.g. position, velocity, acceleration) depend on the unseen implementations of sim:accelerations and sim:step.
-- Whether sim:step also mutates the sim object's internal state is not visible here.
 
 ```lua
 local function tick(sim, bodies, dt)
@@ -192,36 +163,18 @@ end
 
 **Description**
 
-Initializes an N-body system (circular or random) based on the MODE setting, advances the simulation for RUNS timesteps using tick, and returns the total number of bodies in the system.
-
-**Outputs**
-
-| Name | Description |
-| --- | --- |
-| `return value` | The number of bodies in the simulation (length of the bodies table). |
-
-**Side effects**
-
-- Mutates the bodies table (positions/velocities) over RUNS iterations via tick.
-- Reads system time via os.time() when generating the random system.
+No description generated (`--no-llm`)
 
 **References**
 
+- [FPS](main.lua.md#variables)
 - [MODE](main.lua.md#variables)
+- [NBody](physics/nbody.lua.md)
+- [RUNS](main.lua.md#variables)
 - [make_circular_system](main.lua.md#fn-make_circular_system-12)
 - [make_random_system](main.lua.md#fn-make_random_system-26)
 - os.time
-- [FPS](main.lua.md#variables)
-- [RUNS](main.lua.md#variables)
 - [tick](main.lua.md#fn-tick-39)
-- [NBody](nbody.lua.md)
-
-**Uncertainties**
-
-- The value of MODE is not visible; it determines whether the circular (8 bodies) or random (12 bodies) system is created.
-- The values of FPS and RUNS are not visible in this snippet.
-- Whether tick mutates the bodies table in place or returns a modified copy is not visible.
-- What the NBody module provides to tick (e.g., physics constants, solver) is not shown here.
 
 ```lua
 local function main()
@@ -245,12 +198,12 @@ end
 
 | Variable | Line | Init | Description |
 | --- | --- | --- | --- |
-| `NBody` | 3 | call | Holds the main N-body simulation instance for the demo, created by calling a constructor or factory function at module load time. |
-| `Body` | 4 | call | A body object instantiated via a function call, representing a single entity in the N-body simulation demo. |
-| `log` | 5 | call | A variable initialized with the result of a function call, likely holding a logger or logging function used to emit diagnostic or debug outp … |
-| `FPS` | 7 | number | A numeric value that sets the target frames-per-second rate for the N-body simulation loop, typically used to cap or throttle the update fre … |
-| `RUNS` | 8 | number | A numeric value in main.lua that specifies the number of simulation runs (iterations) to execute in the N-body demo. |
-| `MODE` | 9 | string | A file-level string variable in main.lua that holds the current simulation mode (e.g. a state label such as 'run' or 'pause'). It is read or … |
+| `NBody` | 3 | call | No description generated (`--no-llm`) |
+| `Body` | 4 | call | No description generated (`--no-llm`) |
+| `log` | 5 | call | No description generated (`--no-llm`) |
+| `FPS` | 7 | number | No description generated (`--no-llm`) |
+| `RUNS` | 8 | number | No description generated (`--no-llm`) |
+| `MODE` | 9 | string | No description generated (`--no-llm`) |
 
 ---
 _Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically._

@@ -1,6 +1,6 @@
 -- nbody.lua — pairwise gravitational N-body integrator (softened).
 
-local vec3 = require("vec3")
+local vec3 = require("physics.vec3")
 
 local G = 6.674e-11
 local MIN_DIST = 1e-9

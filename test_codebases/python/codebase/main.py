@@ -3,9 +3,9 @@
 import math
 import os
 
-from body import Body
-from nbody import NBody
-from render import Renderer
+from physics.body import Body
+from physics.nbody import NBody
+from sim.render import Renderer
 
 FPS = 60
 RUNS = 300

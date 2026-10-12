@@ -5,118 +5,6 @@
  "nodes": [
   {
    "kind": "file",
-   "relpath": "body.lua",
-   "lines": 39,
-   "function_count": 4,
-   "variable_count": 3,
-   "id": "file:body.lua"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.lua",
-   "name": "new",
-   "qualified": "Body.new",
-   "line": 9,
-   "end_line": 16,
-   "params": [
-    "self",
-    "x",
-    "y",
-    "z",
-    "vx",
-    "vy",
-    "vz",
-    "mass"
-   ],
-   "vararg": false,
-   "file_id": "file:body.lua",
-   "body": "function Body:new(x, y, z, vx, vy, vz, mass)\n  local self = setmetatable({}, { __index = Body })\n  self.x, self.y, self.z = x, y, z\n  self.vx, self.vy, self.vz = vx, vy, vz\n  self.mass = mass\n  self.ax, self.ay, self.az = 0, 0, 0\n  return self\nend",
-   "id": "fn:body.lua::new@9"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.lua",
-   "name": "reset",
-   "qualified": "Body.reset",
-   "line": 19,
-   "end_line": 23,
-   "params": [
-    "self",
-    "x",
-    "y",
-    "z",
-    "vx",
-    "vy",
-    "vz"
-   ],
-   "vararg": false,
-   "file_id": "file:body.lua",
-   "body": "function Body:reset(x, y, z, vx, vy, vz)\n  self.x, self.y, self.z = x, y, z\n  self.vx, self.vy, self.vz = vx, vy, vz\n  self.ax, self.ay, self.az = 0, 0, 0\nend",
-   "id": "fn:body.lua::reset@19"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.lua",
-   "name": "apply_force",
-   "qualified": "Body.apply_force",
-   "line": 26,
-   "end_line": 30,
-   "params": [
-    "self",
-    "fx",
-    "fy",
-    "fz",
-    "dt"
-   ],
-   "vararg": false,
-   "file_id": "file:body.lua",
-   "body": "function Body:apply_force(fx, fy, fz, dt)\n  self.vx = self.vx + fx * dt / self.mass\n  self.vy = self.vy + fy * dt / self.mass\n  self.vz = self.vz + fz * dt / self.mass\nend",
-   "id": "fn:body.lua::apply_force@26"
-  },
-  {
-   "kind": "function",
-   "relpath": "body.lua",
-   "name": "kinetic_energy",
-   "qualified": "Body.kinetic_energy",
-   "line": 33,
-   "end_line": 37,
-   "params": [
-    "self"
-   ],
-   "vararg": false,
-   "file_id": "file:body.lua",
-   "body": "function Body:kinetic_energy()\n  return 0.5 * self.mass * (self.vx * self.vx\n                            + self.vy * self.vy\n                            + self.vz * self.vz)\nend",
-   "id": "fn:body.lua::kinetic_energy@33"
-  },
-  {
-   "kind": "variable",
-   "relpath": "body.lua",
-   "name": "G",
-   "line": 3,
-   "init": "number",
-   "file_id": "file:body.lua",
-   "id": "var:body.lua::G@3"
-  },
-  {
-   "kind": "variable",
-   "relpath": "body.lua",
-   "name": "SOFTENING",
-   "line": 4,
-   "init": "number",
-   "file_id": "file:body.lua",
-   "id": "var:body.lua::SOFTENING@4"
-  },
-  {
-   "kind": "variable",
-   "relpath": "body.lua",
-   "name": "Body",
-   "line": 6,
-   "init": "table",
-   "file_id": "file:body.lua",
-   "id": "var:body.lua::Body@6"
-  },
-  {
-   "kind": "file",
    "relpath": "main.lua",
    "lines": 62,
    "function_count": 4,
@@ -240,15 +128,127 @@
   },
   {
    "kind": "file",
-   "relpath": "nbody.lua",
-   "lines": 87,
-   "function_count": 3,
-   "variable_count": 4,
-   "id": "file:nbody.lua"
+   "relpath": "physics/body.lua",
+   "lines": 39,
+   "function_count": 4,
+   "variable_count": 3,
+   "id": "file:physics/body.lua"
   },
   {
    "kind": "function",
-   "relpath": "nbody.lua",
+   "relpath": "physics/body.lua",
+   "name": "new",
+   "qualified": "Body.new",
+   "line": 9,
+   "end_line": 16,
+   "params": [
+    "self",
+    "x",
+    "y",
+    "z",
+    "vx",
+    "vy",
+    "vz",
+    "mass"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.lua",
+   "body": "function Body:new(x, y, z, vx, vy, vz, mass)\n  local self = setmetatable({}, { __index = Body })\n  self.x, self.y, self.z = x, y, z\n  self.vx, self.vy, self.vz = vx, vy, vz\n  self.mass = mass\n  self.ax, self.ay, self.az = 0, 0, 0\n  return self\nend",
+   "id": "fn:physics/body.lua::new@9"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/body.lua",
+   "name": "reset",
+   "qualified": "Body.reset",
+   "line": 19,
+   "end_line": 23,
+   "params": [
+    "self",
+    "x",
+    "y",
+    "z",
+    "vx",
+    "vy",
+    "vz"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.lua",
+   "body": "function Body:reset(x, y, z, vx, vy, vz)\n  self.x, self.y, self.z = x, y, z\n  self.vx, self.vy, self.vz = vx, vy, vz\n  self.ax, self.ay, self.az = 0, 0, 0\nend",
+   "id": "fn:physics/body.lua::reset@19"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/body.lua",
+   "name": "apply_force",
+   "qualified": "Body.apply_force",
+   "line": 26,
+   "end_line": 30,
+   "params": [
+    "self",
+    "fx",
+    "fy",
+    "fz",
+    "dt"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.lua",
+   "body": "function Body:apply_force(fx, fy, fz, dt)\n  self.vx = self.vx + fx * dt / self.mass\n  self.vy = self.vy + fy * dt / self.mass\n  self.vz = self.vz + fz * dt / self.mass\nend",
+   "id": "fn:physics/body.lua::apply_force@26"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/body.lua",
+   "name": "kinetic_energy",
+   "qualified": "Body.kinetic_energy",
+   "line": 33,
+   "end_line": 37,
+   "params": [
+    "self"
+   ],
+   "vararg": false,
+   "file_id": "file:physics/body.lua",
+   "body": "function Body:kinetic_energy()\n  return 0.5 * self.mass * (self.vx * self.vx\n                            + self.vy * self.vy\n                            + self.vz * self.vz)\nend",
+   "id": "fn:physics/body.lua::kinetic_energy@33"
+  },
+  {
+   "kind": "variable",
+   "relpath": "physics/body.lua",
+   "name": "G",
+   "line": 3,
+   "init": "number",
+   "file_id": "file:physics/body.lua",
+   "id": "var:physics/body.lua::G@3"
+  },
+  {
+   "kind": "variable",
+   "relpath": "physics/body.lua",
+   "name": "SOFTENING",
+   "line": 4,
+   "init": "number",
+   "file_id": "file:physics/body.lua",
+   "id": "var:physics/body.lua::SOFTENING@4"
+  },
+  {
+   "kind": "variable",
+   "relpath": "physics/body.lua",
+   "name": "Body",
+   "line": 6,
+   "init": "table",
+   "file_id": "file:physics/body.lua",
+   "id": "var:physics/body.lua::Body@6"
+  },
+  {
+   "kind": "file",
+   "relpath": "physics/nbody.lua",
+   "lines": 87,
+   "function_count": 3,
+   "variable_count": 4,
+   "id": "file:physics/nbody.lua"
+  },
+  {
+   "kind": "function",
+   "relpath": "physics/nbody.lua",
    "name": "accelerations",
    "qualified": "NBody.accelerations",
    "line": 18,
@@ -258,13 +258,13 @@
     "bodies"
    ],
    "vararg": false,
-   "file_id": "file:nbody.lua",
+   "file_id": "file:physics/nbody.lua",
    "body": "function NBody:accelerations(bodies)\n  local n = #bodies\n  for i = 1, n do\n    bodies[i].ax = 0\n    bodies[i].ay = 0\n    bodies[i].az = 0\n  end\n\n  for i = 1, n - 1 do\n    for j = i + 1, n do\n      local dx = bodies[j].x - bodies[i].x\n      local dy = bodies[j].y - bodies[i].y\n      local dz = bodies[j].z - bodies[i].z\n      local d2 = dx * dx + dy * dy + dz * dz\n      if d2 < MIN_DIST then\n        d2 = MIN_DIST\n      end\n      local dist = math.sqrt(d2)\n      local inv3 = 1.0 / (dist * d2)\n      local fi = G * bodies[j].mass * inv3\n      local fj = G * bodies[i].mass * inv3\n      bodies[i].ax = bodies[i].ax + fi * dx\n      bodies[i].ay = bodies[i].ay + fi * dy\n      bodies[i].az = bodies[i].az + fi * dz\n      bodies[j].ax = bodies[j].ax - fj * dx\n      bodies[j].ay = bodies[j].ay - fj * dy\n      bodies[j].az = bodies[j].az - fj * dz\n    end\n  end\n\n  return bodies\nend",
-   "id": "fn:nbody.lua::accelerations@18"
+   "id": "fn:physics/nbody.lua::accelerations@18"
   },
   {
    "kind": "function",
-   "relpath": "nbody.lua",
+   "relpath": "physics/nbody.lua",
    "name": "step",
    "qualified": "NBody.step",
    "line": 52,
@@ -275,13 +275,13 @@
     "dt"
    ],
    "vararg": false,
-   "file_id": "file:nbody.lua",
+   "file_id": "file:physics/nbody.lua",
    "body": "function NBody:step(bodies, dt)\n  for i = 1, #bodies do\n    local b = bodies[i]\n    b.vx = b.vx + b.ax * dt\n    b.vy = b.vy + b.ay * dt\n    b.vz = b.vz + b.az * dt\n  end\n\n  for i = 1, #bodies do\n    local b = bodies[i]\n    b.x = b.x + b.vx * dt\n    b.y = b.y + b.vy * dt\n    b.z = b.z + b.vz * dt\n  end\nend",
-   "id": "fn:nbody.lua::step@52"
+   "id": "fn:physics/nbody.lua::step@52"
   },
   {
    "kind": "function",
-   "relpath": "nbody.lua",
+   "relpath": "physics/nbody.lua",
    "name": "total_energy",
    "qualified": "NBody.total_energy",
    "line": 69,
@@ -291,57 +291,57 @@
     "bodies"
    ],
    "vararg": false,
-   "file_id": "file:nbody.lua",
+   "file_id": "file:physics/nbody.lua",
    "body": "function NBody:total_energy(bodies)\n  local e = 0\n  for i = 1, #bodies do\n    e = e + bodies[i]:kinetic_energy()\n  end\n\n  for i = 1, #bodies - 1 do\n    for j = i + 1, #bodies do\n      local d = vec3.length(vec3.sub(\n        { bodies[j].x, bodies[j].y, bodies[j].z },\n        { bodies[i].x, bodies[i].y, bodies[i].z }))\n      e = e - G * bodies[i].mass * bodies[j].mass / d\n    end\n  end\n\n  return e\nend",
-   "id": "fn:nbody.lua::total_energy@69"
+   "id": "fn:physics/nbody.lua::total_energy@69"
   },
   {
    "kind": "variable",
-   "relpath": "nbody.lua",
+   "relpath": "physics/nbody.lua",
    "name": "vec3",
    "line": 3,
    "init": "call",
-   "file_id": "file:nbody.lua",
-   "id": "var:nbody.lua::vec3@3"
+   "file_id": "file:physics/nbody.lua",
+   "id": "var:physics/nbody.lua::vec3@3"
   },
   {
    "kind": "variable",
-   "relpath": "nbody.lua",
+   "relpath": "physics/nbody.lua",
    "name": "G",
    "line": 5,
    "init": "number",
-   "file_id": "file:nbody.lua",
-   "id": "var:nbody.lua::G@5"
+   "file_id": "file:physics/nbody.lua",
+   "id": "var:physics/nbody.lua::G@5"
   },
   {
    "kind": "variable",
-   "relpath": "nbody.lua",
+   "relpath": "physics/nbody.lua",
    "name": "MIN_DIST",
    "line": 6,
    "init": "number",
-   "file_id": "file:nbody.lua",
-   "id": "var:nbody.lua::MIN_DIST@6"
+   "file_id": "file:physics/nbody.lua",
+   "id": "var:physics/nbody.lua::MIN_DIST@6"
   },
   {
    "kind": "variable",
-   "relpath": "nbody.lua",
+   "relpath": "physics/nbody.lua",
    "name": "NBody",
    "line": 8,
    "init": "table",
-   "file_id": "file:nbody.lua",
-   "id": "var:nbody.lua::NBody@8"
+   "file_id": "file:physics/nbody.lua",
+   "id": "var:physics/nbody.lua::NBody@8"
   },
   {
    "kind": "file",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "lines": 50,
    "function_count": 6,
    "variable_count": 4,
-   "id": "file:vec3.lua"
+   "id": "file:physics/vec3.lua"
   },
   {
    "kind": "function",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "add",
    "qualified": "V.add",
    "line": 10,
@@ -351,13 +351,13 @@
     "b"
    ],
    "vararg": false,
-   "file_id": "file:vec3.lua",
+   "file_id": "file:physics/vec3.lua",
    "body": "function V.add(a, b)\n  return { a[1] + b[1], a[2] + b[2], a[3] + b[3] }\nend",
-   "id": "fn:vec3.lua::add@10"
+   "id": "fn:physics/vec3.lua::add@10"
   },
   {
    "kind": "function",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "sub",
    "qualified": "V.sub",
    "line": 15,
@@ -367,13 +367,13 @@
     "b"
    ],
    "vararg": false,
-   "file_id": "file:vec3.lua",
+   "file_id": "file:physics/vec3.lua",
    "body": "function V.sub(a, b)\n  return { a[1] - b[1], a[2] - b[2], a[3] - b[3] }\nend",
-   "id": "fn:vec3.lua::sub@15"
+   "id": "fn:physics/vec3.lua::sub@15"
   },
   {
    "kind": "function",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "scale",
    "qualified": "V.scale",
    "line": 20,
@@ -383,13 +383,13 @@
     "s"
    ],
    "vararg": false,
-   "file_id": "file:vec3.lua",
+   "file_id": "file:physics/vec3.lua",
    "body": "function V.scale(v, s)\n  return { v[1] * s, v[2] * s, v[3] * s }\nend",
-   "id": "fn:vec3.lua::scale@20"
+   "id": "fn:physics/vec3.lua::scale@20"
   },
   {
    "kind": "function",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "dot",
    "qualified": "V.dot",
    "line": 25,
@@ -399,13 +399,13 @@
     "b"
    ],
    "vararg": false,
-   "file_id": "file:vec3.lua",
+   "file_id": "file:physics/vec3.lua",
    "body": "function V.dot(a, b)\n  return a[1] * b[1] + a[2] * b[2] + a[3] * b[3]\nend",
-   "id": "fn:vec3.lua::dot@25"
+   "id": "fn:physics/vec3.lua::dot@25"
   },
   {
    "kind": "function",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "length",
    "qualified": "V.length",
    "line": 30,
@@ -414,13 +414,13 @@
     "v"
    ],
    "vararg": false,
-   "file_id": "file:vec3.lua",
+   "file_id": "file:physics/vec3.lua",
    "body": "function V.length(v)\n  local d = math.sqrt(V.dot(v, v))\n  if d < EPS then\n    return EPS\n  end\n  return d\nend",
-   "id": "fn:vec3.lua::length@30"
+   "id": "fn:physics/vec3.lua::length@30"
   },
   {
    "kind": "function",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "normalize",
    "qualified": "V.normalize",
    "line": 42,
@@ -429,50 +429,45 @@
     "v"
    ],
    "vararg": false,
-   "file_id": "file:vec3.lua",
+   "file_id": "file:physics/vec3.lua",
    "body": "function V.normalize(v)\n  local d = V.length(v)\n  if d <= EPS then\n    return ZERO\n  end\n  return V.scale(v, 1 / d)\nend",
-   "id": "fn:vec3.lua::normalize@42"
+   "id": "fn:physics/vec3.lua::normalize@42"
   },
   {
    "kind": "variable",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "V",
    "line": 3,
    "init": "table",
-   "file_id": "file:vec3.lua",
-   "id": "var:vec3.lua::V@3"
+   "file_id": "file:physics/vec3.lua",
+   "id": "var:physics/vec3.lua::V@3"
   },
   {
    "kind": "variable",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "EPS",
    "line": 5,
    "init": "number",
-   "file_id": "file:vec3.lua",
-   "id": "var:vec3.lua::EPS@5"
+   "file_id": "file:physics/vec3.lua",
+   "id": "var:physics/vec3.lua::EPS@5"
   },
   {
    "kind": "variable",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "ZERO",
    "line": 6,
    "init": "table",
-   "file_id": "file:vec3.lua",
-   "id": "var:vec3.lua::ZERO@6"
+   "file_id": "file:physics/vec3.lua",
+   "id": "var:physics/vec3.lua::ZERO@6"
   },
   {
    "kind": "variable",
-   "relpath": "vec3.lua",
+   "relpath": "physics/vec3.lua",
    "name": "TAG",
    "line": 7,
    "init": "string",
-   "file_id": "file:vec3.lua",
-   "id": "var:vec3.lua::TAG@7"
-  },
-  {
-   "kind": "builtin",
-   "name": "setmetatable",
-   "id": "builtin:setmetatable"
+   "file_id": "file:physics/vec3.lua",
+   "id": "var:physics/vec3.lua::TAG@7"
   },
   {
    "kind": "builtin",
@@ -528,82 +523,14 @@
    "kind": "module",
    "name": "log",
    "id": "mod:log"
+  },
+  {
+   "kind": "builtin",
+   "name": "setmetatable",
+   "id": "builtin:setmetatable"
   }
  ],
  "edges": [
-  {
-   "type": "CONTAINS",
-   "source": "file:body.lua",
-   "target": "fn:body.lua::new@9",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.lua",
-   "target": "fn:body.lua::reset@19",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.lua",
-   "target": "fn:body.lua::apply_force@26",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.lua",
-   "target": "fn:body.lua::kinetic_energy@33",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.lua",
-   "target": "var:body.lua::G@3",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.lua",
-   "target": "var:body.lua::SOFTENING@4",
-   "key": 0
-  },
-  {
-   "type": "CONTAINS",
-   "source": "file:body.lua",
-   "target": "var:body.lua::Body@6",
-   "key": 0
-  },
-  {
-   "type": "CALLS",
-   "line": 10,
-   "source": "fn:body.lua::new@9",
-   "target": "builtin:setmetatable",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:body.lua::new@9",
-   "target": "var:body.lua::Body@6",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:body.lua::reset@19",
-   "target": "var:body.lua::Body@6",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:body.lua::apply_force@26",
-   "target": "var:body.lua::Body@6",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:body.lua::kinetic_energy@33",
-   "target": "var:body.lua::Body@6",
-   "key": 0
-  },
   {
    "type": "CONTAINS",
    "source": "file:main.lua",
@@ -688,17 +615,17 @@
   {
    "type": "IMPORTS",
    "line": 3,
-   "module": "nbody",
+   "module": "physics.nbody",
    "source": "file:main.lua",
-   "target": "file:nbody.lua",
+   "target": "file:physics/nbody.lua",
    "key": 0
   },
   {
    "type": "IMPORTS",
    "line": 4,
-   "module": "body",
+   "module": "physics.body",
    "source": "file:main.lua",
-   "target": "file:body.lua",
+   "target": "file:physics/body.lua",
    "key": 0
   },
   {
@@ -713,14 +640,14 @@
    "type": "CALLS",
    "line": 13,
    "source": "fn:main.lua::make_circular_system@12",
-   "target": "fn:body.lua::new@9",
+   "target": "fn:physics/body.lua::new@9",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 18,
    "source": "fn:main.lua::make_circular_system@12",
-   "target": "fn:body.lua::new@9",
+   "target": "fn:physics/body.lua::new@9",
    "key": 1
   },
   {
@@ -789,7 +716,7 @@
    "type": "CALLS",
    "line": 30,
    "source": "fn:main.lua::make_random_system@26",
-   "target": "fn:body.lua::new@9",
+   "target": "fn:physics/body.lua::new@9",
    "key": 0
   },
   {
@@ -823,21 +750,21 @@
    "type": "CALLS",
    "line": 40,
    "source": "fn:main.lua::tick@39",
-   "target": "fn:nbody.lua::total_energy@69",
+   "target": "fn:physics/nbody.lua::total_energy@69",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 41,
    "source": "fn:main.lua::tick@39",
-   "target": "fn:nbody.lua::accelerations@18",
+   "target": "fn:physics/nbody.lua::accelerations@18",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 42,
    "source": "fn:main.lua::tick@39",
-   "target": "fn:nbody.lua::step@52",
+   "target": "fn:physics/nbody.lua::step@52",
    "key": 0
   },
   {
@@ -914,264 +841,337 @@
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.lua",
-   "target": "fn:nbody.lua::accelerations@18",
+   "source": "file:physics/body.lua",
+   "target": "fn:physics/body.lua::new@9",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.lua",
-   "target": "fn:nbody.lua::step@52",
+   "source": "file:physics/body.lua",
+   "target": "fn:physics/body.lua::reset@19",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.lua",
-   "target": "fn:nbody.lua::total_energy@69",
+   "source": "file:physics/body.lua",
+   "target": "fn:physics/body.lua::apply_force@26",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.lua",
-   "target": "var:nbody.lua::vec3@3",
+   "source": "file:physics/body.lua",
+   "target": "fn:physics/body.lua::kinetic_energy@33",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.lua",
-   "target": "var:nbody.lua::G@5",
+   "source": "file:physics/body.lua",
+   "target": "var:physics/body.lua::G@3",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.lua",
-   "target": "var:nbody.lua::MIN_DIST@6",
+   "source": "file:physics/body.lua",
+   "target": "var:physics/body.lua::SOFTENING@4",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:nbody.lua",
-   "target": "var:nbody.lua::NBody@8",
+   "source": "file:physics/body.lua",
+   "target": "var:physics/body.lua::Body@6",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 10,
+   "source": "fn:physics/body.lua::new@9",
+   "target": "builtin:setmetatable",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:physics/body.lua::new@9",
+   "target": "var:physics/body.lua::Body@6",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:physics/body.lua::reset@19",
+   "target": "var:physics/body.lua::Body@6",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:physics/body.lua::apply_force@26",
+   "target": "var:physics/body.lua::Body@6",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:physics/body.lua::kinetic_energy@33",
+   "target": "var:physics/body.lua::Body@6",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.lua",
+   "target": "fn:physics/nbody.lua::accelerations@18",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.lua",
+   "target": "fn:physics/nbody.lua::step@52",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.lua",
+   "target": "fn:physics/nbody.lua::total_energy@69",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.lua",
+   "target": "var:physics/nbody.lua::vec3@3",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.lua",
+   "target": "var:physics/nbody.lua::G@5",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.lua",
+   "target": "var:physics/nbody.lua::MIN_DIST@6",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:physics/nbody.lua",
+   "target": "var:physics/nbody.lua::NBody@8",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 3,
-   "source": "file:nbody.lua",
+   "source": "file:physics/nbody.lua",
    "target": "builtin:require",
    "key": 0
   },
   {
    "type": "IMPORTS",
    "line": 3,
-   "module": "vec3",
-   "source": "file:nbody.lua",
-   "target": "file:vec3.lua",
+   "module": "physics.vec3",
+   "source": "file:physics/nbody.lua",
+   "target": "file:physics/vec3.lua",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 35,
-   "source": "fn:nbody.lua::accelerations@18",
+   "source": "fn:physics/nbody.lua::accelerations@18",
    "target": "ext:math.sqrt",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.lua::accelerations@18",
-   "target": "var:nbody.lua::G@5",
+   "source": "fn:physics/nbody.lua::accelerations@18",
+   "target": "var:physics/nbody.lua::G@5",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.lua::accelerations@18",
-   "target": "var:nbody.lua::MIN_DIST@6",
+   "source": "fn:physics/nbody.lua::accelerations@18",
+   "target": "var:physics/nbody.lua::MIN_DIST@6",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.lua::accelerations@18",
-   "target": "var:nbody.lua::NBody@8",
+   "source": "fn:physics/nbody.lua::accelerations@18",
+   "target": "var:physics/nbody.lua::NBody@8",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.lua::step@52",
-   "target": "var:nbody.lua::NBody@8",
+   "source": "fn:physics/nbody.lua::step@52",
+   "target": "var:physics/nbody.lua::NBody@8",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 77,
-   "source": "fn:nbody.lua::total_energy@69",
-   "target": "fn:vec3.lua::length@30",
+   "source": "fn:physics/nbody.lua::total_energy@69",
+   "target": "fn:physics/vec3.lua::length@30",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 77,
-   "source": "fn:nbody.lua::total_energy@69",
-   "target": "fn:vec3.lua::sub@15",
+   "source": "fn:physics/nbody.lua::total_energy@69",
+   "target": "fn:physics/vec3.lua::sub@15",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.lua::total_energy@69",
-   "target": "var:nbody.lua::G@5",
+   "source": "fn:physics/nbody.lua::total_energy@69",
+   "target": "var:physics/nbody.lua::G@5",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.lua::total_energy@69",
-   "target": "var:nbody.lua::NBody@8",
+   "source": "fn:physics/nbody.lua::total_energy@69",
+   "target": "var:physics/nbody.lua::NBody@8",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:nbody.lua::total_energy@69",
-   "target": "var:nbody.lua::vec3@3",
+   "source": "fn:physics/nbody.lua::total_energy@69",
+   "target": "var:physics/nbody.lua::vec3@3",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "fn:vec3.lua::add@10",
+   "source": "file:physics/vec3.lua",
+   "target": "fn:physics/vec3.lua::add@10",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "fn:vec3.lua::sub@15",
+   "source": "file:physics/vec3.lua",
+   "target": "fn:physics/vec3.lua::sub@15",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "fn:vec3.lua::scale@20",
+   "source": "file:physics/vec3.lua",
+   "target": "fn:physics/vec3.lua::scale@20",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "fn:vec3.lua::dot@25",
+   "source": "file:physics/vec3.lua",
+   "target": "fn:physics/vec3.lua::dot@25",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "fn:vec3.lua::length@30",
+   "source": "file:physics/vec3.lua",
+   "target": "fn:physics/vec3.lua::length@30",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "fn:vec3.lua::normalize@42",
+   "source": "file:physics/vec3.lua",
+   "target": "fn:physics/vec3.lua::normalize@42",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "var:vec3.lua::V@3",
+   "source": "file:physics/vec3.lua",
+   "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "var:vec3.lua::EPS@5",
+   "source": "file:physics/vec3.lua",
+   "target": "var:physics/vec3.lua::EPS@5",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "var:vec3.lua::ZERO@6",
+   "source": "file:physics/vec3.lua",
+   "target": "var:physics/vec3.lua::ZERO@6",
    "key": 0
   },
   {
    "type": "CONTAINS",
-   "source": "file:vec3.lua",
-   "target": "var:vec3.lua::TAG@7",
+   "source": "file:physics/vec3.lua",
+   "target": "var:physics/vec3.lua::TAG@7",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::add@10",
-   "target": "var:vec3.lua::V@3",
+   "source": "fn:physics/vec3.lua::add@10",
+   "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::sub@15",
-   "target": "var:vec3.lua::V@3",
+   "source": "fn:physics/vec3.lua::sub@15",
+   "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::scale@20",
-   "target": "var:vec3.lua::V@3",
+   "source": "fn:physics/vec3.lua::scale@20",
+   "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::dot@25",
-   "target": "var:vec3.lua::V@3",
+   "source": "fn:physics/vec3.lua::dot@25",
+   "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 31,
-   "source": "fn:vec3.lua::length@30",
+   "source": "fn:physics/vec3.lua::length@30",
    "target": "ext:math.sqrt",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 31,
-   "source": "fn:vec3.lua::length@30",
-   "target": "fn:vec3.lua::dot@25",
+   "source": "fn:physics/vec3.lua::length@30",
+   "target": "fn:physics/vec3.lua::dot@25",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::length@30",
-   "target": "var:vec3.lua::EPS@5",
+   "source": "fn:physics/vec3.lua::length@30",
+   "target": "var:physics/vec3.lua::EPS@5",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::length@30",
-   "target": "var:vec3.lua::V@3",
+   "source": "fn:physics/vec3.lua::length@30",
+   "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 43,
-   "source": "fn:vec3.lua::normalize@42",
-   "target": "fn:vec3.lua::length@30",
+   "source": "fn:physics/vec3.lua::normalize@42",
+   "target": "fn:physics/vec3.lua::length@30",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 47,
-   "source": "fn:vec3.lua::normalize@42",
-   "target": "fn:vec3.lua::scale@20",
+   "source": "fn:physics/vec3.lua::normalize@42",
+   "target": "fn:physics/vec3.lua::scale@20",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::normalize@42",
-   "target": "var:vec3.lua::EPS@5",
+   "source": "fn:physics/vec3.lua::normalize@42",
+   "target": "var:physics/vec3.lua::EPS@5",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::normalize@42",
-   "target": "var:vec3.lua::V@3",
+   "source": "fn:physics/vec3.lua::normalize@42",
+   "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
-   "source": "fn:vec3.lua::normalize@42",
-   "target": "var:vec3.lua::ZERO@6",
+   "source": "fn:physics/vec3.lua::normalize@42",
+   "target": "var:physics/vec3.lua::ZERO@6",
    "key": 0
   }
  ]
