@@ -6,7 +6,6 @@
 
 <p align="center">
   <strong>Deterministic documentation generator for codebases.</strong><br />
-  <sub>Icon by <a href="https://github.com/lele394">@lele394</a></sub>
 </p>
 
 kodama-docs extracts every function, variable, call and import in a source tree
@@ -20,6 +19,18 @@ it.
 
 Supported languages: **Lua** and **Python** (each backed by its official
 tree-sitter grammar; adding a language is a single small backend file).
+
+---
+
+## Planned future addition
+
+- [ ] C support
+- [ ] C++ support
+- [ ] Fortran support
+- [ ] Rust support
+
+- [ ] 
+
 
 ---
 
@@ -386,3 +397,10 @@ configs/
   ever references `env`.
 - **Self-hosting check:** `configs/self.yaml` runs kodama-docs on its own
   Python sources — a continuous sanity check that the tool documents code.
+
+## License
+
+Licensed under the **MIT License** — see [LICENSE](LICENSE). On top of the
+standard MIT grant, the license carries one extra condition: this project's
+source code and documentation may **not** be used as training, fine-tuning,
+or evaluation data for AI/ML models (including large language models).
