@@ -18,6 +18,12 @@
   <a class="brand" href="/index.md">doc_maker</a>
   <a class="nav" href="/index.md">docs</a>
   <span class="graph-controls">
+    <span class="graph-search" id="graph-search-wrap">
+      <input id="graph-search" type="text" placeholder="search nodes…"
+        autocomplete="off" spellcheck="false"
+        title="fuzzy-search nodes by path+name, e.g. test/main">
+      <div id="search-drop" class="search-drop" hidden></div>
+    </span>
     <span class="seg">
       <label><input type="radio" name="level" value="files" checked>
         <span>files</span></label>

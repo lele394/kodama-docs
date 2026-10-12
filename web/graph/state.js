@@ -41,6 +41,12 @@ export const state = {
   fg: '#1f2328',
   accent: '#3b6fd4',
   docStack: [],
+  // fuzzy search: query text, whether it is active (non-empty), the
+  // matched node ids ({ [id]: true }) and whether the dropdown is open
+  query: '',
+  searchActive: false,
+  matchSet: null,
+  dropOpen: false,
 };
 Object.keys(SIM_DEFAULTS).forEach(function (k) { state.sim[k] = SIM_DEFAULTS[k]; });
 

@@ -7,6 +7,7 @@ import { mulberry32 } from './rng.js';
 import { fitView } from './view.js';
 import { draw, updateLegend, updateCounts } from './draw.js';
 import { labelOf, fileOf } from './util.js';
+import { applySearch } from './search.js';
 
 export function buildLevel() {
   var keep = state.level === 'files'
@@ -54,6 +55,9 @@ export function buildLevel() {
   state.hover = null;
   state.selected = null;
   tip.hidden = true;
+  // a search may still be active: re-score the new node set (the
+  // dropdown only updates while it is already open)
+  applySearch(state.query);
 }
 
 // deterministic initial positions: files on a circle, symbols near their

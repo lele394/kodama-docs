@@ -222,6 +222,54 @@ body.graph-page {
 }
 #graph-reset:hover { border-color: var(--accent); color: var(--accent); }
 
+.graph-search { position: relative; display: inline-flex; }
+#graph-search {
+  width: 190px;
+  padding: 5px 10px;
+  font: 13px "Segoe UI", system-ui, sans-serif;
+  color: var(--fg);
+  background: var(--btn-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+#graph-search:focus { outline: none; border-color: var(--accent); }
+#graph-search::placeholder { color: var(--muted); }
+
+.search-drop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 360px;
+  max-height: 360px;
+  overflow: auto;
+  padding: 4px;
+  background: var(--bar);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .35);
+}
+.sd-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.sd-row:hover { background: var(--btn-bg); }
+.sd-name { font-weight: 600; font-size: 13px; white-space: nowrap; }
+.sd-kind { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.sd-path {
+  flex: 1;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sd-empty { padding: 8px 10px; font-size: 13px; color: var(--muted); }
+
 .graph-layout { display: flex; flex: 1; min-height: 0; }
 
 .graph-panel {

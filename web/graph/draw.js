@@ -11,6 +11,17 @@ const EDGE_STYLE = {
   READS: { color: 'rgba(217,138,20,0.65)', dash: [3, 3], width: 1.1 },
 };
 
+// low-alpha versions of the node colors — used to dim nodes that do
+// NOT match the active search query, so the matches stand out
+function toRgba(hex, a) {
+  return 'rgba(' + parseInt(hex.slice(1, 3), 16) + ','
+    + parseInt(hex.slice(3, 5), 16) + ',' + parseInt(hex.slice(5, 7), 16)
+    + ',' + a + ')';
+}
+const MUTED = {};
+Object.keys(COLORS).forEach(function (k) { MUTED[k] = toRgba(COLORS[k], 0.12); });
+const MUTED_FALLBACK = 'rgba(150,150,150,0.15)';
+
 export function draw() {
   if (!state.raw) return;
   resize();
@@ -41,12 +52,15 @@ export function draw() {
   });
   ctx.setLineDash([]);
 
-  // nodes
+  // nodes — non-matching ones are dimmed while a search is active
+  var searching = state.searchActive && state.matchSet;
   for (var i = 0; i < state.nodes.length; i++) {
     var v = state.nodes[i];
     ctx.beginPath();
     ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2);
-    ctx.fillStyle = COLORS[v.kind] || '#999';
+    ctx.fillStyle = (searching && !state.matchSet[v.id])
+      ? (MUTED[v.kind] || MUTED_FALLBACK)
+      : (COLORS[v.kind] || '#999');
     ctx.fill();
   }
 
@@ -69,7 +83,10 @@ export function draw() {
   var hubDeg = state.level === 'files' ? 20 : 25;
   for (var j = 0; j < state.nodes.length; j++) {
     var w = state.nodes[j];
-    if (w === state.hover || w === state.selected || showAll || w.deg >= hubDeg) {
+    var emph = w === state.hover || w === state.selected;
+    if (emph || showAll || w.deg >= hubDeg) {
+      // dimmed nodes keep their labels only when hovered/selected
+      if (searching && !state.matchSet[w.id] && !emph) continue;
       ctx.fillText(w.label, w.x, w.y + w.r + fs * 1.1);
     }
   }
