@@ -4,9 +4,9 @@ import json
 import os
 import shutil
 
-from docmaker.records import delete_records_for
-from docmaker.scan import file_md5
-from docmaker.util import log
+from kodama_docs.records import delete_records_for
+from kodama_docs.scan import file_md5
+from kodama_docs.util import log
 
 
 def _dangerous_dirs() -> set:
@@ -47,7 +47,7 @@ def write_doc_cache(cfg: dict, files) -> None:
     md5s = {f['relpath']: file_md5(f['full']) for f in files}
     os.makedirs(cfg['output_dir'], exist_ok=True)
     with open(_doc_cache_path(cfg), 'w', encoding='utf-8') as fh:
-        json.dump({'schema': 'doc_maker/doc_cache@1', 'files': md5s},
+        json.dump({'schema': 'kodama_docs/doc_cache@1', 'files': md5s},
                   fh, ensure_ascii=False, indent=1)
     log(f'doc cache: {len(md5s)} files -> {_doc_cache_path(cfg)}')
 

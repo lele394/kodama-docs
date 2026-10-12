@@ -1,4 +1,4 @@
-# doc_maker runtime dependencies (Python 3.14; 3.11+ expected to work).
+# kodama-docs runtime dependencies (Python 3.14; 3.11+ expected to work).
 # Transitive deps (pygments, markdown-it-py, mdurl) are resolved by pip.
 tree-sitter==0.26.0
 tree-sitter-lua==0.5.0

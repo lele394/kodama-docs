@@ -1,4 +1,4 @@
-# doc_maker documenting itself (its own Python sources). Scratch config.
+# kodama-docs documenting itself (its own Python sources). Scratch config.
 # Relative paths are resolved against the directory containing this file.
 project:
   source_dir: ".."

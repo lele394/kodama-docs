@@ -61,7 +61,7 @@ function loadDoc(t, frag) {
       // t.url is an absolute path, so any origin serves to resolve the
       // relative links it contains; a fixed one keeps this location-
       // independent.
-      var ORIGIN = 'http://docmaker.local';
+      var ORIGIN = 'http://kodama-docs.local';
       var base = new URL(ORIGIN + t.url);
       var bodyEl = doc.body;
       Array.prototype.forEach.call(bodyEl.querySelectorAll('a[href]'),

@@ -1,7 +1,7 @@
 # Backend design standard
 
 A backend is a module in this package that turns one source file into
-doc_maker's language-independent symbol shape. Everything upstream of it
+kodama-docs's language-independent symbol shape. Everything upstream of it
 (tree-sitter grammars) and downstream of it (graph, LLM prose, markdown,
 web view) is language-agnostic and must not need to know which backend ran.
 

@@ -1,4 +1,4 @@
-"""Deterministic Markdown -> HTML for the subset doc_maker generates.
+"""Deterministic Markdown -> HTML for the subset kodama-docs generates.
 
 Supports exactly what documentation.py emits: headings (including raw
 ``<a id="...">`` anchors), paragraphs, **bold**, *italic*, `code`,
@@ -37,7 +37,7 @@ def render_inline(text: str) -> str:
     text = html.escape(text)
     text = _BOLD_RE.sub(r'<strong>\1</strong>', text)
     text = _STAR_RE.sub(r'<em>\1</em>', text)
-    # protect intraword underscores (e.g. doc_maker) from the italic pass,
+    # protect intraword underscores (e.g. kodama_docs) from the italic pass,
     # like GFM's intraword rule
     u_stash = []
 
@@ -109,7 +109,7 @@ def render_list(items) -> str:
 
 
 def render_md(md: str) -> str:
-    """Markdown text (doc_maker's generated subset) -> HTML body."""
+    """Markdown text (kodama-docs's generated subset) -> HTML body."""
     lines = md.replace('\r\n', '\n').split('\n')
     out = []
     i, n = 0, len(lines)

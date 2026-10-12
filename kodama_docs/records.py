@@ -7,7 +7,7 @@ import hashlib
 import json
 import os
 
-from docmaker.util import sanitize_id
+from kodama_docs.util import sanitize_id
 
 _SUBDIR = {'function': 'functions', 'variable': 'variables',
            'summary': 'summaries', 'chunk': 'chunks'}
@@ -26,7 +26,7 @@ def save_record(data_dir: str, relpath: str, kind: str, name: str, line: int,
     path = record_path(data_dir, relpath, kind, name, line)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     rec = {
-        'schema': 'doc_maker/record@1',
+        'schema': 'kodama_docs/record@1',
         'kind': kind,
         'file': relpath,
         'name': name,

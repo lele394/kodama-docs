@@ -1,7 +1,7 @@
 """Per-language source extraction backends.
 
 Parsing is offloaded to tree-sitter; each backend module only walks the
-concrete syntax tree and projects it into doc_maker's per-file symbol shape:
+concrete syntax tree and projects it into kodama-docs's per-file symbol shape:
 
     {'functions': [...], 'file_vars': [...], 'calls': [...], 'imports': [...]}
 

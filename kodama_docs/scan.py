@@ -5,9 +5,9 @@ import json
 import os
 
 import backends
-import docmaker.graph as gmod
-from docmaker.records import load_record
-from docmaker.util import log
+import kodama_docs.graph as gmod
+from kodama_docs.records import load_record
+from kodama_docs.util import log
 from rich.text import Text as RText
 from rich.table import Table as RTable
 from rich.console import Console as RConsole
@@ -91,7 +91,7 @@ def save_symbols(cfg: dict, files, fingerprint: str):
     path = os.path.join(cfg['data_dir'], 'symbols.json')
     os.makedirs(cfg['data_dir'], exist_ok=True)
     with open(path, 'w', encoding='utf-8') as fh:
-        json.dump({'schema': 'doc_maker/symbols@1', 'fingerprint': fingerprint,
+        json.dump({'schema': 'kodama_docs/symbols@1', 'fingerprint': fingerprint,
                    'file_count': len(files), 'files': files},
                   fh, ensure_ascii=False)
     log(f'  saved {path} ({os.path.getsize(path) // 1024} KiB)')

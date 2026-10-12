@@ -1,6 +1,6 @@
 # TODOLIST
 
-Open items from the quality review of doc_maker. Not yet done. Roughly
+Open items from the quality review of kodama-docs. Not yet done. Roughly
 ordered by priority; each item says *where* to look.
 
 ## High priority — look at these first
@@ -27,15 +27,15 @@ ordered by priority; each item says *where* to look.
       churn warnings on every commit.
 - [ ] README L62-63: says the `.env` lookup order is "config file's
       directory first, then the script directory" — the code checks the
-      **project root first** (`docmaker/config.py:26`). Fix the sentence.
-- [ ] Unknown config keys are silently ignored (`docmaker/config.py`):
+      **project root first** (`kodama_docs/config.py:26`). Fix the sentence.
+- [ ] Unknown config keys are silently ignored (`kodama_docs/config.py`):
       a typo'd key falls back to the default with no warning. Add a
       warning (or schema check) for unrecognized top-level keys.
 
 ## Correctness / robustness
 
 - [ ] Same-name symbol collisions resolve first-come in sort order
-      (`docmaker/graph.py:101-122`) — deterministic, but can link to the
+      (`kodama_docs/graph.py:101-122`) — deterministic, but can link to the
       wrong function of the same name. Decide on a better disambiguation
       (e.g. prefer same-file/same-module).
 - [ ] `web/theme_state.json` is written non-atomically under

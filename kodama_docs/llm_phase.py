@@ -6,13 +6,13 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-import docmaker.graph as gmod
-from docmaker.context import (fn_chunks, fn_context_text, var_context_text,
+import kodama_docs.graph as gmod
+from kodama_docs.context import (fn_chunks, fn_context_text, var_context_text,
                      summary_context_text)
-from docmaker.llm import LLMClient, generate
-from docmaker.records import load_record, save_record
-from docmaker.tui import TUI
-from docmaker.util import fence_lang, log, set_log_sink
+from kodama_docs.llm import LLMClient, generate
+from kodama_docs.records import load_record, save_record
+from kodama_docs.tui import TUI
+from kodama_docs.util import fence_lang, log, set_log_sink
 
 
 def fn_length(fn: dict) -> int:

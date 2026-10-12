@@ -1,4 +1,4 @@
-// doc_maker /graph — codebase dependency graph (Obsidian-style).
+// kodama-docs /graph — codebase dependency graph (Obsidian-style).
 //
 // Entry point only. The behavior lives in the modules under web/graph/
 // (dom, state, util, rng, view, draw, layout, interact, panel, search,

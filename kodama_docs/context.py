@@ -1,6 +1,6 @@
 """Prompt context builders: deterministic chunking + per-kind context text."""
 
-from docmaker.util import fence_lang, trunc
+from kodama_docs.util import fence_lang, trunc
 
 
 def fn_chunks(body: str, max_lines: int, target_tokens: int = 0,

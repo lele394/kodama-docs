@@ -35,10 +35,10 @@ Run only one LLM task at a time. Keep function tasks independent so that paralle
 ## 3. Directory structure
 
 ```text
-doc_maker/
+kodama-docs/
 ├── settings.yaml           # + variants under configs/
 ├── main.py                 # pipeline: scan -> extract -> graph -> LLM -> markdown
-├── docmaker/               # pipeline modules (config, scan, graph, llm, markdown, ...)
+├── kodama_docs/               # pipeline modules (config, scan, graph, llm, markdown, ...)
 ├── backends/
 │   ├── __init__.py         # registry: file extension -> extract(source, relpath)
 │   └── lua.py              # tree-sitter-lua extraction backend

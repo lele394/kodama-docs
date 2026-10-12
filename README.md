@@ -1,8 +1,8 @@
-# doc_maker
+# kodama-docs
 
 Deterministic documentation generator for codebases.
 
-doc_maker extracts every function, variable, call and import in a source tree
+kodama-docs extracts every function, variable, call and import in a source tree
 with a **deterministic** pipeline (tree-sitter grammars, a networkx call graph,
 content-fingerprint caching) and uses an LLM for **one thing only**: writing
 the prose that describes each extracted symbol. Boundaries, IDs, links, tables
@@ -18,7 +18,7 @@ tree-sitter grammar; adding a language is a single small backend file).
 
 ## What it produces
 
-For a source tree, doc_maker writes a `doc/` directory (path configurable):
+For a source tree, kodama-docs writes a `doc/` directory (path configurable):
 
 ```
 doc/
@@ -118,7 +118,7 @@ HTML in the browser:
   force simulation with a fixed seed, so the same graph always settles into
   the same arrangement.
 - Rendering is deterministic (`web/render.py`) — only the markdown subset
-  doc_maker itself generates is supported.
+  kodama-docs itself generates is supported.
 
 ## Configuration
 
@@ -229,8 +229,8 @@ register its extension in `EXTRACTORS`, install its tree-sitter wheel, done.
 ## Repository layout
 
 ```
-main.py            # CLI + pipeline orchestration (thin; the phases live in docmaker/)
-docmaker/          # all pipeline modules
+main.py            # CLI + pipeline orchestration (thin; the phases live in kodama_docs/)
+kodama_docs/          # all pipeline modules
   config.py        # settings + .env loading
   scan.py          # file scanning, analysis cache, per-file analysis
   graph.py         # call/import/containment graph (networkx MultiDiGraph)
@@ -245,7 +245,7 @@ docmaker/          # all pipeline modules
   util.py          # logging, id sanitizing, truncation, .env reader, fence lang
 web/
   server.py        # --serve: stdlib HTTP server + web_settings.yaml loader
-  render.py        # deterministic markdown (doc_maker's subset) -> HTML
+  render.py        # deterministic markdown (kodama-docs's subset) -> HTML
   app.js           # light/dark theme toggle (persisted per browser)
   graph.js         # /graph page entry point (thin; the modules live in web/graph/)
   graph/           # ES modules: state, layout, draw, interact, panel, controls, ...
@@ -266,7 +266,7 @@ prompts/           # system prompts: function / chunk / variable / summary
 settings.yaml      # default config (game codebase)
 configs/
   test.yaml        # small local test corpus
-  self.yaml        # doc_maker documenting itself (Python)
+  self.yaml        # kodama-docs documenting itself (Python)
 ```
 
 ## Design notes
@@ -278,5 +278,5 @@ configs/
   (names, lines, links, ordering) is computed; the model only explains.
 - **Secrets stay out of the repo.** `.env` is git-ignored; the config only
   ever references `env`.
-- **Self-hosting check:** `configs/self.yaml` runs doc_maker on its own
+- **Self-hosting check:** `configs/self.yaml` runs kodama-docs on its own
   Python sources — a continuous sanity check that the tool documents code.

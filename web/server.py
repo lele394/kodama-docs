@@ -1,4 +1,4 @@
-"""doc_maker web server: serves the rendered *.md docs as themed HTML.
+"""kodama-docs web server: serves the rendered *.md docs as themed HTML.
 
 Stdlib only (http.server.ThreadingHTTPServer). URLs mirror the docs
 directory — a request for ``files/game/main.lua.md`` returns that file
@@ -20,7 +20,7 @@ import ruamel.yaml
 
 try:
     from .render import render_md
-    from docmaker.util import log
+    from kodama_docs.util import log
 except ImportError:  # run as a plain script from inside web/
     from render import render_md
 
@@ -69,7 +69,7 @@ def _title(md: str, relpath: str) -> str:
 
 
 class DocsHandler(BaseHTTPRequestHandler):
-    server_version = 'docmaker'
+    server_version = 'kodama_docs'
     timeout = 30
     # bound by serve():
     docs_root = None
@@ -245,7 +245,7 @@ def serve(docs_dir: str, settings: dict, web_root: str):
     """Run the docs server until Ctrl-C (blocks)."""
     if not os.path.isfile(os.path.join(docs_dir, 'index.md')):
         raise SystemExit(f'web: no index.md in {docs_dir} — '
-                         f'run doc_maker (without --serve) first')
+                         f'run kodama-docs (without --serve) first')
     DocsHandler.docs_root = os.path.realpath(docs_dir)
     DocsHandler.web_root = os.path.realpath(web_root)
     DocsHandler.theme_state = os.path.join(

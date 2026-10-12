@@ -1,5 +1,5 @@
-# Settings for the doc_maker web server (`main.py --serve`).
-# Paths in this file resolve against this file's directory (doc_maker/).
+# Settings for the kodama-docs web server (`main.py --serve`).
+# Paths in this file resolve against this file's directory (kodama-docs/).
 
 host: 127.0.0.1        # bind address (use 0.0.0.0 to allow other machines)
 port: 8123             # port to listen on

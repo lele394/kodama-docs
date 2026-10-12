@@ -1,4 +1,4 @@
-// doc_maker theme switcher: toggles light/dark. The choice is persisted
+// kodama-docs theme switcher: toggles light/dark. The choice is persisted
 // by the server (POST /api/theme -> web/theme_state.json), so it survives
 // reloads and applies to every browser — no per-browser localStorage.
 (function () {

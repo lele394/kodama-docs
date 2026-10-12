@@ -1,4 +1,4 @@
-# doc_maker settings — all runtime configuration lives here.
+# kodama-docs settings — all runtime configuration lives here.
 # Relative paths are resolved against the directory containing this file.
 
 project:

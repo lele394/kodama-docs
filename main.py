@@ -1,4 +1,4 @@
-"""doc_maker — deterministic Lua documentation generator.
+"""kodama-docs — deterministic Lua documentation generator.
 
 Pipeline: SCAN -> PARSE/EXTRACT -> GRAPH -> (LLM PROSE) -> MARKDOWN.
 Everything except the LLM prose strings is plain Python. This entry point
@@ -9,15 +9,15 @@ import argparse
 import os
 import shutil
 
-import docmaker.graph as gmod
-from docmaker.config import load_config
-from docmaker.llm_phase import llm_phase
-from docmaker.markdown import render_file_md, render_index, write_md
-from docmaker.outputs import check_doc_cache, purge_outputs, write_doc_cache
-from docmaker.records import list_records
-from docmaker.scan import (analyze_files, load_symbols, report_scan, save_symbols,
+import kodama_docs.graph as gmod
+from kodama_docs.config import load_config
+from kodama_docs.llm_phase import llm_phase
+from kodama_docs.markdown import render_file_md, render_index, write_md
+from kodama_docs.outputs import check_doc_cache, purge_outputs, write_doc_cache
+from kodama_docs.records import list_records
+from kodama_docs.scan import (analyze_files, load_symbols, report_scan, save_symbols,
                   scan_files, scan_fingerprint)
-from docmaker.util import log
+from kodama_docs.util import log
 
 
 def render_all(cfg: dict, files, g):
@@ -60,7 +60,7 @@ def render_all(cfg: dict, files, g):
 
 
 def main():
-    ap = argparse.ArgumentParser(description='doc_maker')
+    ap = argparse.ArgumentParser(description='kodama-docs')
     ap.add_argument('--config', default='settings.yaml')
     ap.add_argument('--fresh', action='store_true',
                     help='ignore analysis cache')

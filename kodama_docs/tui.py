@@ -1,4 +1,4 @@
-"""doc_maker — live terminal UI (TUI) for the concurrent LLM phase.
+"""kodama-docs — live terminal UI (TUI) for the concurrent LLM phase.
 
 Built on Rich (https://github.com/Textualize/rich): one table row per
 agent (file, symbol, stage, time on task), a progress bar, run stats,
@@ -112,7 +112,7 @@ class TUI:
         now = time.time()
         s = self.snapshot()
         width = self._console.width if self._console else 80
-        head = Text(f'doc_maker · llm phase · {s["total"]} tasks · '
+        head = Text(f'kodama-docs · llm phase · {s["total"]} tasks · '
                     f'{self.worker_count} agents', style='bold')
         head.truncate(width, overflow='ellipsis')
         parts = [head]

@@ -3,7 +3,7 @@ import os
 
 import ruamel.yaml
 
-from docmaker.util import read_env_file
+from kodama_docs.util import read_env_file
 
 
 def load_config(path: str) -> dict:
