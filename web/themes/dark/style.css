@@ -31,12 +31,20 @@ body {
   align-items: center;
   gap: 12px;
   padding: 8px 20px;
-  min-height: 48px;
+  min-height: 56px;
   background: var(--bar);
   border-bottom: 1px solid var(--border);
 }
 
-.brand { font-weight: 600; color: var(--accent); text-decoration: none; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.brand-icon { width: 18px; height: 18px; flex: none; }
 .brand:hover { color: var(--accent); text-decoration: none; }
 
 .topbar .nav {
@@ -504,9 +512,9 @@ body.sb-resizing { user-select: none; cursor: col-resize; }
 .sb-search {
   flex: none;
   width: 100%;
-  margin: 8px 10px 6px;
-  padding: 4px 9px;
-  font: 12.5px "Segoe UI", system-ui, sans-serif;
+  margin: 5px 10px 5px;
+  padding: 3px 9px;
+  font: 12px "Segoe UI", system-ui, sans-serif;
   color: var(--fg);
   background: var(--btn-bg);
   border: 1px solid var(--border);

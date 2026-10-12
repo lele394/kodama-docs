@@ -101,6 +101,13 @@ class DocsHandler(BaseHTTPRequestHandler):
                      'txt': 'text/plain; charset=utf-8'}.get(
                 ext, 'application/octet-stream')
             return self._webfile('lib/' + name, ctype)
+        if path.startswith('/icon/'):
+            name = path[len('/icon/'):]
+            ext = name.rsplit('.', 1)[-1] if '.' in name else ''
+            ctype = {'png': 'image/png',
+                     'ico': 'image/x-icon'}.get(
+                ext, 'application/octet-stream')
+            return self._iconfile(name, ctype)
         if path == '/graph':
             return self._graph_page()
         if path == '/api/graph':
@@ -241,6 +248,17 @@ class DocsHandler(BaseHTTPRequestHandler):
 
     def _webfile(self, filename: str, ctype: str):
         full = self._safe(self.web_root, filename)
+        if full is None or not os.path.isfile(full):
+            return self._error(404, 'not found')
+        with open(full, 'rb') as fh:
+            data = fh.read()
+        self._send(200, data, ctype)
+
+    def _iconfile(self, name: str, ctype: str):
+        """Serve a project icon from the repo-root ``icon/`` folder."""
+        root = os.path.join(os.path.dirname(os.path.abspath(self.web_root)),
+                            'icon')
+        full = self._safe(root, name)
         if full is None or not os.path.isfile(full):
             return self._error(404, 'not found')
         with open(full, 'rb') as fh:

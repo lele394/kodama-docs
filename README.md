@@ -98,6 +98,10 @@ HTML in the browser:
 - Each page has a light/dark toggle button; the choice is remembered per
   browser (localStorage). Themes are plain CSS in
   `web/themes/light/style.css` and `web/themes/dark/style.css`.
+- The docs and `/graph` pages share one fixed-height top bar (56px) so the two
+  views line up. The project icon (`icon.png` / `icon.ico` in the repo-root
+  `icon/` folder, served read-only at `/icon/...`) is set as the browser
+  favicon and shown next to the `kodama-docs` brand on both pages.
 - Source code is syntax-highlighted in the browser by
   [highlight.js](https://highlightjs.org/) 11.11.1 — one vendored full
   browser bundle plus its light/dark theme CSS in `web/lib/` (served from
