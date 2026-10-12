@@ -1,6 +1,13 @@
-# kodama-docs
+<p align="center">
+  <img src="icon/icon.png" width="112" alt="kodama-docs icon" />
+</p>
 
-Deterministic documentation generator for codebases.
+<h1 align="center">kodama-docs</h1>
+
+<p align="center">
+  <strong>Deterministic documentation generator for codebases.</strong><br>
+  <sub>Icon by <a href="https://github.com/lele394">@lele394</a></sub>
+</p>
 
 kodama-docs extracts every function, variable, call and import in a source tree
 with a **deterministic** pipeline (tree-sitter grammars, a networkx call graph,
