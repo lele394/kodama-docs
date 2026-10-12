@@ -1,0 +1,954 @@
+{
+ "directed": true,
+ "multigraph": true,
+ "graph": {},
+ "nodes": [
+  {
+   "kind": "file",
+   "relpath": "body.lua",
+   "lines": 39,
+   "function_count": 0,
+   "variable_count": 3,
+   "id": "file:body.lua"
+  },
+  {
+   "kind": "variable",
+   "relpath": "body.lua",
+   "name": "G",
+   "line": 3,
+   "init": "number",
+   "file_id": "file:body.lua",
+   "id": "var:body.lua::G@3"
+  },
+  {
+   "kind": "variable",
+   "relpath": "body.lua",
+   "name": "SOFTENING",
+   "line": 4,
+   "init": "number",
+   "file_id": "file:body.lua",
+   "id": "var:body.lua::SOFTENING@4"
+  },
+  {
+   "kind": "variable",
+   "relpath": "body.lua",
+   "name": "Body",
+   "line": 6,
+   "init": "table",
+   "file_id": "file:body.lua",
+   "id": "var:body.lua::Body@6"
+  },
+  {
+   "kind": "file",
+   "relpath": "main.lua",
+   "lines": 62,
+   "function_count": 4,
+   "variable_count": 6,
+   "id": "file:main.lua"
+  },
+  {
+   "kind": "function",
+   "relpath": "main.lua",
+   "name": "make_circular_system",
+   "qualified": "make_circular_system",
+   "line": 12,
+   "end_line": 23,
+   "params": [
+    "n"
+   ],
+   "vararg": false,
+   "file_id": "file:main.lua",
+   "body": "local function make_circular_system(n)\n  local bodies = { Body:new(0, 0, 0, 0, 0, 0, 1000) }\n  for i = 1, n do\n    local r = 10 + i * 2\n    local v = math.sqrt(1000 / r)\n    local a = 2 * math.pi * i / n\n    table.insert(bodies, Body:new(\n      math.cos(a) * r, math.sin(a) * r, 0,\n      -math.sin(a) * v, math.cos(a) * v, 0, 1))\n  end\n  return bodies\nend",
+   "id": "fn:main.lua::make_circular_system@12"
+  },
+  {
+   "kind": "function",
+   "relpath": "main.lua",
+   "name": "make_random_system",
+   "qualified": "make_random_system",
+   "line": 26,
+   "end_line": 36,
+   "params": [
+    "n",
+    "seed"
+   ],
+   "vararg": false,
+   "file_id": "file:main.lua",
+   "body": "local function make_random_system(n, seed)\n  math.randomseed(seed)\n  local bodies = {}\n  for i = 1, n do\n    table.insert(bodies, Body:new(\n      math.random() * 20 - 10, math.random() * 20 - 10, math.random() * 20 - 10,\n      math.random() * 0.2 - 0.1, math.random() * 0.2 - 0.1, 0,\n      1 + math.random()))\n  end\n  return bodies\nend",
+   "id": "fn:main.lua::make_random_system@26"
+  },
+  {
+   "kind": "function",
+   "relpath": "main.lua",
+   "name": "tick",
+   "qualified": "tick",
+   "line": 39,
+   "end_line": 44,
+   "params": [
+    "sim",
+    "bodies",
+    "dt"
+   ],
+   "vararg": false,
+   "file_id": "file:main.lua",
+   "body": "local function tick(sim, bodies, dt)\n  local e = sim:total_energy(bodies)\n  sim:accelerations(bodies)\n  sim:step(bodies, dt)\n  log.info(\"energy=\" .. tostring(e))\nend",
+   "id": "fn:main.lua::tick@39"
+  },
+  {
+   "kind": "function",
+   "relpath": "main.lua",
+   "name": "main",
+   "qualified": "main",
+   "line": 46,
+   "end_line": 60,
+   "params": [],
+   "vararg": false,
+   "file_id": "file:main.lua",
+   "body": "local function main()\n  local bodies\n  if MODE == \"circular\" then\n    bodies = make_circular_system(8)\n  else\n    bodies = make_random_system(12, os.time())\n  end\n\n  local dt = 1 / FPS\n  for _ = 1, RUNS do\n    tick(NBody, bodies, dt)\n  end\n\n  return #bodies\nend",
+   "id": "fn:main.lua::main@46"
+  },
+  {
+   "kind": "variable",
+   "relpath": "main.lua",
+   "name": "NBody",
+   "line": 3,
+   "init": "call",
+   "file_id": "file:main.lua",
+   "id": "var:main.lua::NBody@3"
+  },
+  {
+   "kind": "variable",
+   "relpath": "main.lua",
+   "name": "Body",
+   "line": 4,
+   "init": "call",
+   "file_id": "file:main.lua",
+   "id": "var:main.lua::Body@4"
+  },
+  {
+   "kind": "variable",
+   "relpath": "main.lua",
+   "name": "log",
+   "line": 5,
+   "init": "call",
+   "file_id": "file:main.lua",
+   "id": "var:main.lua::log@5"
+  },
+  {
+   "kind": "variable",
+   "relpath": "main.lua",
+   "name": "FPS",
+   "line": 7,
+   "init": "number",
+   "file_id": "file:main.lua",
+   "id": "var:main.lua::FPS@7"
+  },
+  {
+   "kind": "variable",
+   "relpath": "main.lua",
+   "name": "RUNS",
+   "line": 8,
+   "init": "number",
+   "file_id": "file:main.lua",
+   "id": "var:main.lua::RUNS@8"
+  },
+  {
+   "kind": "variable",
+   "relpath": "main.lua",
+   "name": "MODE",
+   "line": 9,
+   "init": "string",
+   "file_id": "file:main.lua",
+   "id": "var:main.lua::MODE@9"
+  },
+  {
+   "kind": "file",
+   "relpath": "nbody.lua",
+   "lines": 87,
+   "function_count": 0,
+   "variable_count": 4,
+   "id": "file:nbody.lua"
+  },
+  {
+   "kind": "variable",
+   "relpath": "nbody.lua",
+   "name": "vec3",
+   "line": 3,
+   "init": "call",
+   "file_id": "file:nbody.lua",
+   "id": "var:nbody.lua::vec3@3"
+  },
+  {
+   "kind": "variable",
+   "relpath": "nbody.lua",
+   "name": "G",
+   "line": 5,
+   "init": "number",
+   "file_id": "file:nbody.lua",
+   "id": "var:nbody.lua::G@5"
+  },
+  {
+   "kind": "variable",
+   "relpath": "nbody.lua",
+   "name": "MIN_DIST",
+   "line": 6,
+   "init": "number",
+   "file_id": "file:nbody.lua",
+   "id": "var:nbody.lua::MIN_DIST@6"
+  },
+  {
+   "kind": "variable",
+   "relpath": "nbody.lua",
+   "name": "NBody",
+   "line": 8,
+   "init": "table",
+   "file_id": "file:nbody.lua",
+   "id": "var:nbody.lua::NBody@8"
+  },
+  {
+   "kind": "file",
+   "relpath": "vec3.lua",
+   "lines": 50,
+   "function_count": 6,
+   "variable_count": 4,
+   "id": "file:vec3.lua"
+  },
+  {
+   "kind": "function",
+   "relpath": "vec3.lua",
+   "name": "add",
+   "qualified": "V.add",
+   "line": 10,
+   "end_line": 12,
+   "params": [
+    "a",
+    "b"
+   ],
+   "vararg": false,
+   "file_id": "file:vec3.lua",
+   "body": "function V.add(a, b)\n  return { a[1] + b[1], a[2] + b[2], a[3] + b[3] }\nend",
+   "id": "fn:vec3.lua::add@10"
+  },
+  {
+   "kind": "function",
+   "relpath": "vec3.lua",
+   "name": "sub",
+   "qualified": "V.sub",
+   "line": 15,
+   "end_line": 17,
+   "params": [
+    "a",
+    "b"
+   ],
+   "vararg": false,
+   "file_id": "file:vec3.lua",
+   "body": "function V.sub(a, b)\n  return { a[1] - b[1], a[2] - b[2], a[3] - b[3] }\nend",
+   "id": "fn:vec3.lua::sub@15"
+  },
+  {
+   "kind": "function",
+   "relpath": "vec3.lua",
+   "name": "scale",
+   "qualified": "V.scale",
+   "line": 20,
+   "end_line": 22,
+   "params": [
+    "v",
+    "s"
+   ],
+   "vararg": false,
+   "file_id": "file:vec3.lua",
+   "body": "function V.scale(v, s)\n  return { v[1] * s, v[2] * s, v[3] * s }\nend",
+   "id": "fn:vec3.lua::scale@20"
+  },
+  {
+   "kind": "function",
+   "relpath": "vec3.lua",
+   "name": "dot",
+   "qualified": "V.dot",
+   "line": 25,
+   "end_line": 27,
+   "params": [
+    "a",
+    "b"
+   ],
+   "vararg": false,
+   "file_id": "file:vec3.lua",
+   "body": "function V.dot(a, b)\n  return a[1] * b[1] + a[2] * b[2] + a[3] * b[3]\nend",
+   "id": "fn:vec3.lua::dot@25"
+  },
+  {
+   "kind": "function",
+   "relpath": "vec3.lua",
+   "name": "length",
+   "qualified": "V.length",
+   "line": 30,
+   "end_line": 36,
+   "params": [
+    "v"
+   ],
+   "vararg": false,
+   "file_id": "file:vec3.lua",
+   "body": "function V.length(v)\n  local d = math.sqrt(V.dot(v, v))\n  if d < EPS then\n    return EPS\n  end\n  return d\nend",
+   "id": "fn:vec3.lua::length@30"
+  },
+  {
+   "kind": "function",
+   "relpath": "vec3.lua",
+   "name": "normalize",
+   "qualified": "V.normalize",
+   "line": 42,
+   "end_line": 48,
+   "params": [
+    "v"
+   ],
+   "vararg": false,
+   "file_id": "file:vec3.lua",
+   "body": "function V.normalize(v)\n  local d = V.length(v)\n  if d <= EPS then\n    return ZERO\n  end\n  return V.scale(v, 1 / d)\nend",
+   "id": "fn:vec3.lua::normalize@42"
+  },
+  {
+   "kind": "variable",
+   "relpath": "vec3.lua",
+   "name": "V",
+   "line": 3,
+   "init": "table",
+   "file_id": "file:vec3.lua",
+   "id": "var:vec3.lua::V@3"
+  },
+  {
+   "kind": "variable",
+   "relpath": "vec3.lua",
+   "name": "EPS",
+   "line": 5,
+   "init": "number",
+   "file_id": "file:vec3.lua",
+   "id": "var:vec3.lua::EPS@5"
+  },
+  {
+   "kind": "variable",
+   "relpath": "vec3.lua",
+   "name": "ZERO",
+   "line": 6,
+   "init": "table",
+   "file_id": "file:vec3.lua",
+   "id": "var:vec3.lua::ZERO@6"
+  },
+  {
+   "kind": "variable",
+   "relpath": "vec3.lua",
+   "name": "TAG",
+   "line": 7,
+   "init": "string",
+   "file_id": "file:vec3.lua",
+   "id": "var:vec3.lua::TAG@7"
+  },
+  {
+   "kind": "builtin",
+   "name": "setmetatable",
+   "id": "builtin:setmetatable"
+  },
+  {
+   "kind": "builtin",
+   "name": "require",
+   "id": "builtin:require"
+  },
+  {
+   "kind": "ext",
+   "name": "Body",
+   "id": "ext:Body"
+  },
+  {
+   "kind": "ext",
+   "name": "math.sqrt",
+   "id": "ext:math.sqrt"
+  },
+  {
+   "kind": "ext",
+   "name": "table.insert",
+   "id": "ext:table.insert"
+  },
+  {
+   "kind": "ext",
+   "name": "math.cos",
+   "id": "ext:math.cos"
+  },
+  {
+   "kind": "ext",
+   "name": "math.sin",
+   "id": "ext:math.sin"
+  },
+  {
+   "kind": "ext",
+   "name": "math.randomseed",
+   "id": "ext:math.randomseed"
+  },
+  {
+   "kind": "ext",
+   "name": "math.random",
+   "id": "ext:math.random"
+  },
+  {
+   "kind": "ext",
+   "name": "sim",
+   "id": "ext:sim"
+  },
+  {
+   "kind": "ext",
+   "name": "log.info",
+   "id": "ext:log.info"
+  },
+  {
+   "kind": "builtin",
+   "name": "tostring",
+   "id": "builtin:tostring"
+  },
+  {
+   "kind": "ext",
+   "name": "os.time",
+   "id": "ext:os.time"
+  },
+  {
+   "kind": "module",
+   "name": "log",
+   "id": "mod:log"
+  }
+ ],
+ "edges": [
+  {
+   "type": "CONTAINS",
+   "source": "file:body.lua",
+   "target": "var:body.lua::G@3",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:body.lua",
+   "target": "var:body.lua::SOFTENING@4",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:body.lua",
+   "target": "var:body.lua::Body@6",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 10,
+   "source": "file:body.lua",
+   "target": "builtin:setmetatable",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "fn:main.lua::make_circular_system@12",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "fn:main.lua::make_random_system@26",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "fn:main.lua::tick@39",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "fn:main.lua::main@46",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "var:main.lua::NBody@3",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "var:main.lua::Body@4",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "var:main.lua::log@5",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "var:main.lua::FPS@7",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "var:main.lua::RUNS@8",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:main.lua",
+   "target": "var:main.lua::MODE@9",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 3,
+   "source": "file:main.lua",
+   "target": "builtin:require",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 4,
+   "source": "file:main.lua",
+   "target": "builtin:require",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 5,
+   "source": "file:main.lua",
+   "target": "builtin:require",
+   "key": 2
+  },
+  {
+   "type": "IMPORTS",
+   "line": 3,
+   "module": "nbody",
+   "source": "file:main.lua",
+   "target": "file:nbody.lua",
+   "key": 0
+  },
+  {
+   "type": "IMPORTS",
+   "line": 4,
+   "module": "body",
+   "source": "file:main.lua",
+   "target": "file:body.lua",
+   "key": 0
+  },
+  {
+   "type": "IMPORTS",
+   "line": 5,
+   "module": "log",
+   "source": "file:main.lua",
+   "target": "mod:log",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 13,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:Body",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 18,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:Body",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 16,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:math.sqrt",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 18,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:table.insert",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 19,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:math.cos",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 20,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:math.cos",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 19,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:math.sin",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 20,
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "ext:math.sin",
+   "key": 1
+  },
+  {
+   "type": "READS",
+   "source": "fn:main.lua::make_circular_system@12",
+   "target": "var:main.lua::Body@4",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 27,
+   "source": "fn:main.lua::make_random_system@26",
+   "target": "ext:math.randomseed",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 30,
+   "source": "fn:main.lua::make_random_system@26",
+   "target": "ext:table.insert",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 30,
+   "source": "fn:main.lua::make_random_system@26",
+   "target": "ext:Body",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 31,
+   "source": "fn:main.lua::make_random_system@26",
+   "target": "ext:math.random",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 32,
+   "source": "fn:main.lua::make_random_system@26",
+   "target": "ext:math.random",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 33,
+   "source": "fn:main.lua::make_random_system@26",
+   "target": "ext:math.random",
+   "key": 2
+  },
+  {
+   "type": "READS",
+   "source": "fn:main.lua::make_random_system@26",
+   "target": "var:main.lua::Body@4",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 40,
+   "source": "fn:main.lua::tick@39",
+   "target": "ext:sim",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 41,
+   "source": "fn:main.lua::tick@39",
+   "target": "ext:sim",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 42,
+   "source": "fn:main.lua::tick@39",
+   "target": "ext:sim",
+   "key": 2
+  },
+  {
+   "type": "CALLS",
+   "line": 43,
+   "source": "fn:main.lua::tick@39",
+   "target": "ext:log.info",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 43,
+   "source": "fn:main.lua::tick@39",
+   "target": "builtin:tostring",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:main.lua::tick@39",
+   "target": "var:main.lua::log@5",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 49,
+   "source": "fn:main.lua::main@46",
+   "target": "fn:main.lua::make_circular_system@12",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 51,
+   "source": "fn:main.lua::main@46",
+   "target": "fn:main.lua::make_random_system@26",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 51,
+   "source": "fn:main.lua::main@46",
+   "target": "ext:os.time",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 56,
+   "source": "fn:main.lua::main@46",
+   "target": "fn:main.lua::tick@39",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:main.lua::main@46",
+   "target": "var:main.lua::FPS@7",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:main.lua::main@46",
+   "target": "var:main.lua::MODE@9",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:main.lua::main@46",
+   "target": "var:main.lua::NBody@3",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:main.lua::main@46",
+   "target": "var:main.lua::RUNS@8",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:nbody.lua",
+   "target": "var:nbody.lua::vec3@3",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:nbody.lua",
+   "target": "var:nbody.lua::G@5",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:nbody.lua",
+   "target": "var:nbody.lua::MIN_DIST@6",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:nbody.lua",
+   "target": "var:nbody.lua::NBody@8",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 3,
+   "source": "file:nbody.lua",
+   "target": "builtin:require",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 35,
+   "source": "file:nbody.lua",
+   "target": "ext:math.sqrt",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 77,
+   "source": "file:nbody.lua",
+   "target": "fn:vec3.lua::length@30",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 77,
+   "source": "file:nbody.lua",
+   "target": "fn:vec3.lua::sub@15",
+   "key": 0
+  },
+  {
+   "type": "IMPORTS",
+   "line": 3,
+   "module": "vec3",
+   "source": "file:nbody.lua",
+   "target": "file:vec3.lua",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "fn:vec3.lua::add@10",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "fn:vec3.lua::sub@15",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "fn:vec3.lua::scale@20",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "fn:vec3.lua::dot@25",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "fn:vec3.lua::length@30",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "fn:vec3.lua::normalize@42",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "var:vec3.lua::V@3",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "var:vec3.lua::EPS@5",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "var:vec3.lua::ZERO@6",
+   "key": 0
+  },
+  {
+   "type": "CONTAINS",
+   "source": "file:vec3.lua",
+   "target": "var:vec3.lua::TAG@7",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::add@10",
+   "target": "var:vec3.lua::V@3",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::sub@15",
+   "target": "var:vec3.lua::V@3",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::scale@20",
+   "target": "var:vec3.lua::V@3",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::dot@25",
+   "target": "var:vec3.lua::V@3",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 31,
+   "source": "fn:vec3.lua::length@30",
+   "target": "ext:math.sqrt",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 31,
+   "source": "fn:vec3.lua::length@30",
+   "target": "fn:vec3.lua::dot@25",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::length@30",
+   "target": "var:vec3.lua::EPS@5",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::length@30",
+   "target": "var:vec3.lua::V@3",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 43,
+   "source": "fn:vec3.lua::normalize@42",
+   "target": "fn:vec3.lua::length@30",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 47,
+   "source": "fn:vec3.lua::normalize@42",
+   "target": "fn:vec3.lua::scale@20",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::normalize@42",
+   "target": "var:vec3.lua::EPS@5",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::normalize@42",
+   "target": "var:vec3.lua::V@3",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:vec3.lua::normalize@42",
+   "target": "var:vec3.lua::ZERO@6",
+   "key": 0
+  }
+ ]
+}

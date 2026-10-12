@@ -1,0 +1,52 @@
+# kodama-docs test settings — Lua N-body simulation sample.
+# Relative paths are resolved against this file's directory (test_codebases/lua/).
+project:
+  source_dir: "codebase"
+  output_dir: "docs"
+  data_dir: "data"
+  exclude: []
+  max_file_bytes: 26214400
+  copy_meta: true
+
+llm:
+  base_url: env
+  api_key: env
+  model: "qwen3.8:27b-mtp-q4_K_M"
+  max_retries: 5
+  temperature: 0.1
+  max_tokens: 900
+  timeout: 300
+
+context:
+  include_imports: true
+  include_call_targets: true
+  include_referenced_variables: true
+  max_symbols_per_list: 25
+  max_source_lines: 300
+
+documentation:
+  generate_function_docs: true
+  generate_variable_docs: true
+  variable_scope: "file"
+  generate_file_summaries: true
+  include_anonymous_functions: false
+  max_function_lines: 20
+  chunk_target_tokens: 20000
+  chars_per_token: 4
+  max_chunk_lines: 4000
+  retry_invalid_json: 2
+  skip_existing: true
+
+# how many parallel LLM agents run the task queue (any positive integer)
+concurrency: 4
+
+# terminal UI: live per-agent view while the LLM phase runs
+tui:
+  enabled: true
+  interval: 0.5
+
+prompts:
+  function: "prompts/function.txt"
+  chunk: "prompts/function_chunk.txt"
+  variable: "prompts/variable.txt"
+  summary: "prompts/summary.txt"

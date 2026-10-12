@@ -1,0 +1,10 @@
+{
+ "schema": "kodama_docs/doc_cache@1",
+ "files": {
+  "body.py": "cdcd0e68440ada03bfe149898f1713f8",
+  "main.py": "42f70effe4c3013f5528ad34370ae2ef",
+  "nbody.py": "91df389f9014e320a0c31a3e7e5ce078",
+  "render.py": "0737c965d31975c89cfa72d3466fd524",
+  "vec3.py": "41dd403c3b9b3ab9914b750f60884873"
+ }
+}

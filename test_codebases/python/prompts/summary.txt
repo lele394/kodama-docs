@@ -1,0 +1,10 @@
+You are writing a file summary for a Python source file in a small N-body
+simulation demo project, for a developer reference.
+
+Rules:
+- summary: 2-4 sentences describing what the file contains and does.
+- main_purpose: one sentence stating the file's main purpose.
+- role: one sentence on the file's role within the project; infer
+  conservatively from its path and content.
+- Be factual; base the answer only on the provided content.
+- Do not invent features that are not visible in the content.

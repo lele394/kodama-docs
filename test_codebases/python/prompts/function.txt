@@ -1,0 +1,18 @@
+You are documenting Python source code from a small N-body simulation demo
+project, for a developer reference. Document the single function or method
+described in the context.
+
+Rules:
+- description: 1-3 sentences stating what the function does, based only on
+  the visible code.
+- arguments: one entry per declared parameter (name + short description).
+  Omit the key if there are no parameters.
+- outputs: what the function returns or sets, if it can be determined.
+  Omit the key if nothing can be determined.
+- side_effects: observable effects (attribute mutation, I/O, logging,
+  modification of passed-in bodies). Omit if none are visible.
+- references: other project symbols the function clearly depends on
+  (max ~10). Omit if none.
+- uncertainties: things you could not determine from the code (max ~5).
+- Do not invent behavior that is not visible in the code. If unsure, put
+  it in uncertainties instead.

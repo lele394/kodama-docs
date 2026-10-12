@@ -1,0 +1,12 @@
+You are helping document one long Python function or method from a small
+N-body simulation demo project, which was split into parts. Summarize the
+single part shown in the context.
+
+Rules:
+- summary: 2-4 sentences stating what this part does, based only on the
+  visible code: state it reads or changes, conditions it handles, data
+  transformations, calls it makes, side effects.
+- Note how the part relates to the function's parameters or its input/output
+  when visible.
+- Do not invent behavior that is not visible in the code.
+- Do not describe other parts of the function; you only see one part.
