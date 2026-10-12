@@ -25,18 +25,19 @@ body {
 }
 
 .topbar {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 10;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 8px 20px;
+  min-height: 48px;
   background: var(--bar);
   border-bottom: 1px solid var(--border);
 }
 
-.brand { font-weight: 600; color: var(--accent); }
+.brand { font-weight: 600; color: var(--accent); text-decoration: none; }
+.brand:hover { color: var(--accent); text-decoration: none; }
 
 .topbar .nav {
   cursor: pointer;
@@ -182,7 +183,7 @@ body.graph-page {
   overflow: hidden;
 }
 
-.graph-topbar { position: static; justify-content: flex-start; gap: 16px; }
+.graph-topbar { gap: 16px; }
 
 .graph-controls {
   display: flex;
@@ -441,22 +442,7 @@ body.graph-page {
 
 /* ------- docs sidebar (file tree + fuzzy search) ------- */
 
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#sidebar-toggle {
-  cursor: pointer;
-  font: 13px "Segoe UI", system-ui, sans-serif;
-  padding: 5px 12px;
-  border-radius: 6px;
-  background: var(--btn-bg);
-  color: var(--fg);
-  border: 1px solid var(--border);
-}
-#sidebar-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.topbar-spacer { flex: 1; }
 
 body.docs-page {
   display: flex;
@@ -493,7 +479,6 @@ body.docs-page {
   position: relative;
 }
 
-body.sb-closed .sidebar { display: none; }
 body.sb-resizing { user-select: none; cursor: col-resize; }
 
 .sb-tree {
@@ -513,13 +498,15 @@ body.sb-resizing { user-select: none; cursor: col-resize; }
   cursor: col-resize;
   z-index: 5;
 }
+.sb-resizer:hover { background: var(--accent); opacity: .35; }
+.sb-resizer.active { background: var(--accent); opacity: .6; }
 
 .sb-search {
   flex: none;
   width: 100%;
-  margin: 10px 10px 8px;
-  padding: 6px 10px;
-  font: 13px "Segoe UI", system-ui, sans-serif;
+  margin: 8px 10px 6px;
+  padding: 4px 9px;
+  font: 12.5px "Segoe UI", system-ui, sans-serif;
   color: var(--fg);
   background: var(--btn-bg);
   border: 1px solid var(--border);
@@ -601,14 +588,9 @@ body.sb-resizing { user-select: none; cursor: col-resize; }
 
 @media (max-width: 860px) {
   .sidebar {
-    position: fixed;
-    top: 44px;
-    bottom: 0;
-    left: 0;
-    width: min(300px, 85vw);
+    width: min(190px, 46vw);
+    min-width: 0;
     max-width: none;
-    z-index: 30;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, .25);
   }
   .sb-resizer { display: none; }
 }

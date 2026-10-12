@@ -28,9 +28,10 @@
 // node open/closed (no reload, scroll position kept); elsewhere it
 // navigates and expands. The chevron always just toggles.
 //
-// The open/closed state, per-node expansion and the sidebar width are
-// per-browser UI preferences, so they live in localStorage — unlike the
-// theme, which is a server-wide choice persisted in web/theme_state.json.
+// Per-node expansion and the sidebar width are per-browser UI preferences,
+// so they live in localStorage — unlike the theme, which is a server-wide
+// choice persisted in web/theme_state.json. The sidebar itself is always
+// visible (it is a permanent, resizable part of the docs layout).
 //
 // All names are inserted with textContent (no innerHTML), so symbol
 // names can never inject markup.
@@ -38,11 +39,9 @@
 import { fuzzyScore } from './fuzzy.js';
 import { sanitize } from './graph/util.js';
 
-const LS_OPEN = 'kodama.sidebar.open';
 const LS_EXPAND = 'kodama.sidebar.expand';
 const LS_WIDTH = 'kodama.sidebar.width';
 const SEARCH_CAP = 50;
-const MOBILE = 860;
 const MIN_W = 200;
 const MAX_W = 640;
 
@@ -441,6 +440,7 @@ function initResizer(aside) {
     startW = aside.getBoundingClientRect().width;
     try { rz.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
     document.body.classList.add('sb-resizing');
+    rz.classList.add('active');
   });
   rz.addEventListener('pointermove', e => {
     if (!dragging) return;
@@ -451,6 +451,7 @@ function initResizer(aside) {
     if (!dragging) return;
     dragging = false;
     document.body.classList.remove('sb-resizing');
+    rz.classList.remove('active');
     try { localStorage.setItem(LS_WIDTH, aside.style.width); } catch (e) { /* ignore */ }
   };
   rz.addEventListener('pointerup', stop);
@@ -462,25 +463,7 @@ function init() {
   const aside = document.getElementById('sidebar');
   const input = document.getElementById('sb-search');
   treeEl = document.getElementById('sb-tree');
-  const btn = document.getElementById('sidebar-toggle');
   if (!aside || !input || !treeEl) return;
-
-  // open/closed state (per browser)
-  let savedOpen = null;
-  try { savedOpen = localStorage.getItem(LS_OPEN); } catch (e) { /* ignore */ }
-  const open = savedOpen == null
-    ? window.innerWidth >= MOBILE
-    : savedOpen === '1';
-  const setOpen = o => {
-    document.body.classList.toggle('sb-closed', !o);
-    try { localStorage.setItem(LS_OPEN, o ? '1' : '0'); } catch (e) { /* ignore */ }
-  };
-  setOpen(open);
-  if (btn) btn.addEventListener('click', () => {
-    const next = document.body.classList.contains('sb-closed');
-    setOpen(next);
-    if (next && document.activeElement !== input) input.focus();
-  });
 
   initResizer(aside);
 
@@ -549,7 +532,6 @@ function init() {
     if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
     const t = document.activeElement;
     if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
-    if (document.body.classList.contains('sb-closed')) return;
     e.preventDefault();
     input.focus();
     input.select();

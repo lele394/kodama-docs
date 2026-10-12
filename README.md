@@ -110,12 +110,14 @@ HTML in the browser:
   own zone right next to it — so pages stay readable and the code can be
   unrolled on demand.
 - **Sidebar — file tree + fuzzy search** (docs pages only; `web/sidebar.js`).
-  A collapsible left sidebar (the `☰ files` button in the top bar toggles
-  it) spans the full page height: the search box is pinned at the top, the
-  file tree fills the remaining space and scrolls internally (no page-level
-  scrollbars), and the sidebar can be **resized** by dragging its right
-  edge (5px `col-resize` handle, clamped 200–640px, remembered per browser
-  in `kodama.sidebar.width`). It mirrors the doc directory hierarchy with
+  A permanent left sidebar (always visible — no toggle button) spans the full
+  page height: the search box is pinned at the top, the file tree fills the
+  remaining space and scrolls internally (no page-level scrollbars), and the
+  sidebar can be **resized** by dragging its right edge (5px `col-resize`
+  handle, clamped 200–640px, remembered per browser in
+  `kodama.sidebar.width`). The handle lights up blue while hovered or
+  dragged, the same cue as the `/graph` panel divider. It mirrors the doc
+  directory hierarchy with
   per-directory and per-file collapse, each file's function and variable
   symbols, and an `index` row at the top — so multi-level folders
   (`physics/body.lua`, `sim/render.py`, …) render as nested, expandable
@@ -152,10 +154,10 @@ HTML in the browser:
   exactly where you were); otherwise it navigates to the file *and* expands
   it, so its symbols are visible on arrival.
 
-  Sidebar open/closed, expanded state and width are stored per browser
-  (localStorage: `kodama.sidebar.open`, `kodama.sidebar.expand`,
-  `kodama.sidebar.width`) — deliberately unlike the theme, which the server
-  persists for all browsers. Data comes from a slim `/api/symbols`
+  Sidebar expanded state and width are stored per browser (localStorage:
+  `kodama.sidebar.expand`, `kodama.sidebar.width`) — deliberately unlike the
+  theme, which the server persists for all browsers. Data comes from a slim
+  `/api/symbols`
   endpoint (a trimmed `meta/symbols.json` with function bodies stripped).
 - **`/graph` — interactive dependency graph.** Built from `meta/graph.json`
   by `web/graph.js` (vanilla JS + canvas, no libraries), with two levels:
