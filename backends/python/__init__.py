@@ -9,7 +9,14 @@ Record shapes (1-based lines, identical to the Lua backend):
                  developer_comment: str|None}]
     file_vars: [{name, line, init: empty|table|string|number|function|call|expr}]
     calls:     [{callee, line, method: str|None}]
-    imports:   [{module, line}]
+    imports:   [{module, line, bind?: str, name?: str}]
+        -- `bind` is the local name this import binds in the importing file
+        -- (`import x as a` -> 'a'; `from m import n` -> 'n'; absent for a
+        -- plain `import x`, where the default is the module's last
+        -- segment). `name` is the target symbol inside the module for a
+        -- from-import (`from m import n` -> 'n'; `from m import n as a`
+        -- -> 'n'). Together they let the graph phase resolve `a.method()`
+        -- and bare `n()` to that module's definitions.
 """
 import re
 
@@ -171,10 +178,16 @@ def extract(source: str, relpath: str) -> dict:
         seen_call.add((name, line))
         calls.append({'callee': name, 'line': line, 'method': method})
 
-    def note_import(module, line):
-        if module and module not in import_mods:
-            import_mods.append(module)
-            imports.append({'module': module, 'line': line})
+    def note_import(module, line, bind=None, name=None):
+        key = (module, bind, name)
+        if module and key not in import_mods:
+            import_mods.append(key)
+            rec = {'module': module, 'line': line}
+            if bind:
+                rec['bind'] = bind
+            if name:
+                rec['name'] = name
+            imports.append(rec)
 
     def note_var(name, line, value):
         if not name or name in seen_var:
@@ -220,23 +233,42 @@ def extract(source: str, relpath: str) -> dict:
             note_call(node)
 
         if t == 'import_statement':
+            # `import a.b` -> dotted_name; `import a.b as x` -> aliased_import
+            # (fields: name = module dotted_name, alias = local name).
             for c in node.children:
                 if c.type == 'dotted_name':
                     parts = _dotted(c)
                     if parts:
-                        note_import('.'.join(parts), _row(c))
-            for c in node.children:
-                walk(c, depth)
+                        note_import('.'.join(parts), _row(node))
+                elif c.type == 'aliased_import':
+                    tgt = c.child_by_field_name('name')
+                    al = c.child_by_field_name('alias')
+                    parts = _dotted(tgt) if tgt is not None else None
+                    if parts:
+                        note_import('.'.join(parts), _row(node),
+                                    bind=_text(al) if al is not None else None)
             return
 
         if t == 'import_from_statement':
             mod = node.child_by_field_name('module_name')
-            if mod is not None:
-                parts = _dotted(mod)
-                if parts:
-                    note_import('.'.join(parts), _row(node))
-            for c in node.children:
-                walk(c, depth)
+            parts = _dotted(mod) if mod is not None else None
+            if parts:
+                m = '.'.join(parts)
+                for c in node.children:
+                    if c.type == 'dotted_name':
+                        # `from m import n` -> local n = m.n
+                        nm = '.'.join(_dotted(c) or [])
+                        if nm:
+                            note_import(m, _row(node), bind=nm, name=nm)
+                    elif c.type == 'aliased_import':
+                        # `from m import n as a` -> local a = m.n
+                        tgt = c.child_by_field_name('name')
+                        al = c.child_by_field_name('alias')
+                        tp = _dotted(tgt) if tgt is not None else None
+                        if tp:
+                            name = '.'.join(tp)
+                            bind = _text(al) if al is not None else name
+                            note_import(m, _row(node), bind=bind, name=name)
             return
 
         for c in node.children:

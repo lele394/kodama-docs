@@ -567,18 +567,33 @@
   },
   {
    "kind": "ext",
-   "name": "bodies",
-   "id": "ext:bodies"
+   "name": "bodies.append",
+   "id": "ext:bodies.append"
   },
   {
    "kind": "builtin",
-   "name": "math",
-   "id": "builtin:math"
+   "name": "math.cos",
+   "id": "builtin:math.cos"
   },
   {
    "kind": "builtin",
-   "name": "random",
-   "id": "builtin:random"
+   "name": "math.sin",
+   "id": "builtin:math.sin"
+  },
+  {
+   "kind": "builtin",
+   "name": "random.seed",
+   "id": "builtin:random.seed"
+  },
+  {
+   "kind": "builtin",
+   "name": "random.uniform",
+   "id": "builtin:random.uniform"
+  },
+  {
+   "kind": "builtin",
+   "name": "random.random",
+   "id": "builtin:random.random"
   },
   {
    "kind": "builtin",
@@ -597,8 +612,8 @@
   },
   {
    "kind": "builtin",
-   "name": "os",
-   "id": "builtin:os"
+   "name": "os.time",
+   "id": "builtin:os.time"
   },
   {
    "kind": "module",
@@ -617,6 +632,11 @@
   },
   {
    "kind": "builtin",
+   "name": "math.sqrt",
+   "id": "builtin:math.sqrt"
+  },
+  {
+   "kind": "builtin",
    "name": "sum",
    "id": "builtin:sum"
   },
@@ -629,6 +649,21 @@
    "kind": "builtin",
    "name": "float",
    "id": "builtin:float"
+  },
+  {
+   "kind": "builtin",
+   "name": "self.dot",
+   "id": "builtin:self.dot"
+  },
+  {
+   "kind": "builtin",
+   "name": "self.length",
+   "id": "builtin:self.length"
+  },
+  {
+   "kind": "builtin",
+   "name": "self.scale",
+   "id": "builtin:self.scale"
   },
   {
    "kind": "builtin",
@@ -649,6 +684,11 @@
    "kind": "builtin",
    "name": "max",
    "id": "builtin:max"
+  },
+  {
+   "kind": "builtin",
+   "name": "self.draw_body",
+   "id": "builtin:self.draw_body"
   }
  ],
  "edges": [
@@ -679,6 +719,7 @@
   {
    "type": "CALLS",
    "line": 67,
+   "status": "resolved",
    "source": "file:main.py",
    "target": "fn:main.py::main@51",
    "key": 1
@@ -704,7 +745,7 @@
   {
    "type": "IMPORTS",
    "line": 3,
-   "module": "math",
+   "status": "unresolved",
    "source": "file:main.py",
    "target": "mod:math",
    "key": 0
@@ -712,7 +753,7 @@
   {
    "type": "IMPORTS",
    "line": 4,
-   "module": "os",
+   "status": "unresolved",
    "source": "file:main.py",
    "target": "mod:os",
    "key": 0
@@ -720,7 +761,7 @@
   {
    "type": "IMPORTS",
    "line": 6,
-   "module": "physics.body",
+   "status": "resolved",
    "source": "file:main.py",
    "target": "file:physics/body.py",
    "key": 0
@@ -728,7 +769,7 @@
   {
    "type": "IMPORTS",
    "line": 7,
-   "module": "physics.nbody",
+   "status": "resolved",
    "source": "file:main.py",
    "target": "file:physics/nbody.py",
    "key": 0
@@ -736,7 +777,7 @@
   {
    "type": "IMPORTS",
    "line": 8,
-   "module": "sim.render",
+   "status": "resolved",
    "source": "file:main.py",
    "target": "file:sim/render.py",
    "key": 0
@@ -744,7 +785,7 @@
   {
    "type": "IMPORTS",
    "line": 30,
-   "module": "random",
+   "status": "unresolved",
    "source": "file:main.py",
    "target": "mod:random",
    "key": 0
@@ -752,6 +793,7 @@
   {
    "type": "CALLS",
    "line": 17,
+   "status": "external",
    "source": "fn:main.py::make_circular_system@16",
    "target": "ext:Body",
    "key": 0
@@ -759,6 +801,7 @@
   {
    "type": "CALLS",
    "line": 22,
+   "status": "external",
    "source": "fn:main.py::make_circular_system@16",
    "target": "ext:Body",
    "key": 1
@@ -766,6 +809,7 @@
   {
    "type": "CALLS",
    "line": 18,
+   "status": "builtin",
    "source": "fn:main.py::make_circular_system@16",
    "target": "builtin:range",
    "key": 0
@@ -773,62 +817,39 @@
   {
    "type": "CALLS",
    "line": 22,
+   "status": "external",
    "source": "fn:main.py::make_circular_system@16",
-   "target": "ext:bodies",
+   "target": "ext:bodies.append",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 23,
+   "status": "builtin",
    "source": "fn:main.py::make_circular_system@16",
-   "target": "builtin:math",
+   "target": "builtin:math.cos",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 24,
+   "status": "builtin",
    "source": "fn:main.py::make_circular_system@16",
-   "target": "builtin:math",
-   "key": 1
-  },
-  {
-   "type": "CALLS",
-   "line": 31,
-   "source": "fn:main.py::make_random_system@29",
-   "target": "builtin:random",
+   "target": "builtin:math.sin",
    "key": 0
   },
   {
    "type": "CALLS",
-   "line": 35,
+   "line": 31,
+   "status": "builtin",
    "source": "fn:main.py::make_random_system@29",
-   "target": "builtin:random",
-   "key": 1
-  },
-  {
-   "type": "CALLS",
-   "line": 36,
-   "source": "fn:main.py::make_random_system@29",
-   "target": "builtin:random",
-   "key": 2
-  },
-  {
-   "type": "CALLS",
-   "line": 37,
-   "source": "fn:main.py::make_random_system@29",
-   "target": "builtin:random",
-   "key": 3
-  },
-  {
-   "type": "CALLS",
-   "line": 38,
-   "source": "fn:main.py::make_random_system@29",
-   "target": "builtin:random",
-   "key": 4
+   "target": "builtin:random.seed",
+   "key": 0
   },
   {
    "type": "CALLS",
    "line": 33,
+   "status": "builtin",
    "source": "fn:main.py::make_random_system@29",
    "target": "builtin:range",
    "key": 0
@@ -836,20 +857,55 @@
   {
    "type": "CALLS",
    "line": 34,
+   "status": "external",
    "source": "fn:main.py::make_random_system@29",
-   "target": "ext:bodies",
+   "target": "ext:bodies.append",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 34,
+   "status": "external",
    "source": "fn:main.py::make_random_system@29",
    "target": "ext:Body",
    "key": 0
   },
   {
    "type": "CALLS",
+   "line": 35,
+   "status": "builtin",
+   "source": "fn:main.py::make_random_system@29",
+   "target": "builtin:random.uniform",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
+   "line": 36,
+   "status": "builtin",
+   "source": "fn:main.py::make_random_system@29",
+   "target": "builtin:random.uniform",
+   "key": 1
+  },
+  {
+   "type": "CALLS",
+   "line": 37,
+   "status": "builtin",
+   "source": "fn:main.py::make_random_system@29",
+   "target": "builtin:random.uniform",
+   "key": 2
+  },
+  {
+   "type": "CALLS",
+   "line": 38,
+   "status": "builtin",
+   "source": "fn:main.py::make_random_system@29",
+   "target": "builtin:random.random",
+   "key": 0
+  },
+  {
+   "type": "CALLS",
    "line": 44,
+   "status": "inferred",
    "source": "fn:main.py::tick@43",
    "target": "fn:physics/nbody.py::total_energy@62",
    "key": 0
@@ -857,6 +913,7 @@
   {
    "type": "CALLS",
    "line": 45,
+   "status": "inferred",
    "source": "fn:main.py::tick@43",
    "target": "fn:physics/nbody.py::accelerations@22",
    "key": 0
@@ -864,6 +921,7 @@
   {
    "type": "CALLS",
    "line": 46,
+   "status": "inferred",
    "source": "fn:main.py::tick@43",
    "target": "fn:physics/nbody.py::step@50",
    "key": 0
@@ -871,6 +929,7 @@
   {
    "type": "CALLS",
    "line": 47,
+   "status": "inferred",
    "source": "fn:main.py::tick@43",
    "target": "fn:sim/render.py::draw_all@21",
    "key": 0
@@ -878,6 +937,7 @@
   {
    "type": "CALLS",
    "line": 48,
+   "status": "inferred",
    "source": "fn:main.py::tick@43",
    "target": "fn:sim/render.py::stats_line@29",
    "key": 0
@@ -885,6 +945,7 @@
   {
    "type": "CALLS",
    "line": 48,
+   "status": "builtin",
    "source": "fn:main.py::tick@43",
    "target": "builtin:len",
    "key": 0
@@ -892,6 +953,7 @@
   {
    "type": "CALLS",
    "line": 52,
+   "status": "external",
    "source": "fn:main.py::main@51",
    "target": "ext:NBody",
    "key": 0
@@ -899,6 +961,7 @@
   {
    "type": "CALLS",
    "line": 53,
+   "status": "external",
    "source": "fn:main.py::main@51",
    "target": "ext:Renderer",
    "key": 0
@@ -906,6 +969,7 @@
   {
    "type": "CALLS",
    "line": 55,
+   "status": "resolved",
    "source": "fn:main.py::main@51",
    "target": "fn:main.py::make_circular_system@16",
    "key": 0
@@ -913,6 +977,7 @@
   {
    "type": "CALLS",
    "line": 57,
+   "status": "resolved",
    "source": "fn:main.py::main@51",
    "target": "fn:main.py::make_random_system@29",
    "key": 0
@@ -920,13 +985,15 @@
   {
    "type": "CALLS",
    "line": 57,
+   "status": "builtin",
    "source": "fn:main.py::main@51",
-   "target": "builtin:os",
+   "target": "builtin:os.time",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 60,
+   "status": "builtin",
    "source": "fn:main.py::main@51",
    "target": "builtin:range",
    "key": 0
@@ -934,6 +1001,7 @@
   {
    "type": "CALLS",
    "line": 61,
+   "status": "resolved",
    "source": "fn:main.py::main@51",
    "target": "fn:main.py::tick@43",
    "key": 0
@@ -941,6 +1009,7 @@
   {
    "type": "CALLS",
    "line": 63,
+   "status": "builtin",
    "source": "fn:main.py::main@51",
    "target": "builtin:len",
    "key": 0
@@ -954,13 +1023,13 @@
   {
    "type": "READS",
    "source": "fn:main.py::main@51",
-   "target": "var:main.py::MODE@12",
+   "target": "var:main.py::RUNS@11",
    "key": 0
   },
   {
    "type": "READS",
    "source": "fn:main.py::main@51",
-   "target": "var:main.py::RUNS@11",
+   "target": "var:main.py::MODE@12",
    "key": 0
   },
   {
@@ -1038,7 +1107,7 @@
   {
    "type": "IMPORTS",
    "line": 3,
-   "module": "math",
+   "status": "unresolved",
    "source": "file:physics/nbody.py",
    "target": "mod:math",
    "key": 0
@@ -1046,7 +1115,7 @@
   {
    "type": "IMPORTS",
    "line": 5,
-   "module": "physics.vec3",
+   "status": "resolved",
    "source": "file:physics/nbody.py",
    "target": "file:physics/vec3.py",
    "key": 0
@@ -1054,6 +1123,7 @@
   {
    "type": "CALLS",
    "line": 26,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::accelerations@22",
    "target": "builtin:len",
    "key": 0
@@ -1061,6 +1131,7 @@
   {
    "type": "CALLS",
    "line": 27,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::accelerations@22",
    "target": "builtin:range",
    "key": 0
@@ -1068,6 +1139,7 @@
   {
    "type": "CALLS",
    "line": 28,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::accelerations@22",
    "target": "builtin:range",
    "key": 1
@@ -1075,8 +1147,9 @@
   {
    "type": "CALLS",
    "line": 36,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::accelerations@22",
-   "target": "builtin:math",
+   "target": "builtin:math.sqrt",
    "key": 0
   },
   {
@@ -1094,6 +1167,7 @@
   {
    "type": "CALLS",
    "line": 63,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:sum",
    "key": 0
@@ -1101,6 +1175,7 @@
   {
    "type": "CALLS",
    "line": 63,
+   "status": "inferred",
    "source": "fn:physics/nbody.py::total_energy@62",
    "target": "fn:physics/body.py::kinetic_energy@29",
    "key": 0
@@ -1108,6 +1183,7 @@
   {
    "type": "CALLS",
    "line": 65,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:len",
    "key": 0
@@ -1115,6 +1191,7 @@
   {
    "type": "CALLS",
    "line": 66,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:range",
    "key": 0
@@ -1122,6 +1199,7 @@
   {
    "type": "CALLS",
    "line": 67,
+   "status": "builtin",
    "source": "fn:physics/nbody.py::total_energy@62",
    "target": "builtin:range",
    "key": 1
@@ -1129,6 +1207,7 @@
   {
    "type": "CALLS",
    "line": 69,
+   "status": "external",
    "source": "fn:physics/nbody.py::total_energy@62",
    "target": "ext:Vec3",
    "key": 0
@@ -1220,6 +1299,7 @@
   {
    "type": "CALLS",
    "line": 16,
+   "status": "builtin",
    "source": "fn:physics/vec3.py::__init__@15",
    "target": "builtin:float",
    "key": 0
@@ -1227,6 +1307,7 @@
   {
    "type": "CALLS",
    "line": 17,
+   "status": "builtin",
    "source": "fn:physics/vec3.py::__init__@15",
    "target": "builtin:float",
    "key": 1
@@ -1234,6 +1315,7 @@
   {
    "type": "CALLS",
    "line": 18,
+   "status": "builtin",
    "source": "fn:physics/vec3.py::__init__@15",
    "target": "builtin:float",
    "key": 2
@@ -1241,6 +1323,7 @@
   {
    "type": "CALLS",
    "line": 22,
+   "status": "external",
    "source": "fn:physics/vec3.py::add@21",
    "target": "ext:Vec3",
    "key": 0
@@ -1248,6 +1331,7 @@
   {
    "type": "CALLS",
    "line": 26,
+   "status": "external",
    "source": "fn:physics/vec3.py::sub@25",
    "target": "ext:Vec3",
    "key": 0
@@ -1255,6 +1339,7 @@
   {
    "type": "CALLS",
    "line": 30,
+   "status": "external",
    "source": "fn:physics/vec3.py::scale@29",
    "target": "ext:Vec3",
    "key": 0
@@ -1262,8 +1347,9 @@
   {
    "type": "CALLS",
    "line": 38,
+   "status": "builtin",
    "source": "fn:physics/vec3.py::length@37",
-   "target": "fn:physics/vec3.py::dot@33",
+   "target": "builtin:self.dot",
    "key": 0
   },
   {
@@ -1275,15 +1361,17 @@
   {
    "type": "CALLS",
    "line": 46,
+   "status": "builtin",
    "source": "fn:physics/vec3.py::normalize@45",
-   "target": "fn:physics/vec3.py::length@37",
+   "target": "builtin:self.length",
    "key": 0
   },
   {
    "type": "CALLS",
    "line": 49,
+   "status": "builtin",
    "source": "fn:physics/vec3.py::normalize@45",
-   "target": "fn:physics/vec3.py::scale@29",
+   "target": "builtin:self.scale",
    "key": 0
   },
   {
@@ -1343,6 +1431,7 @@
   {
    "type": "CALLS",
    "line": 14,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:int",
    "key": 0
@@ -1350,6 +1439,7 @@
   {
    "type": "CALLS",
    "line": 15,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:int",
    "key": 1
@@ -1357,6 +1447,7 @@
   {
    "type": "CALLS",
    "line": 16,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:int",
    "key": 2
@@ -1364,6 +1455,7 @@
   {
    "type": "CALLS",
    "line": 16,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:abs",
    "key": 0
@@ -1371,6 +1463,7 @@
   {
    "type": "CALLS",
    "line": 16,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:len",
    "key": 0
@@ -1378,6 +1471,7 @@
   {
    "type": "CALLS",
    "line": 17,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:min",
    "key": 0
@@ -1385,6 +1479,7 @@
   {
    "type": "CALLS",
    "line": 18,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:min",
    "key": 1
@@ -1392,6 +1487,7 @@
   {
    "type": "CALLS",
    "line": 17,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:max",
    "key": 0
@@ -1399,9 +1495,16 @@
   {
    "type": "CALLS",
    "line": 18,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_body@13",
    "target": "builtin:max",
    "key": 1
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::draw_body@13",
+   "target": "var:sim/render.py::WIDTH@3",
+   "key": 0
   },
   {
    "type": "READS",
@@ -1416,14 +1519,9 @@
    "key": 0
   },
   {
-   "type": "READS",
-   "source": "fn:sim/render.py::draw_body@13",
-   "target": "var:sim/render.py::WIDTH@3",
-   "key": 0
-  },
-  {
    "type": "CALLS",
    "line": 22,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_all@21",
    "target": "builtin:range",
    "key": 0
@@ -1431,20 +1529,21 @@
   {
    "type": "CALLS",
    "line": 24,
+   "status": "builtin",
    "source": "fn:sim/render.py::draw_all@21",
-   "target": "fn:sim/render.py::draw_body@13",
-   "key": 0
-  },
-  {
-   "type": "READS",
-   "source": "fn:sim/render.py::draw_all@21",
-   "target": "var:sim/render.py::HEIGHT@4",
+   "target": "builtin:self.draw_body",
    "key": 0
   },
   {
    "type": "READS",
    "source": "fn:sim/render.py::draw_all@21",
    "target": "var:sim/render.py::WIDTH@3",
+   "key": 0
+  },
+  {
+   "type": "READS",
+   "source": "fn:sim/render.py::draw_all@21",
+   "target": "var:sim/render.py::HEIGHT@4",
    "key": 0
   },
   {

@@ -1,7 +1,11 @@
 """LLM phase: build the deterministic job list and run it on N parallel
 agents (each job cached separately via records). Returns the failure count.
+
+Record fingerprints come from kodama_docs.tasks (the single shared
+definition, also used by the "Skipped (cached)" report) so a cached
+record is only reused when source content, generation settings and —
+for functions — the call relationships all match.
 """
-import hashlib
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -11,6 +15,8 @@ from kodama_docs.context import (fn_chunks, fn_context_text, var_context_text,
                      summary_context_text)
 from kodama_docs.llm import LLMClient, generate
 from kodama_docs.records import load_record, save_record
+from kodama_docs.tasks import (chunk_fp, function_fp, settings_fp,
+                               summary_fp, variable_fp)
 from kodama_docs.tui import TUI
 from kodama_docs.util import fence_lang, log, set_log_sink
 
@@ -20,7 +26,8 @@ def fn_length(fn: dict) -> int:
 
 
 def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
-                maxchunk, chunktok, cpt=4, stage_cb=None, no_llm=False):
+                maxchunk, chunktok, cpt=4, stage_cb=None, no_llm=False,
+                schunk=None):
     """Summarize a long function body part by part (each part cached
     separately) and return the body_note text for the merge prompt."""
     chunks = fn_chunks(fn.get('body') or '', maxchunk, chunktok, cpt)
@@ -31,7 +38,9 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
         cname = f'{fn["name"]}#c{ci}'
         if stage_cb is not None:
             stage_cb(f'chunk {ci}/{len(chunks)}')
-        cfp = hashlib.md5(ct.encode('utf-8')).hexdigest()
+        if schunk is None:
+            schunk = settings_fp(cfg, 'chunk')
+        cfp = chunk_fp(f['relpath'], cname, fn['line'], ct, schunk)
         cp = (load_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
                           fn['line'], cfp, accept_stub=no_llm) if skip
               else None)
@@ -56,20 +65,6 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
             + '\nDescribe the WHOLE function, synthesizing these parts.')
 
 
-def _graph_names(g, node_id):
-    outs, ins = [], []
-    for u, v, d in g.edges(data=True):
-        if d.get('type') != 'CALLS':
-            continue
-        if u == node_id:
-            t = g.nodes[v]
-            outs.append(t.get('name') or v)
-        elif v == node_id:
-            s = g.nodes[u]
-            ins.append(s.get('qualified') or s.get('name') or u)
-    return ins, outs
-
-
 def llm_phase(cfg: dict, files, g, no_llm: bool = False):
     doccfg = cfg['documentation']
     if not (doccfg.get('generate_function_docs') or
@@ -87,6 +82,12 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
     if no_llm:
         log('llm phase: --no-llm mode — model calls skipped, '
             'stub prose cached (deterministic sections still rendered)')
+    # Per-kind generation-settings fingerprints (shared definition in
+    # kodama_docs.tasks; also used by report_scan's "Skipped (cached)").
+    sfn = settings_fp(cfg, 'function')
+    svar = settings_fp(cfg, 'variable')
+    ssum = settings_fp(cfg, 'summary')
+    schunk = settings_fp(cfg, 'chunk')
     retry = int(doccfg.get('retry_invalid_json', 2))
     skip = bool(doccfg.get('skip_existing', True))
     include_anon = bool(doccfg.get('include_anonymous_functions', False))
@@ -152,12 +153,13 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
     def run(job):
         w, f, sym = wid(), job['f'], job['sym']
         tag, rel, name = job['tag'], f['relpath'], sym['name']
-        fp = gmod.fingerprint([f])
         tui.job_start(w, rel, name)
         t0 = time.time()
         try:
             cached = False
             if job['kind'] == 'function':
+                ins, outs = gmod.graph_neighbor_names(g, job['nid'])
+                fp = function_fp(rel, sym, ins, outs, sfn)
                 prose = (load_record(cfg['data_dir'], rel, 'function',
                                      name, sym['line'], fp,
                                      accept_stub=no_llm) if skip else None)
@@ -172,17 +174,17 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                             body_note = chunk_notes(client, cfg, f, sym,
                                                     prompts, retry, skip,
                                                     maxchunk, chunktok,
-                                                    cpt, stage_cb=report)
+                                                    cpt, stage_cb=report, schunk=schunk)
                             report('merge')
                             ctx = fn_context_text(
                                 {**sym, 'relpath': rel},
-                                *_graph_names(g, job['nid']),
+                                *gmod.graph_neighbor_names(g, job['nid']),
                                 cfg['context'], body_note=body_note)
                         else:
                             tui.stage(w, rel, name, 'describe')
                             ctx = fn_context_text(
                                 {**sym, 'relpath': rel},
-                                *_graph_names(g, job['nid']),
+                                *gmod.graph_neighbor_names(g, job['nid']),
                                 cfg['context'])
                         prose = generate(client, 'function',
                                          prompts.get('function', ''), ctx,
@@ -199,6 +201,7 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                                  'vararg': sym.get('vararg')},
                                 stubbed=no_llm)
             elif job['kind'] == 'variable':
+                fp = variable_fp(rel, sym, svar)
                 prose = (load_record(cfg['data_dir'], rel, 'variable',
                                      name, sym['line'], fp,
                                      accept_stub=no_llm) if skip else None)
@@ -220,6 +223,7 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                                  'init': sym.get('init')},
                                 stubbed=no_llm)
             else:  # file summary
+                fp = summary_fp(rel, f, ssum)
                 prose = (load_record(cfg['data_dir'], rel, 'summary',
                                      'file', 1, fp,
                                      accept_stub=no_llm) if skip else None)

@@ -6,6 +6,7 @@ only wires the phases together; the phases live in their own modules
 (config, scan, outputs, llm_phase, records, context, markdown, llm).
 """
 import argparse
+import json
 import os
 import shutil
 
@@ -17,7 +18,8 @@ from kodama_docs.markdown import (build_call_indexes, render_file_md,
                                   render_index, symbol_index, write_md)
 from kodama_docs.outputs import check_doc_cache, purge_outputs, write_doc_cache
 from kodama_docs.records import list_records
-from kodama_docs.scan import (analyze_files, load_symbols, report_scan, save_symbols,
+from kodama_docs.scan import (analyze_files, load_symbols, report_scan,
+                  save_diagnostics, save_symbols,
                   scan_files, scan_fingerprint)
 from kodama_docs.util import log
 
@@ -43,7 +45,7 @@ def _print_backends(bs):
     print(f'routing: {", ".join(exts) or "-"}')
 
 
-def render_all(cfg: dict, files, g):
+def render_all(cfg: dict, files, g, diag=None, astatus=None):
     fn_recs = list_records(cfg['data_dir'], 'function')
     var_recs = list_records(cfg['data_dir'], 'variable')
     sum_recs = list_records(cfg['data_dir'], 'summary')
@@ -63,10 +65,12 @@ def render_all(cfg: dict, files, g):
         if summary:
             summary = summary.get('prose')
         out = render_file_md(finfo, fn_recs, var_recs, summary,
-                             cfg['output_dir'], g, call_idx, sym_idx)
+                             cfg['output_dir'], g, call_idx, sym_idx,
+                             diag=diag)
         write_md(out, cfg['output_dir'], f['relpath'])
         count += 1
-    index = render_index(files, cfg['output_dir'])
+    index = render_index(files, cfg['output_dir'],
+                         diag=diag, astatus=astatus)
     ipath = os.path.join(cfg['output_dir'], 'index.md')
     os.makedirs(cfg['output_dir'], exist_ok=True)
     with open(ipath, 'w', encoding='utf-8') as fh:
@@ -76,7 +80,7 @@ def render_all(cfg: dict, files, g):
     if cfg.get('copy_meta'):
         meta_dir = os.path.join(cfg['output_dir'], 'meta')
         copied = []
-        for name in ('graph.json', 'symbols.json'):
+        for name in ('graph.json', 'symbols.json', 'diagnostics.json'):
             src = os.path.join(cfg['data_dir'], name)
             if os.path.exists(src):
                 os.makedirs(meta_dir, exist_ok=True)
@@ -172,24 +176,40 @@ def main():
             backends.backends_compatible(cached, cback):
         analysis = cached
         log(f'loaded analysis cache ({len(analysis)} files, fp={cfp[:12]})')
+        # Per-file analysis status from the last run's diagnostics.json
+        # (files that failed/binary previously are still visible, P0-3).
+        astatus = {f['relpath']: {'status': 'ok'} for f in analysis}
+        dpath = os.path.join(cfg['data_dir'], 'diagnostics.json')
+        try:
+            with open(dpath, 'r', encoding='utf-8') as fh:
+                d = json.load(fh)
+            if d.get('fingerprint') == fp:
+                astatus = d['analysis']['files']
+        except (OSError, ValueError, KeyError):
+            pass
     else:
         if cached is not None and cfp == fp:
             log('analysis cache stale (backends changed); re-extracting')
-        analysis, ok, bad, binary = analyze_files(cfg, files)
-        log(f'analysis: ok={ok} failed={bad} binary_skipped={binary}')
+        analysis, astatus = analyze_files(cfg, files)
+        nfail = sum(1 for v in astatus.values() if v['status'] == 'failed')
+        nbin = sum(1 for v in astatus.values() if v['status'] == 'binary')
+        log(f'analysis: ok={len(analysis)} failed={nfail} '
+            f'binary_skipped={nbin}')
         save_symbols(cfg, analysis, fp)
 
-    g = gmod.build_graph(analysis)
+    g, diag = gmod.build_graph(analysis)
     gpath = os.path.join(cfg['data_dir'], 'graph.json')
     gmod.save_graph(g, gpath)
     log(f'graph: {g.number_of_nodes()} nodes / {g.number_of_edges()} edges '
         f'-> {gpath}')
 
-    report_scan(cfg, analysis, skipped)
+    save_diagnostics(cfg['data_dir'], fp, astatus, diag)
+
+    report_scan(cfg, analysis, skipped, g, diag, astatus)
 
     failed = llm_phase(cfg, analysis, g, no_llm=args.no_llm)
 
-    render_all(cfg, analysis, g)
+    render_all(cfg, analysis, g, diag, astatus)
     if failed:
         log(f'NOT updating .doc_cache ({failed} failed task(s) this run; '
             f'unchanged cached records still reused next time)')

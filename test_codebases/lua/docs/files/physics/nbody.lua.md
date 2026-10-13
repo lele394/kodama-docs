@@ -155,7 +155,6 @@ No description generated (`--no-llm`)
 
 - [G](nbody.lua.md#variables)
 - [NBody](nbody.lua.md)
-- [vec3](nbody.lua.md#variables)
 - [length](vec3.lua.md#fn-length-30)
 - [sub](vec3.lua.md#fn-sub-15)
 

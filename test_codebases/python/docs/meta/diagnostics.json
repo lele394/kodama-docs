@@ -1,0 +1,334 @@
+{
+ "schema": "kodama_docs/diagnostics@1",
+ "fingerprint": "63ae3bddc89a0b1ecff80c9adf2f38c22f2b9fa7dbc308dce02773ac83e9bdcf",
+ "analysis": {
+  "counts": {
+   "ok": 5,
+   "failed": 0,
+   "binary": 0
+  },
+  "files": {
+   "main.py": {
+    "status": "ok"
+   },
+   "physics/body.py": {
+    "status": "ok"
+   },
+   "physics/nbody.py": {
+    "status": "ok"
+   },
+   "physics/vec3.py": {
+    "status": "ok"
+   },
+   "sim/render.py": {
+    "status": "ok"
+   }
+  }
+ },
+ "graph": {
+  "ambiguous_calls": [],
+  "external_calls": [
+   {
+    "file": "main.py",
+    "line": 17,
+    "name": "Body"
+   },
+   {
+    "file": "main.py",
+    "line": 22,
+    "name": "Body"
+   },
+   {
+    "file": "main.py",
+    "line": 22,
+    "name": "bodies:append"
+   },
+   {
+    "file": "main.py",
+    "line": 34,
+    "name": "Body"
+   },
+   {
+    "file": "main.py",
+    "line": 34,
+    "name": "bodies:append"
+   },
+   {
+    "file": "main.py",
+    "line": 52,
+    "name": "NBody"
+   },
+   {
+    "file": "main.py",
+    "line": 53,
+    "name": "Renderer"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 69,
+    "name": "Vec3"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 22,
+    "name": "Vec3"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 26,
+    "name": "Vec3"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 30,
+    "name": "Vec3"
+   }
+  ],
+  "builtin_calls": [
+   {
+    "file": "main.py",
+    "line": 18,
+    "name": "range"
+   },
+   {
+    "file": "main.py",
+    "line": 23,
+    "name": "math:cos"
+   },
+   {
+    "file": "main.py",
+    "line": 24,
+    "name": "math:sin"
+   },
+   {
+    "file": "main.py",
+    "line": 31,
+    "name": "random:seed"
+   },
+   {
+    "file": "main.py",
+    "line": 33,
+    "name": "range"
+   },
+   {
+    "file": "main.py",
+    "line": 35,
+    "name": "random:uniform"
+   },
+   {
+    "file": "main.py",
+    "line": 36,
+    "name": "random:uniform"
+   },
+   {
+    "file": "main.py",
+    "line": 37,
+    "name": "random:uniform"
+   },
+   {
+    "file": "main.py",
+    "line": 38,
+    "name": "random:random"
+   },
+   {
+    "file": "main.py",
+    "line": 48,
+    "name": "len"
+   },
+   {
+    "file": "main.py",
+    "line": 57,
+    "name": "os:time"
+   },
+   {
+    "file": "main.py",
+    "line": 60,
+    "name": "range"
+   },
+   {
+    "file": "main.py",
+    "line": 63,
+    "name": "len"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 26,
+    "name": "len"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 27,
+    "name": "range"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 28,
+    "name": "range"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 36,
+    "name": "math:sqrt"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 63,
+    "name": "sum"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 65,
+    "name": "len"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 66,
+    "name": "range"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 67,
+    "name": "range"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 16,
+    "name": "float"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 17,
+    "name": "float"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 18,
+    "name": "float"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 38,
+    "name": "self:dot"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 46,
+    "name": "self:length"
+   },
+   {
+    "file": "physics/vec3.py",
+    "line": 49,
+    "name": "self:scale"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 14,
+    "name": "int"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 15,
+    "name": "int"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 16,
+    "name": "abs"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 16,
+    "name": "int"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 16,
+    "name": "len"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 17,
+    "name": "max"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 17,
+    "name": "min"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 18,
+    "name": "max"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 18,
+    "name": "min"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 22,
+    "name": "range"
+   },
+   {
+    "file": "sim/render.py",
+    "line": 24,
+    "name": "self:draw_body"
+   }
+  ],
+  "unresolved_imports": [
+   {
+    "file": "main.py",
+    "line": 3,
+    "module": "math"
+   },
+   {
+    "file": "main.py",
+    "line": 4,
+    "module": "os"
+   },
+   {
+    "file": "main.py",
+    "line": 30,
+    "module": "random"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 3,
+    "module": "math"
+   }
+  ],
+  "inferred_calls": [
+   {
+    "file": "main.py",
+    "line": 44,
+    "name": "sim:total_energy"
+   },
+   {
+    "file": "main.py",
+    "line": 45,
+    "name": "sim:accelerations"
+   },
+   {
+    "file": "main.py",
+    "line": 46,
+    "name": "sim:step"
+   },
+   {
+    "file": "main.py",
+    "line": 47,
+    "name": "renderer:draw_all"
+   },
+   {
+    "file": "main.py",
+    "line": 48,
+    "name": "renderer:stats_line"
+   },
+   {
+    "file": "physics/nbody.py",
+    "line": 63,
+    "name": "b:kinetic_energy"
+   }
+  ]
+ }
+}

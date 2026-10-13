@@ -53,11 +53,6 @@ def draw_body(self, body):
                 min(max(iy, 0), HEIGHT - 1), mark)
 ```
 
-**Call graph**
-
-- [sim/render.py](render.py.md)
-  - [draw_all:24](render.py.md#fn-draw_all-21)
-
 ---
 
 ### draw_all <a id="fn-draw_all-21"></a>
@@ -84,7 +79,7 @@ No description generated (`--no-llm`)
 - [HEIGHT](render.py.md#variables)
 - [WIDTH](render.py.md#variables)
 - range
-- [draw_body](render.py.md#fn-draw_body-13)
+- self.draw_body
 
 ```py
 def draw_all(self, bodies):

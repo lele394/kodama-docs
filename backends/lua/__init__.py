@@ -7,7 +7,11 @@ documented in backends/backend_design.md. No hand-rolled tokenizer/parser.
 Record shapes (1-based lines, stable across backends):
     functions: [{id, name, qualified, line, end_line, params, vararg, body,
                  developer_comment: str|None}]
-    file_vars: [{name, line, init: empty|table|string|number|function|call|expr}]
+    file_vars: [{name, line, init: empty|table|string|number|function|call|expr,
+                 module?: str}]
+        -- `module` is present when the initializer is a module load
+        -- (`local A = require('mod')` / dofile); it lets the graph phase
+        -- resolve `A:method()` to that module's method.
     calls:     [{callee, line, method: str|None}]   (method call: callee is
                                                     the object part, method
                                                     the method name)
@@ -161,6 +165,23 @@ def _string_value(node):
     return None
 
 
+def _require_module(node):
+    """Module string if `node` is require('mod') / dofile('path'), else None."""
+    if node is None or node.type != 'function_call':
+        return None
+    name, _m = _callee(node)
+    if not name or name.rsplit('.', 1)[-1] not in ('require', 'dofile'):
+        return None
+    args = node.child_by_field_name('arguments')
+    if args is None:
+        return None
+    for c in args.children:
+        if c.type == 'string':
+            val = _string_value(c)
+            return val or None
+    return None
+
+
 def extract(source: str, relpath: str) -> dict:
     if source.startswith('\ufeff'):
         source = source[1:]
@@ -222,9 +243,16 @@ def extract(source: str, relpath: str) -> dict:
                         first_val = v
                         break
         if is_local and depth == 0:
+            # `local A = require('mod')`: record the loaded module so
+            # `A:method()` can be resolved to mod's method (one alias per
+            # module — only attach it for a single declared name)
+            mod = _require_module(first_val) if len(names) == 1 else None
             for nm in names:
-                file_vars.append({'name': nm, 'line': _row(asm),
-                                  'init': _classify(first_val)})
+                rec = {'name': nm, 'line': _row(asm),
+                       'init': _classify(first_val)}
+                if mod:
+                    rec['module'] = mod
+                file_vars.append(rec)
         # walk every value (closures get the first declared name, like the
         # previous hand-rolled extractor)
         exprs = None

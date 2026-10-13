@@ -157,11 +157,6 @@ def scale(self, s):
         return Vec3(self.x * s, self.y * s, self.z * s)
 ```
 
-**Call graph**
-
-- [physics/vec3.py](vec3.py.md)
-  - [normalize:49](vec3.py.md#fn-normalize-45)
-
 ---
 
 ### dot <a id="fn-dot-33"></a>
@@ -188,11 +183,6 @@ def dot(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
 ```
 
-**Call graph**
-
-- [physics/vec3.py](vec3.py.md)
-  - [length:38](vec3.py.md#fn-length-37)
-
 ---
 
 ### length <a id="fn-length-37"></a>
@@ -216,18 +206,13 @@ No description generated (`--no-llm`)
 **References**
 
 - [EPS](vec3.py.md#variables)
-- [dot](vec3.py.md#fn-dot-33)
+- self.dot
 
 ```py
 def length(self):
         d = (self.dot(self)) ** 0.5
         return d if d >= EPS else EPS
 ```
-
-**Call graph**
-
-- [physics/vec3.py](vec3.py.md)
-  - [normalize:46](vec3.py.md#fn-normalize-45)
 
 ---
 
@@ -253,8 +238,8 @@ No description generated (`--no-llm`)
 
 - [EPS](vec3.py.md#variables)
 - [ZERO](vec3.py.md#variables)
-- [length](vec3.py.md#fn-length-37)
-- [scale](vec3.py.md#fn-scale-29)
+- self.length
+- self.scale
 
 ```py
 def normalize(self):

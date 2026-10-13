@@ -1,0 +1,161 @@
+{
+ "schema": "kodama_docs/diagnostics@1",
+ "fingerprint": "3aac295f4b36ce029bc0b6a930a604fe6b65e15f41b89667ccd9a6c68cc1b7ad",
+ "analysis": {
+  "counts": {
+   "ok": 4,
+   "failed": 0,
+   "binary": 0
+  },
+  "files": {
+   "main.lua": {
+    "status": "ok"
+   },
+   "physics/body.lua": {
+    "status": "ok"
+   },
+   "physics/nbody.lua": {
+    "status": "ok"
+   },
+   "physics/vec3.lua": {
+    "status": "ok"
+   }
+  }
+ },
+ "graph": {
+  "ambiguous_calls": [],
+  "external_calls": [
+   {
+    "file": "main.lua",
+    "line": 43,
+    "name": "log.info"
+   }
+  ],
+  "builtin_calls": [
+   {
+    "file": "main.lua",
+    "line": 3,
+    "name": "require"
+   },
+   {
+    "file": "main.lua",
+    "line": 4,
+    "name": "require"
+   },
+   {
+    "file": "main.lua",
+    "line": 5,
+    "name": "require"
+   },
+   {
+    "file": "main.lua",
+    "line": 16,
+    "name": "math.sqrt"
+   },
+   {
+    "file": "main.lua",
+    "line": 18,
+    "name": "table.insert"
+   },
+   {
+    "file": "main.lua",
+    "line": 19,
+    "name": "math.cos"
+   },
+   {
+    "file": "main.lua",
+    "line": 19,
+    "name": "math.sin"
+   },
+   {
+    "file": "main.lua",
+    "line": 20,
+    "name": "math.cos"
+   },
+   {
+    "file": "main.lua",
+    "line": 20,
+    "name": "math.sin"
+   },
+   {
+    "file": "main.lua",
+    "line": 27,
+    "name": "math.randomseed"
+   },
+   {
+    "file": "main.lua",
+    "line": 30,
+    "name": "table.insert"
+   },
+   {
+    "file": "main.lua",
+    "line": 31,
+    "name": "math.random"
+   },
+   {
+    "file": "main.lua",
+    "line": 32,
+    "name": "math.random"
+   },
+   {
+    "file": "main.lua",
+    "line": 33,
+    "name": "math.random"
+   },
+   {
+    "file": "main.lua",
+    "line": 43,
+    "name": "tostring"
+   },
+   {
+    "file": "main.lua",
+    "line": 51,
+    "name": "os.time"
+   },
+   {
+    "file": "physics/body.lua",
+    "line": 10,
+    "name": "setmetatable"
+   },
+   {
+    "file": "physics/nbody.lua",
+    "line": 3,
+    "name": "require"
+   },
+   {
+    "file": "physics/nbody.lua",
+    "line": 35,
+    "name": "math.sqrt"
+   },
+   {
+    "file": "physics/vec3.lua",
+    "line": 31,
+    "name": "math.sqrt"
+   }
+  ],
+  "unresolved_imports": [
+   {
+    "file": "main.lua",
+    "line": 5,
+    "module": "log"
+   }
+  ],
+  "inferred_calls": [
+   {
+    "file": "main.lua",
+    "line": 40,
+    "name": "sim:total_energy"
+   },
+   {
+    "file": "main.lua",
+    "line": 41,
+    "name": "sim:accelerations"
+   },
+   {
+    "file": "main.lua",
+    "line": 42,
+    "name": "sim:step"
+   }
+  ]
+ }
+}
