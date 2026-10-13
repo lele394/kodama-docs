@@ -103,19 +103,22 @@ def analyze_files(cfg: dict, files):
     return results, status_map
 
 
-def save_diagnostics(data_dir, fp, astatus, diag):
+def save_diagnostics(data_dir, fp, astatus, diag, g=None):
     """Write ``diagnostics.json``: per-file analysis status plus the graph
     resolution diagnostics (ambiguous call sites, external references,
-    unresolved imports, inferred calls). Failures and unresolved symbols
-    must stay visible to the user (P0-3), so this is always written."""
+    unresolved imports, inferred calls) and a ``resolution_success``
+    summary. Failures and unresolved symbols must stay visible to the user
+    (P0-3), so this is always written."""
     counts = {'ok': 0, 'failed': 0, 'binary': 0}
     for st in astatus.values():
         st = st.get('status', 'ok')
         counts[st] = counts.get(st, 0) + 1
     graph = diag or {}
+    rs = gmod.resolution_summary(g) if g is not None else {}
     out = {
         'schema': 'kodama_docs/diagnostics@1',
         'fingerprint': fp,
+        'resolution_success': rs,
         'analysis': {'counts': counts, 'files': astatus},
         'graph': {
             'ambiguous_calls': sorted(
@@ -296,6 +299,13 @@ def report_scan(cfg: dict, analysis, skipped, g, diag, astatus):
     log(f'  resolution: {len(amb)} ambiguous call site(s) '
         f'(no edge written), {len(extc)} external reference(s), '
         f'{len(unc)} unresolved import(s), {len(inf)} inferred call(s)')
+    if g is not None:
+        rs = gmod.resolution_summary(g)
+        log(f'  resolution_success: calls {rs["calls"]["success"]}/'
+            f'{rs["calls"]["success"] + rs["calls"]["failed"]} ok, '
+            f'imports {rs["imports"]["success"]}/'
+            f'{rs["imports"]["success"] + rs["imports"]["failed"]} ok '
+            f'(failed references are highlighted orange in the docs)')
     for d in amb[:10]:
         log(f'  ! ambiguous {d.get("name")} at {d.get("file")}:{d.get("line")}: '
             f'candidates: {", ".join(d.get("candidates") or [])}')

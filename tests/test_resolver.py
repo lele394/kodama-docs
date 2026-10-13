@@ -228,6 +228,82 @@ end
     assert ('builtin:math.sqrt', 'builtin') in calls_out(g, 'fn:lb.lua::f@2')
 
 
+def test_python_class_constructor_resolves_via_import():
+    """`from body import Body` + `Body(10)` must resolve to the class node
+    (classes are now graph symbols), with resolution_success=True."""
+    body = py("""
+class Body:
+    def __init__(self, mass):
+        self.mass = mass
+""", 'body')
+    main = py("""
+from body import Body
+
+def make():
+    return Body(10)
+""", 'main')
+    g, diag = gmod.build_graph([body, main])
+    assert calls_out(g, 'fn:main.py::make@4') == \
+        [('cls:body.py::Body@2', 'resolved')]
+    flags = [d.get('resolution_success') for _u, v, d in g.edges(data=True)
+             if d.get('type') == 'CALLS' and v == 'cls:body.py::Body@2']
+    assert flags == [True]
+    assert not diag['ambiguous_calls']
+
+
+def test_module_dot_class_constructor_resolves():
+    """`import body` + `body.Body(10)` resolves through the dotted branch
+    to the class node in body.py."""
+    body = py("class Body:\n    pass\n", 'body')
+    main = py("""
+import body
+
+def make():
+    return body.Body(10)
+""", 'main')
+    g, diag = gmod.build_graph([body, main])
+    assert calls_out(g, 'fn:main.py::make@4') == \
+        [('cls:body.py::Body@1', 'resolved')]
+    assert not diag['ambiguous_calls']
+
+
+def test_external_call_has_resolution_success_false():
+    """A call with no project symbol and no binding is external — and its
+    edge carries resolution_success=False (the flag the renderers use)."""
+    a = py("""
+def go():
+    return unknown_fn(1)
+""", 'a')
+    g, diag = gmod.build_graph([a])
+    edges = [(v, d.get('status'), d.get('resolution_success'))
+             for _u, v, d in g.edges(data=True)
+             if d.get('type') == 'CALLS']
+    assert ('ext:unknown_fn', 'external', False) in edges
+
+
+def test_unbound_unique_class_is_inferred():
+    """A bare constructor call with no import, but exactly one project
+    class of that name: kept as an inference, marked `inferred`."""
+    b1 = py("class Thing:\n    pass\n", 'b1')
+    b2 = py("def go():\n    return Thing()\n", 'b2')
+    g, diag = gmod.build_graph([b1, b2])
+    assert ('cls:b1.py::Thing@1', 'inferred') in calls_out(g, 'fn:b2.py::go@1')
+    assert not diag['ambiguous_calls']
+
+
+def test_unbound_multiple_classes_are_ambiguous():
+    """Bare constructor, two project classes of that name, no import:
+    no edge is written and both candidates are recorded (P0-2)."""
+    c1 = py("class Thing:\n    pass\n", 'c1')
+    c2 = py("class Thing:\n    pass\n", 'c2')
+    c3 = py("def go():\n    return Thing()\n", 'c3')
+    g, diag = gmod.build_graph([c1, c2, c3])
+    assert calls_out(g, 'fn:c3.py::go@1') == []
+    d = diag['ambiguous_calls'][0]
+    assert d['name'] == 'Thing'
+    assert d['candidates'] == ['c1.py::Thing@1', 'c2.py::Thing@1']
+
+
 def main():
     fns = [v for k, v in sorted(globals().items())
            if k.startswith('test_') and callable(v)]

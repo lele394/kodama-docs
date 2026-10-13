@@ -90,7 +90,7 @@ No description generated (`--no-llm`)
 
 **References**
 
-- Vec3
+- [Vec3](vec3.py.md#cls-Vec3-12)
 
 ```py
 def add(self, other):
@@ -120,7 +120,7 @@ No description generated (`--no-llm`)
 
 **References**
 
-- Vec3
+- [Vec3](vec3.py.md#cls-Vec3-12)
 
 ```py
 def sub(self, other):
@@ -150,7 +150,7 @@ No description generated (`--no-llm`)
 
 **References**
 
-- Vec3
+- [Vec3](vec3.py.md#cls-Vec3-12)
 
 ```py
 def scale(self, s):
@@ -269,6 +269,14 @@ No description generated (`--no-llm`)
 def __repr__(self):
         return f"Vec3({self.x}, {self.y}, {self.z})"
 ```
+
+## Classes <a id="classes"></a>
+
+Classes are structural symbols: constructor calls (`Name(...)`) that resolve here are linked from the caller's References section.
+
+| Class | Line |
+| --- | --- |
+| <a id="cls-Vec3-12">[Vec3](#cls-Vec3-12)</a> | 12 |
 
 ## File-level variables <a id="variables"></a>
 

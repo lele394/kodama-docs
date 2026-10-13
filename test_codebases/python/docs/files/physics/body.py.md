@@ -139,6 +139,14 @@ def kinetic_energy(self):
 - [physics/nbody.py](nbody.py.md)
   - [total_energy:63](nbody.py.md#fn-total_energy-62)
 
+## Classes <a id="classes"></a>
+
+Classes are structural symbols: constructor calls (`Name(...)`) that resolve here are linked from the caller's References section.
+
+| Class | Line |
+| --- | --- |
+| <a id="cls-Body-7">[Body](#cls-Body-7)</a> | 7 |
+
 ## File-level variables <a id="variables"></a>
 
 | Variable | Line | Init | Description |

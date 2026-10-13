@@ -131,6 +131,14 @@ def stats_line(self, n, energy):
 - [main.py](../main.py.md)
   - [tick:48](../main.py.md#fn-tick-43)
 
+## Classes <a id="classes"></a>
+
+Classes are structural symbols: constructor calls (`Name(...)`) that resolve here are linked from the caller's References section.
+
+| Class | Line |
+| --- | --- |
+| <a id="cls-Renderer-9">[Renderer](#cls-Renderer-9)</a> | 9 |
+
 ## File-level variables <a id="variables"></a>
 
 | Variable | Line | Init | Description |

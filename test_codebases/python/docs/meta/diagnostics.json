@@ -1,6 +1,20 @@
 {
  "schema": "kodama_docs/diagnostics@1",
  "fingerprint": "63ae3bddc89a0b1ecff80c9adf2f38c22f2b9fa7dbc308dce02773ac83e9bdcf",
+ "resolution_success": {
+  "calls": {
+   "success": 57,
+   "failed": 2
+  },
+  "imports": {
+   "success": 4,
+   "failed": 4
+  },
+  "reads": {
+   "success": 16,
+   "failed": 0
+  }
+ },
  "analysis": {
   "counts": {
    "ok": 5,
@@ -30,58 +44,13 @@
   "external_calls": [
    {
     "file": "main.py",
-    "line": 17,
-    "name": "Body"
-   },
-   {
-    "file": "main.py",
-    "line": 22,
-    "name": "Body"
-   },
-   {
-    "file": "main.py",
     "line": 22,
     "name": "bodies:append"
    },
    {
     "file": "main.py",
     "line": 34,
-    "name": "Body"
-   },
-   {
-    "file": "main.py",
-    "line": 34,
     "name": "bodies:append"
-   },
-   {
-    "file": "main.py",
-    "line": 52,
-    "name": "NBody"
-   },
-   {
-    "file": "main.py",
-    "line": 53,
-    "name": "Renderer"
-   },
-   {
-    "file": "physics/nbody.py",
-    "line": 69,
-    "name": "Vec3"
-   },
-   {
-    "file": "physics/vec3.py",
-    "line": 22,
-    "name": "Vec3"
-   },
-   {
-    "file": "physics/vec3.py",
-    "line": 26,
-    "name": "Vec3"
-   },
-   {
-    "file": "physics/vec3.py",
-    "line": 30,
-    "name": "Vec3"
    }
   ],
   "builtin_calls": [

@@ -1,6 +1,20 @@
 {
  "schema": "kodama_docs/diagnostics@1",
  "fingerprint": "3aac295f4b36ce029bc0b6a930a604fe6b65e15f41b89667ccd9a6c68cc1b7ad",
+ "resolution_success": {
+  "calls": {
+   "success": 34,
+   "failed": 1
+  },
+  "imports": {
+   "success": 3,
+   "failed": 1
+  },
+  "reads": {
+   "success": 22,
+   "failed": 0
+  }
+ },
  "analysis": {
   "counts": {
    "ok": 4,

@@ -135,8 +135,8 @@ def extract(source: str, relpath: str) -> dict:
     root = _parser.parse(source.encode('utf-8')).root_node
     comments = _all_comments(root)
     lines = source.splitlines()
-    fns, file_vars, calls, imports = [], [], [], []
-    seen_fn, seen_call, seen_var = set(), set(), set()
+    fns, file_vars, calls, imports, classes = [], [], [], [], []
+    seen_fn, seen_call, seen_var, seen_cls = set(), set(), set(), set()
     import_mods = []
 
     def add_fn(name, line, end_line, params, vararg, dev=None):
@@ -271,9 +271,26 @@ def extract(source: str, relpath: str) -> dict:
                             note_import(m, _row(node), bind=bind, name=name)
             return
 
+        if t == 'class_definition':
+            # Record the class as a resolvable symbol: constructor calls
+            # (`Body(...)`) must bind through the caller's imports instead
+            # of falling through to `external`. Methods (the
+            # function_definitions in the body) are still picked up by the
+            # generic walk below.
+            nm = node.child_by_field_name('name')
+            if nm is not None:
+                cname = _text(nm)
+                row = _row(node)
+                key = (cname, row)
+                if key not in seen_cls:
+                    seen_cls.add(key)
+                    classes.append({'name': cname, 'qualified': cname,
+                                    'line': row,
+                                    'end_line': node.end_point[0] + 1})
+
         for c in node.children:
             walk(c, depth)
 
     walk(root, 0)
     return {'functions': fns, 'file_vars': file_vars,
-            'calls': calls, 'imports': imports}
+            'calls': calls, 'imports': imports, 'classes': classes}

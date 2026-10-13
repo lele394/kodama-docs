@@ -11,6 +11,22 @@ def md_escape(s: str) -> str:
     return str(s).replace('|', '\\|')
 
 
+def _html_escape(s: str) -> str:
+    return (str(s).replace('&', '&amp;')
+            .replace('<', '&lt;').replace('>', '&gt;'))
+
+
+# Unresolved references (resolution_success == false) are highlighted with
+# this color so the user can spot them at a glance (orange, per request).
+UNRESOLVED_COLOR = '#e67e22'
+
+
+def _unresolved_span(name: str) -> str:
+    """Orange inline-HTML span marking a reference that did not resolve."""
+    return (f'<span style="color:{UNRESOLVED_COLOR}">'
+            f'{_html_escape(name)}</span>')
+
+
 def _fn_anchor(fn: dict) -> str:
     return f"fn-{sanitize_id(fn['name'])}-{fn['line']}"
 
@@ -107,7 +123,7 @@ def symbol_index(g):
         return files, by_name, by_qname, by_ns, by_var
     for nid, nd in g.nodes(data=True):
         kind = nd.get('kind')
-        if kind not in ('function', 'variable'):
+        if kind not in ('function', 'variable', 'class'):
             continue
         rp = nd.get('relpath')
         if rp:
@@ -157,7 +173,8 @@ def ref_line(rel, ref, files, by_name, by_qname, by_ns, by_var):
     node = _pick_node(cands, rel) if cands else None
     if node is not None:
         link = _rel_link(rel, node['relpath'])
-        link += '#fn-' + sanitize_id(node['name']) + '-' + str(node['line'])
+        anchor = 'cls-' if node.get('kind') == 'class' else 'fn-'
+        link += '#' + anchor + sanitize_id(node['name']) + '-' + str(node['line'])
         return f'- [{md_escape(ref)}]({link})'
     ns = by_ns.get(t)
     if ns and len(ns) == 1:
@@ -185,16 +202,28 @@ def static_references(rel: str, fn: dict, g, call_out,
         nm = g.nodes[v].get('name') or v
         # Inferred edges are kept (a unique project match) but the label
         # says so — an inference is not a verified call (P0-2).
-        if status == 'inferred':
-            nm = f'{nm} (inferred)'
-        if nm not in seen:
-            seen.add(nm)
-            refs.append(nm)
+        label = f'{nm} (inferred)' if status == 'inferred' else nm
+        if label not in seen:
+            seen.add(label)
+            refs.append((label, status))
     if not refs:
         return []
     lines = ['**References**', '']
-    for r in refs:
-        lines.append(ref_line(rel, r, files, by_name, by_qname, by_ns, by_var))
+    has_unresolved = False
+    for label, status in refs:
+        if status == 'external':
+            # resolution_success == false: no matching symbol in this
+            # project — no link is written, highlighted orange.
+            lines.append(f'- {_unresolved_span(label)}')
+            has_unresolved = True
+        else:
+            lines.append(ref_line(rel, label, files, by_name, by_qname,
+                                  by_ns, by_var))
+    if has_unresolved:
+        lines.append('')
+        lines.append(f'> Note: {_unresolved_span("orange")} references '
+                     f'could not be resolved to a symbol in this project '
+                     f'(no link is written for them).')
     lines.append('')
     return lines
 
@@ -218,11 +247,11 @@ def _unresolved_section(rel: str, diag) -> list:
              'instead of guessing:', '']
     for d in sorted(amb, key=lambda d: d.get('line') or 0):
         cands = ', '.join(f'`{c}`' for c in d.get('candidates') or []) or '—'
-        lines.append(f"- line {d.get('line')}: call `{d.get('name')}` "
-                     f'— candidates: {cands}')
+        lines.append(f"- line {d.get('line')}: call "
+                     f"{_unresolved_span(d.get('name'))} — candidates: {cands}")
     for d in sorted(unc, key=lambda d: d.get('line') or 0):
         lines.append(f"- line {d.get('line')}: import of "
-                     f"`{d.get('module')}` — no matching file in the project")
+                     f"{_unresolved_span(d.get('module'))} — no matching file in the project")
     lines.append('')
     return lines
 
@@ -349,6 +378,22 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
             if graph is not None:
                 lines += callgraph_section(rel, fn, graph, call_in)
 
+    classes = finfo.get('classes') or []
+    if classes:
+        lines += ['## Classes <a id="classes"></a>', '']
+        lines.append('Classes are structural symbols: constructor calls '
+                     '(`Name(...)`) that resolve here are linked from the '
+                     'caller\'s References section.')
+        lines.append('')
+        lines.append('| Class | Line |')
+        lines.append('| --- | --- |')
+        for c in classes:
+            anchor = f"cls-{sanitize_id(c['name'])}-{c['line']}"
+            lines.append(f"| <a id=\"{anchor}\">"
+                         f"[{c.get('qualified') or c['name']}](#{anchor})</a> "
+                         f"| {c['line']} |")
+        lines.append('')
+
     vars_ = finfo.get('file_vars') or []
     if vars_:
         lines += ['## File-level variables <a id="variables"></a>', '']
@@ -371,11 +416,11 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
     return '\n'.join(lines)
 
 
-def _analysis_summary(diag, astatus) -> list:
+def _analysis_summary(diag, astatus, rs=None) -> list:
     """Index footer: analysis status per file and the resolution outcome
     counts (P0-3 — failures and unresolved references stay visible in the
     docs, not just in the console). Returns [] when no data was passed."""
-    if not diag and astatus is None:
+    if not diag and astatus is None and not rs:
         return []
     lines = ['', '## Analysis summary', '']
     if astatus is not None:
@@ -398,11 +443,23 @@ def _analysis_summary(diag, astatus) -> list:
             f"- Call references: {extc} external, {inf} inferred, "
             f"**{amb} ambiguous** (recorded, not linked), "
             f"{unc} unresolved import(s)")
+    if rs:
+        cs, im = rs.get('calls', {}), rs.get('imports', {})
+        cok = cs.get('success', 0)
+        cfail = cs.get('failed', 0)
+        iok = im.get('success', 0)
+        ifail = im.get('failed', 0)
+        lines.append(
+            f"- Resolution: **{cok}/{cok + cfail}** call references and "
+            f"**{iok}/{iok + ifail}** imports resolved successfully. "
+            f"References that did not resolve are highlighted "
+            f"{_unresolved_span('orange')} on each page.")
     lines.append('')
     return lines
 
 
-def render_index(finfos, output_root: str, diag=None, astatus=None) -> str:
+def render_index(finfos, output_root: str, diag=None, astatus=None,
+                 rs=None) -> str:
     lines = ['# Documentation index', '',
              f'{len(finfos)} files documented.', '',
              '| File | Lines | Functions | Variables |',
@@ -415,7 +472,7 @@ def render_index(finfos, output_root: str, diag=None, astatus=None) -> str:
             f"| {len(finfo.get('functions') or [])} "
             f"| {len(finfo.get('file_vars') or [])} |")
     lines.append('')
-    lines += _analysis_summary(diag, astatus)
+    lines += _analysis_summary(diag, astatus, rs)
     lines.append('---')
     lines.append('_Generated by kodama-docs._')
     lines.append('')

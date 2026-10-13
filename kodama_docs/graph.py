@@ -1,7 +1,7 @@
 """Deterministic cross-file graph builder (networkx MultiDiGraph).
 
-Node kinds: file, function, variable, builtin, external, module.
-Edge kinds: CONTAINS (file -> fn/var), CALLS (fn/file -> fn/ext/builtin),
+Node kinds: file, function, variable, class, builtin, external, module.
+Edge kinds: CONTAINS (file -> fn/var/cls), CALLS (fn/file -> fn/cls/ext/builtin),
  IMPORTS (file -> file/module), READS (fn -> var: the function body
 references a file-level variable).
 
@@ -28,6 +28,12 @@ Every CALLS edge carries a ``status`` attribute:
 Every IMPORTS edge carries:
     resolved | unresolved
 
+Every reference edge (CALLS / IMPORTS / READS) also carries
+``resolution_success`` (boolean): true when the reference was matched to a
+known symbol (a project function/class/variable, or a recognized builtin);
+false when it stays external or unresolved. Renderers use it to highlight
+unresolved references (orange) instead of guessing.
+
 Ambiguity is never silently resolved by picking a candidate: the docs
 must be able to state what is known, what is inferred and what is
 unresolved.
@@ -52,6 +58,10 @@ def node_id_fn(relpath, name, line):
 
 def node_id_var(relpath, name, line):
     return f'var:{relpath}::{name}@{line}'
+
+
+def node_id_cls(relpath, name, line):
+    return f'cls:{relpath}::{name}@{line}'
 
 
 def _var_reads(body: str, name: str, is_py: bool) -> bool:
@@ -106,8 +116,12 @@ def graph_neighbor_names(g, node_id):
 
 
 def _cand_display(nid: str) -> str:
-    """Human-readable candidate form: 'fn:a.py::b@3' -> 'a.py::b@3'."""
-    return nid.split(':', 1)[1] if nid.startswith('fn:') else nid
+    """Human-readable candidate form: 'fn:a.py::b@3' / 'cls:a.py::B@2'
+    -> 'a.py::b@3' / 'a.py::B@2'."""
+    prefix, _, rest = nid.partition(':')
+    if prefix in ('fn', 'var', 'cls'):
+        return rest
+    return nid
 
 
 def build_graph(files):
@@ -139,6 +153,7 @@ def build_graph(files):
     qual_cands = {}  # qualified name -> [fn ids]
     name_cands = {}  # plain name     -> [fn ids]
     file_fn = {}     # (relpath, plain name) -> first fn id in that file
+    file_cls = {}    # (relpath, class name) -> class node id
     for f in files:
         rp = f['relpath']
         fid = node_id_file(rp)
@@ -146,6 +161,16 @@ def build_graph(files):
                    lines=f.get('lines'),
                    function_count=len(f.get('functions') or []),
                    variable_count=len(f.get('file_vars') or []))
+        for c in f.get('classes') or []:
+            cid = node_id_cls(rp, c['name'], c['line'])
+            g.add_node(cid, kind='class', relpath=rp, name=c['name'],
+                       qualified=c.get('qualified') or c['name'],
+                       line=c['line'],
+                       end_line=c.get('end_line', c['line']), file_id=fid)
+            add_edge(fid, cid, 'CONTAINS')
+            if (rp, c['name']) not in file_cls:
+                file_cls[(rp, c['name'])] = cid
+            name_cands.setdefault(c['name'], []).append(cid)
         for fn in f.get('functions') or []:
             nid = node_id_fn(rp, fn['name'], fn['line'])
             g.add_node(nid, kind='function', relpath=rp, name=fn['name'],
@@ -228,7 +253,8 @@ def build_graph(files):
             hits = []
             for b in file_bs:
                 if b['bind'] == name and b['file']:
-                    hit = file_fn.get((b['file'], method))
+                    hit = (file_fn.get((b['file'], method))
+                           or file_cls.get((b['file'], method)))
                     if hit:
                         hits.append(hit)
             if hits:
@@ -258,7 +284,8 @@ def build_graph(files):
             hits = []
             for b in file_bs:
                 if b['bind'] == base and b['file']:
-                    hit = file_fn.get((b['file'], b['name'] or rest))
+                    hit = (file_fn.get((b['file'], b['name'] or rest))
+                           or file_cls.get((b['file'], b['name'] or rest)))
                     if hit:
                         hits.append(hit)
             if hits:
@@ -276,16 +303,19 @@ def build_graph(files):
             return 'ext:' + name, 'external'
 
         # bare name
-        # 1) defined in the same file (lexical scope wins)
-        local = file_fn.get((rp, name))
+        # 1) defined in the same file (lexical scope wins; a class counts
+        #    too — `class Body` + `Body(...)` in one file)
+        local = file_fn.get((rp, name)) or file_cls.get((rp, name))
         if local:
             return local, 'resolved'
         # 2) bound by this file's imports to a project file
-        #    (`from users import validate` then `validate()`)
+        #    (`from users import validate` then `validate()`, or
+        #    `from physics.body import Body` then `Body(...)`)
         hits = []
         for b in file_bs:
             if b['bind'] == name and b['file'] and b['name']:
-                hit = file_fn.get((b['file'], b['name']))
+                hit = (file_fn.get((b['file'], b['name']))
+                       or file_cls.get((b['file'], b['name'])))
                 if hit:
                     hits.append(hit)
         if hits:
@@ -339,20 +369,23 @@ def build_graph(files):
             fn = owner(c['line'])
             if fn is not None:
                 src = node_id_fn(rp, fn['name'], fn['line'])
-            add_edge(src, tgt, 'CALLS', line=c['line'], status=status)
+            add_edge(src, tgt, 'CALLS', line=c['line'], status=status,
+                     resolution_success=status in ('resolved', 'inferred',
+                                                    'builtin'))
 
         for imp in f.get('imports') or []:
             mod = imp['module']
             hit = mod_file(mod, rp)
             if hit:
                 add_edge(fid, node_id_file(hit), 'IMPORTS',
-                         line=imp.get('line'), status='resolved')
+                         line=imp.get('line'), status='resolved',
+                         resolution_success=True)
             else:
                 tid = 'mod:' + mod
                 if not g.has_node(tid):
                     g.add_node(tid, kind='module', name=mod)
                 add_edge(fid, tid, 'IMPORTS', line=imp.get('line'),
-                         status='unresolved')
+                         status='unresolved', resolution_success=False)
                 diag['unresolved_imports'].append(
                     {'file': rp, 'line': imp.get('line'), 'module': mod})
 
@@ -367,9 +400,33 @@ def build_graph(files):
                 body = fn.get('body') or ''
                 if body and _var_reads(body, v['name'], is_py):
                     src = node_id_fn(rp, fn['name'], fn['line'])
-                    add_edge(src, vid, 'READS')
+                    # A READS edge only exists when the variable is defined
+                    # in the same file, so it is always resolved.
+                    add_edge(src, vid, 'READS', resolution_success=True)
 
     return g, diag
+
+
+def resolution_summary(g) -> dict:
+    """Aggregate the ``resolution_success`` flag across reference edges.
+
+    Returns ``{'calls': {...}, 'imports': {...}, 'reads': {...}}`` where each
+    has ``success`` / ``failed`` edge counts. ``failed`` means the reference
+    did not resolve (external call, unresolved import) — exactly the
+    references the renderers highlight in orange."""
+    ok = {'CALLS': 0, 'IMPORTS': 0, 'READS': 0}
+    fail = {'CALLS': 0, 'IMPORTS': 0, 'READS': 0}
+    for _u, _v, d in g.edges(data=True):
+        et = d.get('type')
+        if et not in ok:
+            continue
+        if d.get('resolution_success'):
+            ok[et] += 1
+        else:
+            fail[et] += 1
+    return {'calls': {'success': ok['CALLS'], 'failed': fail['CALLS']},
+            'imports': {'success': ok['IMPORTS'], 'failed': fail['IMPORTS']},
+            'reads': {'success': ok['READS'], 'failed': fail['READS']}}
 
 
 def save_graph(g, path) -> str:

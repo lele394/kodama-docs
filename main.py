@@ -60,6 +60,7 @@ def render_all(cfg: dict, files, g, diag=None, astatus=None):
             'lines': f.get('lines'),
             'functions': f.get('functions') or [],
             'file_vars': f.get('file_vars') or [],
+            'classes': f.get('classes') or [],
         }
         summary = sum_recs.get((f['relpath'], 'file', 1))
         if summary:
@@ -70,7 +71,8 @@ def render_all(cfg: dict, files, g, diag=None, astatus=None):
         write_md(out, cfg['output_dir'], f['relpath'])
         count += 1
     index = render_index(files, cfg['output_dir'],
-                         diag=diag, astatus=astatus)
+                         diag=diag, astatus=astatus,
+                         rs=gmod.resolution_summary(g))
     ipath = os.path.join(cfg['output_dir'], 'index.md')
     os.makedirs(cfg['output_dir'], exist_ok=True)
     with open(ipath, 'w', encoding='utf-8') as fh:
@@ -203,7 +205,7 @@ def main():
     log(f'graph: {g.number_of_nodes()} nodes / {g.number_of_edges()} edges '
         f'-> {gpath}')
 
-    save_diagnostics(cfg['data_dir'], fp, astatus, diag)
+    save_diagnostics(cfg['data_dir'], fp, astatus, diag, g)
 
     report_scan(cfg, analysis, skipped, g, diag, astatus)
 

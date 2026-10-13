@@ -595,6 +595,7 @@
    "type": "CALLS",
    "line": 3,
    "status": "builtin",
+   "resolution_success": true,
    "source": "file:main.lua",
    "target": "builtin:require",
    "key": 0
@@ -603,6 +604,7 @@
    "type": "CALLS",
    "line": 4,
    "status": "builtin",
+   "resolution_success": true,
    "source": "file:main.lua",
    "target": "builtin:require",
    "key": 1
@@ -611,6 +613,7 @@
    "type": "CALLS",
    "line": 5,
    "status": "builtin",
+   "resolution_success": true,
    "source": "file:main.lua",
    "target": "builtin:require",
    "key": 2
@@ -619,6 +622,7 @@
    "type": "IMPORTS",
    "line": 3,
    "status": "resolved",
+   "resolution_success": true,
    "source": "file:main.lua",
    "target": "file:physics/nbody.lua",
    "key": 0
@@ -627,6 +631,7 @@
    "type": "IMPORTS",
    "line": 4,
    "status": "resolved",
+   "resolution_success": true,
    "source": "file:main.lua",
    "target": "file:physics/body.lua",
    "key": 0
@@ -635,6 +640,7 @@
    "type": "IMPORTS",
    "line": 5,
    "status": "unresolved",
+   "resolution_success": false,
    "source": "file:main.lua",
    "target": "mod:log",
    "key": 0
@@ -643,6 +649,7 @@
    "type": "CALLS",
    "line": 13,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "fn:physics/body.lua::new@9",
    "key": 0
@@ -651,6 +658,7 @@
    "type": "CALLS",
    "line": 18,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "fn:physics/body.lua::new@9",
    "key": 1
@@ -659,6 +667,7 @@
    "type": "CALLS",
    "line": 16,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "builtin:math.sqrt",
    "key": 0
@@ -667,6 +676,7 @@
    "type": "CALLS",
    "line": 18,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "builtin:table.insert",
    "key": 0
@@ -675,6 +685,7 @@
    "type": "CALLS",
    "line": 19,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "builtin:math.cos",
    "key": 0
@@ -683,6 +694,7 @@
    "type": "CALLS",
    "line": 20,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "builtin:math.cos",
    "key": 1
@@ -691,6 +703,7 @@
    "type": "CALLS",
    "line": 19,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "builtin:math.sin",
    "key": 0
@@ -699,6 +712,7 @@
    "type": "CALLS",
    "line": 20,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_circular_system@12",
    "target": "builtin:math.sin",
    "key": 1
@@ -707,6 +721,7 @@
    "type": "CALLS",
    "line": 27,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_random_system@26",
    "target": "builtin:math.randomseed",
    "key": 0
@@ -715,6 +730,7 @@
    "type": "CALLS",
    "line": 30,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_random_system@26",
    "target": "builtin:table.insert",
    "key": 0
@@ -723,6 +739,7 @@
    "type": "CALLS",
    "line": 30,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:main.lua::make_random_system@26",
    "target": "fn:physics/body.lua::new@9",
    "key": 0
@@ -731,6 +748,7 @@
    "type": "CALLS",
    "line": 31,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_random_system@26",
    "target": "builtin:math.random",
    "key": 0
@@ -739,6 +757,7 @@
    "type": "CALLS",
    "line": 32,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_random_system@26",
    "target": "builtin:math.random",
    "key": 1
@@ -747,6 +766,7 @@
    "type": "CALLS",
    "line": 33,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::make_random_system@26",
    "target": "builtin:math.random",
    "key": 2
@@ -755,6 +775,7 @@
    "type": "CALLS",
    "line": 40,
    "status": "inferred",
+   "resolution_success": true,
    "source": "fn:main.lua::tick@39",
    "target": "fn:physics/nbody.lua::total_energy@69",
    "key": 0
@@ -763,6 +784,7 @@
    "type": "CALLS",
    "line": 41,
    "status": "inferred",
+   "resolution_success": true,
    "source": "fn:main.lua::tick@39",
    "target": "fn:physics/nbody.lua::accelerations@18",
    "key": 0
@@ -771,6 +793,7 @@
    "type": "CALLS",
    "line": 42,
    "status": "inferred",
+   "resolution_success": true,
    "source": "fn:main.lua::tick@39",
    "target": "fn:physics/nbody.lua::step@52",
    "key": 0
@@ -779,6 +802,7 @@
    "type": "CALLS",
    "line": 43,
    "status": "external",
+   "resolution_success": false,
    "source": "fn:main.lua::tick@39",
    "target": "ext:log.info",
    "key": 0
@@ -787,6 +811,7 @@
    "type": "CALLS",
    "line": 43,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::tick@39",
    "target": "builtin:tostring",
    "key": 0
@@ -795,6 +820,7 @@
    "type": "CALLS",
    "line": 49,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:main.lua::main@46",
    "target": "fn:main.lua::make_circular_system@12",
    "key": 0
@@ -803,6 +829,7 @@
    "type": "CALLS",
    "line": 51,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:main.lua::main@46",
    "target": "fn:main.lua::make_random_system@26",
    "key": 0
@@ -811,6 +838,7 @@
    "type": "CALLS",
    "line": 51,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:main.lua::main@46",
    "target": "builtin:os.time",
    "key": 0
@@ -819,24 +847,28 @@
    "type": "CALLS",
    "line": 56,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:main.lua::main@46",
    "target": "fn:main.lua::tick@39",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:main.lua::main@46",
    "target": "var:main.lua::FPS@7",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:main.lua::main@46",
    "target": "var:main.lua::RUNS@8",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:main.lua::main@46",
    "target": "var:main.lua::MODE@9",
    "key": 0
@@ -887,30 +919,35 @@
    "type": "CALLS",
    "line": 10,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:physics/body.lua::new@9",
    "target": "builtin:setmetatable",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/body.lua::new@9",
    "target": "var:physics/body.lua::Body@6",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/body.lua::reset@19",
    "target": "var:physics/body.lua::Body@6",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/body.lua::apply_force@26",
    "target": "var:physics/body.lua::Body@6",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/body.lua::kinetic_energy@33",
    "target": "var:physics/body.lua::Body@6",
    "key": 0
@@ -961,6 +998,7 @@
    "type": "CALLS",
    "line": 3,
    "status": "builtin",
+   "resolution_success": true,
    "source": "file:physics/nbody.lua",
    "target": "builtin:require",
    "key": 0
@@ -969,6 +1007,7 @@
    "type": "IMPORTS",
    "line": 3,
    "status": "resolved",
+   "resolution_success": true,
    "source": "file:physics/nbody.lua",
    "target": "file:physics/vec3.lua",
    "key": 0
@@ -977,30 +1016,35 @@
    "type": "CALLS",
    "line": 35,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::accelerations@18",
    "target": "builtin:math.sqrt",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::accelerations@18",
    "target": "var:physics/nbody.lua::G@5",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::accelerations@18",
    "target": "var:physics/nbody.lua::MIN_DIST@6",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::accelerations@18",
    "target": "var:physics/nbody.lua::NBody@8",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::step@52",
    "target": "var:physics/nbody.lua::NBody@8",
    "key": 0
@@ -1009,6 +1053,7 @@
    "type": "CALLS",
    "line": 77,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::total_energy@69",
    "target": "fn:physics/vec3.lua::length@30",
    "key": 0
@@ -1017,18 +1062,21 @@
    "type": "CALLS",
    "line": 77,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::total_energy@69",
    "target": "fn:physics/vec3.lua::sub@15",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::total_energy@69",
    "target": "var:physics/nbody.lua::G@5",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/nbody.lua::total_energy@69",
    "target": "var:physics/nbody.lua::NBody@8",
    "key": 0
@@ -1095,24 +1143,28 @@
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::add@10",
    "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::sub@15",
    "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::scale@20",
    "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::dot@25",
    "target": "var:physics/vec3.lua::V@3",
    "key": 0
@@ -1121,6 +1173,7 @@
    "type": "CALLS",
    "line": 31,
    "status": "builtin",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::length@30",
    "target": "builtin:math.sqrt",
    "key": 0
@@ -1129,18 +1182,21 @@
    "type": "CALLS",
    "line": 31,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::length@30",
    "target": "fn:physics/vec3.lua::dot@25",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::length@30",
    "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::length@30",
    "target": "var:physics/vec3.lua::EPS@5",
    "key": 0
@@ -1149,6 +1205,7 @@
    "type": "CALLS",
    "line": 43,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::normalize@42",
    "target": "fn:physics/vec3.lua::length@30",
    "key": 0
@@ -1157,24 +1214,28 @@
    "type": "CALLS",
    "line": 47,
    "status": "resolved",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::normalize@42",
    "target": "fn:physics/vec3.lua::scale@20",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::normalize@42",
    "target": "var:physics/vec3.lua::V@3",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::normalize@42",
    "target": "var:physics/vec3.lua::EPS@5",
    "key": 0
   },
   {
    "type": "READS",
+   "resolution_success": true,
    "source": "fn:physics/vec3.lua::normalize@42",
    "target": "var:physics/vec3.lua::ZERO@6",
    "key": 0
