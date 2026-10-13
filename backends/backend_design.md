@@ -1,118 +1,184 @@
-# Backend design standard
+# Backend design contract
 
-A backend is a module in this package that turns one source file into
-kodama-docs's language-independent symbol shape. Everything upstream of it
-(tree-sitter grammars) and downstream of it (graph, LLM prose, markdown,
-web view) is language-agnostic and must not need to know which backend ran.
+This is the contract every language backend must satisfy. The pipeline is
+language-agnostic: it scans files, routes each file to the backend that
+claims its extension (via `backends/__init__.py`), and consumes a
+**fixed, language-agnostic shape**.
 
-Reference implementations: `lua.py`, `python.py`.
+A backend is a **self-contained package** inside `backends/`:
 
-## Responsibilities
-
-A backend does exactly this:
-
-1. Parse the source with its tree-sitter grammar (no hand-rolled
-   tokenizer/parser; grammars live in `requirements.txt`).
-2. Walk the concrete syntax tree once and project it into the record shape
-   below.
-3. Classify call targets (local / external / builtin) using the file's
-   imports, locals, and its own `BUILTIN_NAMES`.
-
-A backend does **not** do: naming conventions, graph building, prose,
-markdown, cross-file resolution. Those read the shape and nothing else.
-
-## Contract
-
-```python
-def extract(source: str, relpath: str) -> dict
+```
+backends/<dir>/
+    manifest.toml   # identity, capabilities, requirements
+    __init__.py     # extract() (+ optional BUILTIN_NAMES, module_candidates)
 ```
 
-Returns a dict with exactly these keys:
+`main.py --list-backends` shows what is installed; `--install URL` adds a
+backend from a git repo; `--remove NAME` deletes one. A new manifest is
+live the moment its directory exists and its requirements are met — no
+registry line to add.
 
-| key | shape |
-| --- | --- |
-| `functions` | `[{id, name, qualified, line, end_line, params, vararg, body, developer_comment}]` |
-| `file_vars` | `[{name, line, init}]` — `init` ∈ `empty, table, string, number, function, call, expr` (Lua) / `empty, string, number, call, expr` (Python) |
-| `calls` | `[{callee, line, method}]` — a method call splits into object `callee` + `method`; plain calls have `method: None` |
-| `imports` | `[{module, line}]` |
+## manifest.toml
 
-plus a module-level `BUILTIN_NAMES: set[str]` of standard-library names
-that `extract` treats as builtins.
+```toml
+[backend]
+name = "kodama-clang"                     # required, [a-z0-9][a-z0-9_-]*
+description = "Kodama C backend built on clang"   # required
+source = "https://github.com/you/kodama-clang"    # optional (repo origin)
+version = "0.1.0"                        # required (arbitrary string)
+api_version = "1"                        # required; this registry supports "1"
 
-Invariants (all backends):
+[capabilities]
+languages = ["c", "cpp", "cuda"]         # optional, informational
+extensions = [".c", ".cpp", ".cc", ".cu"]  # required; the routing keys
+symbols = true                           # optional bools (informational today)
+references = true
+call_graph = true
+types = false
 
-- **Lines are 1-based**; `line` is the declaration's first line, `end_line`
-  the last line of the definition (may equal `line`).
-- **`body`** is the exact source slice `lines[line-1 : end_line]` — the raw
-  lines, never a grammar projection.
-- **Document order**: `functions`, `calls`, `imports` appear in source
-  order.
-- **Determinism**: same input → same dict. No timestamps, no LLM, no
-  global state between calls.
-- **Per-file**: `extract` sees exactly one file. Cross-file questions
-  (module candidates, what a name refers to) are answered by the pipeline,
-  not the backend.
-- **Tolerance**: a backend may skip constructs it cannot name (e.g.
-  anonymous closures); it must not throw for them. `extract` throwing is
-  caught per file by `main.analyze_files` (file fails, run continues).
-- **Dedup**: a function node may appear in several grammar positions;
-  backends dedup on the record `id` (`fn:{relpath}::{name}@{line}`).
+[requirements]
+executables = ["clang"]                  # optional; each must be on PATH
+python = ["clang-libs==1.8"]             # optional pip specs (import-checked)
+```
 
-### `developer_comment`
+- `extensions` is how `main` decides which files to scan and how
+  `extract()` routes. It is **required** — without it the registry cannot
+  route. Two backends claiming the same extension (or the same `name`)
+  put both into `conflict` status: neither routes (no silent shadowing).
+- `api_version` is the contract version this registry speaks
+  (`SUPPORTED_API_VERSIONS` in `backends/__init__.py`). A backend that
+  declares a version the registry does not support is refused with a
+  clear message instead of silently emitting a shape the pipeline
+  does not understand.
+- The capability booleans are metadata today (visible in
+  `--list-backends`); the pipeline does not gate features on them yet.
+- `requirements` are checked at load time: each `executables` entry with
+  `shutil.which`, each `python` spec for importability (PEP 503
+  normalized: `tree-sitter` → `tree_sitter`). Unmet requirements mark the
+  backend `unavailable` — other backends keep working.
 
-Each function record carries `developer_comment: str | None`: the cleaned
-text of the comment block **glued** directly above the function, or `None`.
+### Statuses (`--list-backends`)
 
-Glue rule (identical for every language):
+| status        | meaning                                          |
+|---------------|--------------------------------------------------|
+| `ready`       | imports cleanly, requirements met → routes       |
+| `unavailable` | import failed, or an executable/package missing  |
+| `invalid`     | manifest missing/invalid/unsupported api_version |
+| `conflict`    | name or extension also claimed by another backend|
 
-- A comment node is *glued* to a function when its **last line is exactly
-  the line above the function's first line** (no blank line or other code
-  between them).
-- The block is the **maximal run**: keep extending upward while the
-  previous comment's last line sits exactly on the line above the current
-  top.
-- Any other content between comment and function (code, blank line) breaks
-  the glue → `None`.
+## extract() contract
 
-Implementation: use the shared helpers in `backends/__init__.py`
-(`_all_comments(root)` for ordered comment nodes, `_dev_comment(comments,
-fn_line, clean)` for the glue walk) and supply a per-language `clean(node)`
-that strips the comment markers:
+```python
+def extract(source: str, relpath: str) -> dict:
+    ...
+```
 
-- **Lua**: the grammar's `comment` node has a `comment_content` child that
-  already excludes `--` / `--[[ ... ]]`; strip whitespace.
-- **Python**: each `comment` node is one `#` line; strip leading `#`+space
-  with `re.sub(r'^\s*#+\s?', '', text).strip()`.
+Returns:
 
-Docstrings / string literals are **not** comments and must never appear
-here (they are `string` nodes, not `comment` nodes).
+```python
+{
+  'functions': [{
+      'id': str,              # unique, e.g. 'fn:<relpath>::<name>@<line>'
+      'name': str,            # last dotted part ('Vec3.normalize' → 'normalize')
+      'qualified': str,       # full dotted name ('Vec3.normalize')
+      'line': int,            # 1-based, line of the name/def keyword
+      'end_line': int,        # 1-based, last line of the body
+      'params': [str],        # parameter names in order (defaults stripped)
+      'vararg': bool,         # true if the signature is variadic
+      'body': str,            # the exact source lines, joined with '\n'
+                               # (== source.splitlines()[line-1:end_line])
+      'developer_comment': str | None,   # see comment-glue rule below
+  }],
+  'file_vars': [{'name': str, 'line': int, 'init': str}],
+      # init is one of: 'empty' | 'table' | 'string' | 'number' |
+      #                 'function' | 'call' | 'expr'
+  'calls': [{'callee': str, 'line': int, 'method': str | None}],
+      # direct callee name (possibly dotted, e.g. 'math.sqrt', 'Vec3.dot').
+      # Method calls (obj:method in Lua, obj.method(...) in Python) split
+      # into callee='obj', method='method'.
+  'imports': [{'module': str, 'line': int}],
+      # The module path string as written (Lua 'require' arg, Python
+      # 'import X' / 'from X import ...').
+}
+```
 
-## Package-level duties (`backends/__init__.py`)
+Invariants (the pipeline relies on these):
 
-- `EXTRACTORS: {extension: extract}` — the dispatch table; `main.scan_files`
-  filters on it, so a new extension is documented as soon as it is
-  registered.
-- `extract(source, relpath)` — public entry; raises `UnsupportedLanguage`
-  for unknown extensions (caught per file upstream).
-- `builtins_for(relpath)` — the backend's `BUILTIN_NAMES`, used by the
-  graph builder to mark builtin nodes.
-- `module_candidates(module, relpath)` — resolve a module reference from
-  that language's file layout (Python: `mod.py`, `mod/__init__.py`,
-  dotted→path; Lua: `mod.lua`, `mod/init.lua`, path variants). Used by
-  the graph builder for module nodes — keep it pure (no file I/O).
+- **1-based line numbers.** `line` and `end_line` are 1-based and point
+  into the same `source` string that was passed to `extract()`.
+- **Exact body.** `body` must be exactly
+  `source.splitlines()[line-1:end_line]` joined with `\n` — the render
+  layer slices by these lines and will show the wrong code if they drift.
+- **Document order.** Lists are in source order. The graph and render
+  depend on stable, deterministic output for identical input.
+- **Per file.** Backends see one file at a time. Cross-file links are
+  resolved later by `graph.py` (see below). Do not open other files.
+- **No exceptions for unnameable constructs.** If a construct cannot be
+  named, skip it; do not raise. A raise aborts that file's analysis (caught
+  and logged upstream, but the file is lost).
+- **Dedup.** The same logical function defined twice in one file is kept
+  once (first occurrence); same for calls/vars on the same line.
+
+### Optional module-level exports
+
+- `BUILTIN_NAMES: set[str]` — names that are **not** cross-file links
+  (language builtins, stdlib, self/cls). `graph.py` asks
+  `backends.builtins_for(relpath)`; without it every undefined name
+  becomes a dangling graph edge.
+- `module_candidates(module, relpath) -> list[str]` — the relpaths a
+  language import of `module` could resolve to (e.g. Python
+  `import physics.vec3` → `['physics/vec3.py', 'physics/vec3/__init__.py', ...]`).
+  Without it the registry falls back to
+  `<module><ext>` and `<module>/init<ext>` (plus the dotted→path form).
+- Comment-glue helpers live in `backends/_shared.py`:
+  `_all_comments(root)`, `_dev_comment(comments, fn_line, clean)` — use
+  them so `developer_comment` behaves identically across languages.
+
+## Comment glue (developer_comment)
+
+A comment is *glued* to a function when its **last line is exactly the
+line above the function's first line** (no blank line or code between
+them). The block is the **maximal run**: keep extending upward while the
+previous comment's last line sits exactly on the line above the current
+top. Any other content between comment and function (code, blank line)
+breaks the glue → `None`.
+
+Backends supply a per-language `clean(node)` that strips the comment
+markers (Lua `comment_content`, Python leading `#` + one space).
 
 ## Adding a language
 
-1. Add the grammar package to `requirements.txt` (tree-sitter +
-   `tree_sitter_<lang>`).
-2. Create `backends/<lang>.py` implementing the contract above, including
-   `developer_comment` and `BUILTIN_NAMES`.
-3. Register it in `backends/__init__.py`: the `.ext` in `EXTRACTORS`,
-   `builtins_for`, and a `module_candidates` branch.
-4. `settings.yaml` needs no change unless the project mixes extensions:
-   `project.source_extensions` lists the extensions to scan (default: all
-   registered).
-5. Run with `--fresh` once: the analysis cache (`data/symbols.json`) is
-   keyed on source hashes only, so existing cached extractions are reused
-   until re-extraction is forced — this applies to backend **code**
-   changes too, not just new languages.
+1. Create `backends/<lang>/__init__.py` with `extract(source, relpath)`
+   (and optionally `BUILTIN_NAMES`, `module_candidates`).
+2. Add `backends/<lang>/manifest.toml` — declare `name`, `version`,
+   `api_version = "1"`, `extensions`, and its `requirements`.
+3. Make its requirements available (`pip install` the python specs; the
+   executables on PATH).
+4. `main.py --list-backends` → status `ready`. Done — the pipeline picks
+   its files up automatically.
+
+External backends (not committed here): `main.py --install
+<git-url>` clones the repo into `backends/<name>/`, pip-installs its
+declared python deps, and reports the resulting status.
+`main.py --remove <manifest-name>` deletes it.
+
+> **Trust note:** installing a backend runs third-party code at import
+> time and `pip install`s whatever it declares — the same trust decision
+> as any dependency. Review the backend repo before `--install`.
+
+## What must NOT change
+
+- The `functions/file_vars/calls/imports` key names and record shapes
+  above (the render + graph + LLM context layers depend on them).
+- The `id` formats — `fn:<relpath>::<name>@<line>`,
+  `var:<relpath>::<name>@<line>` — are the graph node keys and the LLM
+  record-cache keys. A format change orphans existing cached records.
+- 1-based line numbers and the exact-body invariant.
+
+## Reference implementations
+
+`backends/lua/__init__.py` (tree-sitter-lua) and
+`backends/python/__init__.py` (tree-sitter-python) are the reference
+implementations. Both use `tree-sitter` (pinned in `requirements.txt` and
+re-declared in their manifests) and the `_shared.py` comment-glue helpers.
+No hand-rolled tokenizers.

@@ -47,10 +47,10 @@ ordered by priority; each item says *where* to look.
 
 ## Code smells (refactors — deferred)
 
-- [ ] `backends/lua.py:19` imports helpers from the package `__init__`,
+- [x] ~~`backends/lua.py:19` imports helpers from the package `__init__`,
       which imports `lua` at dict-construction time — only works because
-      of block ordering. Restructure so the shared helpers live in a
-      neutral module.
+      of block ordering.~~ **Resolved:** shared helpers now live in
+      `backends/_shared.py`, imported by the backend packages — no cycle.
 - [ ] `web/server.py:21-28` try/except import shim creates a second,
       undocumented `log` path (bare `print`). Unify.
 

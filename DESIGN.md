@@ -138,7 +138,9 @@ Scan the source directory recursively. Process files whose extension has a
 registered extraction backend. Ignore packed binaries and excluded directories.
 
 **Parsing lives in per-language backends, not in this project.** Each backend
-(`backends/<lang>.py`) wraps a tree-sitter grammar and projects the concrete
+is a self-contained package `backends/<lang>/` with a `manifest.toml`
+(identity, `api_version`, claimed `extensions`, requirements) and an
+`__init__.py` that wraps a tree-sitter grammar and projects the concrete
 syntax tree into one common, language-agnostic shape consumed by the rest of
 the pipeline:
 
@@ -146,10 +148,13 @@ the pipeline:
 {'functions': [...], 'file_vars': [...], 'calls': [...], 'imports': [...]}
 ```
 
-Supporting a new language = one new backend module + its tree-sitter grammar
-package + one registry line in `backends/__init__.py`. Nothing in
-`main.py`, `graph.py`, or `documentation.py` is Lua-specific (the Lua builtin
-name set lives with the Lua backend).
+Supporting a new language = one new backend package (manifest +
+`extract()`). The registry in `backends/__init__.py` discovers every
+`manifest.toml` under `backends/`, checks requirements, and routes by
+extension — no registration step; external backends can be added at runtime
+with `main.py --install <git-url>` and removed with `--remove <name>`.
+Nothing in `main.py`, `graph.py`, or `markdown.py` is language-specific
+(the Lua builtin name set lives with the Lua backend).
 
 Parse each file and extract:
 
@@ -339,7 +344,7 @@ Use deterministic Python code for scanning, parsing, graph traversal, validation
 ## 11. Initial scope and constraints
 
 - Support Lua source files for now; the pipeline is language-agnostic and new
-  languages are added as tree-sitter backends (see section 5).
+  languages are added as tree-sitter backend packages (see section 5).
 - Use one local LLM endpoint.
 - Execute LLM tasks concurrently on a configurable pool of worker threads
   (default 2, see section 12).

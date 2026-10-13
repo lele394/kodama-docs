@@ -2,7 +2,7 @@
 
 Parsing is delegated to the official tree-sitter-python grammar; this module
 only walks the concrete syntax tree and projects it into the common shape
-documented in backends/__init__.py. No hand-rolled tokenizer/parser.
+documented in backends/backend_design.md. No hand-rolled tokenizer/parser.
 
 Record shapes (1-based lines, identical to the Lua backend):
     functions: [{id, name, qualified, line, end_line, params, vararg, body,
@@ -16,7 +16,7 @@ import re
 import tree_sitter_python as tspy
 from tree_sitter import Language, Parser
 
-from backends import _all_comments, _dev_comment
+from backends._shared import _all_comments, _dev_comment
 
 BUILTIN_NAMES = {
     # python builtins

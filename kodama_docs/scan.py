@@ -92,21 +92,27 @@ def save_symbols(cfg: dict, files, fingerprint: str):
     os.makedirs(cfg['data_dir'], exist_ok=True)
     with open(path, 'w', encoding='utf-8') as fh:
         json.dump({'schema': 'kodama_docs/symbols@1', 'fingerprint': fingerprint,
-                   'file_count': len(files), 'files': files},
+                   'file_count': len(files),
+                   'backends': backends.active_backend_ids(),
+                   'files': files},
                   fh, ensure_ascii=False)
     log(f'  saved {path} ({os.path.getsize(path) // 1024} KiB)')
 
 
 def load_symbols(cfg: dict):
+    """(files, fingerprint, backends_stamp) from symbols.json, or
+    (None, None, None) when absent/corrupt. The stamp records which
+    backend name@version extracted each extension (see
+    backends.active_backend_ids)."""
     path = os.path.join(cfg['data_dir'], 'symbols.json')
     if not os.path.exists(path):
-        return None, None
+        return None, None, None
     try:
         with open(path, 'r', encoding='utf-8') as fh:
             data = json.load(fh)
-        return data['files'], data['fingerprint']
+        return data['files'], data['fingerprint'], data.get('backends')
     except (ValueError, KeyError, OSError):
-        return None, None
+        return None, None, None
 
 
 # --------------------------------------------------------- scan report

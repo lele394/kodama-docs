@@ -18,7 +18,10 @@ re-generated, and changing one file invalidates only the symbols that live in
 it.
 
 Supported languages: **Lua** and **Python** (each backed by its official
-tree-sitter grammar; adding a language is a single small backend file).
+tree-sitter grammar). Languages are pluggable **backends** — self-contained
+packages with a `manifest.toml` that the registry discovers automatically,
+and they can be added at runtime with `main.py --install <git-url>`
+(see [backends/backend_design.md](backends/backend_design.md)).
 
 ---
 
@@ -130,6 +133,9 @@ CLI flags:
 | `--purge` | delete all docs/meta/data (output + data dirs) and exit |
 | `--regenerate` | delete all docs/meta/data, then run the whole pipeline fresh |
 | `--serve` | serve the rendered docs over HTTP instead of generating (needs a previous run) |
+| `--list-backends` | list installed backends with status (ready / unavailable / invalid / conflict) and exit |
+| `--install URL` | install a backend from a git URL or local path: clone into `backends/`, pip-install its declared deps (runs third-party code — review first) |
+| `--remove NAME` | remove an installed backend by its manifest `name` |
 
 ## Serving the docs (web)
 
@@ -348,11 +354,12 @@ tooling), so log output stays plain in both cases.
 
 ## Adding a language
 
-The full standard — contract, record shapes, invariants, the
-developer-comment glue rule, registration steps — is in
-[`backends/backend_design.md`](backends/backend_design.md). In short:
-`backends/__init__.py` maps file extensions to an `extract(source, relpath)`
-function returning:
+The full standard — manifest schema, contract, record shapes, invariants,
+the developer-comment glue rule — is in
+[`backends/backend_design.md`](backends/backend_design.md). In short, a
+backend is a directory `backends/<name>/` with a `manifest.toml`
+(identity, `extensions` routing keys, requirements) and an `__init__.py`
+exposing `extract(source, relpath)` returning:
 
 ```python
 {
@@ -366,11 +373,17 @@ function returning:
 
 (1-based lines, `body` = the source lines of the function.)
 
-A backend also exposes `BUILTIN_NAMES` (names that are not cross-file links)
-and the graph asks `backends.module_candidates(module, relpath)` for the file
-paths a module import could resolve to. Implement both for the new language,
-register its extension in `EXTRACTORS`, install its tree-sitter wheel, done.
-`backends/lua.py` and `backends/python.py` are the reference implementations.
+The registry (`backends/__init__.py`) discovers every `manifest.toml`
+under `backends/`, checks requirements, and routes by extension — there is
+no registration step. A backend also exposes `BUILTIN_NAMES` (names that
+are not cross-file links), and the graph asks
+`backends.module_candidates(module, relpath)` for the file paths a module
+import could resolve to. Implement both for the new language, declare its
+grammar in the manifest's `requirements.python`, done.
+`backends/lua/` and `backends/python/` are the reference implementations;
+external ones arrive via `main.py --install <git-url>` and leave via
+`main.py --remove <name>` (`--list-backends` shows the state of all of
+them).
 
 ## Repository layout
 
@@ -406,10 +419,11 @@ web/
     github-dark.min.css# vendored highlight.js dark theme
     LICENSE            # highlight.js BSD-3-Clause license (required)
 backends/
-  __init__.py        # extension -> extractor registry + shared helpers
+  __init__.py        # registry: manifest discovery, validation, routing, install/remove
+  _shared.py         # comment-glue helpers shared by all backends
   backend_design.md  # the backend contract (read this before adding a language)
-  lua.py             # Lua backend (tree-sitter-lua)
-  python.py          # Python backend (tree-sitter-python)
+  lua/               # Lua backend: manifest.toml + __init__.py (tree-sitter-lua)
+  python/            # Python backend: manifest.toml + __init__.py (tree-sitter-python)
 prompts/           # system prompts: function / chunk / variable / summary
 settings.yaml      # default config (game codebase)
 test_codebases/    # small lua + python N-body samples for end-to-end testing

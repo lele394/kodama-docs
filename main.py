@@ -9,6 +9,7 @@ import argparse
 import os
 import shutil
 
+import backends
 import kodama_docs.graph as gmod
 from kodama_docs.config import load_config
 from kodama_docs.llm_phase import llm_phase
@@ -19,6 +20,27 @@ from kodama_docs.records import list_records
 from kodama_docs.scan import (analyze_files, load_symbols, report_scan, save_symbols,
                   scan_files, scan_fingerprint)
 from kodama_docs.util import log
+
+
+def _print_backend(b: dict):
+    status = {'ready': 'green', 'unavailable': 'yellow',
+              'invalid': 'red', 'conflict': 'red'}
+    print(f"  {b['name']}  {b['version']}  api={b['api_version']}  "
+          f"ext={','.join(b['extensions']) or '-'}  "
+          f"status={b['status']} ({status.get(b['status'], 'white')})")
+    if b['description']:
+        print(f"      {b['description']}")
+    for iss in b['issues']:
+        print(f'      ! {iss}')
+
+
+def _print_backends(bs):
+    print(f'backends ({len(bs)}):')
+    for b in bs:
+        _print_backend(b)
+    ready = [b for b in bs if b['status'] == 'ready']
+    exts = sorted(e for b in ready for e in b['extensions'])
+    print(f'routing: {", ".join(exts) or "-"}')
 
 
 def render_all(cfg: dict, files, g):
@@ -79,9 +101,45 @@ def main():
     ap.add_argument('--serve', action='store_true',
                     help='serve the rendered docs over HTTP instead of '
                          'generating (needs a previous run)')
+    # backend management (mutually exclusive with a pipeline run)
+    ap.add_argument('--list-backends', action='store_true',
+                    help='list installed backends (status + requirements) '
+                         'and exit')
+    ap.add_argument('--install', metavar='URL',
+                    help='install a backend from a git URL (or local path): '
+                         'clones it into backends/ and installs its python '
+                         'requirements (runs third-party code — review first)')
+    ap.add_argument('--remove', metavar='NAME',
+                    help='remove an installed backend by manifest name')
     args = ap.parse_args()
     if args.purge and args.regenerate:
         raise SystemExit('--purge and --regenerate are mutually exclusive')
+    if sum(bool(x) for x in (args.list_backends, args.install, args.remove)) \
+            > 1:
+        raise SystemExit('--list-backends / --install / --remove are '
+                         'mutually exclusive')
+
+    if args.list_backends or args.install or args.remove:
+        if args.install is not None:
+            rep = backends.install_backend(args.install)
+            for ok, msg in rep['steps']:
+                log(('install: ' if ok else 'install (failed): ') + msg)
+            print()
+            for b in backends.list_backends():
+                if b['dir'] == rep['dir']:
+                    _print_backend(b)
+            return
+        if args.remove is not None:
+            d = backends.remove_backend(args.remove)
+            log(f'remove: deleted backends/{d}')
+            return
+        bs = backends.list_backends()
+        if not bs:
+            log('no backends installed (backends/ has no manifest.toml '
+                'subdirectories)')
+            return
+        _print_backends(bs)
+        return
 
     cfg = load_config(args.config)
 
@@ -108,11 +166,15 @@ def main():
     stale = check_doc_cache(cfg, files)
 
     fp = scan_fingerprint(files)
-    cached, cfp = (None, None) if (args.fresh or stale) else load_symbols(cfg)
-    if cached is not None and cfp == fp:
+    cached, cfp, cback = (None, None, None) \
+        if (args.fresh or stale) else load_symbols(cfg)
+    if cached is not None and cfp == fp and \
+            backends.backends_compatible(cached, cback):
         analysis = cached
         log(f'loaded analysis cache ({len(analysis)} files, fp={cfp[:12]})')
     else:
+        if cached is not None and cfp == fp:
+            log('analysis cache stale (backends changed); re-extracting')
         analysis, ok, bad, binary = analyze_files(cfg, files)
         log(f'analysis: ok={ok} failed={bad} binary_skipped={binary}')
         save_symbols(cfg, analysis, fp)
