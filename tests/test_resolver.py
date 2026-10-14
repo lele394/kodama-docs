@@ -391,6 +391,117 @@ def go():
     assert not diag['ambiguous_calls']
 
 
+def test_no_phantom_import_for_from_import():
+    """`from m import n` must yield exactly ONE import record (for n), not a
+    phantom second one for m. Guards the tree-sitter identity-vs-position
+    bug where the module path was treated as an imported symbol."""
+    src = """
+from m import n
+
+def go(x):
+    return n(x)
+"""
+    r = backends.extract(src, 'user.py')
+    # exactly one import record on line 2 (the from-import), not two
+    imports_line2 = [i for i in r['imports'] if i['line'] == 2]
+    assert len(imports_line2) == 1, f"expected 1 import, got {imports_line2}"
+    assert imports_line2[0]['name'] == 'n'
+    assert imports_line2[0]['bind'] == 'n'
+
+
+def test_file_var_dedup_by_name():
+    """A module-level variable assigned more than once in the same file yields
+    a single file_vars record (the first assignment wins)."""
+    f = py("""
+X = 1
+X = 2
+""", 'fv')
+    names = [v['name'] for v in f['file_vars']]
+    assert names == ['X'], f"expected ['X'], got {names}"
+
+
+def test_splat_params_recorded():
+    """`*args` and `**kwargs` must both appear in params and set vararg=True.
+    Guards the _PARAM_TYPES regression where splat patterns were dropped."""
+    f = py("""
+def splat(*args, **kwargs):
+    return (args, kwargs)
+""", 'splat')
+    fn = f['functions'][0]
+    assert fn['params'] == ['args', 'kwargs'], f"got {fn['params']}"
+    assert fn['vararg'] is True
+
+
+def test_vararg_not_triggered_by_star_in_default():
+    """A `*` inside a default expression (`size=1024*1024`) must NOT be
+    misread as a vararg. Guards the lstrip().startswith('*') fix."""
+    f = py("""
+def sized(size=1024*1024, sep='*'):
+    return (size, sep)
+""", 'sized')
+    fn = f['functions'][0]
+    assert fn['vararg'] is False, f"vararg should be False, got {fn['vararg']}"
+    assert fn['params'] == ['size', 'sep']
+
+
+def test_class_attr_not_file_var():
+    """A class attribute (`class A: X = 1`) must NOT leak into file_vars.
+    Guards the depth==0 check in walk()."""
+    f = py("""
+class A:
+    X = 1
+    def m(self):
+        return self.X
+""", 'attr')
+    names = [v['name'] for v in f['file_vars']]
+    assert 'X' not in names, f"X must not be a file_var, got {names}"
+
+
+def test_default_arg_call_recorded():
+    """A call inside a default argument expression (`def f(x=make_default())`)
+    must be extracted as a call record. Guards the parameters-walk fix."""
+    lib = py("def make_default():\n    return 42\n", 'lib')
+    user = py("""
+from lib import make_default
+
+def go(x=make_default()):
+    return x
+""", 'user')
+    calls = user['calls']
+    # the default-arg call is on the def line (line 3)
+    default_calls = [c for c in calls if c.get('method') == 'make_default'
+                     or c.get('callee') == 'make_default']
+    assert default_calls, f"no default-arg call recorded: {calls}"
+
+
+def test_decorated_function_comment_glued():
+    """A comment glued above the FIRST decorator line of a decorated
+    function must be captured as developer_comment. Guards the
+    anchor_line=top-of-block fix."""
+    f = py("""
+# my doc comment
+def deco():
+    return 1
+""", 'deco')
+    fn = f['functions'][0]
+    assert fn['developer_comment'] == 'my doc comment', \
+        f"got {fn['developer_comment']!r}"
+
+
+def test_method_qualified_name():
+    """A method inside a class must carry the qualified name `Class.method`,
+    not just `method`. Guards the qual-tuple threading fix."""
+    f = py("""
+class Vec:
+    def dot(self, other):
+        return self.x * other.x
+""", 'vec')
+    methods = [fn for fn in f['functions'] if fn['name'] == 'dot']
+    assert methods, "method not extracted"
+    assert methods[0]['qualified'] == 'Vec.dot', \
+        f"got {methods[0]['qualified']!r}"
+
+
 def main():
     fns = [v for k, v in sorted(globals().items())
            if k.startswith('test_') and callable(v)]

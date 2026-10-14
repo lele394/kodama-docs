@@ -36,7 +36,7 @@ sys.path.insert(0, ROOT)
 MODULES = [
     # libs first (define the traced functions the callers invoke)
     'realmod', 'decoy', 'random', 'starlib', 'realmod2', 'reexport',
-    'case_mod', 'case2_mod', 'unique_mod', 'utils',
+    'case_mod', 'case2_mod', 'unique_mod', 'utils', 'metalib',
     'pkg.b', 'pkg.a', 'pkg.c', 'pkg.sub.leaf',
     'deep.pack.mod', 'deep.pack.sub',
     # then the callers (their run() fires the traced functions)
@@ -44,7 +44,7 @@ MODULES = [
     'local_shadow', 'local_type', 'redef', 'nest', 'fwd',
     'circ_a', 'circ_b', 'star_user', 'reexport_user', 'deep_user',
     'std_user', 'sup', 'uni', 'case_user', 'entry',
-    'crlf', 'bom',
+    'crlf', 'bom', 'meta_probe',
 ]
 
 
@@ -141,6 +141,82 @@ def _zero_arg(fn):
     return True
 
 
+def _fn_params(node):
+    """Ordered parameter names + vararg flag from an AST function node."""
+    a = node.args
+    names = [x.arg for x in a.posonlyargs] + [x.arg for x in a.args]
+    if a.vararg is not None:
+        names.append(a.vararg.arg)
+    names += [x.arg for x in a.kwonlyargs]
+    if a.kwarg is not None:
+        names.append(a.kwarg.arg)
+    vararg = bool(a.vararg is not None or a.kwarg is not None)
+    return names, vararg
+
+
+def _collect_functions(body, qual, out):
+    """Every def/async def under ``body``, in source order, with the enclosing
+    class nesting used to build the qualified name. The stdlib ``ast`` is the
+    oracle here — independent of the backend's tree-sitter parse."""
+    for node in body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            names, vararg = _fn_params(node)
+            qualname = '.'.join(qual + (node.name,)) if qual else node.name
+            # top line = first decorator line (if any) else the def line — this
+            # is the line a glued developer comment sits directly above.
+            top_line = (node.decorator_list[0].lineno
+                        if node.decorator_list else node.lineno)
+            out.append({'name': node.name, 'line': node.lineno,
+                        'params': names, 'vararg': vararg,
+                        'qualified': qualname, 'top_line': top_line})
+            _collect_functions(node.body, qual, out)  # nested defs, same class scope
+        elif isinstance(node, ast.ClassDef):
+            _collect_functions(node.body, qual + (node.name,), out)
+
+
+def _simple_assigns(body):
+    """``(name, line)`` for each simple-name Assign/AnnAssign target."""
+    out = []
+    for node in body:
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name):
+                    out.append((t.id, node.lineno))
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            out.append((node.target.id, node.lineno))
+    return out
+
+
+def _module_meta(mod):
+    """AST-derived per-module ground truth: functions (name/line/params/
+    vararg/qualified), module-level variables, and class attributes. The
+    latter two let the harness assert what IS and is NOT a file_var."""
+    f = _rel(getattr(mod, '__file__', None))
+    if f is None:
+        return None
+    try:
+        src = inspect.getsource(mod)
+        tree = ast.parse(src)
+    except (OSError, SyntaxError, ValueError):
+        return None
+    functions, class_attrs = [], []
+    _collect_functions(tree.body, (), functions)
+    # has_comment: is the line directly above the function's top line a comment?
+    # (a "developer comment" the extractor should attach as developer_comment)
+    slines = src.splitlines()
+    for fn in functions:
+        tl = fn.pop('top_line')
+        fn['has_comment'] = (1 <= tl - 1 <= len(slines)
+                             and slines[tl - 2].strip().startswith('#'))
+    file_vars = [{'name': n, 'line': ln} for n, ln in _simple_assigns(tree.body)]
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef):
+            for n, ln in _simple_assigns(node.body):
+                class_attrs.append({'name': n, 'line': ln, 'class': node.name})
+    return {'file': f, 'functions': functions, 'file_vars': file_vars,
+            'class_attrs': class_attrs}
+
+
 def main():
     import probe  # local fixture oracle (now on sys.path)
 
@@ -180,7 +256,11 @@ def main():
             imports.append({'file': f, 'line': line, 'bound': bound,
                             'module_file': _mod_file(abs_mod)})
 
-    json.dump({'calls': calls, 'imports': imports},
+    # per-module function meta + module vars + class attrs (AST oracle)
+    modules_meta = [m for m in (_module_meta(mod) for mod in imported)
+                    if m is not None]
+
+    json.dump({'calls': calls, 'imports': imports, 'modules': modules_meta},
               sys.stdout, ensure_ascii=False, indent=1)
     sys.stdout.write('\n')
 

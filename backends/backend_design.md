@@ -113,6 +113,15 @@ Returns:
       # name:   the specific symbol inside the module (for 'from X import y'
       #         the imported y; None for a plain module import).
       # level:  relative-import depth (0 = absolute).
+  'classes': [{'name': str, 'qualified': str, 'line': int, 'end_line': int}],
+      # top-level and nested class definitions, in source order.
+      # name:      the class's own name ('Vec3').
+      # qualified: full dotted name ('outer.Vec3').
+      # line:      1-based line of the `class` keyword.
+      # end_line:  1-based last line of the class body.
+      # The graph builds a node per class so that constructor calls
+      # (``Vec3(...)``) can bind through the caller's imports and methods
+      # keep a resolvable owner. Optional for backends without classes.
 }
 ```
 
@@ -138,6 +147,17 @@ Invariants (the pipeline relies on these):
   defs wins from its point onward). Do NOT dedupe redefinitions away.
 - **Dedup is by identity.** The same (name, line) is never recorded twice;
   same for calls/vars on the same line.
+- **Functions: one record per definition.** A name defined more than once
+  (a redefinition, a method and a module def sharing a name, a nested def)
+  yields one record *per definition* — keyed by (name, line), never
+  collapsed by name alone. The resolver disambiguates call sites by scope
+  and line, so collapsing would silently drop a real definition.
+- **File vars: one record per name.** A module-level variable assigned more
+  than once in the same file yields a single `file_vars` record (the first
+  assignment wins; later reassignments are the same variable). Class
+  attributes are NOT file vars — a backend must not leak `class A: X = 1`
+  into `file_vars` (the harness's file-vars check treats a leaked class attr
+  as a failure).
 
 ### Optional module-level exports
 
@@ -186,10 +206,23 @@ declared python deps, and reports the resulting status.
 > time and `pip install`s whatever it declares — the same trust decision
 > as any dependency. Review the backend repo before `--install`.
 
+## Known limitations
+
+- **Python `from . import b` inside a package `__init__.py`.** A relative
+  import with no explicit symbol (``from . import b``) is ambiguous: it can
+  mean the submodule ``b`` *or* a name ``b`` defined in the package. The
+  resolver tries the submodule candidate first and does NOT fall back to
+  the package's ``__init__.py`` by name. If the import really meant a name
+  in ``__init__.py`` (not a submodule), the edge will be missing. This is a
+  deliberate tradeoff — submodule-first is the common case — and is
+  documented here rather than silently "fixed". (The self-test's
+  import-soundness check compares per-line counts, so a *phantom* extra
+  import is still caught; this limitation is about a *missing* edge.)
+
 ## What must NOT change
 
-- The `functions/file_vars/calls/imports` key names and record shapes
-  above (the render + graph + LLM context layers depend on them).
+- The `functions/file_vars/calls/imports/classes` key names and record
+  shapes above (the render + graph + LLM context layers depend on them).
 - The `id` formats — `fn:<relpath>::<name>@<line>`,
   `var:<relpath>::<name>@<line>` — are the graph node keys and the LLM
   record-cache keys. A format change orphans existing cached records.

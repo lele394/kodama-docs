@@ -33,9 +33,9 @@ from backends._shared import _all_comments, _dev_comment
 BUILTIN_NAMES = {
     # python builtins
     'print', 'len', 'range', 'open', 'super', 'isinstance', 'issubclass',
-    'hasattr', 'getattr', 'setattr', 'delattr', 'callable', 'getattr',
+    'hasattr', 'getattr', 'setattr', 'delattr', 'callable',
     'abs', 'all', 'any', 'bool', 'dict', 'dir', 'divmod', 'enumerate',
-    'filter', 'float', 'format', 'frozenset', 'int', 'isinstance', 'iter',
+    'filter', 'float', 'format', 'frozenset', 'int', 'iter',
     'list', 'map', 'max', 'min', 'next', 'object', 'ord', 'pow', 'repr',
     'reversed', 'round', 'set', 'slice', 'sorted', 'str', 'sum', 'tuple',
     'type', 'zip', 'property', 'staticmethod', 'classmethod', 'Exception',
@@ -57,10 +57,15 @@ BUILTIN_NAMES = {
 
 _parser = Parser(Language(tspy.language()))
 
-# parameter node types that may hide the name one level down
+# parameter node types that may hide the name one level down.
+# Older tree-sitter-python (<=0.20) used multiple_parameter /
+# keyword_parameter / list_splat_parameter; the 0.25 grammar renamed them to
+# list_splat_pattern / dictionary_splat_pattern. We accept both so the backend
+# is stable across grammar builds.
 _PARAM_TYPES = ('identifier', 'typed_parameter', 'default_parameter',
                 'typed_default_parameter', 'multiple_parameter',
-                'keyword_parameter', 'list_splat_parameter')
+                'keyword_parameter', 'list_splat_parameter',
+                'list_splat_pattern', 'dictionary_splat_pattern')
 
 
 def _row(node):
@@ -126,10 +131,10 @@ def _dotted_path(node):
         base = _dotted_path(obj)
         attr = node.child_by_field_name('attribute')
         if attr is None:
-            for c in node.children:
-                if c.type in ('identifier', 'name'):
-                    attr = c
-                    break
+            # The attribute is the *last* identifier child (the receiver is
+            # the first); a naive first-match would grab the receiver.
+            attr = next((c for c in reversed(node.children)
+                         if c.type in ('identifier', 'name')), None)
         if base is None or attr is None:
             return None
         a = _text(attr).strip()
@@ -153,7 +158,10 @@ def _params(node):
                         break
             if ident is not None:
                 names.append(_text(ident))
-            if '*' in _text(c):
+            # A variadic parameter is one whose text *starts* with '*'
+            # (`*args` / `**kwargs`); a mere '*' appearing anywhere in a
+            # default value (`size=1024*1024`, `sep='*'`) must NOT trigger it.
+            if _text(c).lstrip().startswith('*'):
                 vararg = True
     return names, vararg
 
@@ -185,14 +193,15 @@ def extract(source: str, relpath: str) -> dict:
     seen_fn, seen_call, seen_var, seen_cls = set(), set(), set(), set()
     import_mods = []
 
-    def add_fn(name, line, end_line, params, vararg, dev=None):
+    def add_fn(name, line, end_line, params, vararg, dev=None,
+               qualified=None):
         fid = f'fn:{relpath}::{name}@{line}'
         if fid in seen_fn:
             return
         seen_fn.add(fid)
         a, b = line - 1, min(end_line, len(lines))
         body = '\n'.join(lines[a:b])
-        fns.append({'id': fid, 'name': name, 'qualified': name,
+        fns.append({'id': fid, 'name': name, 'qualified': qualified or name,
                     'line': line, 'end_line': end_line,
                     'params': list(params), 'vararg': bool(vararg),
                     'body': body, 'developer_comment': dev})
@@ -251,20 +260,48 @@ def extract(source: str, relpath: str) -> dict:
         file_vars.append({'name': name, 'line': line,
                           'init': _classify(value)})
 
-    def walk(node, depth):
+    def record_function(fn_node, anchor_line, depth, qual):
+        """Record a function/method (name, params, vararg, developer comment,
+        qualified name) and walk its parameters, return annotation and body so
+        calls inside default arguments / annotations are not dropped.
+
+        ``anchor_line`` is the line the developer comment is glued against:
+        the ``def`` line for a plain function, the first decorator line for a
+        decorated one (so a comment above ``@decorator`` is still captured).
+        ``qual`` is the tuple of enclosing class names (innermost last); it
+        yields a qualified name like ``Vec3.normalize`` or ``A.B.m``."""
+        nm = fn_node.child_by_field_name('name')
+        if nm is not None:
+            name = _text(nm)
+            params, vararg = _params(fn_node)
+            qualified = '.'.join(qual + (name,)) if qual else name
+            add_fn(name, _row(fn_node), fn_node.end_point[0] + 1,
+                   params, vararg,
+                   _dev_comment(comments, anchor_line, _comment_text),
+                   qualified)
+        for field in ('parameters', 'return_type'):
+            part = fn_node.child_by_field_name(field)
+            if part is not None:
+                walk(part, depth + 1, qual)
+        body = fn_node.child_by_field_name('body')
+        if body is not None:
+            walk(body, depth + 1, qual)
+
+    def walk(node, depth, qual=()):
         t = node.type
         if t == 'function_definition':
-            nm = node.child_by_field_name('name')
-            if nm is not None:
-                name = _text(nm)
-                params, vararg = _params(node)
-                add_fn(name, _row(node), node.end_point[0] + 1,
-                       params, vararg,
-                       _dev_comment(comments, _row(node), _comment_text))
-            body = node.child_by_field_name('body')
-            if body is not None:
-                walk(body, depth + 1)
+            record_function(node, _row(node), depth, qual)
             return
+
+        if t == 'decorated_definition':
+            fn_node = next((c for c in node.children
+                            if c.type == 'function_definition'), None)
+            if fn_node is not None:
+                # Glue the developer comment against the FIRST decorator line
+                # (the top of this block), not the def line.
+                record_function(fn_node, _row(node), depth, qual)
+                return
+            # A decorated non-function (rare) falls through to the generic walk.
 
         if t == 'assignment' and depth == 0:
             left = node.child_by_field_name('left')
@@ -272,7 +309,7 @@ def extract(source: str, relpath: str) -> dict:
             if left is not None and left.type == 'identifier':
                 note_var(_text(left), _row(node), value)
             for c in node.children:
-                walk(c, depth)
+                walk(c, depth, qual)
             return
 
         if t == 'annotated_assignment' and depth == 0:
@@ -281,7 +318,7 @@ def extract(source: str, relpath: str) -> dict:
             if left is not None and left.type == 'identifier':
                 note_var(_text(left), _row(node), value)
             for c in node.children:
-                walk(c, depth)
+                walk(c, depth, qual)
             return
 
         if t == 'call':
@@ -347,7 +384,19 @@ def extract(source: str, relpath: str) -> dict:
                     return base + '/' + target
                 return target
 
-            for c in node.children:
+            # Only the symbols AFTER the `import` keyword are imported names;
+            # the module path (a `dotted_name` child before `import`) must be
+            # skipped, otherwise `from m import n` also emits a PHANTOM import
+            # for `m` (bind=m, name=m) alongside the real one for n. (The
+            # grammar gives the module a `module_name` field, but tree-sitter
+            # returns fresh wrappers per access, so position — not identity —
+            # is the reliable way to tell the two dotted_names apart.)
+            children = list(node.children)
+            import_idx = next((i for i, c in enumerate(children)
+                               if c.type == 'import'), None)
+            for i, c in enumerate(children):
+                if import_idx is not None and i <= import_idx:
+                    continue
                 if c.type == 'dotted_name':
                     nm = '.'.join(_dotted(c) or [])
                     if not nm:
@@ -374,22 +423,35 @@ def extract(source: str, relpath: str) -> dict:
         if t == 'class_definition':
             # Record the class as a resolvable symbol: constructor calls
             # (`Body(...)`) must bind through the caller's imports instead
-            # of falling through to `external`. Methods (the
-            # function_definitions in the body) are still picked up by the
-            # generic walk below.
+            # of falling through to `external`.
             nm = node.child_by_field_name('name')
-            if nm is not None:
-                cname = _text(nm)
+            cname = _text(nm) if nm is not None else None
+            if cname is not None:
                 row = _row(node)
                 key = (cname, row)
                 if key not in seen_cls:
                     seen_cls.add(key)
-                    classes.append({'name': cname, 'qualified': cname,
+                    classes.append({'name': cname,
+                                    'qualified': '.'.join(qual + (cname,))
+                                    if qual else cname,
                                     'line': row,
                                     'end_line': node.end_point[0] + 1})
+            # Base classes may contain calls (`class Foo(Base())`); walk them
+            # in the current scope.
+            sup = node.child_by_field_name('superclasses')
+            if sup is not None:
+                walk(sup, depth, qual)
+            # The body is a nested scope: walk it at depth+1 so class
+            # attributes are NOT recorded as module-level file_vars, and push
+            # the class name so methods get qualified names (``Vec3.normalize``).
+            body = node.child_by_field_name('body')
+            if body is not None:
+                q = qual + (cname,) if cname is not None else qual
+                walk(body, depth + 1, q)
+            return
 
         for c in node.children:
-            walk(c, depth)
+            walk(c, depth, qual)
 
     walk(root, 0)
     return {'functions': fns, 'file_vars': file_vars,

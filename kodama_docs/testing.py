@@ -183,6 +183,125 @@ def check_truth_imports(truth, analysis, g):
     return results
 
 
+# ------------------------------------------------- soundness / meta checks
+#
+# The call and import checks above are *completeness* checks (the graph must
+# contain what the runtime proves). These are the matching *soundness* and
+# *field* checks: the graph must not contain what it shouldn't, and the
+# extractor's per-function / per-variable fields must match the AST oracle.
+# Without them, bugs like a phantom `from m import n` or a dropped `*args`
+# were invisible, because they emit *extra* records / wrong field values
+# rather than missing edges.
+
+def _analysis_by_file(analysis):
+    out = {}
+    for a in analysis:
+        out[a['relpath']] = a
+    return out
+
+
+def check_import_soundness(truth, analysis):
+    """Per (file, line): the extractor must emit exactly as many import
+    records as the runtime imported. A phantom `from m import n` that also
+    emits an import for `m` (one too many) or a dropped name (one too few)
+    fails here — invisible to the completeness-only import check above."""
+    by_file = _analysis_by_file(analysis)
+    truth_counts = {}
+    for imp in truth.get('imports') or []:
+        key = (imp['file'], imp['line'])
+        truth_counts[key] = truth_counts.get(key, 0) + 1
+    extract_counts = {}
+    for rel, a in by_file.items():
+        for rec in a.get('imports') or []:
+            key = (rel, rec.get('line'))
+            extract_counts[key] = extract_counts.get(key, 0) + 1
+    results = []
+    for key in sorted(truth_counts):
+        f, line = key
+        n_truth = truth_counts[key]
+        n_extract = extract_counts.get(key, 0)
+        ok = (n_truth == n_extract)
+        results.append({
+            'name': f'import-count {f}:{line}',
+            'ok': ok,
+            'detail': (f'runtime={n_truth} extracted={n_extract}'
+                       + ('' if ok else '  <-- phantom/missing import')),
+        })
+    return results
+
+
+def check_function_meta(truth, analysis):
+    """Per function the AST oracle recorded: the extractor's params (order +
+    names, incl. *args/**kwargs), vararg flag, and qualified name (methods as
+    ``Class.method``) must match. Guards the *args/**kwargs drop, the
+    `size=1024*1024` vararg false positive, and the method-qualification gap."""
+    by_file = _analysis_by_file(analysis)
+    results = []
+    for meta in truth.get('modules') or []:
+        f = meta['file']
+        a = by_file.get(f)
+        if a is None:
+            continue
+        # key by (name, line): a name like __init__ recurs across a class
+        # hierarchy, so name alone is not a unique identity.
+        fns = {(fn['name'], fn.get('line')): fn for fn in a.get('functions') or []}
+        for t in meta.get('functions') or []:
+            name = t['name']
+            got = fns.get((name, t['line']))
+            if got is None:
+                results.append({
+                    'name': f'function {f}::{name}',
+                    'ok': False,
+                    'detail': 'function not extracted',
+                })
+                continue
+            probs = []
+            if got.get('params') != t['params']:
+                probs.append(f"params {got.get('params')} != {t['params']}")
+            if bool(got.get('vararg')) != bool(t['vararg']):
+                probs.append(f"vararg {got.get('vararg')} != {t['vararg']}")
+            if got.get('qualified') != t['qualified']:
+                probs.append(
+                    f"qualified {got.get('qualified')!r} != {t['qualified']!r}")
+            if t.get('has_comment'):
+                if not got.get('developer_comment'):
+                    probs.append(
+                        'developer_comment missing (line above def is a comment)')
+            results.append({
+                'name': f'function {f}::{name}',
+                'ok': not probs,
+                'detail': ('; '.join(probs) if probs
+                           else f"{name}({', '.join(t['params'])})"
+                              + (' *' if t['vararg'] else '')
+                              + f" -> {t['qualified']}"),
+            })
+    return results
+
+
+def check_file_vars(truth, analysis):
+    """Module-level variables must be extracted as file_vars; class
+    attributes must NOT leak out as file_vars. Guards the `class A: X=1`
+    leak (a class attr recorded as a module variable)."""
+    by_file = _analysis_by_file(analysis)
+    results = []
+    for meta in truth.get('modules') or []:
+        f = meta['file']
+        a = by_file.get(f)
+        if a is None:
+            continue
+        got_vars = {v['name'] for v in a.get('file_vars') or []}
+        expected = {v['name'] for v in meta.get('file_vars') or []}
+        forbidden = {c['name'] for c in meta.get('class_attrs') or []}
+        missing = expected - got_vars
+        leaked = forbidden & got_vars
+        ok = (not missing) and (not leaked)
+        detail = (f"vars {sorted(expected)}"
+                  + (f"  missing={sorted(missing)}" if missing else '')
+                  + (f"  leaked-class-attrs={sorted(leaked)}" if leaked else ''))
+        results.append({'name': f'file-vars {f}', 'ok': ok, 'detail': detail})
+    return results
+
+
 # -------------------------------------------------------- marker checks
 
 def _diag_lines(diag, key):
@@ -363,6 +482,15 @@ def test_backend(name):
                 check_truth_calls(truth, analysis, g)]
     results += [('truth-import', c) for c in
                 check_truth_imports(truth, analysis, g)]
+    # soundness + field checks (only when the truth supplies the extra module
+    # meta; a backend whose truth omits it is skipped, not failed)
+    if truth.get('modules'):
+        results += [('soundness-import', c) for c in
+                    check_import_soundness(truth, analysis)]
+        results += [('meta-function', c) for c in
+                    check_function_meta(truth, analysis)]
+        results += [('meta-filevars', c) for c in
+                    check_file_vars(truth, analysis)]
     results += [('marker', c) for c in
                 check_markers(markers_by_file, analysis, g, diag)]
 
