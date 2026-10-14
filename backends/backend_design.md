@@ -92,13 +92,27 @@ Returns:
   'file_vars': [{'name': str, 'line': int, 'init': str}],
       # init is one of: 'empty' | 'table' | 'string' | 'number' |
       #                 'function' | 'call' | 'expr'
-  'calls': [{'callee': str, 'line': int, 'method': str | None}],
+  'calls': [{'callee': str | None, 'line': int, 'method': str | None}],
       # direct callee name (possibly dotted, e.g. 'math.sqrt', 'Vec3.dot').
       # Method calls (obj:method in Lua, obj.method(...) in Python) split
       # into callee='obj', method='method'.
-  'imports': [{'module': str, 'line': int}],
-      # The module path string as written (Lua 'require' arg, Python
-      # 'import X' / 'from X import ...').
+      # callee is None when the receiver is computed at runtime
+      # (`open(..).read()`, `cfg['k'].update(..)`, `getattr(..)(..)`);
+      # the method is still recorded so the reference stays VISIBLE and the
+      # resolver classifies it as external (`?.method` / `?`).
+      # A dotted module path (`deep.pack.mod`) is a valid callee: the
+      # resolver may resolve it to a module file and then to a method in it.
+  'imports': [{'module': str, 'line': int, 'bind': str | None,
+               'name': str | None, 'level': int}],
+      # module: the module path (Lua 'require' arg, Python 'import X' /
+      #         'from X import ...'); for a Python RELATIVE import the
+      #         backend already computes the effective (slash-separated)
+      #         target path relative to the importing file.
+      # bind:   the local name the import introduces ('as' alias, or the
+      #         imported symbol when 'from X import y').
+      # name:   the specific symbol inside the module (for 'from X import y'
+      #         the imported y; None for a plain module import).
+      # level:  relative-import depth (0 = absolute).
 }
 ```
 
@@ -116,8 +130,14 @@ Invariants (the pipeline relies on these):
 - **No exceptions for unnameable constructs.** If a construct cannot be
   named, skip it; do not raise. A raise aborts that file's analysis (caught
   and logged upstream, but the file is lost).
-- **Dedup.** The same logical function defined twice in one file is kept
-  once (first occurrence); same for calls/vars on the same line.
+- **Definitions are kept, not collapsed.** A name defined more than once in
+  one file (a redefinition, or a nested def sharing a name with a module
+  def) yields one node per definition — the resolver picks which one each
+  call site links to by *scope*: the definition visible at the call line
+  wins (a nested def shadows the module level; the later of two module
+  defs wins from its point onward). Do NOT dedupe redefinitions away.
+- **Dedup is by identity.** The same (name, line) is never recorded twice;
+  same for calls/vars on the same line.
 
 ### Optional module-level exports
 

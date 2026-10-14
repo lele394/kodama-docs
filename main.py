@@ -21,6 +21,7 @@ from kodama_docs.records import list_records
 from kodama_docs.scan import (analyze_files, load_symbols, report_scan,
                   save_diagnostics, save_symbols,
                   scan_files, scan_fingerprint)
+from kodama_docs.testing import test_backend
 from kodama_docs.util import log
 
 
@@ -94,6 +95,12 @@ def render_all(cfg: dict, files, g, diag=None, astatus=None):
 
 def main():
     ap = argparse.ArgumentParser(description='kodama-docs')
+    ap.add_argument('command', nargs='?', choices=[None, 'test-backend'],
+                    help="subcommand: 'test-backend' runs a backend's "
+                         "self-test against its own test codebase; omit for "
+                         "a normal documentation run")
+    ap.add_argument('--backend', metavar='NAME',
+                    help='backend name for test-backend (e.g. python)')
     ap.add_argument('--config', default='settings.yaml')
     ap.add_argument('--fresh', action='store_true',
                     help='ignore analysis cache')
@@ -146,6 +153,13 @@ def main():
             return
         _print_backends(bs)
         return
+
+    if args.command == 'test-backend':
+        if args.backend is None:
+            raise SystemExit('test-backend needs --backend NAME '
+                             '(e.g. --backend python)')
+        rc = test_backend(args.backend)
+        raise SystemExit(rc)
 
     cfg = load_config(args.config)
 

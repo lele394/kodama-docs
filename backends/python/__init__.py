@@ -18,7 +18,12 @@ Record shapes (1-based lines, identical to the Lua backend):
         -- -> 'n'). Together they let the graph phase resolve `a.method()`
         -- and bare `n()` to that module's definitions.
 """
+import json
+import os
 import re
+import subprocess
+import sys
+from pathlib import Path
 
 import tree_sitter_python as tspy
 from tree_sitter import Language, Parser
@@ -91,6 +96,47 @@ def _dotted(node):
     return None
 
 
+def _dotted_path(node):
+    """Full dotted path of a STATIC receiver, or None when it is computed
+    at runtime.
+
+    Handles the three shapes tree-sitter-python produces:
+      * ``identifier`` / ``name``  -> ``['a']``
+      * ``dotted_name``            -> ``['a', 'b', 'c']``
+      * nested ``attribute`` chains -> ``['a', 'b', 'c']``
+
+    A receiver that is a call, a subscript, a lambda, ... is dynamic: there
+    is no static target, so this returns ``None`` (the call is still recorded
+    and surfaced as an external ``?.method`` reference)."""
+    if node is None:
+        return None
+    t = node.type
+    if t in ('identifier', 'name'):
+        s = _text(node).strip()
+        return [s] if s else None
+    if t == 'dotted_name':
+        return [p for p in _text(node).split('.') if p] or None
+    if t == 'attribute':
+        obj = node.child_by_field_name('object')
+        if obj is None:
+            for c in node.children:
+                if c.type in ('attribute', 'identifier', 'name'):
+                    obj = c
+                    break
+        base = _dotted_path(obj)
+        attr = node.child_by_field_name('attribute')
+        if attr is None:
+            for c in node.children:
+                if c.type in ('identifier', 'name'):
+                    attr = c
+                    break
+        if base is None or attr is None:
+            return None
+        a = _text(attr).strip()
+        return base + ([a] if a else [])
+    return None
+
+
 def _params(node):
     """function_definition -> (params, vararg)."""
     params = node.child_by_field_name('parameters')
@@ -157,32 +203,41 @@ def extract(source: str, relpath: str) -> dict:
             return
         name, method = None, None
         if fn.type == 'identifier':
-            name = _text(fn)
+            name = _text(fn).strip() or None
         elif fn.type == 'attribute':
-            method = fn.child_by_field_name('attribute')
-            if method is not None:
-                method = _text(method)
+            method_node = fn.child_by_field_name('attribute')
+            if method_node is None:  # older grammar field name
+                method_node = fn.child_by_field_name('value')
+            if method_node is not None:
+                method = _text(method_node)
                 receiver = fn.child_by_field_name('object')
-                if receiver is None:  # older grammar field name
+                if receiver is None:
                     receiver = fn.child_by_field_name('value')
-                parts = _dotted(receiver)
-                if parts:
-                    name = '.'.join(parts)
-                else:
-                    name = 'expr'
-        if not name or name == 'expr':
-            return
+                # A static dotted receiver is a resolvable target (e.g.
+                # `deep.pack.mod` in `deep.pack.mod.launch(...)`); a dynamic
+                # one (call / subscript / lambda) is not — keep the call
+                # VISIBLE as external `?.method` rather than dropping it.
+                parts = _dotted_path(receiver)
+                name = '.'.join(parts) if parts else None
+            else:
+                parts = _dotted_path(fn)
+                name = '.'.join(parts) if parts else None
+        else:
+            # `getattr(obj, 'x')()` and the like: the callee is itself a
+            # computed expression — no static target, surface as external `?`.
+            name, method = None, None
         line = _row(node)
-        if (name, line) in seen_call:
+        key = (name, method, line)
+        if key in seen_call:
             return
-        seen_call.add((name, line))
+        seen_call.add(key)
         calls.append({'callee': name, 'line': line, 'method': method})
 
-    def note_import(module, line, bind=None, name=None):
-        key = (module, bind, name)
-        if module and key not in import_mods:
+    def note_import(module, line, bind=None, name=None, level=0):
+        key = (module, bind, name, level)
+        if key not in import_mods:
             import_mods.append(key)
-            rec = {'module': module, 'line': line}
+            rec = {'module': module, 'line': line, 'level': level}
             if bind:
                 rec['bind'] = bind
             if name:
@@ -250,25 +305,70 @@ def extract(source: str, relpath: str) -> dict:
             return
 
         if t == 'import_from_statement':
-            mod = node.child_by_field_name('module_name')
-            parts = _dotted(mod) if mod is not None else None
-            if parts:
-                m = '.'.join(parts)
-                for c in node.children:
-                    if c.type == 'dotted_name':
-                        # `from m import n` -> local n = m.n
-                        nm = '.'.join(_dotted(c) or [])
-                        if nm:
-                            note_import(m, _row(node), bind=nm, name=nm)
-                    elif c.type == 'aliased_import':
-                        # `from m import n as a` -> local a = m.n
-                        tgt = c.child_by_field_name('name')
-                        al = c.child_by_field_name('alias')
-                        tp = _dotted(tgt) if tgt is not None else None
-                        if tp:
-                            name = '.'.join(tp)
-                            bind = _text(al) if al is not None else name
-                            note_import(m, _row(node), bind=bind, name=name)
+            mod_node = node.child_by_field_name('module_name')
+            level = 0
+            module = None
+            if mod_node is not None:
+                if mod_node.type == 'relative_import':
+                    prefix = mod_node.child_by_field_name('import_prefix')
+                    if prefix is None:
+                        for cc in mod_node.children:
+                            if cc.type == 'import_prefix':
+                                prefix = cc
+                                break
+                    level = len(_text(prefix).strip()) if prefix else 1
+                    modpart = mod_node.child_by_field_name('module')
+                    if modpart is None:
+                        for cc in mod_node.children:
+                            if cc.type == 'dotted_name':
+                                modpart = cc
+                                break
+                    if modpart is not None:
+                        module = '.'.join(_dotted(modpart) or [])
+                else:
+                    parts = _dotted(mod_node)
+                    if parts:
+                        module = '.'.join(parts)
+            line = _row(node)
+            # For a relative import, resolve the leading dots against the
+            # importing file's directory so the graph can link to the real
+            # file (e.g. `from .. import b` in pkg/sub/leaf.py -> pkg/b).
+            base = ''
+            if level > 0:
+                parts = relpath.replace('\\', '/').split('/')
+                base = parts[:-1]
+                base = base[:len(base) - (level - 1)]
+                base = '/'.join(base)
+
+            def eff(target):
+                if level == 0 or not target:
+                    return target
+                if base:
+                    return base + '/' + target
+                return target
+
+            for c in node.children:
+                if c.type == 'dotted_name':
+                    nm = '.'.join(_dotted(c) or [])
+                    if not nm:
+                        continue
+                    target = eff(module) if module else eff(nm)
+                    note_import(target, line, bind=nm, name=nm, level=level)
+                elif c.type == 'aliased_import':
+                    tgt = c.child_by_field_name('name')
+                    al = c.child_by_field_name('alias')
+                    tp = _dotted(tgt) if tgt is not None else None
+                    if not tp:
+                        continue
+                    name = '.'.join(tp)
+                    bind = _text(al) if al is not None else name
+                    target = eff(module) if module else eff(name)
+                    note_import(target, line, bind=bind, name=name, level=level)
+                elif c.type == 'wildcard_import':
+                    target = eff(module) if module else (base if level else None)
+                    if target:
+                        note_import(target, line, bind='*', name=None,
+                                    level=level)
             return
 
         if t == 'class_definition':
@@ -294,3 +394,93 @@ def extract(source: str, relpath: str) -> dict:
     walk(root, 0)
     return {'functions': fns, 'file_vars': file_vars,
             'calls': calls, 'imports': imports, 'classes': classes}
+
+
+def module_candidates(module, relpath):
+    """File paths a Python import of ``module`` could resolve to.
+
+    Python packages use ``__init__.py`` (double underscore), so both the
+    plain ``<path>.py`` and the ``<path>/__init__.py`` forms are offered —
+    unlike the generic helper, which emits ``init.py`` and would never match
+    a package root. (A relative import arrives here already resolved to a
+    slashed path by the extractor.)"""
+    slashed = module.replace('.', '/')
+    return [f'{slashed}.py', f'{slashed}/__init__.py']
+
+
+# ---------------------------------------------------------------------
+# Self-test protocol (kodama-docs `test-backend python`)
+#
+# The source of truth is what CPython actually does with this fixture, not
+# hand-written expectations:
+#   * ``collect_truth()`` runs the fixture and records every call site and
+#     import binding the runtime resolved (resolvable call sites + bindings);
+#   * ``parse_markers()`` reads the fixture's ``# expect: ...`` lines, which
+#     pin the deliberately unresolvable cases the runtime cannot reach.
+# The generic harness (kodama_docs/testing.py) extracts the fixture with
+# ``extract`` above, builds the kodama-docs graph, and checks it against
+# these two sources.
+# ---------------------------------------------------------------------
+
+TEST_CODEBASE_DIR = Path(__file__).parent / 'test_codebase'
+
+_MARKER_RE = re.compile(r'#\s*expect:\s*([A-Za-z][A-Za-z-]*)\s*(.*?)\s*$')
+
+_KNOWN_KINDS = {
+    'resolved', 'inferred', 'external', 'ambiguous', 'builtin',
+    'import', 'import-unresolved',
+}
+
+
+def collect_truth():
+    """Run the fixture's ``generate_truth.py`` and return its JSON dict.
+
+    The fixture self-reports: it imports every executable module (with the
+    fixture dir as ``sys.path[0]`` so project modules shadow stdlib) and
+    records the call sites / bindings that actually resolved at runtime.
+    Raises ``RuntimeError`` with the generator's stderr on failure — a broken
+    fixture must fail loudly, never silently pass."""
+    gen = TEST_CODEBASE_DIR / 'generate_truth.py'
+    r = subprocess.run(
+        [sys.executable, str(gen)],
+        capture_output=True, text=True,
+        cwd=str(TEST_CODEBASE_DIR), timeout=120)
+    if r.returncode != 0:
+        raise RuntimeError(
+            'truth generator failed (exit %d):\n%s'
+            % (r.returncode, (r.stderr or r.stdout).strip()))
+    return json.loads(r.stdout)
+
+
+def parse_markers(source):
+    """Return the fixture's expectation markers in one source file.
+
+    Grammar (same-line ``# expect:`` comment):
+        # expect: resolved <file>::<name>
+        # expect: inferred <file>::<name>
+        # expect: external <label> [<label> ...]
+        # expect: ambiguous
+        # expect: builtin <label>
+        # expect: import-unresolved
+    Each marker is ``{'line', 'kind', 'targets'}`` where ``targets`` is the
+    list of expected labels (empty for ``ambiguous`` / ``import-unresolved``).
+    """
+    out = []
+    for i, line in enumerate(source.splitlines(), 1):
+        m = _MARKER_RE.search(line)
+        if not m:
+            continue
+        kind = m.group(1)
+        if kind not in _KNOWN_KINDS:
+            continue
+        rest = m.group(2)
+        targets = rest.split() if rest else []
+        out.append({'line': i, 'kind': kind, 'targets': targets})
+    return out
+
+
+def _selftest_protocol_complete():
+    """True when this backend implements the full self-test contract."""
+    return all(hasattr(globals(), a)
+               for a in ('TEST_CODEBASE_DIR', 'collect_truth',
+                         'parse_markers'))

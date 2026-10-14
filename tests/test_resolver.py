@@ -304,6 +304,93 @@ def test_unbound_multiple_classes_are_ambiguous():
     assert d['candidates'] == ['c1.py::Thing@1', 'c2.py::Thing@1']
 
 
+def test_nested_def_shadows_module_level():
+    """A nested `inner` shadows the module-level `inner` only inside the
+    enclosing function; from other scopes the module-level one is live.
+    (First-wins by scan order would misroute the second call.)"""
+    f = py("""
+def outer(x):
+    def inner(x):
+        return x + 1
+    return inner(x)
+
+def inner(x):
+    return x + 2
+
+def top_use(x):
+    return inner(x)
+""", 'nest')
+    g, diag = gmod.build_graph([f])
+    assert ('fn:nest.py::inner@3', 'resolved') in calls_out(
+        g, 'fn:nest.py::outer@2')
+    assert ('fn:nest.py::inner@7', 'resolved') in calls_out(
+        g, 'fn:nest.py::top_use@10')
+    assert not diag['ambiguous_calls']
+
+
+def test_module_redefinition_last_def_wins():
+    """Two module-level `compute` defs: a call after both must link to the
+    LATER one (the definition that is live at runtime), not the first."""
+    f = py("""
+def compute(x):
+    return 1
+
+def compute(x):
+    return 2
+
+def run():
+    return compute(3)
+""", 'red')
+    g, diag = gmod.build_graph([f])
+    assert calls_out(g, 'fn:red.py::run@8') == \
+        [('fn:red.py::compute@5', 'resolved')]
+    assert not diag['ambiguous_calls']
+
+
+def test_dynamic_receiver_is_external_not_dropped():
+    """`cfg['k'].update(1)` has a runtime-computed receiver: the call stays
+    VISIBLE as an external reference (`?.update`), never silently dropped."""
+    f = py("""
+def go(cfg):
+    return cfg['k'].update(1)
+""", 'dyn')
+    g, diag = gmod.build_graph([f])
+    assert ('ext:?.update', 'external') in calls_out(g, 'fn:dyn.py::go@2')
+    assert any(e['name'] == '?.update' for e in diag['external_calls'])
+
+
+def test_dotted_module_path_resolves_to_module_method():
+    """`deep.pack.mod.launch(3)` resolves through the dotted module path to
+    the `launch` function inside deep/pack/mod.py — no binding required."""
+    mod = py("def launch(x):\n    return x\n", 'deep/pack/mod')
+    user = py("""
+import deep.pack.mod
+
+def go():
+    return deep.pack.mod.launch(3)
+""", 'deep_user')
+    g, diag = gmod.build_graph([mod, user])
+    assert calls_out(g, 'fn:deep_user.py::go@4') == \
+        [('fn:deep/pack/mod.py::launch@1', 'resolved')]
+    assert not diag['ambiguous_calls']
+
+
+def test_relative_import_resolves_sibling():
+    """`from . import b` + `b.helper(1)` links to the sibling module's
+    `helper`, even though the import name is the bare package-relative form."""
+    b = py("def helper(x):\n    return x\n", 'pkg/b')
+    a = py("""
+from . import b
+
+def go():
+    return b.helper(1)
+""", 'pkg/a')
+    g, diag = gmod.build_graph([b, a])
+    assert calls_out(g, 'fn:pkg/a.py::go@4') == \
+        [('fn:pkg/b.py::helper@1', 'resolved')]
+    assert not diag['ambiguous_calls']
+
+
 def main():
     fns = [v for k, v in sorted(globals().items())
            if k.startswith('test_') and callable(v)]

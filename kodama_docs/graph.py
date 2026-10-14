@@ -124,6 +124,59 @@ def _cand_display(nid: str) -> str:
     return nid
 
 
+def _parent_of(f, fn_list):
+    """Innermost function that strictly contains ``f``'s def line, or None.
+
+    Two defs at the same depth never contain each other, so the innermost
+    container is unambiguously the one whose body ends earliest."""
+    best = None
+    for g in fn_list:
+        if g is f:
+            continue
+        if g['line'] < f['line'] and f['line'] <= g.get('end_line', g['line']):
+            if best is None or g.get('end_line', g['line']) < best.get('end_line', best['line']):
+                best = g
+    return best
+
+
+def _resolve_in_scope(fn_list, name, line):
+    """The definition of ``name`` visible at ``line`` (Python scoping).
+
+    Walks out from the innermost function enclosing the call to the module;
+    in each scope the most recent definition of ``name`` before the call
+    wins, so a redefinition shadows the earlier one from that point on."""
+    def encloses(f, L):
+        return f['line'] <= L <= f.get('end_line', f['line'])
+
+    def depth(f):
+        d = 0
+        for g in fn_list:
+            if g is not f and g['line'] < f['line'] and f['line'] <= g.get('end_line', g['line']):
+                d += 1
+        return d
+
+    inner, best_depth = None, -1
+    for f in fn_list:
+        if encloses(f, line):
+            d = depth(f)
+            if d > best_depth:
+                inner, best_depth = f, d
+
+    scope = inner
+    while scope is not None:
+        cands = [f for f in fn_list
+                 if f['name'] == name and _parent_of(f, fn_list) is scope
+                 and f['line'] < line]
+        if cands:
+            return cands[-1]
+        scope = _parent_of(scope, fn_list)
+
+    cands = [f for f in fn_list
+             if f['name'] == name and _parent_of(f, fn_list) is None
+             and f['line'] < line]
+    return cands[-1] if cands else None
+
+
 def build_graph(files):
     """files: list of per-file dicts with relpath/lines/functions/file_vars/calls.
 
@@ -196,6 +249,7 @@ def build_graph(files):
 
     # ---- pass 2: edges ----------------------------------------------------
     known_files = {f['relpath'] for f in files}
+    files_by_rp = {f['relpath']: f for f in files}
 
     def mod_file(mod, from_rp):
         for c in module_candidates(mod, from_rp):
@@ -234,6 +288,13 @@ def build_graph(files):
         """
         file_bs = binds.get(rp, [])
         builtins = builtins_for(rp)
+        if name is None:
+            # The callee is computed at runtime (`open(..).read()`,
+            # `cfg['k'].update(..)`, `getattr(..)(..)`): no static target
+            # exists, so the call stays VISIBLE as an external reference
+            # (`?.method` / `?`) rather than being silently dropped.
+            label = f'?.{method}' if method else '?'
+            return 'ext:' + label, 'external'
         label = f'{name}.{method}' if method else name
 
         def dedup(seq):
@@ -249,6 +310,16 @@ def build_graph(files):
             return None
 
         if method and name:
+            # 0) dotted receiver that is a project MODULE path
+            #    (e.g. `deep.pack.mod.launch(...)`): resolve the module to
+            #    its file, then the method within that file
+            if '.' in name:
+                mf = mod_file(name, rp)
+                if mf:
+                    hit = (file_fn.get((mf, method))
+                           or file_cls.get((mf, method)))
+                    if hit:
+                        return hit, 'resolved'
             # 1) object bound to a project module in this file -> its method
             hits = []
             for b in file_bs:
@@ -303,11 +374,19 @@ def build_graph(files):
             return 'ext:' + name, 'external'
 
         # bare name
-        # 1) defined in the same file (lexical scope wins; a class counts
-        #    too — `class Body` + `Body(...)` in one file)
-        local = file_fn.get((rp, name)) or file_cls.get((rp, name))
-        if local:
-            return local, 'resolved'
+        # 1) defined in the same file — scope-aware: the definition visible
+        #    at the call line wins (a nested def shadows the module level,
+        #    and a redefinition shadows the earlier one from that point on)
+        fentry = files_by_rp.get(rp)
+        if fentry is not None:
+            fn = _resolve_in_scope(fentry.get('functions') or [], name, line)
+            if fn is not None:
+                return node_id_fn(rp, fn['name'], fn['line']), 'resolved'
+            cands = [c for c in (fentry.get('classes') or [])
+                     if c['name'] == name and c['line'] < line]
+            if cands:
+                c = cands[-1]
+                return node_id_cls(rp, c['name'], c['line']), 'resolved'
         # 2) bound by this file's imports to a project file
         #    (`from users import validate` then `validate()`, or
         #    `from physics.body import Body` then `Body(...)`)
@@ -354,8 +433,13 @@ def build_graph(files):
             if not g.has_node(tgt) and tgt.startswith(('builtin:', 'ext:')):
                 kind, nm = tgt.split(':', 1)
                 g.add_node(tgt, kind=kind, name=nm)
-            label = f'{c["callee"]}:{c["method"]}' if c.get('method') \
-                else c['callee']
+            callee, mth = c.get('callee'), c.get('method')
+            if callee is None:
+                label = f'?.{mth}' if mth else '?'
+            elif mth:
+                label = f'{callee}.{mth}'
+            else:
+                label = callee
             if status == 'external':
                 diag['external_calls'].append(
                     {'file': rp, 'line': c['line'], 'name': label})
