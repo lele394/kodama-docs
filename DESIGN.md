@@ -145,8 +145,11 @@ syntax tree into one common, language-agnostic shape consumed by the rest of
 the pipeline:
 
 ```text
-{'functions': [...], 'file_vars': [...], 'calls': [...], 'imports': [...]}
+{'functions': [...], 'file_vars': [...], 'calls': [...],
+ 'imports': [...], 'classes': [...]}
 ```
+
+(See `backends/backend_design.md` for the full record shapes and invariants.)
 
 Supporting a new language = one new backend package (manifest +
 `extract()`). The registry in `backends/__init__.py` discovers every

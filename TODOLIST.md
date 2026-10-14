@@ -68,6 +68,17 @@ ordered by priority; each item says *where* to look.
 
 ## Done
 
+- [x] **Python parser: 9 review critics fixed and guarded** (this session):
+  each fix ships with a harness check + fixture case + unit test (the hard
+  rule — failures must be visible).
+  - #1A `from m import n` no longer emits a phantom import for `m` (position-based skip; tree-sitter identity comparisons never work).
+  - #1B file vars dedup by name; #2A class attrs stay out of `file_vars` (`depth == 0` gate).
+  - #1C `*args` / `**kwargs` recognized (`list_splat_pattern` / `dictionary_splat_pattern`); a `*` in a default (`1024*1024`) is NOT a vararg (`lstrip().startswith('*')`).
+  - #2B calls inside default-arg / annotation expressions are extracted (`record_function` walks `parameters` + `return_type`).
+  - #2C developer comment glued above the FIRST decorator line is captured (`anchor_line` = top of the decorated block).
+  - #3A/B methods keep their qualified name (`Class.method`) via a threaded `qual` tuple.
+  - #3C `from . import b` inside a package `__init__.py` documented as a known limitation (submodule-first) in `backends/backend_design.md`.
+  Harness gained `check_import_soundness`, `check_function_meta` (params/vararg/qualified/developer_comment, keyed by (name,line)), `check_file_vars` (module vars present, class attrs not leaked). Oracle (`generate_truth.py`) now emits AST-derived `modules` meta. Fixture gained `metalib.py` + `meta_probe.py`. 8 new unit tests in `tests/test_resolver.py`. Self-test 249/249, resolver 28/28.
 - [x] **`--no-llm` redesign** (this session): the flag now skips only the
       LLM *model calls* (`kodama_docs/llm.py:generate(no_llm=True)` returns
       per-kind placeholder prose, no network). The whole document still

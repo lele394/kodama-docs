@@ -58,6 +58,31 @@ The checker (`kodama_docs/testing.py`) then verifies, per site:
   and one with `null` is reported as an unresolved import;
 - every `# expect:` marker in the inert traps matches the graph's diagnostic.
 
+When the truth also carries **`modules`** meta (emitted by
+`generate_truth.py`'s `_module_meta`, derived from the stdlib `ast` module —
+independent of the backend's own tree-sitter walk), three more field-level
+checks run against the extractor's records:
+
+- **import-soundness** — per (file, line), the number of import records the
+  extractor produced equals the number the runtime actually bound. A phantom
+  `from m import n` (an extra record for `m`) shows up as
+  `extracted=N runtime=M <-- phantom/missing`.
+- **function meta** — for every AST-derived function, the extractor's record
+  must agree on: `params` (order and names), `vararg`, `qualified` (full
+  dotted name), and — when a developer comment is glued above the definition —
+  a truthy `developer_comment`. Functions are keyed by **(name, line)** so
+  recurring names like `__init__` across a hierarchy do not collide.
+- **file vars** — every module-level variable the AST sees must be present in
+  `file_vars`, and **no class attribute may leak in** (a leaked class attr is
+  a failure).
+
+These three checks are the "completeness + soundness + field" layer: they make
+the previously-silent phantom import and every field-level parser bug visible.
+The fixture modules `metalib.py` (a resolvable default-arg target) and
+`meta_probe.py` (splat, vararg-guard, default-arg call, class attr,
+file var, glued comments — plain and decorated) exercise each one, so any
+regression re-fails a named check.
+
 ## Marker grammar (inert traps only)
 
 A `#` comment **on the same line** declares the expected outcome:
@@ -96,6 +121,14 @@ becomes an `unresolved` — nothing is silently dropped.
   **stdlib shadowing** (`random.py` shadows the stdlib `random`; the fixture
   puts its own root on `sys.path[0]`, so the *fixture* module is the correct
   ground truth).
+- **Field-level correctness** (`meta_probe.py`, `metalib.py`): the extractor
+  must agree with the `ast`-derived oracle on parameters (order + names),
+  `vararg`, the qualified name (`Widget.norm`, not `norm`), the developer
+  comment glued above the first decorator line, a single record for a
+  re-assigned file var, *no* leak of a class attr into `file_vars`, recognition
+  of `*args`/`**kwargs`, and that a `*` in a default (`1024*1024`) is not a
+  vararg. A call in a default-arg expression
+  (`def norm(self, scale=make_default())`) must be extracted.
 
 ## Adding a case
 
