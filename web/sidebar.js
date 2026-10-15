@@ -202,8 +202,33 @@ function renderTree(container) {
   idx.appendChild(el('span', 'sb-kind', 'md'));
   container.appendChild(idx);
 
+  renderManualGroup(container);
+
   const root = buildTree();
   renderNode(container, root, '');
+}
+
+// section 0: the user's hand-written docs, right under the index row.
+// Always open, no expandable children (the pages are flat).
+function renderManualGroup(container) {
+  const pages = data.manual || [];
+  if (!pages.length) return;
+  const hdr = el('div', 'sb-row sb-dir sb-manual-hdr');
+  hdr.appendChild(el('span', 'sb-tw', '📚'));
+  hdr.appendChild(el('span', 'sb-name', 'Manual'));
+  hdr.appendChild(el('span', 'sb-count', String(pages.length)));
+  container.appendChild(hdr);
+  const cp = decodeURIComponent(location.pathname);
+  pages.forEach(p => {
+    const label = p.title || base(p.rel);
+    const row = el('a',
+      'sb-row sb-file' + (cp === '/' + p.href ? ' current' : ''));
+    row.href = '/' + p.href;
+    row.appendChild(el('span', 'sb-tw', ''));
+    row.appendChild(el('span', 'sb-name',
+                       p.dir ? (p.dir + ' / ' + label) : label));
+    container.appendChild(row);
+  });
 }
 
 function renderNode(container, node, path) {
@@ -235,6 +260,12 @@ function renderNode(container, node, path) {
 // ---------------------------------------------------------------- search
 function buildCandidates() {
   cands = [];
+  (data.manual || []).forEach(p => {
+    const label = p.title || base(p.rel);
+    cands.push({ kind: 'file', label: label,
+                 text: label + ' ' + p.rel,
+                 href: '/' + p.href, path: p.rel, order: cands.length });
+  });
   for (const f of data.files) {
     const rp = f.relpath;
     cands.push({ kind: 'file', label: base(rp), text: rp,
@@ -357,7 +388,8 @@ function renderSearch(container, q) {
     ' — Enter opens the first'));
   for (const g of groups) {
     const hdr = el('a', 'sb-row sb-group');
-    hdr.href = withQ(fileHref(g.rp));
+    hdr.href = (g.fileHit && g.fileHit.c.href)
+        ? withQ(g.fileHit.c.href) : withQ(fileHref(g.rp));
     hdr.appendChild(el('span', 'sb-tw', ''));
     hdr.appendChild(el('span', 'sb-name', g.rp));
     hdr.appendChild(el('span', 'sb-kind', 'file'));
@@ -483,6 +515,7 @@ function init() {
     })
     .then(src => {
       data.files = Array.isArray(src.files) ? src.files : [];
+      data.manual = Array.isArray(src.manual) ? src.manual : [];
       loadExpanded();
       buildCandidates();
       if (currentQuery) renderSearch(treeEl, currentQuery);

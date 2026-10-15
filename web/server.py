@@ -119,6 +119,24 @@ class DocsHandler(BaseHTTPRequestHandler):
             return self._page_body(path[len('/page/'):])
         if path.endswith('.md'):
             return self._page(path.lstrip('/'))
+        if path.startswith('/manual/') and not path.endswith('.md'):
+            # static assets that ship with hand-written manual docs
+            # (images, css, ...) — serve the raw bytes, never render.
+            name = path.rsplit('/', 1)[-1]
+            ext = name.rsplit('.', 1)[-1].lower() if '.' in name else ''
+            ctype = {
+                'css': 'text/css; charset=utf-8',
+                'js': 'text/javascript; charset=utf-8',
+                'txt': 'text/plain; charset=utf-8',
+                'html': 'text/html; charset=utf-8',
+                'json': 'application/json; charset=utf-8',
+                'png': 'image/png', 'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg', 'gif': 'image/gif',
+                'svg': 'image/svg+xml', 'ico': 'image/x-icon',
+                'webp': 'image/webp', 'woff': 'font/woff',
+                'woff2': 'font/woff2',
+            }.get(ext, 'application/octet-stream')
+            return self._docfile(path[1:], ctype)
         return self._error(404, 'not found')
 
     def do_POST(self):
@@ -188,24 +206,49 @@ class DocsHandler(BaseHTTPRequestHandler):
             self._cache[full] = (st.st_mtime, st.st_size, body)
             return body
 
+    def _manual_pages(self):
+        """(key, pages) for the manual-doc list, read from meta/manual.json
+        and cached by its mtime+size. key is None when there is no
+        manual.json (the feature is off / nothing to serve)."""
+        mfull = self._safe(self.docs_root, 'meta/manual.json')
+        if mfull is None or not os.path.isfile(mfull):
+            return None, []
+        try:
+            mst = os.stat(mfull)
+            key = (mfull, mst.st_mtime, mst.st_size)
+            with self._cache_lock:
+                hit = self._cache.get(mfull)
+                if hit and hit[0] == mst.st_mtime and hit[1] == mst.st_size:
+                    return key, hit[2]
+            with open(mfull, 'r', encoding='utf-8') as fh:
+                pages = json.load(fh).get('pages', [])
+            with self._cache_lock:
+                self._cache[mfull] = (mst.st_mtime, mst.st_size, pages)
+            return key, pages
+        except (OSError, ValueError):
+            return None, []
+
     def _symbols_index(self):
         """Slim symbol index for the docs sidebar (web/sidebar.js).
 
         meta/symbols.json also carries every function body — far too heavy
         for a sidebar payload — so this keeps only names, lines and file
-        paths. Cached by (mtime, size) like the rendered pages."""
+        paths. The optional manual-doc list (meta/manual.json) is merged in
+        as ``manual``. Cached by (symbols.json mtime+size, manual key)."""
         full = self._safe(self.docs_root, 'meta/symbols.json')
         if full is None or not os.path.isfile(full):
             return self._error(404, 'no symbols index — run the pipeline '
                                     'first')
         try:
             st = os.stat(full)
+            mkey, manual_pages = self._manual_pages()
             with self._cache_lock:
                 hit = self._cache.get(full)
                 if (hit and hit[0] == st.st_mtime
-                        and hit[1] == st.st_size):
+                        and hit[1] == st.st_size
+                        and hit[2] == mkey):
                     return self._send(
-                        200, hit[2], 'application/json; charset=utf-8')
+                        200, hit[3], 'application/json; charset=utf-8')
             with open(full, 'r', encoding='utf-8') as fh:
                 src = json.load(fh)
             slim = {
@@ -221,16 +264,18 @@ class DocsHandler(BaseHTTPRequestHandler):
                                'line': v.get('line')}
                               for v in (f.get('file_vars') or [])]}
                     for f in (src.get('files') or [])],
+                'manual': manual_pages,
             }
             data = json.dumps(slim).encode('utf-8')
             with self._cache_lock:
-                self._cache[full] = (st.st_mtime, st.st_size, data)
+                self._cache[full] = (st.st_mtime, st.st_size, mkey, data)
         except (OSError, ValueError) as e:
             return self._error(500, str(e))
         self._send(200, data, 'application/json; charset=utf-8')
 
     def _docfile(self, rel: str, ctype: str):
-        """Serve a raw file from the docs root (meta/graph.json)."""
+        """Serve a raw file from the docs root (meta/graph.json, and the
+        non-markdown assets under manual/)."""
         full = self._safe(self.docs_root, rel)
         if full is None or not os.path.isfile(full):
             return self._error(404, f'no such file: {rel}')
