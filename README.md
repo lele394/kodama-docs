@@ -52,11 +52,15 @@ the bowels of strange and unfamiliar code. Cheers!
 - [ ] C support
 - [ ] C++ support
 - [ ] Fortran support
-- [ ] Rust support
 
 ### Long-term planned feature
 
 - [ ] Smart Git integration (use diffs to decide what to reprocess)
+- [ ] ~~Rust support~~
+
+### Continuous development
+
+- Python backend
 
 ### Planned review
 
