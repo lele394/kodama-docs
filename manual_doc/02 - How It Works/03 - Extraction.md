@@ -4,16 +4,17 @@ Extraction is the step where a file becomes a structured **record**. Each file i
 
 ## The record contract
 
-Every backend's `extract(source, relpath)` returns the same four top-level keys:
+Every backend's `extract(source, relpath)` returns the same four top-level keys (plus one optional one):
 
 | Key | Type | Meaning |
 | --- | --- | --- |
-| `functions` | list | Functions defined in the file: `name`, `qualified`, `line`, `end_line`, and a stable `id`. |
-| `file_vars` | list | File-level variables: `name`, `line`, and how they are initialized. |
-| `calls` | list | Call sites: `callee`, `line`, and (for methods) `method`. |
-| `imports` | list | Import statements: `module` and `line`. |
+| `functions` | list | Functions defined in the file: `name`, `qualified`, `line`, `end_line`, `params`, `vararg`, the exact source `body`, an optional `developer_comment`, and a stable `id`. |
+| `file_vars` | list | File-level variables: `name`, `line`, and an `init` form (`empty`/`table`/`string`/`number`/`function`/`call`/`expr`). |
+| `calls` | list | Call sites: `callee` (possibly dotted, or `None` for a computed receiver), `line`, and (for methods) `method`. |
+| `imports` | list | Import statements: `module`, `line`, `bind`, `name`, and `level` (relative-import depth). |
+| `classes` | list (optional) | Class definitions: `name`, `qualified`, `line`, `end_line`. Absent in languages without classes. |
 
-Backends may add language-specific extras on top of these, but the four keys are the contract. The graph and the renderers only ever read this shape, which is what lets a new language drop in without touching the pipeline.
+Line numbers are 1-based and point into the same `source` string that was passed in; `body` must be exactly the source lines from `line` to `end_line`. Backends may add language-specific extras on top of these, but these keys are the contract. The graph and the renderers only ever read this shape, which is what lets a new language drop in without touching the pipeline. The full contract, with the invariants the pipeline relies on, is in `backends/backend_design.md` in the repository.
 
 ## How files are routed
 
