@@ -17,6 +17,11 @@ project:
   max_file_bytes: 26214400
   # copy graph.json + symbols.json into <output_dir>/meta for later reuse
   copy_meta: true
+  # optional: a folder of human-written docs. Its .md pages are served as
+  # section 0 (top of the index + the web sidebar); every other file is copied
+  # into <output_dir>/manual as a static asset so relative links/images work.
+  # Resolved against this file's directory. Unset/empty -> feature is off.
+  # manual_doc: "../manual"
 
 llm:
   # "env" -> read the value from .env (api_key / base_url); lookup: project root first, then the config's directory

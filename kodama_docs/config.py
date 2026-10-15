@@ -38,6 +38,11 @@ def load_config(path: str) -> dict:
                                  f'{", ".join(looked)})')
             llm[key] = val
 
+    # manual_doc: an optional folder of human-written docs (see
+    # kodama_docs/manual.py). Resolved like every other path here.
+    manual_doc = (raw['project'].get('manual_doc') or '').strip()
+    manual_doc = rp(manual_doc) if manual_doc else None
+
     return {
         'source_dir': rp(raw['project']['source_dir']),
         'output_dir': rp(raw['project']['output_dir']),
@@ -48,6 +53,7 @@ def load_config(path: str) -> dict:
         'context': dict(raw.get('context') or {}),
         'documentation': dict(raw.get('documentation') or {}),
         'copy_meta': bool(raw['project'].get('copy_meta', False)),
+        'manual_doc': manual_doc,
         'concurrency': int(raw.get('concurrency') or 2),
         'tui': dict(raw.get('tui') or {}),
         'prompts': {k: rp(v) for k, v in (raw.get('prompts') or {}).items()},
