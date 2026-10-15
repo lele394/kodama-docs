@@ -13,8 +13,13 @@ project:
     - "doc"
     - "doc_self"
     - "test_out"
+    - "manual_doc"
   max_file_bytes: 26214400
   copy_meta: true
+  # Hand-written user manual (see manual_doc/ at the repo root). Copied
+  # verbatim into <output>/manual and surfaced as the "Manual" group at the
+  # top of the sidebar. No LLM is involved in this content.
+  manual_doc: "../manual_doc"
 
 llm:
   # "env" (default) -> read api_key / base_url from .env (project root first, then this directory)
