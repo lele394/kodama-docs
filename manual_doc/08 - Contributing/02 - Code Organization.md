@@ -11,7 +11,7 @@ A map of the repository, so a change can be routed to the right file. (See [Addi
 | `kodama_docs/` | the core Python package — the pipeline itself. |
 | `backends/` | the language backends: `lua/`, `python/`, the shared `_shared.py`, the registry (`__init__.py`), and `backend_design.md` (the authoring contract). |
 | `web/` | the `--serve` web app: `server.py` (routing), `render.py` (the deterministic markdown→HTML subset), the JS (`app.js`, `sidebar.js`, `graph.js`, `fuzzy.js`), `themes/`, and `web_settings.yaml`. |
-| `prompts/` | the four LLM prompt files (see [Prompts](../04%20-%20Reference/03%20Prompts.md)). |
+| `prompts/` | the four LLM prompt files (see [Prompts](../04%20-%20Reference/03%20-%20Prompts.md)). |
 | `configs/` | example configs: `self.yaml` (dogfooding), `test.yaml`, `cloudcfg.yaml`. |
 | `manual_doc/` | this manual (human-written; embedded into the generated docs via `manual_doc`). |
 | `doc_self/`, `data_self/` | committed output of documenting kodama-docs itself (see [Documenting kodama-docs Itself](../05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.md)). |

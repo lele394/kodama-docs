@@ -70,7 +70,7 @@ Open `http://127.0.0.1:8123` for the rendered docs and `/graph` for the interact
 
 ## What the sample demonstrates
 
-- **Method-call resolution across files** — `Body:new(...)` in `main.lua` links to `new` in `physics/body.lua` (`[new](physics/body.lua.md#fn-new-9)`). The [Lua backend](../03%20-%20Components/02%20-%20Lua%20Backend.md) records `Body` as the bound module (from `require("physics.body")`) and `new` as the method, so the resolver can match them.
+- **Method-call resolution across files** — `Body:new(...)` in `main.lua` links to `new` in `physics/body.lua` (rendered as `[new](physics/body.lua.md#fn-new-9)`). The [Lua backend](../03%20-%20Components/02%20-%20Lua%20Backend.md) records `Body` as the bound module (from `require("physics.body")`) and `new` as the method, so the resolver can match them.
 - **Inferred references** — `sim:step(bodies, dt)` in `tick` is marked `step (inferred)`: `sim` is a plain parameter whose type the resolver can't pin to one module, so the reference is kept but not linked.
 - **Unresolved references stay visible** — `log.info` is orange in the page (no link written) because there is no `log` module in the project; it is *not* silently dropped, and it shows up in the "unresolved" section and the Analysis summary.
 
