@@ -44,7 +44,7 @@ the bowels of strange and unfamiliar code. Cheers!
 
 ### Features
 
-- [ ] Manual documentation
+- [x] Manual documentation (hand-written pages as section 0 — see [Configuration](#configuration) → `project.manual_doc`)
 - [ ] Graph mode optimizations (high node counts)
 
 ### Planned language support 
@@ -86,9 +86,12 @@ doc/
                            #   - function docs (signature table + developer
                            #     comment if present + prose + source +
                            #     imports/calls context)
+  manual/                  # hand-written docs (only if project.manual_doc is
+                           # set): copied verbatim, served as section 0
   meta/
     symbols.json           # cached analysis (deterministic extraction)
     graph.json             # call/import/containment graph
+    manual.json            # manual-doc page list (sidebar + /api/symbols)
   .doc_cache               # relpath -> md5 of every file, written after a
                            # clean run; detects changed/removed files on
                            # startup and re-runs just those
@@ -289,6 +292,7 @@ example). Relative paths resolve against the config file's directory.
 | `project.exclude` | directory names to skip (matched per path component) |
 | `project.max_file_bytes` | skip files larger than this |
 | `project.copy_meta` | also copy `graph.json` + `symbols.json` into `<output_dir>/meta` |
+| `project.manual_doc` | optional: a folder of hand-written markdown to serve as **section 0** (top of the sidebar + first section of `index.md`). Markdown renders, other files are copied + served as static assets. No LLM. See below |
 | `llm.base_url` / `llm.api_key` | endpoint + key; `"env"` (default) reads `.env` |
 | `llm.model` | model name |
 | `llm.max_retries` / `timeout` | per-request retry/timeout policy (urllib, 300 s default) |
@@ -298,6 +302,27 @@ example). Relative paths resolve against the config file's directory.
 | `concurrency` | parallel LLM agents working the task queue (default **2**; any positive integer, 20+ is fine) |
 | `tui.enabled` / `tui.interval` | live terminal UI while the LLM phase runs (auto-off when stdout is not a TTY) |
 | `prompts.*` | system-prompt text files per task kind |
+
+### Manual documentation (section 0)
+
+Set `project.manual_doc` to a folder of hand-written markdown and everything in
+it becomes the **first section** of the docs — above the auto-generated file
+list in `index.md` and the first group in the web sidebar.
+
+- **No LLM, no analysis.** Manual pages are prose, not code: they are copied
+  verbatim into `<output_dir>/manual/` (the target is pruned and re-copied on
+  every run, so it is never stale) and rendered exactly like a generated page.
+  They never enter `symbols.json` / `graph.json` and get no generated
+  summaries.
+- **Markdown renders, everything else is a static asset.** `.md` /
+  `.markdown` / `.mdown` / `.mkd` files become pages; all other files (images,
+  CSS, …) are copied as-is and served at their `/manual/…` path, so relative
+  links and images inside the manual docs keep working.
+- **Off by default.** Leave the key out (or point it at a folder that doesn't
+  exist) and the feature is a no-op — the build succeeds and the docs look
+  exactly as before. A missing or empty folder logs a warning and is skipped.
+  Pointing the folder at the output directory (or vice-versa) is refused, since
+  it would copy the docs into themselves.
 
 ### Long functions: chunk-and-merge
 
@@ -403,6 +428,7 @@ kodama_docs/          # all pipeline modules
   llm.py           # LLM client (urllib, OpenAI-compatible)
   llm_phase.py     # LLM task queue + TUI wiring
   markdown.py      # deterministic markdown rendering
+  manual.py        # manual docs (section 0): copy, page list, meta/manual.json
   models.py        # output schemas + deterministic JSON validator
   tui.py           # terminal UI for the LLM phase (Rich-based)
   util.py          # logging, id sanitizing, truncation, .env reader, fence lang
