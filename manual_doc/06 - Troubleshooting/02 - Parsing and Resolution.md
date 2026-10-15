@@ -36,9 +36,9 @@ The resolver classifies every call/import/reference. On a rendered page, and in 
 
 | Outcome | Page shows | Meaning / how to improve |
 | --- | --- | --- |
-| **resolved** | a real link to the definition | bound via an import (e.g. `local Body = require("physics.body")`) or an explicit import — the ideal case. |
+| **resolved** | a real link to the definition | the call is in the same file (lexical scope), or bound via an import (e.g. `local Body = require("physics.body")`) or an explicit import — the ideal case. |
 | **inferred** | `name (inferred)` | the name is defined **exactly once** project-wide but wasn't import-bound (e.g. calling through a parameter of unknown type). Kept but not linked. Binding the receiver to a module (require/import) makes it resolve. |
-| **ambiguous** | *nothing linked* — it goes to `graph.ambiguous_calls` (with its `candidates` list) | the name is defined **more than once**, so the tool refuses to guess. Rename one, or narrow the import so only one definition is in scope. |
+| **ambiguous** | *nothing linked* — it goes to `graph.ambiguous_calls` (with its `candidates` list) | the name is defined **more than once**, so the tool refuses to guess. Fix by renaming one, or by binding the receiver to a module (`local A = require('m')` / `import`) so the import-bound rule resolves it first. |
 | **external / builtin** | orange `<span>` (no link) | a stdlib/global name (`print`, `pairs`, `os.path`, …) — by design, not an error. |
 | **unresolved import** | listed in `graph.unresolved_imports` | the imported module isn't part of the documented project (third-party or system). Expected for e.g. `log` in the Lua sample. |
 
