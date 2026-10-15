@@ -129,6 +129,44 @@ def test_index_section0_above_generated():
     assert '## Manual documentation' not in render_index(finfos, '/out')
 
 
+def test_index_manual_nested_bullets():
+    """Section 0 is a nested bullet list mirroring the folder hierarchy:
+    folders first (plain bullets), then the pages (links), at every depth."""
+    finfos = [{'relpath': 'src/main.lua', 'lines': 10,
+               'functions': [], 'file_vars': []}]
+    pages = [
+        {'rel': 'root.md', 'title': 'Root', 'dir': ''},
+        {'rel': 'a/one.md', 'title': 'One', 'dir': 'a'},
+        {'rel': 'a/two.md', 'title': 'Two', 'dir': 'a'},
+        {'rel': 'a/b/deep.md', 'title': 'Deep', 'dir': 'a/b'},
+    ]
+    md = render_index(finfos, '/out', manual_pages=pages)
+    sec = md.split('## Manual documentation')[1].split('\n\n1 files')[0]
+    lines = [l for l in sec.splitlines() if l.strip()]
+    assert lines == [
+        '- a',
+        '  - b',
+        '    - [Deep](manual/a/b/deep.md)',
+        '  - [One](manual/a/one.md)',
+        '  - [Two](manual/a/two.md)',
+        '- [Root](manual/root.md)',
+    ], lines
+    # the old flat table is gone
+    assert '| Page |' not in md
+
+
+def test_index_manual_spaces_encoded():
+    """Link targets keep the %20 encoding (the fix in 3d35aaf)."""
+    finfos = [{'relpath': 'src/main.lua', 'lines': 10,
+               'functions': [], 'file_vars': []}]
+    pages = [{'rel': '01 - Getting Started/01 - Install.md',
+              'title': 'Install', 'dir': '01 - Getting Started'}]
+    md = render_index(finfos, '/out', manual_pages=pages)
+    assert '- 01 - Getting Started' in md
+    assert ('  - [Install](manual/01%20-%20Getting%20Started'
+            '/01%20-%20Install.md)') in md
+
+
 def main():
     fns = [v for k, v in sorted(globals().items())
            if k.startswith('test_') and callable(v)]

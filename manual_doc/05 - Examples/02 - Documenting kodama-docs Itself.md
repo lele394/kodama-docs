@@ -44,7 +44,7 @@ python main.py --config configs/self.yaml
 
 ## Reading `doc_self/`
 
-- **`doc_self/index.md`** — starts with a **"Manual documentation"** table that lists every page of `manual_doc/` (because `manual_doc` is set), then "89 files documented.", the per-file table, and the Analysis summary. The manual pages are links to `manual/…`, which is the verbatim copy of this folder.
+- **`doc_self/index.md`** — starts with a **"Manual documentation"** bullet list, nested one level per folder, that links every page of `manual_doc/` (because `manual_doc` is set), then "89 files documented.", the per-file table, and the Analysis summary. The manual pages are links to `manual/…`, which is the verbatim copy of this folder.
 - **`doc_self/files/kodama_docs/llm.py.md`** — a generated page for one of the source files. Even in the committed `--no-llm` run you can see the full deterministic structure: the function table, each function's parameters, its *References* (with orange spans for things like `cfg.get` that can't be resolved to a project symbol), and the exact source body. A full run replaces the "No description generated (`--no-llm`)" placeholders with real prose.
 - **`doc_self/meta/graph.json`** — the call/reference graph of the whole project; `--serve` renders it at `/graph`.
 - **`doc_self/manual/`** — the manual, copied in so its relative links and assets resolve under the docs root.

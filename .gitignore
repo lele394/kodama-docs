@@ -11,6 +11,7 @@ data_self/
 
 # runtime state (written by the web server when the theme is switched)
 web/theme_state.json
+serve.log
 
 # secrets
 .env

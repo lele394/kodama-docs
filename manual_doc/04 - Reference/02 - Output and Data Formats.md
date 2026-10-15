@@ -6,7 +6,7 @@ A run produces two families of artifacts: the **human-readable docs** under `out
 
 | Path | Writer | What it is |
 | --- | --- | --- |
-| `index.md` | render | the index: `# Documentation index`, a "Manual documentation" table (if `manual_doc` is set), the "N files documented." line, a per-file table (File / Lines / Functions / Variables), and an "Analysis summary" section. |
+| `index.md` | render | the index: `# Documentation index`, a "Manual documentation" nested bullet list mirroring the manual's folder hierarchy (if `manual_doc` is set), the "N files documented." line, a per-file table (File / Lines / Functions / Variables), and an "Analysis summary" section. |
 | `files/<relpath>.md` | render | one page per source file (see [Rendering](../02%20-%20How%20It%20Works/07%20-%20Rendering.md) for the exact page layout). |
 | `manual/…` | manual copy | a verbatim copy of the configured `manual_doc` folder (all files, so relative images/links work), plus `manual/` entries surfaced on the index. |
 | `meta/graph.json` | render (when `copy_meta`) | copy of the graph for the web graph view. |

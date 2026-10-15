@@ -42,7 +42,7 @@ Nothing breaks. A function without prose gets an italic placeholder instead of a
 
 `render_index()` writes `index.md`:
 
-- **Manual documentation** — a table linking every page of a configured `project.manual_doc` folder (this manual is one; see [Documenting kodama-docs Itself](../05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.md));
+- **Manual documentation** — a nested bullet list of a configured `project.manual_doc` folder (this manual is one; see [Documenting kodama-docs Itself](../05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.md)): one plain bullet per folder (nested one level per folder), one link per page;
 - a table of all documented files with line / function / variable counts;
 - an **Analysis summary** — per-file analysis status (ok / failed / binary with reasons) and the resolution counts: how many call references and imports resolved, how many calls were recorded as external, inferred, or ambiguous. Failures and gaps are *visible in the docs*, not only on the console.
 

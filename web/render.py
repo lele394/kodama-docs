@@ -4,7 +4,8 @@ Supports exactly what documentation.py emits: headings (including raw
 ``<a id="...">`` anchors), paragraphs, **bold**, *italic*, `code`,
 [links](url), fenced code blocks (wrapped in closed-by-default
 ``<details>`` zones, with a following "Call graph" list in its own
-zone), two-level bullet lists, tables (with ``\\|`` escaped pipes) and
+zone), bullet lists (nested to any depth), tables (with ``\\|`` escaped
+pipes) and
 ``---`` rules. Output is a pure function of the input text; no
 third-party dependencies (syntax highlighting is client-side
 highlight.js, loaded by the page).
@@ -83,27 +84,29 @@ def render_table(rows) -> str:
 
 
 def render_list(items) -> str:
-    """items: (indent, text) pairs; indent 0 = top level, else nested."""
-    h = ['<ul>']
-    nested = None
-
-    def close_nested():
-        nonlocal nested
-        if nested:
-            h.append('<ul>'
-                     + '\n'.join(f'<li>{render_inline(t)}</li>' for t in nested)
-                     + '</ul>')
-            nested = None
-
+    """items: (indent, text) pairs; each item indented deeper than the
+    one before it nests under the most recent shallower item (arbitrary
+    depth)."""
+    tree = []
+    stack = []  # (indent, node) — the current branch, shallowest first
     for indent, text in items:
-        if indent == 0:
-            close_nested()
-            h.append(f'<li>{render_inline(text)}')
-        else:
-            if nested is None:
-                nested = []
-            nested.append(text)
-    close_nested()
+        node = {'text': text, 'children': []}
+        while stack and stack[-1][0] >= indent:
+            stack.pop()
+        (stack[-1][1]['children'] if stack else tree).append(node)
+        stack.append((indent, node))
+    h = ['<ul>']
+
+    def emit(nodes):
+        for n in nodes:
+            h.append(f'<li>{render_inline(n["text"])}')
+            if n['children']:
+                h.append('<ul>')
+                emit(n['children'])
+                h.append('</ul>')
+            h.append('</li>')
+
+    emit(tree)
     h.append('</ul>')
     return '\n'.join(h)
 

@@ -467,19 +467,44 @@ def _analysis_summary(diag, astatus, rs=None) -> list:
     return lines
 
 
+def _manual_tree(pages):
+    """Nested tree of the manual pages, from each page's ``rel``:
+    node = {'children': {name: node}, 'pages': [page]} — the same shape
+    the web sidebar builds (web/sidebar.js)."""
+    root = {'children': {}, 'pages': []}
+    for p in pages:
+        parts = str(p['rel']).split('/')
+        node = root
+        for seg in parts[:-1]:
+            node = node['children'].setdefault(
+                seg, {'children': {}, 'pages': []})
+        node['pages'].append(p)
+    return root
+
+
+def _manual_bullets(node, lines, depth=0):
+    """One bullet per folder and page, nested one level per folder:
+    folders first (sorted), then the pages living in that folder (sorted)."""
+    pad = '  ' * depth
+    for name in sorted(node['children']):
+        lines.append(f'{pad}- {name}')
+        _manual_bullets(node['children'][name], lines, depth + 1)
+    for p in sorted(node['pages'], key=lambda p: p['rel']):
+        label = p.get('title') or p['rel']
+        lines.append(
+            f'{pad}- [{label}]({enc_path("manual/" + p["rel"])})')
+
+
 def _manual_section(pages):
-    """The section-0 **Manual documentation** block (a link table), placed
-    above the generated-files table. Links are relative to index.md, so the
-    pages (copied to <output_dir>/manual/) are ``manual/<rel>``. Returns []
-    when there are no pages."""
+    """The section-0 **Manual documentation** block, placed above the
+    generated-files table: a nested bullet list mirroring the manual's
+    folder hierarchy (plain bullets for folders, links for pages). Links
+    are relative to index.md, so the pages (copied to <output_dir>/manual/)
+    are ``manual/<rel>``. Returns [] when there are no pages."""
     if not pages:
         return []
-    lines = ['## Manual documentation', '',
-             '| Page |',
-             '| --- |']
-    for p in pages:
-        label = p.get('title') or p['rel']
-        lines.append(f"| [{label}]({enc_path('manual/' + p['rel'])}) |")
+    lines = ['## Manual documentation', '']
+    _manual_bullets(_manual_tree(pages), lines)
     lines.append('')
     return lines
 
