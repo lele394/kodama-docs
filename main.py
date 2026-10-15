@@ -12,6 +12,7 @@ import shutil
 
 import backends
 import kodama_docs.graph as gmod
+from kodama_docs import manual
 from kodama_docs.config import load_config
 from kodama_docs.llm_phase import llm_phase
 from kodama_docs.markdown import (build_call_indexes, render_file_md,
@@ -50,6 +51,11 @@ def render_all(cfg: dict, files, g, diag=None, astatus=None):
     fn_recs = list_records(cfg['data_dir'], 'function')
     var_recs = list_records(cfg['data_dir'], 'variable')
     sum_recs = list_records(cfg['data_dir'], 'summary')
+    # Manual docs: copy the user's folder into <output>/manual (fresh each
+    # run) and surface it as section 0 below. No LLM — prose only.
+    manual_pages = (manual.copy_manual_docs(cfg['manual_doc'],
+                                            cfg['output_dir'])
+                    if cfg.get('manual_doc') else [])
     # One O(E) pass over the graph for the whole render, instead of a full
     # edge scan per function (O(F×E) — the 10+ minute render tail).
     call_idx = build_call_indexes(g)
@@ -73,12 +79,15 @@ def render_all(cfg: dict, files, g, diag=None, astatus=None):
         count += 1
     index = render_index(files, cfg['output_dir'],
                          diag=diag, astatus=astatus,
-                         rs=gmod.resolution_summary(g))
+                         rs=gmod.resolution_summary(g),
+                         manual_pages=manual_pages)
     ipath = os.path.join(cfg['output_dir'], 'index.md')
     os.makedirs(cfg['output_dir'], exist_ok=True)
     with open(ipath, 'w', encoding='utf-8') as fh:
         fh.write(index)
     log(f'rendered {count} file pages + index -> {cfg["output_dir"]}')
+    if cfg.get('manual_doc'):
+        manual.write_manual_meta(cfg['output_dir'], manual_pages)
 
     if cfg.get('copy_meta'):
         meta_dir = os.path.join(cfg['output_dir'], 'meta')

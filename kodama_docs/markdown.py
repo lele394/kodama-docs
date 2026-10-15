@@ -458,12 +458,30 @@ def _analysis_summary(diag, astatus, rs=None) -> list:
     return lines
 
 
+def _manual_section(pages):
+    """The section-0 **Manual documentation** block (a link table), placed
+    above the generated-files table. Links are relative to index.md, so the
+    pages (copied to <output_dir>/manual/) are ``manual/<rel>``. Returns []
+    when there are no pages."""
+    if not pages:
+        return []
+    lines = ['## Manual documentation', '',
+             '| Page |',
+             '| --- |']
+    for p in pages:
+        label = p.get('title') or p['rel']
+        lines.append(f"| [{label}](manual/{p['rel']}) |")
+    lines.append('')
+    return lines
+
+
 def render_index(finfos, output_root: str, diag=None, astatus=None,
-                 rs=None) -> str:
-    lines = ['# Documentation index', '',
-             f'{len(finfos)} files documented.', '',
-             '| File | Lines | Functions | Variables |',
-             '| --- | --- | --- | --- |']
+                 rs=None, manual_pages=None) -> str:
+    lines = ['# Documentation index', '']
+    lines += _manual_section(manual_pages)
+    lines += [f'{len(finfos)} files documented.', '',
+              '| File | Lines | Functions | Variables |',
+              '| --- | --- | --- | --- |']
     for finfo in finfos:
         rel = finfo['relpath']
         mdname = rel.rsplit('/', 1)[-1].rsplit('.', 1)[0]

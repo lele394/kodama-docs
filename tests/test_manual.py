@@ -17,6 +17,7 @@ import tempfile
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from kodama_docs import manual  # noqa: E402
+from kodama_docs.markdown import render_index  # noqa: E402
 
 
 def _tree(base, files):
@@ -111,6 +112,21 @@ def test_write_manual_meta_roundtrip():
             data = json.load(fh)
         assert data['count'] == 2
         assert data['pages'][1]['href'] == 'manual/guide/b.md'
+
+
+def test_index_section0_above_generated():
+    finfos = [{'relpath': 'src/main.lua', 'lines': 10,
+               'functions': [{'name': 'f'}], 'file_vars': []}]
+    pages = [{'rel': 'intro.md', 'title': 'Intro', 'dir': ''}]
+    md = render_index(finfos, '/out', manual_pages=pages)
+    i_manual = md.find('## Manual documentation')
+    i_gen = md.find('files/src/main.lua.md')
+    assert i_manual != -1, 'manual section missing'
+    assert i_gen != -1, 'generated table missing'
+    assert i_manual < i_gen, 'manual section must come before the generated table'
+    assert 'manual/intro.md' in md
+    # no manual pages -> no section 0 at all
+    assert '## Manual documentation' not in render_index(finfos, '/out')
 
 
 def main():
