@@ -562,7 +562,8 @@ body.sb-resizing { user-select: none; cursor: col-resize; }
   margin: 5px 0 3px;
   background: var(--btn-bg);
   box-shadow: inset 2px 0 0 var(--accent);
-  cursor: default;
+  cursor: pointer;
+  user-select: none;
 }
 .sb-manual-hdr .sb-tw { color: var(--accent); font-size: 12px; }
 .sb-group > .sb-name { font-weight: 600; }

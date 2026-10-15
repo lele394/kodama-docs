@@ -209,26 +209,74 @@ function renderTree(container) {
 }
 
 // section 0: the user's hand-written docs, right under the index row.
-// Always open, no expandable children (the pages are flat).
+// Collapsible exactly like the generated directories, and preserving the
+// manual's folder hierarchy (Manual > folder > page); open by default.
+// Expansion ids are namespaced 'manual' (the header) and 'manual/<folder>'
+// so they never collide with the generated tree's ids.
+function buildManualTree() {
+  // node = {children: {name: node}, pages: [page]}
+  const root = { children: {}, pages: [] };
+  for (const p of (data.manual || [])) {
+    const parts = String(p.rel).split('/');
+    let node = root;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const seg = parts[i];
+      if (!node.children[seg])
+        node.children[seg] = { children: {}, pages: [] };
+      node = node.children[seg];
+    }
+    node.pages.push(p);
+  }
+  return root;
+}
+
+function countManualPages(node) {
+  let n = node.pages.length;
+  for (const k in node.children) n += countManualPages(node.children[k]);
+  return n;
+}
+
 function renderManualGroup(container) {
   const pages = data.manual || [];
   if (!pages.length) return;
+  const id = 'manual';
   const hdr = el('div', 'sb-row sb-dir sb-manual-hdr');
-  hdr.appendChild(el('span', 'sb-tw', '📚'));
-  hdr.appendChild(el('span', 'sb-name', 'Manual'));
+  hdr.setAttribute('data-id', id);
+  hdr.appendChild(el('span', 'sb-tw', expanded.has(id) ? '▾' : '▸'));
+  hdr.appendChild(el('span', 'sb-name', '📚 Manual'));
   hdr.appendChild(el('span', 'sb-count', String(pages.length)));
+  hdr.addEventListener('click', () => toggleRow(hdr));
   container.appendChild(hdr);
+  const kids = el('div', 'sb-kids');
+  renderManualNode(kids, buildManualTree(), '');
+  kids.hidden = !expanded.has(id);
+  container.appendChild(kids);
+}
+
+function renderManualNode(container, node, path) {
+  // sub-folders first (sorted), then the pages that live here (sorted)
+  const names = Object.keys(node.children).sort();
+  for (const name of names) {
+    const childPath = path ? path + '/' + name : name;
+    const child = node.children[name];
+    const id = 'manual/' + childPath;
+    container.appendChild(dirRow(id, name, countManualPages(child)));
+    const kids = el('div', 'sb-kids');
+    renderManualNode(kids, child, childPath);
+    kids.hidden = !expanded.has(id);
+    container.appendChild(kids);
+  }
   const cp = decodeURIComponent(location.pathname);
-  pages.forEach(p => {
-    const label = p.title || base(p.rel);
+  const pages = node.pages.slice().sort((a, b) =>
+    (a.rel < b.rel) ? -1 : (a.rel > b.rel ? 1 : 0));
+  for (const p of pages) {
     const row = el('a',
       'sb-row sb-file' + (cp === '/' + p.href ? ' current' : ''));
     row.href = '/' + p.href;
     row.appendChild(el('span', 'sb-tw', ''));
-    row.appendChild(el('span', 'sb-name',
-                       p.dir ? (p.dir + ' / ' + label) : label));
+    row.appendChild(el('span', 'sb-name', p.title || base(p.rel)));
     container.appendChild(row);
-  });
+  }
 }
 
 function renderNode(container, node, path) {
@@ -411,8 +459,20 @@ function renderSearch(container, q) {
 
 // ------------------------------------------------------------ expansion
 function defaultExpanded(root) {
-  // all directory groups open; the current file (if any) open
+  // all directory groups — the manual's and the generated tree's — open;
+  // the current file (if any) open
   const s = new Set();
+  const mroot = buildManualTree();
+  if ((data.manual || []).length) {
+    s.add('manual');
+    (function mwalk(node, path) {
+      for (const k in node.children) {
+        const p = path ? path + '/' + k : k;
+        s.add('manual/' + p);
+        mwalk(node.children[k], p);
+      }
+    })(mroot, '');
+  }
   (function walk(node, path) {
     for (const k in node.children) {
       const id = path ? path + '/' + k : k;
@@ -449,6 +509,17 @@ function loadExpanded() {
         expanded.add(p);
       }
       expanded.add('file:' + current);
+    }
+    // same for the manual: landing on a manual page opens its folder chain
+    const cp = decodeURIComponent(location.pathname);
+    if (cp.startsWith('/manual/') && cp.endsWith('.md')) {
+      expanded.add('manual');
+      const parts = cp.slice('/manual/'.length, -3).split('/');
+      let p = '';
+      for (let i = 0; i < parts.length - 1; i++) {
+        p = p ? p + '/' + parts[i] : parts[i];
+        expanded.add('manual/' + p);
+      }
     }
   } else {
     expanded = defaultExpanded(buildTree());
@@ -572,3 +643,12 @@ function init() {
 }
 
 init();
+
+// Internal functions, exported only for the node-based guard test
+// (tests/test_sidebar_manual.js). The browser ignores exports.
+export {
+  data, expanded, el, base,
+  buildManualTree, countManualPages,
+  renderManualGroup, renderManualNode,
+  defaultExpanded, loadExpanded, saveExpanded, toggleRow,
+};
