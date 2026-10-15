@@ -14,6 +14,8 @@ project:
     - "doc_self"
     - "test_out"
     - "manual_doc"
+    - "backends"
+    - "test_codebases"
   max_file_bytes: 26214400
   copy_meta: true
   # Hand-written user manual (see manual_doc/ at the repo root). Copied
