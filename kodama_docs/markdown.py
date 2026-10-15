@@ -2,9 +2,18 @@
 pages and the index. No LLM prose except the record strings passed in.
 """
 import os
+from urllib.parse import quote
 
 from kodama_docs.graph import node_id_fn
 from kodama_docs.util import fence_lang, sanitize_id, trunc
+
+
+def enc_path(path: str) -> str:
+    """Percent-encode a relative markdown link target for the static output
+    (spaces -> ``%20``), keeping ``/`` path separators intact. The web server
+    ``unquote``s the URL on the way in, so encoded links resolve to the
+    on-disk files; raw spaces in a written ``.md`` link would not."""
+    return quote(path, safe='/')
 
 
 def md_escape(s: str) -> str:
@@ -34,7 +43,7 @@ def _fn_anchor(fn: dict) -> str:
 def _rel_link(from_rel: str, to_rel: str) -> str:
     """Relative markdown link from files/<from_rel>.md to files/<to_rel>.md."""
     p = os.path.relpath(to_rel + '.md', os.path.dirname(from_rel) or '.')
-    return p.replace(os.sep, '/')
+    return enc_path(p.replace(os.sep, '/'))
 
 
 def build_call_indexes(g):
@@ -470,7 +479,7 @@ def _manual_section(pages):
              '| --- |']
     for p in pages:
         label = p.get('title') or p['rel']
-        lines.append(f"| [{label}](manual/{p['rel']}) |")
+        lines.append(f"| [{label}]({enc_path('manual/' + p['rel'])}) |")
     lines.append('')
     return lines
 
@@ -486,7 +495,8 @@ def render_index(finfos, output_root: str, diag=None, astatus=None,
         rel = finfo['relpath']
         mdname = rel.rsplit('/', 1)[-1].rsplit('.', 1)[0]
         lines.append(
-            f"| [{rel}](files/{rel}.md) | {finfo.get('lines', '?')} "
+            f"| [{rel}]({enc_path('files/' + rel + '.md')}) "
+            f"| {finfo.get('lines', '?')} "
             f"| {len(finfo.get('functions') or [])} "
             f"| {len(finfo.get('file_vars') or [])} |")
     lines.append('')
