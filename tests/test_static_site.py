@@ -4,9 +4,12 @@ Run:  .venv/bin/python tests/test_static_site.py
 
 Guards the no-server output: the layout, the depth-aware base prefix,
 the JS switch (window.__KODAMA_BASE__), the baked-in theme, the internal
-.md -> .html link rewrite, the slim symbols payload, and verbatim manual
-assets. The fake webdir reuses the REAL templates, so template regressions
-(missing placeholder, wrong asset prefix) surface here too.
+.md -> .html link rewrite, the slim symbols payload, verbatim manual
+assets, and the file:// story: classic (non-module) scripts plus the
+symbols/graph data inlined as window.__KODAMA_SYMBOLS__ /
+window.__KODAMA_GRAPH__. The fake webdir reuses the REAL templates, so
+template regressions (missing placeholder, wrong asset prefix) surface
+here too.
 """
 import json
 import os
@@ -46,6 +49,15 @@ def _read(p):
         return fh.read()
 
 
+def _inline_json_in(html: str, marker: str):
+    """Parse the JSON inlined after ``marker`` in a rendered page: it runs
+    from the marker to the first literal ``</script>`` (the builder escapes
+    ``</`` in the data to ``<\\/``, so nothing inside can terminate the tag
+    early and the first real ``</script>`` is the tag's own end)."""
+    i = html.index(marker) + len(marker)
+    return json.loads(html[i:html.index('</script>', i)])
+
+
 # ------------------------------------------------------------- pure bits
 def test_base_for():
     check(static_site.base_for('index.html') == '', 'base_for(index) is empty')
@@ -69,6 +81,15 @@ def test_rewrite_md_links():
     check(rw('<a href="#a">') == '<a href="#a">', 'anchor untouched')
     check(rw('<a href="g/01%20-%20P.md#c">')
           == '<a href="g/01%20-%20P.html#c">', '%20-encoded link rewritten')
+
+
+def test_inline_json():
+    out = static_site._inline_json({'x': '</script>'})
+    check('</script>' not in out, '_inline_json: no raw </script>')
+    check('<\\/script>' in out, '_inline_json: </ escaped')
+    check(json.loads(out) == {'x': '</script>'}, '_inline_json: round-trips')
+    check(static_site._inline_json({'a': 1, 'b': [1, 2]}) == '{"a":1,"b":[1,2]}',
+          '_inline_json: compact separators')
 
 
 # ---------------------------------------------------------------- fixture
@@ -128,6 +149,7 @@ def build_fixture(root):
 def main():
     test_base_for()
     test_rewrite_md_links()
+    test_inline_json()
 
     with tempfile.TemporaryDirectory() as tmp:
         docs, webdir = build_fixture(tmp)
@@ -141,12 +163,19 @@ def main():
                 'index.html', 'graph.html', '404.html',
                 'files/src/a.html', 'files/b.html',
                 'manual/g/01 - Page.html', 'manual/img/pic.png',
-                'app.js', 'sidebar.js', 'fuzzy.js', 'graph.js',
-                'graph/state.js', 'lib/hi.css',
+                'app.js', 'sidebar.js', 'graph.js',
+                'lib/hi.css',
                 'theme/dark/style.css', 'theme/light/style.css',
                 'symbols.json', 'graph.json',
         ):
             check(os.path.isfile(os.path.join(site, rel)), f'present: {rel}')
+        # the module sub-files ship INSIDE the bundles (file:// cannot load
+        # external ES modules), so the raw copies are absent
+        for rel in ('fuzzy.js', 'graph/state.js'):
+            check(not os.path.exists(os.path.join(site, rel)),
+                  f'absent: {rel} (inlined into the bundle)')
+        check(not os.path.isdir(os.path.join(site, 'graph')),
+              'absent: graph/ dir (inlined into the bundle)')
 
         # ---- theme (dark, from the fixture web_settings.yaml) -----------
         idx = _read(os.path.join(site, 'index.html'))
@@ -189,7 +218,7 @@ def main():
         check('window.__KODAMA_BASE__ = \'\'' in g, 'graph: base empty')
         check('<a class="brand" href="index.html">' in g,
               'graph: brand -> index.html')
-        check('src="graph.js"' in g, 'graph: module script relative')
+        check('src="graph.js"' in g, 'graph: classic script relative')
 
         # ---- title --------------------------------------------------------
         check('<title>Home</title>' in idx, 'index: title from first h1')
@@ -231,6 +260,39 @@ def main():
         check(json.loads(_read(os.path.join(site, 'graph.json')))
               == {'directed': True, 'nodes': [], 'edges': []},
               'graph.json copied')
+
+        # ---- inline data (file:// forbids fetch of local JSON) ------------
+        check('window.__KODAMA_SYMBOLS__ =' in idx,
+              'index: symbols inlined into the page')
+        check('window.__KODAMA_SYMBOLS__ =' in a,
+              'file page: symbols inlined into the page')
+        check('window.__KODAMA_GRAPH__ =' in g,
+              'graph: data inlined into graph.html')
+        # the inlined JSON must parse and match the shipped data files
+        check(_inline_json_in(idx, 'window.__KODAMA_SYMBOLS__ = ') == sl,
+              'index: inlined symbols == symbols.json (slim)')
+        check(_inline_json_in(a, 'window.__KODAMA_SYMBOLS__ = ') == sl,
+              'file page: inlined symbols == symbols.json (slim)')
+        check(_inline_json_in(g, 'window.__KODAMA_GRAPH__ = ')
+              == {'directed': True, 'nodes': [], 'edges': []},
+              'graph: inlined data == graph.json')
+        # ---- classic scripts (no ES modules under file://) -----------------
+        check('type="module"' not in idx, 'index: no ES-module scripts')
+        check('type="module"' not in a, 'file page: no ES-module scripts')
+        check('type="module"' not in g, 'graph: no ES-module scripts')
+        check('<script src="sidebar.js" defer></script>' in idx,
+              'index: classic sidebar script at site root')
+        check('<script src="../../sidebar.js" defer></script>' in a,
+              'file page: classic sidebar script depth-prefixed')
+        check('<script src="graph.js" defer></script>' in g,
+              'graph: classic graph script at site root')
+        # the bundle is a self-contained classic script: no import/export
+        sb = _read(os.path.join(site, 'sidebar.js'))
+        check('__kodama_define' in sb, 'sidebar.js: bundled (define present)')
+        check('import ' not in sb and '\nexport ' not in sb,
+              'sidebar.js: no raw import/export statements')
+        gr = _read(os.path.join(site, 'graph.js'))
+        check('__kodama_define' in gr, 'graph.js: bundled (define present)')
 
         # ---- verbatim manual asset -----------------------------------------
         with open(os.path.join(site, 'manual/img/pic.png'), 'rb') as fh:

@@ -172,6 +172,13 @@ class DocsHandler(BaseHTTPRequestHandler):
                            hljs_dark='' if dark else ' disabled',
                            base='/', index_href='/index.md',
                            graph_href='/graph', base_json='undefined',
+                           # the server ships the real ES modules (served
+                           # over http, so <script type="module"> works) and
+                           # the data via /api/* — the inline slots stay
+                           # undefined so the JS falls back to those.
+                           symbols_json='undefined',
+                           sidebar_tag='<script type="module" '
+                                       'src="/sidebar.js"></script>',
                            body=body)
         self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
 
@@ -291,7 +298,9 @@ class DocsHandler(BaseHTTPRequestHandler):
             theme=self.default_theme,
             hljs_light=' disabled' if dark else '',
             hljs_dark='' if dark else ' disabled',
-            base='/', index_href='/index.md', base_json='undefined')
+            base='/', index_href='/index.md', base_json='undefined',
+            graph_json='undefined',
+            graph_tag='<script type="module" src="/graph.js"></script>')
         self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
 
     def _webfile(self, filename: str, ctype: str):

@@ -3,12 +3,17 @@
 See STATIC_SITE.md for the full design. The output mirrors the output dir:
 ``index.md -> index.html``, ``files/<rel>.md -> files/<rel>.html``,
 ``manual/<rel>.md -> manual/<rel>.html``, plus ``graph.html``, ``404.html``
-and everything the web UI needs at the site root (the root mirrors the
-server's URL space: app.js, sidebar.js, graph.js, graph/, lib/, theme/,
-icon/, and the ``symbols.json`` / ``graph.json`` data the server would
-otherwise serve via ``/api/*``). All paths are relative and depth-aware, so
-the folder works at any host subpath (GitHub Pages) and over ``file://``
-(content pages).
+and everything the web UI needs at the site root (app.js plus the bundled
+classic scripts sidebar.js / graph.js — the ES modules under web/ inlined
+by kodama_docs/js_bundle.py, because browsers refuse external ES modules
+over file:// — and lib/, theme/, icon/).
+
+The search-bar index and the graph data are inlined into the pages as
+``window.__KODAMA_SYMBOLS__`` / ``window.__KODAMA_GRAPH__`` (file:// also
+forbids fetch of local JSON); ``symbols.json`` / ``graph.json`` are still
+written as a fetch fallback. All paths are relative and depth-aware, so
+the folder works over ``file://`` (open index.html directly), at any host
+subpath, and on GitHub Pages.
 """
 import json
 import os
@@ -16,6 +21,7 @@ import re
 import shutil
 import sys
 
+from kodama_docs.js_bundle import bundle
 from kodama_docs.util import log
 
 try:  # repo layout: web/ is a top-level package next to kodama_docs/
@@ -31,7 +37,11 @@ except ImportError:  # pragma: no cover - layout fallback
 # absolute http(s)://, mailto:, #anchors and data: stay untouched.
 _HREF_MD_RE = re.compile(r'href="([^"<>?]+?\.md)(#[^"]*)?"')
 
-_JS_FILES = ('app.js', 'sidebar.js', 'fuzzy.js', 'graph.js')
+# app.js is a plain classic script (no imports), so it is copied as-is;
+# sidebar.js and graph.js are ES-module entry points that get BUNDLED into
+# self-contained classic scripts (see _write_bundles below), because
+# browsers refuse external ES modules under file://.
+_JS_FILES = ('app.js',)
 
 
 def _read(path: str) -> str:
@@ -90,8 +100,13 @@ def _load_template(webdir: str, name: str) -> str:
 
 
 def _render_page(md: str, title: str, theme: str, base: str,
-                 index_href: str, graph_href: str, page_tpl: str) -> str:
+                 index_href: str, graph_href: str, page_tpl: str,
+                 symbols_json: str = 'null',
+                 sidebar_tag: str = None) -> str:
     dark = theme == 'dark'
+    if sidebar_tag is None:
+        # classic bundled script at the site root, depth-prefixed
+        sidebar_tag = f'<script src="{base}sidebar.js" defer></script>'
     return page_tpl.format(
         title=title,
         theme=theme,
@@ -101,6 +116,10 @@ def _render_page(md: str, title: str, theme: str, base: str,
         # JS static-mode switch (see web/sidebar.js); under --serve the
         # server renders the same slot as `undefined`
         base_json=f"'{base}'",
+        # inline search-bar index (file:// forbids fetch); the server
+        # renders the same slot as `undefined`
+        symbols_json=symbols_json,
+        sidebar_tag=sidebar_tag,
         body=rewrite_md_links(md))
 
 
@@ -125,15 +144,15 @@ def slim_symbols(meta_symbols: dict, manual_pages: list) -> dict:
 
 
 def _copy_assets(webdir: str, root: str) -> None:
-    """Copy the UI so the site root mirrors the server's URL space:
-    /app.js /sidebar.js /fuzzy.js /graph.js /graph/* /lib/* and /icon/...
-    map to the same relative paths; /theme/<t>/... (which the server
-    resolves from web/themes/) becomes theme/<t>/... here."""
+    """Copy the plain (non-module) UI assets so the site root mirrors the
+    server's URL space: /app.js /lib/* and /icon/... map to the same
+    relative paths; /theme/<t>/... (which the server resolves from
+    web/themes/) becomes theme/<t>/... here. The module entry points
+    (sidebar.js, graph.js and the graph/ sub-modules they import) are NOT
+    copied — they are bundled into classic scripts by _write_bundles,
+    because browsers refuse external ES modules under file://."""
     for name in _JS_FILES:
         shutil.copy2(os.path.join(webdir, name), os.path.join(root, name))
-    gjs = os.path.join(webdir, 'graph')
-    if os.path.isdir(gjs):
-        shutil.copytree(gjs, os.path.join(root, 'graph'))
     lib = os.path.join(webdir, 'lib')
     if os.path.isdir(lib):
         shutil.copytree(lib, os.path.join(root, 'lib'))
@@ -151,10 +170,28 @@ def _copy_assets(webdir: str, root: str) -> None:
                 shutil.copy2(src, os.path.join(icon_dst, name))
 
 
+def _write_bundles(webdir: str, root: str) -> None:
+    """Bundle the ES-module entry points into self-contained classic scripts
+    so the site works over file:// (browsers refuse external ES modules
+    there). Writes site/sidebar.js and site/graph.js; their imports
+    (fuzzy.js, graph/*.js) are inlined into the bundles, so the raw module
+    files are not copied to the site."""
+    for entry in ('sidebar.js', 'graph.js'):
+        code = bundle(webdir, entry)
+        with open(os.path.join(root, entry), 'w', encoding='utf-8') as fh:
+            fh.write(code)
+
+
 def _write_json(path: str, obj) -> None:
     with open(path, 'w', encoding='utf-8') as fh:
         json.dump(obj, fh, indent=2, sort_keys=True)
         fh.write('\n')
+
+
+def _inline_json(obj) -> str:
+    """JSON for inlining into a <script> tag: compact, and ``</`` escaped so
+    a ``</script>`` sequence in the data cannot terminate the tag early."""
+    return json.dumps(obj, separators=(',', ':')).replace('</', '<\\/')
 
 
 def _iter_doc_pages(out: str):
@@ -207,8 +244,14 @@ def build(cfg: dict, webdir: str = None) -> str:
 
     # 1. UI assets (mirroring the server's URL space, see _copy_assets) ---
     _copy_assets(webdir, site)
+    # module entry points bundled into classic scripts (file://-safe)
+    _write_bundles(webdir, site)
 
     # 2. data (what /api/symbols and /api/graph would serve) --------------
+    # The JSON is written to the site (fetch fallback) AND inlined into the
+    # pages as window.__KODAMA_SYMBOLS__ / window.__KODAMA_GRAPH__: file://
+    # forbids fetch of local JSON, so the inline copy is what actually
+    # feeds the search bar and the graph.
     meta = os.path.join(out, 'meta')
     manual_pages = []
     manual_json = os.path.join(meta, 'manual.json')
@@ -218,17 +261,22 @@ def build(cfg: dict, webdir: str = None) -> str:
                 manual_pages = json.load(fh).get('pages', [])
         except (OSError, ValueError):
             manual_pages = []
+    symbols_inline = 'null'
     symbols_src = os.path.join(meta, 'symbols.json')
     if os.path.isfile(symbols_src):
         with open(symbols_src, 'r', encoding='utf-8') as fh:
-            _write_json(os.path.join(site, 'symbols.json'),
-                        slim_symbols(json.load(fh), manual_pages))
+            slim = slim_symbols(json.load(fh), manual_pages)
+        _write_json(os.path.join(site, 'symbols.json'), slim)
+        symbols_inline = _inline_json(slim)
     else:
         log('static: warning — no meta/symbols.json; sidebar search will '
             'find nothing (run the pipeline first)')
+    graph_inline = 'null'
     graph_src = os.path.join(meta, 'graph.json')
     if os.path.isfile(graph_src):
         shutil.copy2(graph_src, os.path.join(site, 'graph.json'))
+        with open(graph_src, 'r', encoding='utf-8') as fh:
+            graph_inline = _inline_json(json.load(fh))
     else:
         log('static: warning — no meta/graph.json; the graph view will '
             'show an empty-state hint')
@@ -254,7 +302,8 @@ def build(cfg: dict, webdir: str = None) -> str:
         with open(dst, 'w', encoding='utf-8') as fh:
             fh.write(_render_page(
                 render_md(md), title, theme, base,
-                base + 'index.html', base + 'graph.html', page_tpl))
+                base + 'index.html', base + 'graph.html', page_tpl,
+                symbols_json=symbols_inline))
         pages += 1
 
     # 4. graph.html + 404.html --------------------------------------------
@@ -263,7 +312,11 @@ def build(cfg: dict, webdir: str = None) -> str:
             theme=theme,
             hljs_light=' disabled' if theme == 'dark' else '',
             hljs_dark='' if theme == 'dark' else ' disabled',
-            base='', index_href='index.html', base_json="''"))
+            base='', index_href='index.html', base_json="''",
+            # graph data inlined (file:// forbids fetch); classic bundled
+            # script at the site root
+            graph_json=graph_inline,
+            graph_tag='<script src="graph.js" defer></script>'))
     dark = theme == 'dark'
     with open(os.path.join(site, '404.html'), 'w', encoding='utf-8') as fh:
         fh.write(f'''<!doctype html>

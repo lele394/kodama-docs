@@ -612,11 +612,20 @@ function init() {
   input.value = initialQ;
 
   // fetch the index, then draw
-  fetch(symbolsUrl, { credentials: 'same-origin' })
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
+  // The static site ships the index inline (window.__KODAMA_SYMBOLS__,
+  // set by the page) because file:// forbids fetch; the server leaves
+  // that variable undefined, so this falls back to /api/symbols.
+  const INLINE = (typeof window !== 'undefined') &&
+    (window.__KODAMA_SYMBOLS__ || null);
+  const loadIndex = () => INLINE
+    ? Promise.resolve(INLINE)
+    : fetch(symbolsUrl, { credentials: 'same-origin' })
+        .then(r => {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
+
+  loadIndex()
     .then(src => {
       data.files = Array.isArray(src.files) ? src.files : [];
       data.manual = Array.isArray(src.manual) ? src.manual : [];

@@ -42,11 +42,20 @@ if (canvas) {
     ? window.__KODAMA_BASE__ + 'graph.json'
     : '/api/graph';
 
-  fetch(GRAPH_URL)
-    .then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
+  // Static site ships the graph inline (window.__KODAMA_GRAPH__) because
+  // file:// forbids fetch; the server leaves it undefined -> /api/graph.
+  var INLINE = (typeof window !== 'undefined') &&
+    (window.__KODAMA_GRAPH__ || null);
+  var loadGraph = function () {
+    if (INLINE) return Promise.resolve(INLINE);
+    return fetch(GRAPH_URL)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      });
+  };
+
+  loadGraph()
     .then(function (data) {
       state.raw = data;
       rebuild();

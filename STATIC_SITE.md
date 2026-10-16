@@ -21,10 +21,12 @@ The current web UI is server-centric. Every moving part assumes the built-in
 
 `sidebar.js`, `graph.js` and the `graph/*` modules are **ES modules** — they
 load fine on any http(s) origin (GitHub Pages included) but not from
-`file://` (browser CORS on module scripts). The content pages themselves are
-pure HTML/CSS + classic scripts (`app.js`, `highlight.js`) and *do* work from
-`file://`; the sidebar/search/graph are progressive enhancements that degrade
-away there. That is an acceptable tiered story, documented in §6.
+`file://` (browser CORS on module scripts) — and their data comes from
+`fetch()`, which browsers also block on `file://`. The static build therefore
+emits the two entry points as **bundled classic scripts** (see §2) and
+**inlines the data into the pages**, so even the sidebar/search/graph work
+straight from disk. (Solved in milestone 5; this doc reflects the final
+behaviour.)
 
 ## 2. Design
 
@@ -45,8 +47,10 @@ site/
   manual/…                   # non-markdown manual files, copied verbatim
   graph.html                 # the graph view (from web/templates/graph.html)
   404.html                   # GitHub Pages-friendly, links back to index.html
-  app.js  sidebar.js  fuzzy.js  graph.js          (copied from web/)
-  graph/*.js                 (copied from web/graph/)
+  app.js                     # copied from web/ (already a classic IIFE)
+  sidebar.js                 # BUNDLE: web/sidebar.js + every module it imports
+  graph.js                   # inlined into one classic, file://-safe script
+                             # (fuzzy.js and graph/* ship INSIDE the bundles)
   lib/highlight.min.js  lib/github*.min.css  lib/LICENSE
   theme/light/style.css  theme/dark/style.css     (from web/themes/)
   icon/icon.ico  icon/icon.png                    (from the repo-root icon/)
@@ -60,6 +64,28 @@ so the same templates and the same JS work in both modes; only the relative
 prefix differs. (The server maps `/theme/*` to `web/themes/*` on disk, hence
 the singular `theme/` in the static layout.)
 
+**The `file://` fix — classic bundles + inline data.** Browsers refuse both
+external ES-module scripts *and* `fetch()` of local files under `file://`, so
+the static builder does two more things the server never does:
+
+1. **Bundles the two entry points.** `kodama_docs/js_bundle.py` inlines every
+   module `sidebar.js` / `graph.js` imports (depth-first, cycle-checked, and
+   only the relative-import + named-export subset that `web/` actually uses —
+   anything else, like default imports or re-exports, fails the build
+   loudly) and rewrites `import`/`export` onto a tiny
+   `__kodama_define` / `__kodama_require` registry, yielding one
+   self-contained classic script per entry point. The `web/` sources stay ES
+   modules; the server still serves them natively over http — the bundler
+   only runs at static-build time.
+2. **Inlines the data into the pages.** Every page gets
+   `window.__KODAMA_SYMBOLS__ = <slim index>`; `graph.html` gets
+   `window.__KODAMA_GRAPH__ = <graph data>`. The JSON is emitted compact with
+   `</` escaped to `<\/` so it can never terminate its own `<script>`.
+   `sidebar.js` / `graph.js` prefer the inline value and fall back to
+   `fetch(<base>symbols.json)` / `fetch(<base>graph.json)` — the path a
+   server or a non-inline context takes. `symbols.json` / `graph.json` are
+   still written to the site, so the fallback and direct links keep working.
+
 Key decisions:
 
 - **Relative paths, computed per page depth.** `index.html` and `graph.html`
@@ -70,21 +96,25 @@ Key decisions:
   become base-aware: every absolute `/…` asset/link becomes `{base}…`, and
   the server passes `base='/'` (behaviour unchanged) while the static
   builder passes the depth-relative base.
-- **Data as files, not endpoints.** `symbols.json` (same slim shape the
+- **Data inlined, with file fallback.** `symbols.json` (same slim shape the
   server's `/api/symbols` returns) and `graph.json` are written at the site
-  root at build time; the JS fetches `<base>symbols.json` / `<base>graph.json`
-  in static mode (see the layout note above).
+  root at build time — and *also* inlined into the pages as
+  `window.__KODAMA_SYMBOLS__` / `window.__KODAMA_GRAPH__`, because `file://`
+  forbids the fetch. The JS prefers the inline copy and falls back to
+  `fetch(<base>symbols.json)` / `fetch(<base>graph.json)`.
 - **Static-mode switch in JS: `window.__KODAMA_BASE__`.** The generator
   injects `<script>window.__KODAMA_BASE__ = "<base>"</script>` before the
   page scripts. Its presence = static mode:
-  - `sidebar.js` — data from `<base>symbols.json`; rows link to
+  - `sidebar.js` — data from `window.__KODAMA_SYMBOLS__` (inline; `fetch`
+    of `<base>symbols.json` only as fallback); rows link to
     `<base>files/<rel>.html`, `<base>index.html`,
     `<base>manual/…` (`.md` → `.html`); current-page detection handles
     `.html` and host subpaths.
   - `app.js` — theme persists to `localStorage` instead of
     `POST /api/theme`; initial theme is whatever the generator baked in
     (from `web/web_settings.yaml` / `web/theme_state.json`).
-  - `graph.js` — data from `<base>graph.json`.
+  - `graph.js` — data from `window.__KODAMA_GRAPH__` (inline; `fetch` of
+    `<base>graph.json` only as fallback).
   - `graph/panel.js` — `urlFor()` targets `<base>files/<rel>.html`;
     `loadDoc()` fetches that page and extracts the rendered body
     (`<main class="page">`) instead of calling `/page/<rel>`; internal
@@ -102,15 +132,17 @@ Key decisions:
 
 | File | Change |
 | --- | --- |
-| `kodama_docs/static_site.py` | **new** — `build(cfg)`: render every `.md` under the output dir into `site/…html` (base-aware shell, `.md`→`.html` link rewrite), copy assets, write `symbols.json`/`graph.json`, `graph.html`, `404.html` |
+| `kodama_docs/static_site.py` | **new** — `build(cfg)`: render every `.md` under the output dir into `site/…html` (base-aware shell, `.md`→`.html` link rewrite), copy assets, **bundle the entry points**, **inline the data**, write `symbols.json`/`graph.json`, `graph.html`, `404.html` |
+| `kodama_docs/js_bundle.py` | **new** — `bundle(webdir, entry)`: inlines the entry's ES-module graph onto a `__kodama_define`/`__kodama_require` registry → one classic script. Cycle/missing-file/unsupported-syntax all fail loud |
 | `main.py` | `--static` flag → `render_all` then `static_site.build(cfg)` |
-| `web/templates/page.html`, `graph.html` | `/…` → `{base}…`; server passes `base='/'` |
-| `web/server.py` | pass `base='/'` into the template `.format()` calls (no behaviour change) |
-| `web/sidebar.js` | `__KODAMA_BASE__` mode: data URL, row hrefs, current-page detection |
+| `web/templates/page.html`, `graph.html` | `/…` → `{base}…`; `__KODAMA_SYMBOLS__`/`__KODAMA_GRAPH__` inline-data slots + a classic-script tag slot. Server passes `undefined` for the data and `type="module"` tags (behaviour unchanged) |
+| `web/server.py` | pass `base='/'`, `symbols_json='undefined'`, `graph_json='undefined'`, module script tags into the template `.format()` calls (no behaviour change) |
+| `web/sidebar.js` | `__KODAMA_BASE__` mode: inline-first data (fetch fallback), row hrefs, current-page detection |
 | `web/app.js` | `__KODAMA_BASE__` mode: theme via `localStorage` |
-| `web/graph.js` | `__KODAMA_BASE__` mode: graph data URL |
+| `web/graph.js` | `__KODAMA_BASE__` mode: inline-first data (fetch fallback) |
 | `web/graph/panel.js` | `__KODAMA_BASE__` mode: page URL + body extraction from full page |
-| `tests/test_static_site.py` | **new** — fixture output dir → built site assertions (layout, bases, rewrites, JSON payloads, asset copy, no stray absolute paths) |
+| `tests/test_static_site.py` | **new** — fixture output dir → built site assertions (layout incl. bundle presence / `fuzzy.js`+`graph/` absence, bases, rewrites, inline JSON == shipped JSON, no `type="module"`, no stray absolute paths) |
+| `tests/test_js_bundle.py` | **new** — bundler subset parse/reject, cycle + missing + bare-specifier errors, and **node-executes both real bundles in a file:// harness** (inline data, DOM stub, `fetch` throws) |
 | `tests/test_static_sidebar.js` | **new** — node guard test: static-mode hrefs/data URL with a `__KODAMA_BASE__` set before import |
 | `manual_doc/…` | CLI page (`--static`), Rendering page, Output-formats table, Web-server page note |
 
@@ -119,21 +151,28 @@ Key decisions:
 1. Resolve roots: `out = cfg['output_dir']`, `site = <out>/site`,
    `webdir = <repo>/web`. Start from a clean `site/` (delete + recreate —
    same freshness policy as the manual copy).
-2. **Assets**: copy to the site root the JS files (`app.js`, `sidebar.js`,
-   `fuzzy.js`, `graph.js`), `web/graph/` → `graph/`, `web/lib/` → `lib/`,
-   `web/themes/` → `theme/`, and the repo-root `icon/` → `icon/`.
+2. **Assets**: copy `app.js`, `web/lib/` → `lib/`, `web/themes/` → `theme/`,
+   and the repo-root `icon/` → `icon/`; then **bundle** `web/sidebar.js` and
+   `web/graph.js` (all their imports inlined) to `site/sidebar.js` and
+   `site/graph.js`. `fuzzy.js` / `web/graph/` are *not* copied — they ship
+   inside the bundles.
 3. **Data**: read `out/meta/symbols.json` (+ `out/meta/manual.json` when
    present) → slim index (same shape as `_symbols_index`) →
-   `site/symbols.json`; copy `out/meta/graph.json` → `site/graph.json`.
+   `site/symbols.json`, keeping an escaped compact copy for inlining
+   (`window.__KODAMA_SYMBOLS__`); copy `out/meta/graph.json` →
+   `site/graph.json`, keeping an inline copy
+   (`window.__KODAMA_GRAPH__` for `graph.html`).
 4. **Pages**: for each `.md` under `out` that lives in `files/`, `manual/`,
    or is `index.md`: body = `render_md(md)` (the same renderer the server
    uses, so static pages look exactly like served ones) → internal
    `\.md"` hrefs → `\.html"` → wrap in the base-aware shell with
    `base = '../' × depth`, `theme` from `web/web_settings.yaml`
-   (falling back to `web/theme_state.json`, then `light`) →
+   (falling back to `web/theme_state.json`, then `light`), and the
+   **inlined symbols JSON** in the `window.__KODAMA_SYMBOLS__` slot →
    `site/<same path>.html`. Non-`.md` files under `manual/` are copied
    verbatim (images etc. keep working via their relative links).
-5. **graph.html** from `graph.html` template (depth 0), plus a small
+5. **graph.html** from `graph.html` template (depth 0, with the
+   **inlined graph JSON** in `window.__KODAMA_GRAPH__`), plus a small
    `404.html` (GitHub Pages uses it) that offers a link back to `index.html`.
 6. Log the result: page count + where the site is + a one-line GitHub Pages
    hint ("point a Pages repo at `site/`").
@@ -158,9 +197,12 @@ Both work because the site is fully relative and has no server dependency.
   endpoint paths. Existing tests must keep passing unmodified.
 - Static site over http(s) (GitHub Pages, `python -m http.server`): full
   feature parity — sidebar, search, graph, theme switching (per-browser).
-- Static site over `file://`: content, code highlighting and theme work;
-  sidebar/search/graph do not (ES modules + fetch are CORS-blocked by
-  browsers on `file://`) — the page still renders and reads fine.
+- Static site over `file://`: **full feature parity** — content, code
+  highlighting, theme, sidebar, search, and graph all work. Browsers block
+  external ES modules and `fetch()` on `file://`, so the static build sidesteps
+  both: the entry points ship as classic bundles and the data is inlined into
+  the pages (§2). The only remaining `fetch` is the documented fallback for a
+  server/host context.
 - Theme choice in static mode is per-browser (`localStorage`), since there
   is no server to share a single choice with all visitors — the documented
   trade-off for a static deployment.
@@ -170,10 +212,20 @@ Both work because the site is fully relative and has no server dependency.
 ## 7. Test plan
 
 - `tests/test_static_site.py` (python): fixture docs dir (files + manual
-  with an image + meta JSONs) → `build()` → assert layout, per-depth bases,
-  `.md`→`.html` rewrite (internal only, external kept), JSON payload shape,
-  asset copy, injected `__KODAMA_BASE__`, no `src="/`/`href="/` leftovers,
+  with an image + meta JSONs) → `build()` → assert layout (bundles present,
+  `fuzzy.js` + `graph/` **absent**), per-depth bases, `.md`→`.html` rewrite
+  (internal only, external kept), JSON payload shape, **inline data present
+  and equal to the shipped JSON**, **no `type="module"`**, asset copy,
+  injected `__KODAMA_BASE__`, no `src="/`/`href="/` leftovers,
   clean-rebuild freshness (a deleted page disappears on rebuild).
+- `tests/test_js_bundle.py` (python + node): the supported import/export
+  subset parses (aliases, multi-line braces, inline comments); default
+  imports, re-exports, `import()`/`import.meta`, `export default`, cycles,
+  missing modules and bare specifiers are all rejected loudly; and both real
+  bundles (`sidebar.js`, `graph.js`) pass `node --check` and **execute in a
+  file:// harness** — DOM stubbed, `fetch` throws, data supplied inline —
+  asserting the sidebar tree renders and the search input is wired, and the
+  graph evaluates cleanly.
 - `tests/test_static_sidebar.js` (node, DOM stubs like the existing
   `test_sidebar_manual.js`): set `window.__KODAMA_BASE__` before import →
   assert file/fn/var/manual hrefs are base-relative `.html`, index href,
@@ -191,3 +243,6 @@ Both work because the site is fully relative and has no server dependency.
    existing tests).
 3. `static_site.py` + `main.py --static` + guard tests.
 4. Manual updates + `doc_self/site` end-to-end verification.
+5. `file://` support — `js_bundle.py` (classic bundles) + inline data
+   (`window.__KODAMA_SYMBOLS__` / `window.__KODAMA_GRAPH__`) + bundler tests
+   that execute the real bundles under a file:// harness.
