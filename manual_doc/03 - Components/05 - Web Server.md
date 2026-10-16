@@ -29,6 +29,18 @@
 
 The theme button posts to `POST /api/theme` (`light` or `dark`); the choice is persisted in `web/theme_state.json` next to the server code, which overrides `default_theme` until changed again, and applies to every connection.
 
+## Static site (no server)
+
+`main.py --static` combines with a normal run and, afterwards, builds `<output_dir>/site/` — the same documentation as a fully self-contained folder of `.html` files:
+
+- **No server, no fetch endpoints.** Every page is rendered with relative paths computed from its depth (`files/a.html` uses `../`, `manual/x/y.html` uses `../../`), the assets (JS, CSS, icons, highlight.js) are copied in, and the two data endpoints become files: `symbols.json` and `graph.json` at the site root.
+- **One template, two modes.** The page templates and all the `web/*.js` know both layouts: served mode keeps its root-absolute `/…` paths, static mode prefixes the depth-relative base. `site/index.html` opens directly from disk (`file://`) or from any host subpath — e.g. a GitHub Pages repo pointed at `site/`.
+- **404 page included.** `site/404.html` links back to `index.html`, so GitHub Pages dead-ends land somewhere useful.
+- **Theme.** The static build bakes in one theme: `web_settings.yaml`'s `default_theme`, overridable by `web/theme_state.json` (the last choice made with the server button), falling back to `light`.
+- It is a *copy*, not a view: rebuild with another `--static` run to refresh it.
+
+Design notes live in `STATIC_SITE.md` at the repo root.
+
 ## Notes
 
 - The server needs a previous documentation run (it reads `<output_dir>/index.md`, `files/`, and `meta/graph.json`); there is no in-memory generation.

@@ -27,4 +27,14 @@ python main.py --config settings.yaml --serve
 - `/api/graph` — the graph JSON used by the graph view.
 - `/theme/<light|dark>/style.css`, `/app.js`, `/sidebar.js`, `/fuzzy.js`, `/graph.js` — the front-end assets.
 
+## No server needed: `--static`
+
+If you'd rather not run anything, build a static site:
+
+```bash
+python main.py --config settings.yaml --static
+```
+
+The run happens as usual, and afterwards `<output_dir>/site/` is written: the same documentation as plain `.html` files with relative paths, all assets copied in, and a `404.html`. `site/index.html` opens straight from disk, or point a GitHub Pages repo at `site/` and push — no server, no endpoints. Details in [Web Server](../03%20-%20Components/05%20-%20Web%20Server.md) and `STATIC_SITE.md`.
+
 The full route list and how the front-end assembles a page is in [Web Server](../03%20-%20Components/05%20-%20Web%20Server.md).

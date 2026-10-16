@@ -15,6 +15,7 @@
 | `--install URL` | — | git-clone a backend repo into `backends/<name>/` and pip-install its declared python deps; exit. |
 | `--remove NAME` | — | delete one installed backend; exit. |
 | `--serve` | off | start the [web server](05%20-%20Web%20Server.md) on `web/web_settings.yaml` (default `http://127.0.0.1:8123`) and exit. |
+| `--static` | off | combine with a normal run: afterwards also build a self-contained static site into `<output_dir>/site` (open `site/index.html` directly, or host the folder, e.g. GitHub Pages — no server needed). See [Web Server](05%20-%20Web%20Server.md). |
 | `test-backend --backend NAME` | — | run the named backend's self-test harness and exit; `--backend` is required. |
 
 ## Precedence
@@ -25,7 +26,7 @@ The CLI is evaluated in this order; the first matching mode wins and exits:
 2. **`test-backend`** — runs the harness with the named backend (status must be `ready`); exit code 0 on a full pass, non-zero on any failed check.
 3. **`--purge`** / **`--regenerate`** — delete `output_dir`, `data_dir`, and the record caches (`--regenerate` continues, `--purge` stops).
 4. **`--serve`** — web server on the config's output dir (or `docs_dir`).
-5. **the pipeline run** — scan → analyze → graph → [LLM phase](../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.md) → [render](../02%20-%20How%20It%20Works/07%20-%20Rendering.md).
+5. **the pipeline run** — scan → analyze → graph → [LLM phase](../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.md) → [render](../02%20-%20How%20It%20Works/07%20-%20Rendering.md) → (with `--static`) the static site build.
 
 ## Exit codes
 
@@ -49,6 +50,9 @@ python main.py --regenerate
 
 # serve the last run
 python main.py --serve
+
+# build a server-free static site into <output_dir>/site
+python main.py --static
 
 # what backends are here, and what is missing?
 python main.py --list-backends

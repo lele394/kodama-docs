@@ -9,6 +9,7 @@ A run produces two families of artifacts: the **human-readable docs** under `out
 | `index.md` | render | the index: `# Documentation index`, a "Manual documentation" nested bullet list mirroring the manual's folder hierarchy (if `manual_doc` is set), the "N files documented." line, a per-file table (File / Lines / Functions / Variables), and an "Analysis summary" section. |
 | `files/<relpath>.md` | render | one page per source file (see [Rendering](../02%20-%20How%20It%20Works/07%20-%20Rendering.md) for the exact page layout). |
 | `manual/…` | manual copy | a verbatim copy of the configured `manual_doc` folder (all files, so relative images/links work), plus `manual/` entries surfaced on the index. |
+| `site/` | static build (`--static`) | a self-contained, server-free build: every `.md` page rendered to `.html` with depth-relative paths (links rewritten `.md`→`.html`), `graph.html`, `404.html`, the web assets copied to the root (`app.js`, `sidebar.js`, `fuzzy.js`, `graph.js`, `graph/`, `lib/`, `theme/`, `icon/`), and the two API payloads as root files `symbols.json` (slim index) and `graph.json`. Open `site/index.html` directly or host the folder (e.g. GitHub Pages). |
 | `meta/graph.json` | render (when `copy_meta`) | copy of the graph for the web graph view. |
 | `meta/symbols.json` | render (when `copy_meta`) | copy of the analysis cache. |
 | `meta/diagnostics.json` | render (when `copy_meta`) | copy of the diagnostics. |

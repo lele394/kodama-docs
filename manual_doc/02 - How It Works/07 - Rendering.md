@@ -12,6 +12,10 @@ The last stage turns graph + prose into the files you read. It is pure and deter
     graph.json  symbols.json  diagnostics.json
   manual/                  # only when project.manual_doc is set
     ...                    # your hand-written pages + non-md assets, copied as-is
+  site/                    # only with --static: a self-contained static build
+    index.html  graph.html  404.html
+    files/<relpath>.html   # every .md page, links rewritten to .html
+    manual/…  theme/  lib/  icon/  graph/  symbols.json  graph.json
 ```
 
 ## The file page
@@ -48,4 +52,4 @@ Nothing breaks. A function without prose gets an italic placeholder instead of a
 
 ## Where it goes from there
 
-The rendered markdown is static; `kodama_docs/web.py` (the `--serve` server) only presents it, plus the `/graph` interactive view backed by `meta/graph.json`. Serving details are in [Serving](../01%20-%20Getting%20Started/04%20-%20Serving.md).
+The rendered markdown is static; `kodama_docs/web.py` (the `--serve` server) only presents it, plus the `/graph` interactive view backed by `meta/graph.json`. Alternatively, `--static` (see `kodama_docs/static_site.py`) turns the same set into a server-free `site/` folder of `.html` pages — relative paths per page depth, copied assets, and the two `/api/…` endpoints become `symbols.json` / `graph.json` — ready to open from disk or host on GitHub Pages. Serving details are in [Serving](../01%20-%20Getting%20Started/04%20-%20Serving.md) and the static build in [Web Server](../03%20-%20Components/05%20-%20Web%20Server.md).
