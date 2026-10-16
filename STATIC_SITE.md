@@ -42,41 +42,49 @@ site/
   index.html                 # from index.md
   files/<relpath>.html       # one per source file (from files/<relpath>.md)
   manual/<relpath>.html      # hand-written manual pages (from manual/<relpath>.md)
-  manual/…/assets            # non-markdown manual files, copied verbatim
+  manual/…                   # non-markdown manual files, copied verbatim
   graph.html                 # the graph view (from web/templates/graph.html)
-  assets/
-    sidebar.js  app.js  fuzzy.js  graph.js  graph/*.js   (copied from web/)
-    lib/highlight.min.js  lib/github*.min.css  lib/LICENSE
-    themes/light/style.css  themes/dark/style.css
-    icon.ico  icon.png
-    symbols.json           # the /api/symbols payload, prebuilt (slim index)
-    graph.json             # copy of meta/graph.json
+  404.html                   # GitHub Pages-friendly, links back to index.html
+  app.js  sidebar.js  fuzzy.js  graph.js          (copied from web/)
+  graph/*.js                 (copied from web/graph/)
+  lib/highlight.min.js  lib/github*.min.css  lib/LICENSE
+  theme/light/style.css  theme/dark/style.css     (from web/themes/)
+  icon/icon.ico  icon/icon.png                    (from the repo-root icon/)
+  symbols.json                 # the /api/symbols payload, prebuilt (slim index)
+  graph.json                   # copy of meta/graph.json
 ```
+
+The site root mirrors the server's URL space 1:1 — `/app.js`, `/theme/…`,
+`/symbols.json` become `site/app.js`, `site/theme/…`, `site/symbols.json` —
+so the same templates and the same JS work in both modes; only the relative
+prefix differs. (The server maps `/theme/*` to `web/themes/*` on disk, hence
+the singular `theme/` in the static layout.)
 
 Key decisions:
 
 - **Relative paths, computed per page depth.** `index.html` and `graph.html`
-  use `assets/…`; `files/a.html` uses `../assets/…`; `manual/x/y.html` uses
-  `../../assets/…`. The generator already knows each page's depth. Works at
-  any host subpath and from `file://`.
+  use the site root directly; `files/a.html` uses `../`; `manual/x/y.html`
+  uses `../../`. The generator already knows each page's depth. Works at any
+  host subpath and from `file://`.
 - **One template, two modes.** `web/templates/page.html` / `graph.html`
   become base-aware: every absolute `/…` asset/link becomes `{base}…`, and
   the server passes `base='/'` (behaviour unchanged) while the static
   builder passes the depth-relative base.
-- **Data as files, not endpoints.** `assets/symbols.json` (same slim shape
-  the server's `/api/symbols` returns) and `assets/graph.json` are written at
-  build time. JS fetches `<base>assets/symbols.json` in static mode.
+- **Data as files, not endpoints.** `symbols.json` (same slim shape the
+  server's `/api/symbols` returns) and `graph.json` are written at the site
+  root at build time; the JS fetches `<base>symbols.json` / `<base>graph.json`
+  in static mode (see the layout note above).
 - **Static-mode switch in JS: `window.__KODAMA_BASE__`.** The generator
   injects `<script>window.__KODAMA_BASE__ = "<base>"</script>` before the
   page scripts. Its presence = static mode:
-  - `sidebar.js` — data from `<base>assets/symbols.json`; rows link to
+  - `sidebar.js` — data from `<base>symbols.json`; rows link to
     `<base>files/<rel>.html`, `<base>index.html`,
     `<base>manual/…` (`.md` → `.html`); current-page detection handles
     `.html` and host subpaths.
   - `app.js` — theme persists to `localStorage` instead of
     `POST /api/theme`; initial theme is whatever the generator baked in
     (from `web/web_settings.yaml` / `web/theme_state.json`).
-  - `graph.js` — data from `<base>assets/graph.json`.
+  - `graph.js` — data from `<base>graph.json`.
   - `graph/panel.js` — `urlFor()` targets `<base>files/<rel>.html`;
     `loadDoc()` fetches that page and extracts the rendered body
     (`<main class="page">`) instead of calling `/page/<rel>`; internal
@@ -111,13 +119,12 @@ Key decisions:
 1. Resolve roots: `out = cfg['output_dir']`, `site = <out>/site`,
    `webdir = <repo>/web`. Start from a clean `site/` (delete + recreate —
    same freshness policy as the manual copy).
-2. **Assets**: copy into `site/assets/` the JS files (`sidebar.js`,
-   `app.js`, `fuzzy.js`, `graph.js`, `graph/`), `lib/` (highlight + css +
-   LICENSE), `themes/`, and the repo-root `icon/` files.
+2. **Assets**: copy to the site root the JS files (`app.js`, `sidebar.js`,
+   `fuzzy.js`, `graph.js`), `web/graph/` → `graph/`, `web/lib/` → `lib/`,
+   `web/themes/` → `theme/`, and the repo-root `icon/` → `icon/`.
 3. **Data**: read `out/meta/symbols.json` (+ `out/meta/manual.json` when
    present) → slim index (same shape as `_symbols_index`) →
-   `site/assets/symbols.json`; copy `out/meta/graph.json` →
-   `site/assets/graph.json`.
+   `site/symbols.json`; copy `out/meta/graph.json` → `site/graph.json`.
 4. **Pages**: for each `.md` under `out` that lives in `files/`, `manual/`,
    or is `index.md`: body = `render_md(md)` (the same renderer the server
    uses, so static pages look exactly like served ones) → internal
@@ -170,7 +177,7 @@ Both work because the site is fully relative and has no server dependency.
 - `tests/test_static_sidebar.js` (node, DOM stubs like the existing
   `test_sidebar_manual.js`): set `window.__KODAMA_BASE__` before import →
   assert file/fn/var/manual hrefs are base-relative `.html`, index href,
-  and that the symbols fetch URL is `<base>assets/symbols.json`.
+  and that the symbols fetch URL is `<base>symbols.json`.
 - Existing suites stay green in server mode: `test_manual.py`,
   `test_web_manual.py`, `test_sidebar_manual.js`, `test_render_list.py`.
 - End-to-end sanity: build `doc_self/site`, serve it read-only with

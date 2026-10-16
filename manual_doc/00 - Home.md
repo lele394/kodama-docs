@@ -4,7 +4,7 @@ kodama-docs reads a source codebase and turns it into browsable, cross-linked do
 
 ## What this manual is
 
-The [README](../README.md) is a quick overview. This manual is the deeper, sectioned reference: how each part of the tool works, every configuration key, each language backend, and the things that go wrong and how to fix them.
+The project README (in the repository root) is a quick overview. This manual is the deeper, sectioned reference: how each part of the tool works, every configuration key, each language backend, and the things that go wrong and how to fix them.
 
 This "Manual" group is **section 0** of every build — the one place where hand-written content sits at the top of the sidebar, above the generated docs. No LLM is involved in this content.
 

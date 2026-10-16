@@ -4,22 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Graph — kodama-docs</title>
-<link rel="icon" type="image/x-icon" href="/icon/icon.ico">
-<link rel="icon" type="image/png" href="/icon/icon.png">
-<link id="doc-theme" rel="stylesheet" href="/theme/{theme}/style.css?v=2">
+<link rel="icon" type="image/x-icon" href="{base}icon/icon.ico">
+<link rel="icon" type="image/png" href="{base}icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="{base}theme/{theme}/style.css?v=2">
 <link id="hljs-light" rel="stylesheet"
-      href="/lib/github.min.css"{hljs_light}>
+      href="{base}lib/github.min.css"{hljs_light}>
 <link id="hljs-dark" rel="stylesheet"
-      href="/lib/github-dark.min.css"{hljs_dark}>
-<script src="/lib/highlight.min.js" defer></script>
-<script src="/app.js" defer></script>
-<script type="module" src="/graph.js"></script>
+      href="{base}lib/github-dark.min.css"{hljs_dark}>
+<script>window.__KODAMA_BASE__ = {base_json}</script>
+<script src="{base}lib/highlight.min.js" defer></script>
+<script src="{base}app.js" defer></script>
+<script type="module" src="{base}graph.js"></script>
 </head>
 <body class="graph-page">
 <header class="topbar graph-topbar">
-  <a class="brand" href="/index.md"><img class="brand-icon"
-     src="/icon/icon.png" alt="">kodama-docs</a>
-  <a class="nav" href="/index.md">docs</a>
+  <a class="brand" href="{index_href}"><img class="brand-icon"
+     src="{base}icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="{index_href}">docs</a>
   <span class="graph-controls">
     <span class="graph-search" id="graph-search-wrap">
       <input id="graph-search" type="text" placeholder="search nodes…"

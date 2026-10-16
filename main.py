@@ -123,6 +123,11 @@ def main():
     ap.add_argument('--serve', action='store_true',
                     help='serve the rendered docs over HTTP instead of '
                          'generating (needs a previous run)')
+    ap.add_argument('--static', action='store_true',
+                    help='also build a self-contained static site in '
+                         '<output_dir>/site (open site/index.html or host '
+                         'it, e.g. GitHub Pages — no server needed; see '
+                         'STATIC_SITE.md)')
     # backend management (mutually exclusive with a pipeline run)
     ap.add_argument('--list-backends', action='store_true',
                     help='list installed backends (status + requirements) '
@@ -240,6 +245,11 @@ def main():
             f'unchanged cached records still reused next time)')
     else:
         write_doc_cache(cfg, files)
+
+    if args.static:
+        from kodama_docs import static_site
+        static_site.build(cfg)
+
     log('done')
 
 

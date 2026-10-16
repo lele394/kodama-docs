@@ -45,6 +45,32 @@ const SEARCH_CAP = 50;
 const MIN_W = 200;
 const MAX_W = 640;
 
+// Static-site mode (see STATIC_SITE.md): the generator injects
+// window.__KODAMA_BASE__ — the site-root prefix for this page, e.g. '../'
+// for files/a.html, '../../' for manual/x/y.html ('' at the site root).
+// Under --serve the variable is undefined → everything stays
+// root-absolute and data comes from the server's /api/symbols, exactly
+// as before.
+const STATIC = typeof window !== 'undefined' &&
+  typeof window.__KODAMA_BASE__ === 'string';
+const BASE = STATIC ? window.__KODAMA_BASE__ : '';
+
+const fileHref = rp => STATIC ? BASE + 'files/' + rp + '.html'
+                               : '/files/' + rp + '.md';
+const indexHref = () => STATIC ? BASE + 'index.html' : '/index.md';
+const manualHref = h => STATIC ? BASE + String(h).replace(/\.md$/, '.html')
+                               : '/' + h;
+const symbolsUrl = STATIC ? BASE + 'symbols.json' : '/api/symbols';
+// a manual page's relpath from the current URL path (null if not on one)
+function manualRelOf(cp) {
+  const i = cp.indexOf('/manual/');
+  if (i < 0) return null;
+  const rest = cp.slice(i + '/manual/'.length);
+  if (rest.endsWith('.html')) return rest.slice(0, -5);
+  if (rest.endsWith('.md')) return rest.slice(0, -3);
+  return null;
+}
+
 // ---------------------------------------------------------------- helpers
 function el(tag, cls, text) {
   const n = document.createElement(tag);
@@ -58,7 +84,6 @@ function base(rp) {
   return i >= 0 ? String(rp).slice(i + 1) : String(rp);
 }
 
-const fileHref = rp => '/files/' + rp + '.md';
 const fnHref = (rp, name, line) =>
   fileHref(rp) + '#fn-' + sanitize(name) + '-' + line;
 const varHref = rp => fileHref(rp) + '#variables';
@@ -67,9 +92,14 @@ const varHref = rp => fileHref(rp) + '#variables';
 function detectCurrent() {
   let p = decodeURIComponent(location.pathname);
   if (p.length > 1 && p.endsWith('/')) p = p.slice(0, -1);
-  if (p === '/' || p === '/index.md') return 'index';
-  if (p.startsWith('/files/') && p.endsWith('.md'))
-    return p.slice('/files/'.length, -3);
+  if (p === '/' || p === '/index.md' || p === '/index.html' ||
+      p.endsWith('/index.html')) return 'index';
+  const i = p.indexOf('/files/');
+  if (i >= 0) {
+    const rest = p.slice(i + '/files/'.length);
+    if (rest.endsWith('.html')) return rest.slice(0, -5);
+    if (i === 0 && rest.endsWith('.md')) return rest.slice(0, -3);
+  }
   return null;
 }
 
@@ -196,7 +226,7 @@ function renderTree(container) {
   container.textContent = '';
   // the index page first — always present
   const idx = el('a', 'sb-row' + (current === 'index' ? ' current' : ''));
-  idx.href = '/index.md';
+  idx.href = indexHref();
   idx.appendChild(el('span', 'sb-tw', ''));
   idx.appendChild(el('span', 'sb-name', 'index'));
   idx.appendChild(el('span', 'sb-kind', 'md'));
@@ -270,9 +300,11 @@ function renderManualNode(container, node, path) {
   const pages = node.pages.slice().sort((a, b) =>
     (a.rel < b.rel) ? -1 : (a.rel > b.rel ? 1 : 0));
   for (const p of pages) {
-    const row = el('a',
-      'sb-row sb-file' + (cp === '/' + p.href ? ' current' : ''));
-    row.href = '/' + p.href;
+    const isCurrent = STATIC
+      ? cp.endsWith(p.href.replace(/\.md$/, '.html'))
+      : cp === '/' + p.href;
+    const row = el('a', 'sb-row sb-file' + (isCurrent ? ' current' : ''));
+    row.href = manualHref(p.href);
     row.appendChild(el('span', 'sb-tw', ''));
     row.appendChild(el('span', 'sb-name', p.title || base(p.rel)));
     container.appendChild(row);
@@ -312,7 +344,7 @@ function buildCandidates() {
     const label = p.title || base(p.rel);
     cands.push({ kind: 'file', label: label,
                  text: label + ' ' + p.rel,
-                 href: '/' + p.href, path: p.rel, order: cands.length });
+                 href: manualHref(p.href), path: p.rel, order: cands.length });
   });
   for (const f of data.files) {
     const rp = f.relpath;
@@ -512,9 +544,10 @@ function loadExpanded() {
     }
     // same for the manual: landing on a manual page opens its folder chain
     const cp = decodeURIComponent(location.pathname);
-    if (cp.startsWith('/manual/') && cp.endsWith('.md')) {
+    const mrel = manualRelOf(cp);
+    if (mrel) {
       expanded.add('manual');
-      const parts = cp.slice('/manual/'.length, -3).split('/');
+      const parts = mrel.split('/');
       let p = '';
       for (let i = 0; i < parts.length - 1; i++) {
         p = p ? p + '/' + parts[i] : parts[i];
@@ -579,7 +612,7 @@ function init() {
   input.value = initialQ;
 
   // fetch the index, then draw
-  fetch('/api/symbols', { credentials: 'same-origin' })
+  fetch(symbolsUrl, { credentials: 'same-origin' })
     .then(r => {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -644,11 +677,14 @@ function init() {
 
 init();
 
-// Internal functions, exported only for the node-based guard test
-// (tests/test_sidebar_manual.js). The browser ignores exports.
+// Internal functions, exported only for the node-based guard tests
+// (tests/test_sidebar_manual.js, tests/test_static_sidebar.js).
+// The browser ignores exports.
 export {
   data, expanded, el, base,
   buildManualTree, countManualPages,
   renderManualGroup, renderManualNode,
+  renderTree,
   defaultExpanded, loadExpanded, saveExpanded, toggleRow,
+  symbolsUrl,   // static tests check the fetch target per mode
 };

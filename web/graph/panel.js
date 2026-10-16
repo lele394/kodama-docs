@@ -10,18 +10,26 @@ import { esc, sanitize } from './util.js';
 
 const docStack = [];
 
+// Static-site mode (see STATIC_SITE.md): pages are the generated
+// <base>files/<rel>.html files, fetched whole (there is no /page/ body
+// endpoint) with the <main class="page"> body extracted below.
+const STATIC = typeof window !== 'undefined' &&
+  typeof window.__KODAMA_BASE__ === 'string';
+const BASE = STATIC ? window.__KODAMA_BASE__ : '';
+const docUrl = relpath => STATIC
+  ? BASE + 'files/' + relpath + '.html'
+  : '/files/' + relpath + '.md';
+
 function urlFor(v) {
   if (v.kind === 'file') {
-    return { url: '/files/' + v.relpath + '.md', frag: null };
+    return { url: docUrl(v.relpath), frag: null };
   }
   if (v.kind === 'function') {
-    return {
-      url: '/files/' + v.relpath + '.md',
-      frag: 'fn-' + sanitize(v.name) + '-' + v.line,
-    };
+    return { url: docUrl(v.relpath),
+             frag: 'fn-' + sanitize(v.name) + '-' + v.line };
   }
   if (v.kind === 'variable') {
-    return { url: '/files/' + v.relpath + '.md', frag: 'variables' };
+    return { url: docUrl(v.relpath), frag: 'variables' };
   }
   return null;
 }
@@ -48,6 +56,9 @@ function loadDoc(t, frag) {
   if (panelOpen) panelOpen.hidden = false;
   afterHtml('<p class="panel-hint">loading…</p>', t.url);
   // body-only endpoint so the panel doesn't embed the page shell
+  // server: the body-only endpoint, so the panel doesn't embed the page
+  // shell; static: the generated .html page itself (the <main class="page">
+  // body is extracted below)
   var fetchUrl = t.url.indexOf('/files/') === 0
     ? '/page' + t.url
     : t.url;
@@ -58,12 +69,15 @@ function loadDoc(t, frag) {
     })
     .then(function (html) {
       var doc = new DOMParser().parseFromString(html, 'text/html');
-      // t.url is an absolute path, so any origin serves to resolve the
-      // relative links it contains; a fixed one keeps this location-
-      // independent.
+      var bodyEl = doc.querySelector('main.page') || doc.body;
       var ORIGIN = 'http://kodama-docs.local';
-      var base = new URL(ORIGIN + t.url);
-      var bodyEl = doc.body;
+      var base = STATIC
+        // t.url is relative to the graph page; the links inside resolve
+        // against the page they belong to.
+        ? new URL(t.url, location.href).href
+        // server: t.url is an absolute path; any origin serves to resolve
+        // its relative links — a fixed one stays location-independent.
+        : new URL(ORIGIN + t.url).href;
       Array.prototype.forEach.call(bodyEl.querySelectorAll('a[href]'),
         function (a) {
           var href = a.getAttribute('href');
@@ -73,19 +87,33 @@ function loadDoc(t, frag) {
             a.removeAttribute('href');
             return;
           }
-          var abs;
-          try { abs = new URL(href, base).href; } catch (err) { return; }
-          var hash = abs.indexOf('#');
-          var path = hash >= 0 ? abs.slice(0, hash) : abs;
-          var pathOnly = path.indexOf(ORIGIN) === 0
-            ? path.slice(ORIGIN.length) : path;
+          var u;
+          try { u = new URL(href, base); } catch (err) { return; }
+          var hash = u.href.indexOf('#');
+          if (STATIC) {
+            // internal doc page = a /files/... .html page of this site
+            if (u.pathname.indexOf('/files/') >= 0
+                && u.pathname.slice(-5) === '.html') {
+              a.setAttribute('data-doc-url',
+                hash >= 0 ? u.href.slice(0, hash) : u.href);
+              if (hash >= 0)
+                a.setAttribute('data-doc-frag', u.href.slice(hash + 1));
+              a.removeAttribute('href');
+            } else {
+              a.setAttribute('href', u.href);
+              a.setAttribute('target', '_blank');
+            }
+            return;
+          }
+          var pathOnly = u.pathname.indexOf(ORIGIN) === 0
+            ? u.pathname.slice(ORIGIN.length) : u.pathname;
           if (pathOnly.indexOf('/files/') === 0
               && pathOnly.slice(-3) === '.md') {
             a.setAttribute('data-doc-url', '/' + pathOnly.slice(1));
-            if (hash >= 0) a.setAttribute('data-doc-frag', abs.slice(hash + 1));
+            if (hash >= 0) a.setAttribute('data-doc-frag', u.href.slice(hash + 1));
             a.removeAttribute('href');
           } else {
-            a.setAttribute('href', abs);
+            a.setAttribute('href', u.href);
             a.setAttribute('target', '_blank');
           }
         });

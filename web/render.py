@@ -38,6 +38,16 @@ def render_inline(text: str) -> str:
     text = html.escape(text)
     text = _BOLD_RE.sub(r'<strong>\1</strong>', text)
     text = _STAR_RE.sub(r'<em>\1</em>', text)
+    # Links first: the whole anchor (text AND target) is protected from the
+    # underscore pass, which must not rewrite double underscores inside a
+    # filename — GFM treats intraword _ as literal, so an __init__.py
+    # style link keeps both its display name and its href byte-for-byte.
+    def keep_link(m):
+        anchor = f'<a href="{m.group(2)}">{m.group(1)}</a>'
+        stash.append(anchor)
+        return f'\x00{len(stash) - 1}\x00'
+
+    text = _LINK_RE.sub(keep_link, text)
     # protect intraword underscores (e.g. kodama_docs) from the italic pass,
     # like GFM's intraword rule
     u_stash = []
@@ -49,7 +59,6 @@ def render_inline(text: str) -> str:
     text = _INTRA_U_RE.sub(keep_u, text)
     text = _UNDER_RE.sub(r'<em>\1</em>', text)
     text = re.sub(r'\x01(\d+)\x01', lambda m: '_', text)
-    text = _LINK_RE.sub(r'<a href="\2">\1</a>', text)
 
     def restore(m):
         item = stash[int(m.group(1))]

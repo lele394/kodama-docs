@@ -170,6 +170,8 @@ class DocsHandler(BaseHTTPRequestHandler):
                            theme=self.default_theme,
                            hljs_light=' disabled' if dark else '',
                            hljs_dark='' if dark else ' disabled',
+                           base='/', index_href='/index.md',
+                           graph_href='/graph', base_json='undefined',
                            body=body)
         self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
 
@@ -288,7 +290,8 @@ class DocsHandler(BaseHTTPRequestHandler):
         page = GRAPH_PAGE.format(
             theme=self.default_theme,
             hljs_light=' disabled' if dark else '',
-            hljs_dark='' if dark else ' disabled')
+            hljs_dark='' if dark else ' disabled',
+            base='/', index_href='/index.md', base_json='undefined')
         self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
 
     def _webfile(self, filename: str, ctype: str):

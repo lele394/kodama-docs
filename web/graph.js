@@ -35,7 +35,14 @@ if (canvas) {
   initSearch();
   initTheme();
 
-  fetch('/api/graph')
+  // static site: the graph data ships as graph.json at the site root
+  // (the same shape as the server's /api/graph endpoint).
+  var STATIC = typeof window.__KODAMA_BASE__ === 'string';
+  var GRAPH_URL = STATIC
+    ? window.__KODAMA_BASE__ + 'graph.json'
+    : '/api/graph';
+
+  fetch(GRAPH_URL)
     .then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -49,7 +56,7 @@ if (canvas) {
       stage.style.alignItems = 'center';
       stage.style.justifyContent = 'center';
       stage.innerHTML = '<p class="panel-err">No graph data found at '
-        + '/api/graph — ' + esc(err && err.message || err)
+        + esc(GRAPH_URL) + ' — ' + esc(err && err.message || err)
         + '. Re-run the doc pipeline to build meta/graph.json.</p>';
       legend.innerHTML = '';
       counts.textContent = '';
