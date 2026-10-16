@@ -1,0 +1,186 @@
+# Static site generation (no server needed)
+
+Goal: make `kodama-docs` able to emit a **self-contained static site** — plain
+HTML/CSS/JS files that work when hosted anywhere, including **GitHub Pages**,
+or opened straight from disk. No server, no build step, no third-party web
+tooling.
+
+## 1. Why this is not free today
+
+The current web UI is server-centric. Every moving part assumes the built-in
+`main.py --serve` (stdlib `http.server`) is running:
+
+| Concern | How it works under `--serve` | Problem for a static site |
+| --- | --- | --- |
+| Pages | `.md` rendered to HTML **on demand**; absolute paths in the shell (`/theme/…`, `/lib/…`, `/app.js`, `/sidebar.js`, brand → `/index.md`) | absolute paths break under a subpath (`user.github.io/repo/`) and under `file://` |
+| Sidebar data | `fetch('/api/symbols')` — a slim index the server builds from `meta/symbols.json` + `meta/manual.json` | no `/api/*` without a server |
+| Graph view | `fetch('/api/graph')` → `meta/graph.json`; the left panel fetches **bodies only** from `/page/<rel>` | no endpoints; a full page fetch would embed the whole shell |
+| Theme | server-side: choice POSTed to `/api/theme`, persisted in `web/theme_state.json`, applied to **every** browser | no endpoint; persistence must move to the browser |
+| Manual assets | raw bytes served from `manual/` (images, css) | must be copied into the site |
+| Cross links | markdown links stay relative (`../foo.md`) and resolve because the server serves the same tree | links must point at the generated `.html` files |
+
+`sidebar.js`, `graph.js` and the `graph/*` modules are **ES modules** — they
+load fine on any http(s) origin (GitHub Pages included) but not from
+`file://` (browser CORS on module scripts). The content pages themselves are
+pure HTML/CSS + classic scripts (`app.js`, `highlight.js`) and *do* work from
+`file://`; the sidebar/search/graph are progressive enhancements that degrade
+away there. That is an acceptable tiered story, documented in §6.
+
+## 2. Design
+
+One new flag:
+
+```
+python main.py --config <cfg> --static
+```
+
+runs the normal pipeline (cached → cheap) and then builds a self-contained
+folder **`<output_dir>/site/`**:
+
+```
+site/
+  index.html                 # from index.md
+  files/<relpath>.html       # one per source file (from files/<relpath>.md)
+  manual/<relpath>.html      # hand-written manual pages (from manual/<relpath>.md)
+  manual/…/assets            # non-markdown manual files, copied verbatim
+  graph.html                 # the graph view (from web/templates/graph.html)
+  assets/
+    sidebar.js  app.js  fuzzy.js  graph.js  graph/*.js   (copied from web/)
+    lib/highlight.min.js  lib/github*.min.css  lib/LICENSE
+    themes/light/style.css  themes/dark/style.css
+    icon.ico  icon.png
+    symbols.json           # the /api/symbols payload, prebuilt (slim index)
+    graph.json             # copy of meta/graph.json
+```
+
+Key decisions:
+
+- **Relative paths, computed per page depth.** `index.html` and `graph.html`
+  use `assets/…`; `files/a.html` uses `../assets/…`; `manual/x/y.html` uses
+  `../../assets/…`. The generator already knows each page's depth. Works at
+  any host subpath and from `file://`.
+- **One template, two modes.** `web/templates/page.html` / `graph.html`
+  become base-aware: every absolute `/…` asset/link becomes `{base}…`, and
+  the server passes `base='/'` (behaviour unchanged) while the static
+  builder passes the depth-relative base.
+- **Data as files, not endpoints.** `assets/symbols.json` (same slim shape
+  the server's `/api/symbols` returns) and `assets/graph.json` are written at
+  build time. JS fetches `<base>assets/symbols.json` in static mode.
+- **Static-mode switch in JS: `window.__KODAMA_BASE__`.** The generator
+  injects `<script>window.__KODAMA_BASE__ = "<base>"</script>` before the
+  page scripts. Its presence = static mode:
+  - `sidebar.js` — data from `<base>assets/symbols.json`; rows link to
+    `<base>files/<rel>.html`, `<base>index.html`,
+    `<base>manual/…` (`.md` → `.html`); current-page detection handles
+    `.html` and host subpaths.
+  - `app.js` — theme persists to `localStorage` instead of
+    `POST /api/theme`; initial theme is whatever the generator baked in
+    (from `web/web_settings.yaml` / `web/theme_state.json`).
+  - `graph.js` — data from `<base>assets/graph.json`.
+  - `graph/panel.js` — `urlFor()` targets `<base>files/<rel>.html`;
+    `loadDoc()` fetches that page and extracts the rendered body
+    (`<main class="page">`) instead of calling `/page/<rel>`; internal
+    doc links are recognized by `files/… + .html`.
+  - Under `--serve` the flag is absent → every existing URL/endpoint path
+    is taken; the server is byte-for-byte as it is today.
+- **Link rewriting, build-time only.** Rendered bodies keep their relative
+  markdown links; the static builder rewrites *internal* `href="….md"` to
+  `….html` (absolute `http(s)`/`mailto:`/`#` targets untouched). Server
+  rendering is untouched.
+- **No new dependencies.** Generation is plain Python (stdlib + what the
+  pipeline already uses); the JS reuses the exact files under `web/`.
+
+## 3. Files touched
+
+| File | Change |
+| --- | --- |
+| `kodama_docs/static_site.py` | **new** — `build(cfg)`: render every `.md` under the output dir into `site/…html` (base-aware shell, `.md`→`.html` link rewrite), copy assets, write `symbols.json`/`graph.json`, `graph.html`, `404.html` |
+| `main.py` | `--static` flag → `render_all` then `static_site.build(cfg)` |
+| `web/templates/page.html`, `graph.html` | `/…` → `{base}…`; server passes `base='/'` |
+| `web/server.py` | pass `base='/'` into the template `.format()` calls (no behaviour change) |
+| `web/sidebar.js` | `__KODAMA_BASE__` mode: data URL, row hrefs, current-page detection |
+| `web/app.js` | `__KODAMA_BASE__` mode: theme via `localStorage` |
+| `web/graph.js` | `__KODAMA_BASE__` mode: graph data URL |
+| `web/graph/panel.js` | `__KODAMA_BASE__` mode: page URL + body extraction from full page |
+| `tests/test_static_site.py` | **new** — fixture output dir → built site assertions (layout, bases, rewrites, JSON payloads, asset copy, no stray absolute paths) |
+| `tests/test_static_sidebar.js` | **new** — node guard test: static-mode hrefs/data URL with a `__KODAMA_BASE__` set before import |
+| `manual_doc/…` | CLI page (`--static`), Rendering page, Output-formats table, Web-server page note |
+
+## 4. Build algorithm (`static_site.build`)
+
+1. Resolve roots: `out = cfg['output_dir']`, `site = <out>/site`,
+   `webdir = <repo>/web`. Start from a clean `site/` (delete + recreate —
+   same freshness policy as the manual copy).
+2. **Assets**: copy into `site/assets/` the JS files (`sidebar.js`,
+   `app.js`, `fuzzy.js`, `graph.js`, `graph/`), `lib/` (highlight + css +
+   LICENSE), `themes/`, and the repo-root `icon/` files.
+3. **Data**: read `out/meta/symbols.json` (+ `out/meta/manual.json` when
+   present) → slim index (same shape as `_symbols_index`) →
+   `site/assets/symbols.json`; copy `out/meta/graph.json` →
+   `site/assets/graph.json`.
+4. **Pages**: for each `.md` under `out` that lives in `files/`, `manual/`,
+   or is `index.md`: body = `render_md(md)` (the same renderer the server
+   uses, so static pages look exactly like served ones) → internal
+   `\.md"` hrefs → `\.html"` → wrap in the base-aware shell with
+   `base = '../' × depth`, `theme` from `web/web_settings.yaml`
+   (falling back to `web/theme_state.json`, then `light`) →
+   `site/<same path>.html`. Non-`.md` files under `manual/` are copied
+   verbatim (images etc. keep working via their relative links).
+5. **graph.html** from `graph.html` template (depth 0), plus a small
+   `404.html` (GitHub Pages uses it) that offers a link back to `index.html`.
+6. Log the result: page count + where the site is + a one-line GitHub Pages
+   hint ("point a Pages repo at `site/`").
+
+## 5. GitHub Pages deployment (what the user gets)
+
+Option A — **Actions (recommended)**: push the repo, add the existing
+`test.yml`-style workflow that runs the pipeline and uploads `site/` as the
+Pages artifact. Zero manual steps per release.
+
+Option B — **publish folder**: run `python main.py --config my.yaml --static`
+locally, then either push the `site/` contents to a `gh-pages` branch or to
+the repo's Pages folder setting; Pages serves `site/index.html` as the site
+root.
+
+Both work because the site is fully relative and has no server dependency.
+
+## 6. Guarantees & limits
+
+- Served mode (`--serve`) is **unchanged in behaviour** — the templates
+  render with `base='/'`, JS without `__KODAMA_BASE__` takes the existing
+  endpoint paths. Existing tests must keep passing unmodified.
+- Static site over http(s) (GitHub Pages, `python -m http.server`): full
+  feature parity — sidebar, search, graph, theme switching (per-browser).
+- Static site over `file://`: content, code highlighting and theme work;
+  sidebar/search/graph do not (ES modules + fetch are CORS-blocked by
+  browsers on `file://`) — the page still renders and reads fine.
+- Theme choice in static mode is per-browser (`localStorage`), since there
+  is no server to share a single choice with all visitors — the documented
+  trade-off for a static deployment.
+- `symbols.json` is generated, not handwritten; it always matches the last
+  pipeline run (same as `meta/symbols.json` today).
+
+## 7. Test plan
+
+- `tests/test_static_site.py` (python): fixture docs dir (files + manual
+  with an image + meta JSONs) → `build()` → assert layout, per-depth bases,
+  `.md`→`.html` rewrite (internal only, external kept), JSON payload shape,
+  asset copy, injected `__KODAMA_BASE__`, no `src="/`/`href="/` leftovers,
+  clean-rebuild freshness (a deleted page disappears on rebuild).
+- `tests/test_static_sidebar.js` (node, DOM stubs like the existing
+  `test_sidebar_manual.js`): set `window.__KODAMA_BASE__` before import →
+  assert file/fn/var/manual hrefs are base-relative `.html`, index href,
+  and that the symbols fetch URL is `<base>assets/symbols.json`.
+- Existing suites stay green in server mode: `test_manual.py`,
+  `test_web_manual.py`, `test_sidebar_manual.js`, `test_render_list.py`.
+- End-to-end sanity: build `doc_self/site`, serve it read-only with
+  `python -m http.server`, curl the index + one deep manual page + an asset
+  to confirm every referenced path resolves.
+
+## 8. Milestones (commits)
+
+1. Plan doc (`STATIC_SITE.md`).
+2. Base-aware templates + JS static mode (server mode proven unchanged by
+   existing tests).
+3. `static_site.py` + `main.py --static` + guard tests.
+4. Manual updates + `doc_self/site` end-to-end verification.
