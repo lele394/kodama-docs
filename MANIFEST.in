@@ -1,0 +1,8 @@
+include README.md
+include LICENSE
+include settings.yaml
+include pyproject.toml
+recursive-include prompts *.txt
+recursive-include web *.js *.py *.yaml *.html *.css LICENSE
+recursive-include backends */manifest.toml
+recursive-include icon *.png *.ico

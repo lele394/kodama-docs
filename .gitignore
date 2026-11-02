@@ -5,6 +5,8 @@ __pycache__/
 
 # generated artifacts (recreated by running main.py)
 data/
+doc/
+docs/
 test_out/
 doc_self/
 data_self/
@@ -16,8 +18,7 @@ serve.log
 # secrets
 .env
 
-# test-codebase LLM caches (generated)
+# test-codebase generated docs/caches (regenerate locally)
 test_codebases/*/data/
-
-# mixed fixture docs are parse-only stubs (--no-llm); regenerate locally
-test_codebases/mixed-c-cpp-cu-py/docs/
+test_codebases/*/docs/
+test_codebases/*/site/

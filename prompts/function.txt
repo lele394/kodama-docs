@@ -1,5 +1,6 @@
-You are documenting Lua source code from a game installation, for a
-developer reference. Document the single function described in the context.
+You are documenting a {language} function from {file}, for a developer
+reference. The function is `{symbol}` (lines {line}-{line_end}).
+Document the single function described in the context.
 
 Rules:
 - description: 1-3 sentences stating what the function does, based only on
@@ -13,5 +14,9 @@ Rules:
 - references: other project symbols the function clearly depends on
   (max ~10). Omit if none.
 - uncertainties: things you could not determine from the code (max ~5).
+- Respect the language's own idioms and terminology; this is {language},
+  not a generic pseudocode function.
+- A developer comment, when present, is context from the authors:
+  {developer_comment}
 - Do not invent behavior that is not visible in the code. If unsure, put
   it in uncertainties instead.

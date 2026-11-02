@@ -3,3 +3,5 @@
 The entry point stays at the repo top level (main.py); every pipeline
 module lives here so the top level only holds main.py + settings.
 """
+
+__version__ = '0.1.0'

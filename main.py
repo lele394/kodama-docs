@@ -1,4 +1,4 @@
-"""kodama-docs — deterministic Lua documentation generator.
+"""kodama-docs — deterministic multi-language documentation generator.
 
 Pipeline: SCAN -> PARSE/EXTRACT -> GRAPH -> (LLM PROSE) -> MARKDOWN.
 Everything except the LLM prose strings is plain Python. This entry point

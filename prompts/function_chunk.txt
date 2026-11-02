@@ -1,4 +1,5 @@
-You are helping document one long Lua function, which was split into parts.
+You are helping document one long {language} function from {file}, which was
+split into parts. The function is `{symbol}` (lines {line}-{line_end}).
 Summarize the single part shown in the context.
 
 Rules:
@@ -7,5 +8,6 @@ Rules:
   transformations, calls it makes, side effects.
 - Note how the part relates to the function's parameters or its input/output
   when visible.
+- Respect the language's own idioms and terminology; this is {language}.
 - Do not invent behavior that is not visible in the code.
 - Do not describe other parts of the function; you only see one part.

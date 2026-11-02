@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kodama-docs"
+dynamic = ["version"]
+description = "Deterministic documentation generator for codebases"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+keywords = ["documentation", "static-analysis", "tree-sitter", "llm"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Documentation",
+]
+dependencies = [
+    "tree-sitter==0.26.0",
+    "tree-sitter-lua==0.5.0",
+    "tree-sitter-python==0.25.0",
+    "tree-sitter-cpp==0.23.4",
+    "tree-sitter-cuda==0.21.2",
+    "ruamel.yaml==0.19.1",
+    "networkx==3.7",
+    "rich==15.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["ruff"]
+
+[project.scripts]
+kodama-docs = "main:main"
+
+[project.urls]
+Repository = "https://github.com/lele394/kodama-docs"
+
+[tool.setuptools]
+py-modules = ["main"]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "kodama_docs.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["kodama_docs*", "backends*", "web*"]
+namespaces = true
+
+[tool.setuptools.package-data]
+backends = ["*/manifest.toml"]
+web = [
+    "*.js",
+    "*.py",
+    "*.yaml",
+    "graph/*.js",
+    "lib/*",
+    "templates/*.html",
+    "themes/*/*.css",
+]

@@ -65,6 +65,8 @@ tui:
   enabled: true
   interval: 0.5
 
+# Prompt files are templates: {language}, {file}, {symbol}, {line},
+# {params}, {developer_comment}, ... are replaced per task (see README).
 prompts:
   function: "./prompts/function.txt"
   chunk: "./prompts/function_chunk.txt"

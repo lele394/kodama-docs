@@ -52,7 +52,7 @@ the bowels of strange and unfamiliar code. Cheers!
 
 - [x] Manual documentation (hand-written pages as section 0 — see [Configuration](#configuration) → `project.manual_doc`)
 - [ ] Graph mode optimizations (high node counts)
-- [ ] Static site generation
+- [x] Static site generation (`--static`, see [STATIC_SITE.md](STATIC_SITE.md))
 
 ### Planned language support 
 
@@ -136,10 +136,11 @@ int legacy_entry(int value);
 
    ```bash
    python3 -m venv .venv
-   .venv/bin/pip install -r requirements.txt
+   .venv/bin/pip install -e .          # package metadata + console script
+   # or: .venv/bin/pip install -r requirements.txt
    ```
 
-   (or `uv venv .venv && uv pip install --python .venv/bin/python -r requirements.txt`)
+   (or `uv venv .venv && uv pip install --python .venv/bin/python -e .`)
 
 2. **Secrets** — never put API keys in the YAML config. Create `.env` next to
    the config file:
@@ -150,8 +151,8 @@ int legacy_entry(int value);
    ```
 
    Config values `api_key: env` / `base_url: env` (also the default when the
-   keys are absent) mean "read from `.env`". The lookup order is the config
-   file's directory first, then the script directory.
+   keys are absent) mean "read from `.env`". The lookup order is the project
+   root first, then the config file's directory.
 
 3. **Run**:
 
@@ -348,7 +349,35 @@ example). Relative paths resolve against the config file's directory.
 | `documentation.*` | toggles + budgets: `skip_existing`, `max_function_lines` (chunk-and-merge threshold), chunking knobs below — **no task caps**: every function, variable and file gets documented |
 | `concurrency` | parallel LLM agents working the task queue (default **2**; any positive integer, 20+ is fine) |
 | `tui.enabled` / `tui.interval` | live terminal UI while the LLM phase runs (auto-off when stdout is not a TTY) |
-| `prompts.*` | system-prompt text files per task kind |
+| `prompts.*` | system-prompt text files per task kind (template keys below) |
+
+### Prompt templates
+
+Prompt files are plain text with `{key}` placeholders. Rendering is a
+deterministic single-pass replacement of known keys only; unknown braces
+are left untouched, so JSON examples in custom prompts are safe.
+
+| key | value |
+|---|---|
+| `{language}` | human label: `Python`, `Lua`, `C`, `C++`, `CUDA` |
+| `{language_family}` | backend family: `python`, `lua`, `c-family` |
+| `{dialect}` | `c`, `cpp` or `cuda` (`c-family` only) |
+| `{file}` | source relpath, e.g. `cpp/engine.cpp` |
+| `{symbol}` | qualified symbol name (`mixed.Engine.step`); file path for summaries |
+| `{name}` | unqualified symbol name |
+| `{kind}` | `function`, `function chunk`, `variable` or `file summary` |
+| `{line}` / `{line_end}` | symbol start/end line |
+| `{params}` | comma-separated parameter names |
+| `{fence}` | syntax-highlighting language for the source block |
+| `{developer_comment}` | glued developer comment, or empty |
+
+The shipped prompts use `{language}` and `{file}`, so the same files work for
+every backend. For example:
+
+```text
+You are documenting a {language} function from {file}.
+The function is `{symbol}` (lines {line}-{line_end}).
+```
 
 ### Manual documentation (section 0)
 
@@ -464,6 +493,7 @@ all of them).
 ## Repository layout
 
 ```
+pyproject.toml     # package metadata, version, console script, build config
 main.py            # CLI + pipeline orchestration (thin; the phases live in kodama_docs/)
 kodama_docs/          # all pipeline modules
   config.py        # settings + .env loading

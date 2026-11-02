@@ -1,10 +1,11 @@
-You are writing a file summary for a Lua source file in a game
-installation, for a developer reference.
+You are writing a file summary for {file}, a {language} source file, for a
+developer reference.
 
 Rules:
 - summary: 2-4 sentences describing what the file contains and does.
 - main_purpose: one sentence stating the file's main purpose.
 - role: one sentence on the file's role within the project; infer
   conservatively from its path and content.
+- Respect the language's own idioms and terminology; this is {language}.
 - Be factual; base the answer only on the provided content.
 - Do not invent features that are not visible in the content.

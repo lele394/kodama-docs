@@ -11,12 +11,22 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 import kodama_docs.graph as gmod
-from kodama_docs.context import (fn_chunks, fn_context_text, var_context_text,
-                     summary_context_text)
+from kodama_docs.context import (
+    fn_chunks,
+    fn_context_text,
+    summary_context_text,
+    var_context_text,
+)
 from kodama_docs.llm import LLMClient, generate
+from kodama_docs.prompt_templates import prompt_fields, render_prompt
 from kodama_docs.records import load_record, save_record
-from kodama_docs.tasks import (chunk_fp, function_fp, settings_fp,
-                               summary_fp, variable_fp)
+from kodama_docs.tasks import (
+    chunk_fp,
+    function_fp,
+    settings_fp,
+    summary_fp,
+    variable_fp,
+)
 from kodama_docs.tui import TUI
 from kodama_docs.util import fence_lang, log, set_log_sink
 
@@ -33,6 +43,9 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
     chunks = fn_chunks(fn.get('body') or '', maxchunk, chunktok, cpt)
     if not chunks:
         return 'Source: (empty body)'
+    chunk_prompt = render_prompt(
+        prompts.get('chunk', ''),
+        prompt_fields(f, fn, 'function chunk'))
     notes = []
     for ci, ct in enumerate(chunks, 1):
         cname = f'{fn["name"]}#c{ci}'
@@ -53,7 +66,7 @@ def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
                 + (' + varargs' if fn.get('vararg') else '')
                 + f"\nBody part {ci}/{len(chunks)} of a long function:\n"
                   + f"```{fence_lang(f['relpath'])}\n{ct}\n```")
-            cp = generate(client, 'chunk', prompts.get('chunk', ''),
+            cp = generate(client, 'chunk', chunk_prompt,
                           cctx, retry, no_llm=no_llm)
             save_record(cfg['data_dir'], f['relpath'], 'chunk', cname,
                         fn['line'], cp, cfp,
@@ -197,9 +210,11 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                                 {**sym, 'relpath': rel}, ins, outs,
                                 cfg['context'], reads=reads,
                                 imports=imports)
-                        prose = generate(client, 'function',
-                                         prompts.get('function', ''), ctx,
-                                         retry)
+                        task_prompt = render_prompt(
+                            prompts.get('function', ''),
+                            prompt_fields(f, sym, 'function'))
+                        prose = generate(client, 'function', task_prompt,
+                                         ctx, retry)
                     # Save only newly generated prose (never rewrite a cache
                     # hit — that would also drop the `stubbed` flag from a
                     # stub loaded in --no-llm mode). In --no-llm mode the
@@ -225,9 +240,11 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                         tui.stage(w, rel, name, 'describe')
                         ctx = var_context_text({**sym, 'relpath': rel},
                                                cfg['context'])
-                        prose = generate(client, 'variable',
-                                         prompts.get('variable', ''), ctx,
-                                         retry)
+                        task_prompt = render_prompt(
+                            prompts.get('variable', ''),
+                            prompt_fields(f, sym, 'variable'))
+                        prose = generate(client, 'variable', task_prompt,
+                                         ctx, retry)
                     save_record(cfg['data_dir'], rel, 'variable', name,
                                 sym['line'], prose, fp,
                                 {'file': rel, 'name': name, 'line': sym['line'],
@@ -246,9 +263,12 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                     else:
                         tui.stage(w, rel, 'file', 'describe')
                         ctx = summary_context_text(f, cfg['context'])
-                        prose = generate(client, 'summary',
-                                         prompts.get('summary', ''), ctx,
-                                         retry)
+                        task_prompt = render_prompt(
+                            prompts.get('summary', ''),
+                            prompt_fields(f, {'name': 'file', 'line': 1},
+                                          'file summary'))
+                        prose = generate(client, 'summary', task_prompt,
+                                         ctx, retry)
                     save_record(cfg['data_dir'], rel, 'summary', 'file', 1,
                                 prose, fp,
                                 {'file': rel, 'lines': f.get('lines'),

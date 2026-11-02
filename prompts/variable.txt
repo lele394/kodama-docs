@@ -1,10 +1,13 @@
-You are documenting a file-level Lua variable from a game installation,
-for a developer reference.
+You are documenting a file-level {language} variable from {file}, for a
+developer reference. The variable is `{symbol}` (line {line}).
 
 Rules:
 - description: 1-2 sentences stating what the variable holds and how it is
   used, based only on the visible information.
 - notes: optional short observations (initialization form, caveats).
   Omit if nothing to note.
+- Respect the language's own idioms and terminology; this is {language}.
+- A developer comment, when present, is context from the authors:
+  {developer_comment}
 - Do not invent behavior. If unsure, keep the description factual and
   minimal.
