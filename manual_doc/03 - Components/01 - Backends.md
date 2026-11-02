@@ -7,9 +7,11 @@ A **backend** is a pluggable package that knows one language: it takes source te
 A backend is a directory under `backends/` containing:
 
 - `manifest.toml` — identity (`backend.name`, `version`, `api_version`), declared `capabilities.languages` / `capabilities.extensions`, and `requirements` (executable files and/or pip packages);
-- `__init__.py` — the Python package, which **must** expose `extract(source, relpath) -> dict`;
+- `__init__.py` — a **thin entrypoint** that re-exports `extract(source, relpath) -> dict`, `BUILTIN_NAMES`, `LANG` and, where applicable, `module_candidates`;
+- the implementation modules next to it (`extract.py`, `nodes.py`, `builtins.py`, `parser.py`, …);
 - optional `BUILTIN_NAMES` — names the resolver should treat as language/stdlib (so calls to them never dangle as unresolved project references);
-- optional `module_candidates(module, relpath)` — the file paths a language import could map to (the generic fallback guesses `x.lua`, `x/init.lua`, …; Python overrides this for `__init__.py` packages).
+- optional `LANG` — the language family (`python`, `lua`, `c-family`) stamped onto analysis records and used for language-scoped graph resolution;
+- optional `module_candidates(module, relpath)` — the file paths a language import could map to (the generic fallback guesses `x.lua`, `x/init.lua`, …; Python overrides this for `__init__.py` packages; the C-family backend resolves quoted `#include`s).
 
 The full contract, including every invariant the pipeline relies on, is in `backends/backend_design.md` in the repository.
 
@@ -47,17 +49,30 @@ Install runs `git clone --depth 1` with the directory name derived from the URL 
 
 The graph is the artifact under test: a failure means the *translation* (code → record → graph) is wrong, and the exit code is non-zero so the harness is CI-friendly. See [Adding a Language](../08%20-%20Contributing/01%20-%20Adding%20a%20Language.md).
 
+## Developer comments and LLM skips
+
+A comment directly above a definition is glued as its `developer_comment`.
+That works for a run of `//`/`#`/`--` lines or one multiline `/* ... */`
+block, on functions, classes, globals/macros and their Python/Lua
+equivalents. If the **first non-empty line** is `kodama-docs-llm:skip`, the
+backend sets `skip_llm` and removes the marker line. No LLM task is created
+for that symbol; a class-level skip also covers its methods, constructors and
+nested classes.
+
 ## The stable API
 
 The registry exposes a small, stable surface the pipeline uses:
 
 | Name | Used for |
 | --- | --- |
-| `extract(source, relpath)` | the record, per file (the contract). |
+| `extract(source, relpath)` | the record, per file (the contract); the registry stamps `LANG`. |
 | `builtins_for(relpath)` | the backend's `BUILTIN_NAMES`, for the resolver. |
 | `module_candidates(module, relpath)` | import → file resolution candidates. |
 | `list_backends()` | status table for `--list-backends`. |
 | `active_backend_ids()` | `name@version` per extension — stamped into `symbols.json` so a backend upgrade invalidates the analysis cache (see [Caching](../02%20-%20How%20It%20Works/08%20-%20Caching.md)). |
 | `install_backend(url)` / `remove_backend(name)` | backend management. |
 
-The concrete backends ship in this repository: [Lua](02%20-%20Lua%20Backend.md) and [Python](03%20-%20Python%20Backend.md).
+The concrete backends ship in this repository:
+[Lua](02%20-%20Lua%20Backend.md),
+[Python](03%20-%20Python%20Backend.md), and
+[C/C++/CUDA](03b%20-%20C%20C%2B%2B%20CUDA%20Backend.md).

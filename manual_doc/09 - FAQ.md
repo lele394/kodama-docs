@@ -23,8 +23,8 @@ A record is only reused if its fingerprint matches. The fingerprint covers the s
 **What's the difference between `--regenerate` and `--purge`?**
 Both delete the output/data dirs and start clean. `--regenerate` deletes **and runs** the pipeline; `--purge` deletes **and exits**. They are mutually exclusive. See [CLI](03%20-%20Components/06%20-%20CLI.md).
 
-**Does it only work with Lua and Python?**
-No — those are the bundled backends. The pipeline is language-agnostic: add a backend package (or `--install URL` an external one) that claims a new extension, and its files are documented. See [Adding a Language](08%20-%20Contributing/01%20-%20Adding%20a%20Language.md) and [Backends](03%20-%20Components/01%20-%20Backends.md).
+**Does it only support the bundled languages?**
+No — Lua, Python, C, C++ and CUDA are the bundled backends. The pipeline is language-agnostic: add a backend package (or `--install URL` an external one) that claims a new extension, and its files are documented. See [Adding a Language](08%20-%20Contributing/01%20-%20Adding%20a%20Language.md) and [Backends](03%20-%20Components/01%20-%20Backends.md).
 
 **Where is my API key, and what's it sent to?**
 `llm.api_key` and `llm.base_url` are taken from the config, but the literal value `"env"` (or a missing value, the default) means "read it from a `.env` file" — searched project-root-first (next to `main.py`), then the config file's directory. If `env` is required but the key isn't found, the run stops with a clear message listing the paths it looked in. The key is only ever sent as a Bearer token to `llm.base_url` — the endpoint you configure (often a local model server). Nothing else leaves the machine except the LLM calls you initiate. See [LLM Client](03%20-%20Components/04%20-%20LLM%20Client.md).
@@ -36,7 +36,7 @@ No. Exit 1 means at least one LLM task failed and `.doc_cache` was not updated. 
 `python main.py --serve` starts the web app (default `127.0.0.1:8123`) with the docs, a file sidebar, a fuzzy search, and the interactive graph. See [Web Server](03%20-%20Components/05%20-%20Web%20Server.md).
 
 **Can I document this tool itself?**
-Yes — it's a Python project and its own backend documents it. `configs/self.yaml` + `doc_self/` are the committed self-documentation. See [Documenting kodama-docs Itself](05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.md).
+Yes — it's a Python project and its own backend documents it. `configs/self.yaml` builds `doc_self/` locally (the generated docs and `site/` are git-ignored). See [Documenting kodama-docs Itself](05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.md).
 
 **What license, and can the output be used to train a model?**
 The code is MIT *with an explicit clause excluding its use as AI/ML training data*. Review `LICENSE` before reuse.

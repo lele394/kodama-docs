@@ -36,7 +36,8 @@ The theme button posts to `POST /api/theme` (`light` or `dark`); the choice is p
 - **No server, no fetch endpoints.** Every page is rendered with relative paths computed from its depth (`files/a.html` uses `../`, `manual/x/y.html` uses `../../`), the assets (JS, CSS, icons, highlight.js) are copied in, and the two data endpoints become files: `symbols.json` and `graph.json` at the site root.
 - **One template, two modes.** The page templates and all the `web/*.js` know both layouts: served mode keeps its root-absolute `/…` paths, static mode prefixes the depth-relative base. `site/index.html` opens directly from disk (`file://`) or from any host subpath — e.g. a GitHub Pages repo pointed at `site/`.
 - **404 page included.** `site/404.html` links back to `index.html`, so GitHub Pages dead-ends land somewhere useful.
-- **Theme.** The static build bakes in one theme: `web_settings.yaml`'s `default_theme`, overridable by `web/theme_state.json` (the last choice made with the server button), falling back to `light`.
+- **Theme.** The build bakes in `web_settings.yaml`'s `default_theme` (overridable by `web/theme_state.json`, falling back to `light`). In static mode the page button switches per browser via `localStorage` — there is no server to share one choice.
+- **`file://` caveat.** Content, sidebar, search, theme and the graph canvas work from disk. The graph panel fetches a rendered page when you click a node, which browsers block on `file://`; serve the site over http(s) (GitHub Pages included) for that interaction.
 - It is a *copy*, not a view: rebuild with another `--static` run to refresh it.
 
 Design notes live in `STATIC_SITE.md` at the repo root.

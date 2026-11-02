@@ -1,6 +1,9 @@
 # Lua backend
 
-`backends/lua/` — the Lua backend (manifest name `kodama-lua`). Parsing is delegated to the official **tree-sitter-lua** grammar; the module only walks the concrete syntax tree and projects it into the [record contract](../02%20-%20How%20It%20Works/03%20-%20Extraction.md). There is no hand-rolled tokenizer.
+`backends/lua/` — the Lua backend (manifest name `kodama-lua`). Parsing is delegated to the official **tree-sitter-lua** grammar; the package only walks the concrete syntax tree and projects it into the [record contract](../02%20-%20How%20It%20Works/03%20-%20Extraction.md). There is no hand-rolled tokenizer.
+
+`__init__.py` is a thin entrypoint; the implementation lives in
+`constants.py`, `builtins.py`, `parser.py`, `nodes.py`, and `extract.py`.
 
 ## What it extracts
 

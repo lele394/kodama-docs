@@ -13,10 +13,20 @@ kodama-docs is a Python package. You only need Python, `git`, and the runtime de
 ```bash
 python3.14 -m venv .venv
 source .venv/bin/activate
+pip install -e .
+# or, without installing the package:
 pip install -r requirements.txt
 ```
 
-There is no installable package (no `pyproject.toml`/`setup.py`) — the code is run directly from the checkout, so `pip install -r requirements.txt` is the whole install. It pulls: `tree-sitter`, `tree-sitter-lua`, `tree-sitter-python`, `ruamel.yaml`, `networkx`, and `rich`.
+V0.1 is installed from the checkout. `pip install -e .` uses `pyproject.toml`
+and also installs the `kodama-docs` console script; `requirements.txt` is the
+dependency-only path. Either way the source tree keeps `prompts/`,
+`settings.yaml`, `web/` and `icon/` next to `main.py`, which is what the
+default config expects.
+
+The runtime dependencies are `tree-sitter`, `tree-sitter-lua`,
+`tree-sitter-python`, `tree-sitter-cpp`, `tree-sitter-cuda`, `ruamel.yaml`,
+`networkx`, and `rich`.
 
 ## Set up the LLM (optional)
 
@@ -35,7 +45,11 @@ That is all the `.env` carries. The model name is **not** a `.env` key — it co
 python main.py --list-backends
 ```
 
-A healthy install lists the built-in `kodama-lua` and `kodama-python` backends, each `ready`, with routing for `.lua` and `.py`. The Python backend also ships an end-to-end self-test (it runs a small fixture through the real graph builder and checks every call/import edge):
+A healthy install lists the built-in `kodama-lua`, `kodama-python` and
+`kodama-cpp` backends, each `ready`, with routing for `.lua`, `.py`, and the
+C/C++/CUDA extensions. The Python backend also ships an end-to-end self-test
+(it runs a small fixture through the real graph builder and checks every
+call/import edge):
 
 ```bash
 python main.py test-backend --backend python

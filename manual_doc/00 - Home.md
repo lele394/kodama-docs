@@ -12,7 +12,7 @@ This "Manual" group is **section 0** of every build — the one place where hand
 
 - [01 - Getting Started](01%20-%20Getting%20Started/01%20-%20Install.md) — install, your first run, configuration, serving.
 - [02 - How It Works](02%20-%20How%20It%20Works/01%20-%20Overview.md) — the pipeline, determinism, the graph, chunk-and-merge, caching.
-- [03 - Components](03%20-%20Components/01%20-%20Backends.md) — backends, the Lua and Python backends, the LLM client, the web server, the CLI.
+- [03 - Components](03%20-%20Components/01%20-%20Backends.md) — backends, the Lua, Python and C/C++/CUDA backends, the LLM client, the web server, the CLI.
 - [04 - Reference](04%20-%20Reference/01%20-%20Config%20Reference.md) — every config key, the output and data formats, the prompts.
 - [05 - Examples](05%20-%20Examples/01%20-%20Documenting%20a%20Lua%20Project.md) — end-to-end walkthroughs, including kodama-docs documenting itself.
 - [06 - Troubleshooting](06%20-%20Troubleshooting/01%20-%20LLM%20Problems.md) — LLM, parsing, and performance problems.

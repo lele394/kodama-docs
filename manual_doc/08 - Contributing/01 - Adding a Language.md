@@ -5,7 +5,14 @@ A language backend is a **self-contained package** inside `backends/`. The pipel
 ```
 backends/<dir>/
     manifest.toml   # identity, capabilities, requirements
-    __init__.py     # extract() (+ optional BUILTIN_NAMES, module_candidates)
+    __init__.py     # thin entrypoint: re-export the public API
+    constants.py    # language tag, extension/node sets
+    builtins.py     # language/stdlib names
+    parser.py       # parser instance / parser selection
+    comments.py     # comment cleaning
+    nodes.py        # name/declarator/parameter/value helpers
+    includes.py     # import/#include resolution candidates
+    extract.py      # the walk that returns the neutral records
 ```
 
 A new backend is live the moment its directory exists and its requirements are met — there is no registry line to add.
@@ -66,8 +73,10 @@ Returns a dict with these keys (names and shapes must not change — the render,
 ### Optional module-level exports
 
 - **`BUILTIN_NAMES: set[str]`** — names that are *not* cross-file links (builtins, stdlib, `self`/`cls`). Without it, every undefined name becomes a dangling edge.
+- **`LANG: str`** — the language family (`python`, `lua`, `c-family`, …), stamped onto analysis records and used for language-scoped graph resolution.
 - **`module_candidates(module, relpath) -> list[str]`** — the relpaths a language import of `module` could resolve to. Without it the registry falls back to `<module><ext>` and `<module>/init<ext>` (plus the dotted→path form).
-- **Comment-glue helpers** — use `backends/_shared.py`'s `_all_comments` and `_dev_comment` so `developer_comment` behaves identically across languages.
+- **`bindings`** — optional explicit cross-language exports (the C-family backend emits pybind11 `EXPORTS`/`BRIDGES` records).
+- **Comment-glue helpers** — use `backends/_shared.py`'s `_all_comments`, `_dev_comment`, and `parse_llm_directive` so `developer_comment` and `kodama-docs-llm:skip` behave identically across languages.
 
 ## 3. Ship steps
 
@@ -87,6 +96,16 @@ python main.py --remove <manifest-name>
 
 ## Reference implementations
 
-`backends/lua/__init__.py` (tree-sitter-lua) and `backends/python/__init__.py` (tree-sitter-python) are the reference implementations. Both use `tree-sitter` (pinned in `requirements.txt` and re-declared in their manifests) and the `_shared.py` comment-glue helpers. **No hand-rolled tokenizers.** A language-agnostic self-test harness lives in `kodama_docs/testing.py` (run it with `test-backend --backend <name>`): a backend that implements the `collect_truth()` / `parse_markers()` protocol can check its extraction against the fixture's `# expect:` markers — the Python backend implements it (249/249), the Lua backend does not. It's an optional extra, not required to route.
+`backends/lua/` (tree-sitter-lua), `backends/python/` (tree-sitter-python),
+and `backends/cpp/` (tree-sitter-cpp + tree-sitter-cuda) are the reference
+implementations. All use `tree-sitter` (pinned in `requirements.txt`,
+`pyproject.toml`, and re-declared in their manifests) and the `_shared.py`
+comment/directive helpers. **No hand-rolled tokenizers.** A language-agnostic
+self-test harness lives in `kodama_docs/testing.py` (run it with
+`test-backend --backend <name>`): a backend that implements the
+`collect_truth()` / `parse_markers()` protocol can check its extraction
+against the fixture's `# expect:` markers — the Python backend implements it
+(249/249), the Lua backend does not. It's an optional extra, not required to
+route.
 
-Related: [Backends](../03%20-%20Components/01%20-%20Backends.md), [Lua Backend](../03%20-%20Components/02%20-%20Lua%20Backend.md), [Python Backend](../03%20-%20Components/03%20-%20Python%20Backend.md), [Code Organization](02%20-%20Code%20Organization.md).
+Related: [Backends](../03%20-%20Components/01%20-%20Backends.md), [Lua Backend](../03%20-%20Components/02%20-%20Lua%20Backend.md), [Python Backend](../03%20-%20Components/03%20-%20Python%20Backend.md), [C/C++/CUDA Backend](../03%20-%20Components/03b%20-%20C%20C%2B%2B%20CUDA%20Backend.md), [Code Organization](02%20-%20Code%20Organization.md).

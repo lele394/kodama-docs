@@ -359,6 +359,10 @@ def build(cfg: dict, webdir: str = None) -> str:
 </html>
 ''')
 
+    # Tell GitHub Pages not to run Jekyll over the generated folder.
+    with open(os.path.join(site, '.nojekyll'), 'w', encoding='utf-8'):
+        pass
+
     # 5. report ------------------------------------------------------------
     log(f'static: {pages} page(s) + graph.html -> {site}')
     log('static: self-contained pages — open site/index.html directly, or '

@@ -7,7 +7,7 @@ The prose each page carries is produced by four prompt files (one per [LLM phase
 At run time `generate()` (see [LLM client](../03%20-%20Components/04%20-%20LLM%20Client.md)) assembles the **system** message as:
 
 ```
-<your prompt file, verbatim>
+<your prompt file, with {template} keys rendered>
 
 Return ONLY one JSON object, no markdown fences, matching this schema exactly:
 <the JSON schema for the kind, dumped from kodama_docs/models.py>
@@ -15,7 +15,34 @@ Return ONLY one JSON object, no markdown fences, matching this schema exactly:
 Field values must be plain strings. Be concise and factual.
 ```
 
-The **user** message is the deterministic context (the symbol, its code, its callers/callees — see [LLM Phase](../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.md) and [Chunk and Merge](../02%20-%20How%20It%20Works/06%20-%20Chunk%20and%20Merge.md)). The schema is embedded verbatim from code, so the model and the validator can never disagree about the expected shape; a reply that doesn't validate is rejected and retried (up to `documentation.retry_invalid_json` extra times).
+The prompt file is a **template**. Before the call, kodama-docs replaces the
+known `{key}` placeholders for that task (single pass; unknown braces are left
+untouched, so JSON examples in custom prompts are safe). The **user** message
+is the deterministic context (the symbol, its code, its callers/callees — see
+[LLM Phase](../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.md) and
+[Chunk and Merge](../02%20-%20How%20It%20Works/06%20-%20Chunk%20and%20Merge.md)).
+The schema is embedded verbatim from code, so the model and the validator can
+never disagree about the expected shape; a reply that doesn't validate is
+rejected and retried (up to `documentation.retry_invalid_json` extra times).
+
+### Template keys
+
+| Key | Value |
+| --- | --- |
+| `{language}` | `Python`, `Lua`, `C`, `C++` or `CUDA` |
+| `{language_family}` | `python`, `lua` or `c-family` |
+| `{dialect}` | `c`, `cpp` or `cuda` |
+| `{file}` | source relpath |
+| `{symbol}` | qualified symbol name; file path for summaries |
+| `{name}` | unqualified symbol name |
+| `{kind}` | `function`, `function chunk`, `variable`, `file summary` |
+| `{line}` / `{line_end}` | symbol start/end line |
+| `{params}` | comma-separated parameter names |
+| `{fence}` | code-fence language |
+| `{developer_comment}` | glued developer comment, or empty |
+
+The shipped prompts use `{language}` and `{file}`, so the same files work for
+every backend.
 
 ## The four files
 
@@ -26,7 +53,7 @@ The **user** message is the deterministic context (the symbol, its code, its cal
 | `variable.txt` | `./prompts/variable.txt` | `variable` | `description` (1–2 sentences, min 8 chars) + optional `notes` (≤ 16). |
 | `summary.txt` | `./prompts/summary.txt` | `summary` | `summary` (2–4 sentences, min 16), `main_purpose` (1 sentence), `role` (1 sentence). |
 
-All four share the same guardrails: **base the answer only on the visible code, never invent behavior, and put doubts in `uncertainties`** (function) / keep it factual and minimal (variable). The prompts are phrased for Lua source from a game installation (the project's primary target), but the surrounding pipeline is language-agnostic.
+All four share the same guardrails: **base the answer only on the visible code, never invent behavior, and put doubts in `uncertainties`** (function) / keep it factual and minimal (variable). They are language-neutral and use `{language}` to ask for the right idioms; the surrounding pipeline is language-agnostic.
 
 ## Editing them safely
 

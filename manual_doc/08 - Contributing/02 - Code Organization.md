@@ -6,19 +6,20 @@ A map of the repository, so a change can be routed to the right file. (See [Addi
 
 | Path | What it is |
 | --- | --- |
-| `main.py` | the CLI entry point. Parsers the flags (in precedence order: `--list-backends`/`--install`/`--remove`, `test-backend`, `--purge`/`--regenerate`, `--serve`, pipeline), then drives the four phases. See [CLI](../03%20-%20Components/06%20-%20CLI.md). |
+| `pyproject.toml` / `MANIFEST.in` | package metadata, version (`kodama_docs.__version__`), console script, dependencies and package data. |
+| `main.py` | the CLI implementation. Parses the flags (in precedence order: `--list-backends`/`--install`/`--remove`, `test-backend`, `--purge`/`--regenerate`, `--serve`, pipeline), then drives the four phases. The installed `kodama-docs` script calls the same code. See [CLI](../03%20-%20Components/06%20-%20CLI.md). |
 | `settings.yaml` | the default config. All runtime configuration lives here (see [Config Reference](../04%20-%20Reference/01%20-%20Config%20Reference.md)). |
 | `kodama_docs/` | the core Python package — the pipeline itself. |
-| `backends/` | the language backends: `lua/`, `python/`, the shared `_shared.py`, the registry (`__init__.py`), and `backend_design.md` (the authoring contract). |
-| `web/` | the `--serve` web app: `server.py` (routing), `render.py` (the deterministic markdown→HTML subset), the JS (`app.js`, `sidebar.js`, `graph.js`, `fuzzy.js`), `themes/`, and `web_settings.yaml`. |
-| `prompts/` | the four LLM prompt files (see [Prompts](../04%20-%20Reference/03%20-%20Prompts.md)). |
+| `backends/` | the language backends: `lua/`, `python/`, `cpp/`, the shared `_shared.py`, the registry (`__init__.py`), and `backend_design.md` (the authoring contract). Each backend keeps a thin `__init__.py` and splits its implementation into modules. |
+| `web/` | the `--serve`/`--static` web app: `server.py` (routing), `render.py` (the deterministic markdown→HTML subset), the JS (`app.js`, `sidebar.js`, `graph.js`, `fuzzy.js`), `themes/`, and `web_settings.yaml`. |
+| `prompts/` | the four LLM prompt **templates** (see [Prompts](../04%20-%20Reference/03%20-%20Prompts.md)). |
 | `configs/` | example configs: `self.yaml` (dogfooding), `test.yaml`, `cloudcfg.yaml`. |
 | `manual_doc/` | this manual (human-written; embedded into the generated docs via `manual_doc`). |
-| `doc_self/`, `data_self/` | committed output of documenting kodama-docs itself (see [Documenting kodama-docs Itself](../05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.md)). |
-| `test_codebases/` | the small Lua and Python sample projects (N-body) used for end-to-end runs. |
-| `tests/` | test suite: `test_manual.py`, `test_resolver.py`, `test_web_manual.py`. |
-| `requirements.txt` | pinned dependencies. |
-| `DESIGN.md` | the design notes. |
+| `doc_self/`, `data_self/` | local generated self-documentation/cache (git-ignored; see [Documenting kodama-docs Itself](../05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.md)). |
+| `test_codebases/` | the Lua/Python N-body samples plus the mixed C/C++/CUDA/Python fixture (see its README). |
+| `tests/` | test scripts: resolver, backend, prompt templates, rendering, static site, web/manual. |
+| `requirements.txt` | pinned dependencies (mirrored in `pyproject.toml`). |
+| `DESIGN.md` | the original design notes (historical). |
 | `LICENSE` | MIT, plus an explicit "not for AI/ML training data" clause. |
 
 ## `kodama_docs/` — one module per phase
@@ -29,11 +30,15 @@ A map of the repository, so a change can be routed to the right file. (See [Addi
 | `scan.py` | walk the tree, route files to backends, extract symbols, cache `symbols.json`, write `diagnostics.json`, report. |
 | `graph.py` | build the resolution graph and the per-reference statuses (resolved/inferred/builtin/external/ambiguous) — see [Symbols and Graph](../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.md). |
 | `context.py` | build the deterministic per-kind prompt context (function / variable / summary) and the chunk splitter. |
+| `prompt_templates.py` | render `{language}` / `{file}` / `{symbol}` … placeholders in prompt templates. |
 | `llm.py` | the `LLMClient` (transport + retries), `generate()` (validate + invalid-JSON retry), and the `--no-llm` stubs. |
 | `llm_phase.py` | run the task queue over functions → variables → summaries, with the TUI. |
 | `records.py` | save / load / delete the per-task LLM records and their fingerprints. |
 | `models.py` | the per-kind JSON schemas and the deterministic validator (the same schemas embedded verbatim in prompts). |
 | `markdown.py` | render `index.md` and the per-file pages (the deterministic structure + links). |
+| `static_site.py` | build the self-contained `<output>/site/` (`--static`). |
+| `js_bundle.py` | bundle the ES modules for `file://`-safe static pages. |
+| `testing.py` | backend self-test harness (`test-backend`). |
 | `manual.py` | copy + surface a user-supplied `manual_doc` folder. |
 | `outputs.py` | `--purge` / `--regenerate` dir handling and the `.doc_cache` write/check. |
 | `tui.py` | the Rich terminal panel for the LLM phase. |

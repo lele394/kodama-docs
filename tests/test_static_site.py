@@ -180,7 +180,7 @@ def main():
 
         # ---- layout ------------------------------------------------------
         for rel in (
-                'index.html', 'graph.html', '404.html',
+                'index.html', 'graph.html', '404.html', '.nojekyll',
                 'files/src/a.html', 'files/b.html',
                 'manual/g/01 - Page.html', 'manual/img/pic.png',
                 'app.js', 'sidebar.js', 'graph.js',

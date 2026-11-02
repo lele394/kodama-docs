@@ -67,10 +67,12 @@ The configuration file (`settings.yaml` by default, or `--config PATH`) is plain
 
 | Key | Default | Meaning |
 | --- | --- | --- |
-| `function` | `./prompts/function.txt` | system-prompt base for function docs. |
-| `chunk` | `./prompts/function_chunk.txt` | system-prompt base for chunk summaries. |
-| `variable` | `./prompts/variable.txt` | system-prompt base for variable docs. |
-| `summary` | `./prompts/summary.txt` | system-prompt base for file summaries. |
+| `function` | `./prompts/function.txt` | system-prompt template for function docs (`{language}`, `{file}`, `{symbol}`, …). |
+| `chunk` | `./prompts/function_chunk.txt` | system-prompt template for chunk summaries. |
+| `variable` | `./prompts/variable.txt` | system-prompt template for variable docs. |
+| `summary` | `./prompts/summary.txt` | system-prompt template for file summaries. |
+
+See [Prompts](03%20-%20Prompts.md) for the complete template-key table.
 
 The [Prompts](03%20-%20Prompts.md) page documents each file and how the JSON schema is appended at call time.
 

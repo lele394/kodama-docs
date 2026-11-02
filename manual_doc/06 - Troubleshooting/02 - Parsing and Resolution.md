@@ -52,4 +52,4 @@ These feed the index's "Call references: X external, Y inferred, Z ambiguous (re
 4. Index "Analysis summary" → the same numbers, human-readable.
 5. Still stuck? `--fresh` to force re-extraction; `--regenerate` to delete and rebuild everything.
 
-Related: [Symbols and Graph](../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.md), [Glossary](../07%20-%20Concepts/02%20-%20Glossary.md), [Lua Backend](../03%20-%20Components/02%20-%20Lua%20Backend.md), [Python Backend](../03%20-%20Components/03%20-%20Python%20Backend.md).
+Related: [Symbols and Graph](../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.md), [Glossary](../07%20-%20Concepts/02%20-%20Glossary.md), [Lua Backend](../03%20-%20Components/02%20-%20Lua%20Backend.md), [Python Backend](../03%20-%20Components/03%20-%20Python%20Backend.md), [C/C++/CUDA Backend](../03%20-%20Components/03b%20-%20C%20C%2B%2B%20CUDA%20Backend.md).

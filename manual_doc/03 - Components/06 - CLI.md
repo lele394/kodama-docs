@@ -1,6 +1,15 @@
 # CLI
 
-`main.py` is the only entry point. There is no installed console script; everything is `python main.py …`. All flags live on one flat parser (no subcommands except `test-backend`).
+`main.py` remains the implementation entry point. `pyproject.toml` also
+installs a `kodama-docs` console script (same CLI), so from a checkout either
+of these works:
+
+```bash
+python main.py --config settings.yaml
+kodama-docs --config settings.yaml
+```
+
+All flags live on one flat parser (no subcommands except `test-backend`).
 
 ## All flags
 
@@ -39,8 +48,9 @@ The CLI is evaluated in this order; the first matching mode wins and exits:
 ## Typical invocations
 
 ```bash
-# inspect the project, no model
+# inspect the project, no model (console script works too)
 python main.py --no-llm
+kodama-docs --no-llm
 
 # full run (uses .env + settings.yaml)
 python main.py

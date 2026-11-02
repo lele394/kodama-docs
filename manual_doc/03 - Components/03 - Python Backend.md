@@ -2,6 +2,11 @@
 
 `backends/python/` — the Python backend (manifest name `kodama-python`). Like the [Lua backend](02%20-%20Lua%20Backend.md) it delegates parsing to the official **tree-sitter-python** grammar and projects the tree into the [record contract](../02%20-%20How%20It%20Works/03%20-%20Extraction.md).
 
+`__init__.py` is a thin entrypoint; the implementation lives in
+`constants.py`, `builtins.py`, `parser.py`, `comments.py`, `nodes.py`,
+`includes.py`, `extract.py`, and the self-test fixture protocol in
+`selftest.py`.
+
 ## What it extracts
 
 | Construct | How it appears in the record |
