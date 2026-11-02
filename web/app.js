@@ -21,6 +21,9 @@
 
   var STATIC = typeof window.__KODAMA_BASE__ === 'string';
   var BASE = STATIC ? window.__KODAMA_BASE__ : '';
+  // Server pages live at arbitrary depths (/files/a/b.md), so the theme
+  // href must stay root-absolute. Static pages use their relative base.
+  var THEME_ROOT = STATIC ? BASE : '/';
   var LS_THEME = 'kodama.theme';
 
   function current() {
@@ -29,7 +32,7 @@
   }
 
   function apply(name) {
-    link.setAttribute('href', BASE + 'theme/' + name + '/style.css');
+    link.setAttribute('href', THEME_ROOT + 'theme/' + name + '/style.css');
     if (hljsLight && hljsDark) {
       hljsLight.disabled = name !== 'light';
       hljsDark.disabled = name !== 'dark';
