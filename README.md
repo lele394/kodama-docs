@@ -46,6 +46,7 @@ the bowels of strange and unfamiliar code. Cheers!
 
 - [x] Manual documentation (hand-written pages as section 0 — see [Configuration](#configuration) → `project.manual_doc`)
 - [ ] Graph mode optimizations (high node counts)
+- [ ] Static site generation
 
 ### Planned language support 
 
