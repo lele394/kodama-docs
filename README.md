@@ -164,7 +164,7 @@ CLI flags:
 
 | flag | effect |
 |---|---|
-| `--config PATH` | settings file (default `settings.yaml`) |
+| `--config PATH` | settings file — required for pipeline, `--serve`, `--purge` and `--regenerate`; bare `kodama-docs` prints help |
 | `--fresh` | ignore the analysis cache and re-extract everything |
 | `--no-llm` | skip the LLM **model calls** only: placeholder prose is cached (flagged), all deterministic sections — parameters, references, call graph — are still generated |
 | `--purge` | delete all docs/meta/data (output + data dirs) and exit |

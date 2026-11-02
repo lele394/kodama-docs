@@ -9,6 +9,7 @@ import argparse
 import json
 import os
 import shutil
+import sys
 
 import backends
 import kodama_docs.graph as gmod
@@ -170,7 +171,10 @@ def main():
                          "a normal documentation run")
     ap.add_argument('--backend', metavar='NAME',
                     help='backend name for test-backend (e.g. python)')
-    ap.add_argument('--config', default='settings.yaml')
+    ap.add_argument('--config', metavar='PATH',
+                    help='settings file (required for pipeline, --serve, '
+                         '--purge and --regenerate; run with no arguments '
+                         'to print this help)')
     ap.add_argument('--fresh', action='store_true',
                     help='ignore analysis cache')
     ap.add_argument('--no-llm', action='store_true',
@@ -234,6 +238,18 @@ def main():
                              '(e.g. --backend python)')
         rc = test_backend(args.backend)
         raise SystemExit(rc)
+
+    # Never fall back to an implicit settings.yaml: from a checkout it can
+    # point source_dir at the parent directory and generate docs somewhere
+    # unexpected. Bare `kodama-docs` is a help request; pipelines need an
+    # explicit config.
+    if args.config is None:
+        ap.print_help()
+        if len(sys.argv) > 1:
+            print('\nerror: --config PATH is required for a pipeline, '
+                  '--serve, --purge or --regenerate', file=sys.stderr)
+            raise SystemExit(2)
+        return
 
     # Serve / purge / --no-llm never call the model, so they must not
     # require credentials in .env.

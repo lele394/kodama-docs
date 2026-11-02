@@ -15,7 +15,7 @@ All flags live on one flat parser (no subcommands except `test-backend`).
 
 | Flag | Default | Meaning |
 | --- | --- | --- |
-| `--config PATH` | `settings.yaml` | config file (`.yaml` or `.yml`); a relative path resolves against the config's own directory for sibling keys. |
+| `--config PATH` | — | config file (`.yaml` or `.yml`), required for pipeline/`--serve`/`--purge`/`--regenerate`; a relative path resolves against the config's own directory for sibling keys. Bare `kodama-docs` prints help instead of guessing `settings.yaml`. |
 | `--no-llm` | off | offline mode: no model calls, stub prose, no per-task delays. Fast first pass / structure check. See [Caching](../02%20-%20How%20It%20Works/08%20-%20Caching.md). |
 | `--fresh` | off | ignore the per-file analysis cache (`<data_dir>/symbols.json`) and re-extract every file. Records and docs are still reused. |
 | `--purge` | off | delete the output dir, data dir, and record caches and **exit** — no run happens. |
@@ -49,25 +49,29 @@ The CLI is evaluated in this order; the first matching mode wins and exits:
 
 ```bash
 # inspect the project, no model (console script works too)
-python main.py --no-llm
-kodama-docs --no-llm
+python main.py --config settings.yaml --no-llm
+kodama-docs --config settings.yaml --no-llm
 
 # full run (uses .env + settings.yaml)
-python main.py
+python main.py --config settings.yaml
 
 # full run from a clean slate (drops docs, records, caches)
-python main.py --regenerate
+python main.py --config settings.yaml --regenerate
 
 # serve the last run
-python main.py --serve
+python main.py --config settings.yaml --serve
 
 # build a server-free static site into <output_dir>/site
-python main.py --static
+python main.py --config settings.yaml --static
 
-# what backends are here, and what is missing?
+# bare invocation is a safe help request; it never guesses a config
+python main.py
+kodama-docs
+
+# what backends are here, and what is missing? (no config needed)
 python main.py --list-backends
 
-# verify the Python backend (CI-friendly)
+# verify the Python backend (CI-friendly, no config needed)
 python main.py test-backend --backend python
 ```
 
