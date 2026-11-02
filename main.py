@@ -74,6 +74,8 @@ def _valid_records(cfg: dict, files, g):
         rel = f['relpath']
         if want_fn:
             for fn in f.get('functions') or []:
+                if fn.get('skip_llm'):
+                    continue
                 key = (rel, fn['name'], fn['line'])
                 rec = fn_all.get(key)
                 if rec is None:
@@ -86,6 +88,8 @@ def _valid_records(cfg: dict, files, g):
                     fn_recs[key] = rec
         if want_var:
             for v in f.get('file_vars') or []:
+                if v.get('skip_llm'):
+                    continue
                 key = (rel, v['name'], v['line'])
                 rec = var_all.get(key)
                 if rec is not None and \

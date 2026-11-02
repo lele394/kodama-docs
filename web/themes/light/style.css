@@ -370,7 +370,10 @@ body.graph-page {
   left: 12px;
   bottom: 10px;
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
+  row-gap: 4px;
+  max-width: calc(100% - 160px);
   font-size: 12px;
   color: var(--muted);
 }
@@ -380,6 +383,14 @@ body.graph-page {
   height: 9px;
   border-radius: 50%;
   margin-right: 5px;
+}
+.graph-legend .lg i.line {
+  width: 16px;
+  height: 0;
+  border-top-width: 2px;
+  border-radius: 0;
+  margin-bottom: 3px;
+  vertical-align: middle;
 }
 .graph-counts {
   position: absolute;

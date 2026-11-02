@@ -18,7 +18,22 @@ Glue rule (identical for every language):
 
 Backends supply a per-language ``clean(node)`` that strips the comment
 markers (e.g. Lua ``comment_content``, Python leading ``#``+space).
+
+A **multiline block comment** is just one comment node: ``/* ... */`` with
+its last line directly above the definition glues exactly like a run of
+single-line comments.
+
+LLM-skip directive
+------------------
+If the **first non-empty line** of the cleaned developer comment is
+``kodama-docs-llm:skip``, the backend marks that symbol ``skip_llm=True``
+and removes the marker line from the comment. The pipeline then skips the
+LLM task for it (and, for a class, for its members). A marker later in the
+comment is ordinary text.
 """
+import re
+
+_SKIP_RE = re.compile(r'^kodama-docs-llm:\s*skip\b', re.IGNORECASE)
 
 
 def _all_comments(root, types=('comment',)):
@@ -58,3 +73,30 @@ def _dev_comment(comments, fn_line, clean):
         return None
     text = '\n'.join(clean(c) for c in run).strip()
     return text or None
+
+
+def parse_llm_directive(comment):
+    """(comment_without_marker, skip_llm) for a cleaned developer comment.
+
+    Only the first non-empty line is a directive; a marker later in the
+    comment is ordinary prose. A marker-only comment becomes ``None``.
+    """
+    text = str(comment or '').strip()
+    if not text:
+        return None, False
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        m = _SKIP_RE.match(stripped)
+        if not m:
+            return text, False
+        rest = stripped[m.end():].strip()
+        if rest:
+            lines[i] = rest
+        else:
+            del lines[i]
+        cleaned = '\n'.join(lines).strip()
+        return (cleaned or None), True
+    return text, False

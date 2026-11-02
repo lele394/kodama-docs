@@ -100,6 +100,9 @@ def analyze_files(cfg: dict, files):
         status_map[rel] = {'status': 'ok'}
         if i % 200 == 0:
             log(f'  analyzed {i}/{len(files)}')
+    # A class-level LLM skip covers its members; propagate before the
+    # analysis cache is written so symbols.json and every later phase agree.
+    gmod.apply_llm_class_skips(results)
     return results, status_map
 
 
@@ -210,8 +213,11 @@ def report_scan(cfg: dict, analysis, skipped, g, diag, astatus):
         rel = f['relpath']
         ext = os.path.splitext(rel)[1].lower().lstrip('.') or '?'
         fns = [fn for fn in (f.get('functions') or [])
-               if inc_anon or fn['name'] != 'anon']
-        nvar = len(f.get('file_vars') or [])
+               if (inc_anon or fn['name'] != 'anon')
+               and not fn.get('skip_llm')]
+        vars_ = [v for v in (f.get('file_vars') or [])
+                 if not v.get('skip_llm')]
+        nvar = len(vars_)
         s = exts.setdefault(ext, [0, 0, 0])
         s[0] += 1
         s[1] += len(fns) if want_fn else 0
@@ -229,7 +235,7 @@ def report_scan(cfg: dict, analysis, skipped, g, diag, astatus):
                                fn['line'], function_fp(rel, fn, ins, outs,
                                                         sfn, reads=reads)):
                     ok += 1
-        for v in f.get('file_vars') or []:
+        for v in vars_:
             if want_var:
                 tasks += 1
                 if load_record(dd, rel, 'variable', v['name'],

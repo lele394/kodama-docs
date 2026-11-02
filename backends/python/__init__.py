@@ -27,7 +27,9 @@ from pathlib import Path
 import tree_sitter_python as tspy
 from tree_sitter import Language, Parser
 
-from backends._shared import _all_comments, _dev_comment
+from backends._shared import _all_comments, _dev_comment, parse_llm_directive
+
+LANG = 'python'
 
 BUILTIN_NAMES = {
     # python builtins
@@ -200,10 +202,14 @@ def extract(source: str, relpath: str) -> dict:
         seen_fn.add(fid)
         a, b = line - 1, min(end_line, len(lines))
         body = '\n'.join(lines[a:b])
-        fns.append({'id': fid, 'name': name, 'qualified': qualified or name,
-                    'line': line, 'end_line': end_line,
-                    'params': list(params), 'vararg': bool(vararg),
-                    'body': body, 'developer_comment': dev})
+        dev, skip = parse_llm_directive(dev)
+        rec = {'id': fid, 'name': name, 'qualified': qualified or name,
+               'line': line, 'end_line': end_line,
+               'params': list(params), 'vararg': bool(vararg),
+               'body': body, 'developer_comment': dev}
+        if skip:
+            rec['skip_llm'] = True
+        fns.append(rec)
 
     def note_call(node):
         fn = node.child_by_field_name('function')
@@ -252,15 +258,19 @@ def extract(source: str, relpath: str) -> dict:
                 rec['name'] = name
             imports.append(rec)
 
-    def note_var(name, line, value):
+    def note_var(name, line, value, dev=None):
         if not name or name in seen_var:
             return
         seen_var.add(name)
-        rec = {'name': name, 'line': line, 'init': _classify(value)}
+        dev, skip = parse_llm_directive(dev)
+        rec = {'name': name, 'line': line, 'init': _classify(value),
+               'developer_comment': dev}
         if value is not None:
             text = _text(value).strip()
             if text:
                 rec['value'] = text[:400]
+        if skip:
+            rec['skip_llm'] = True
         file_vars.append(rec)
 
     def record_function(fn_node, anchor_line, depth, qual):
@@ -290,6 +300,39 @@ def extract(source: str, relpath: str) -> dict:
         if body is not None:
             walk(body, depth + 1, qual)
 
+    def record_class(cls_node, anchor_line, depth, qual):
+        """Record a class and walk its body. ``anchor_line`` is the line a
+        developer comment is glued against (the first decorator for a
+        decorated class, otherwise the ``class`` line)."""
+        nm = cls_node.child_by_field_name('name')
+        cname = _text(nm) if nm is not None else None
+        if cname is not None:
+            row = _row(cls_node)
+            key = (cname, row)
+            if key not in seen_cls:
+                seen_cls.add(key)
+                dev, skip = parse_llm_directive(
+                    _dev_comment(comments, anchor_line, _comment_text))
+                rec = {'name': cname,
+                       'qualified': '.'.join(qual + (cname,))
+                       if qual else cname,
+                       'line': row,
+                       'end_line': cls_node.end_point[0] + 1,
+                       'developer_comment': dev}
+                if skip:
+                    rec['skip_llm'] = True
+                classes.append(rec)
+        # Base classes may contain calls (`class Foo(Base())`).
+        sup = cls_node.child_by_field_name('superclasses')
+        if sup is not None:
+            walk(sup, depth, qual)
+        # The body is a nested scope: class attributes are NOT module-level
+        # file_vars, and methods get qualified names (``Vec3.normalize``).
+        body = cls_node.child_by_field_name('body')
+        if body is not None:
+            q = qual + (cname,) if cname is not None else qual
+            walk(body, depth + 1, q)
+
     def walk(node, depth, qual=()):
         t = node.type
         if t == 'function_definition':
@@ -304,13 +347,19 @@ def extract(source: str, relpath: str) -> dict:
                 # (the top of this block), not the def line.
                 record_function(fn_node, _row(node), depth, qual)
                 return
+            cls_node = next((c for c in node.children
+                             if c.type == 'class_definition'), None)
+            if cls_node is not None:
+                record_class(cls_node, _row(node), depth, qual)
+                return
             # A decorated non-function (rare) falls through to the generic walk.
 
         if t == 'assignment' and depth == 0:
             left = node.child_by_field_name('left')
             value = node.child_by_field_name('right')
             if left is not None and left.type == 'identifier':
-                note_var(_text(left), _row(node), value)
+                note_var(_text(left), _row(node), value,
+                         _dev_comment(comments, _row(node), _comment_text))
             for c in node.children:
                 walk(c, depth, qual)
             return
@@ -319,7 +368,8 @@ def extract(source: str, relpath: str) -> dict:
             left = node.child_by_field_name('left')
             value = node.child_by_field_name('value')
             if left is not None and left.type == 'identifier':
-                note_var(_text(left), _row(node), value)
+                note_var(_text(left), _row(node), value,
+                         _dev_comment(comments, _row(node), _comment_text))
             for c in node.children:
                 walk(c, depth, qual)
             return
@@ -427,30 +477,7 @@ def extract(source: str, relpath: str) -> dict:
             # Record the class as a resolvable symbol: constructor calls
             # (`Body(...)`) must bind through the caller's imports instead
             # of falling through to `external`.
-            nm = node.child_by_field_name('name')
-            cname = _text(nm) if nm is not None else None
-            if cname is not None:
-                row = _row(node)
-                key = (cname, row)
-                if key not in seen_cls:
-                    seen_cls.add(key)
-                    classes.append({'name': cname,
-                                    'qualified': '.'.join(qual + (cname,))
-                                    if qual else cname,
-                                    'line': row,
-                                    'end_line': node.end_point[0] + 1})
-            # Base classes may contain calls (`class Foo(Base())`); walk them
-            # in the current scope.
-            sup = node.child_by_field_name('superclasses')
-            if sup is not None:
-                walk(sup, depth, qual)
-            # The body is a nested scope: walk it at depth+1 so class
-            # attributes are NOT recorded as module-level file_vars, and push
-            # the class name so methods get qualified names (``Vec3.normalize``).
-            body = node.child_by_field_name('body')
-            if body is not None:
-                q = qual + (cname,) if cname is not None else qual
-                walk(body, depth + 1, q)
+            record_class(node, _row(node), depth, qual)
             return
 
         for c in node.children:

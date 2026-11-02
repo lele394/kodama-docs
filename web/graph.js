@@ -10,7 +10,9 @@
 //   files   — one node per file (plus modules); IMPORTS kept, CALLS re-
 //             aggregated onto file→file pairs
 //   symbols — one node per function/variable (plus files); CONTAINS,
-//             CALLS and READS edges; ext/builtin symbols optional
+//             CALLS and READS edges, plus BRIDGES/EXPORTS for explicit
+//             pybind11 (Python <-> C++) connections; ext/builtin symbols
+//             optional
 // Interactions: wheel zoom, background pan, node drag (reheats layout),
 // hover tooltip, click → doc opens in the left panel, a fuzzy search
 // bar (path+name) that dims non-matches, right-hand menu to tune the

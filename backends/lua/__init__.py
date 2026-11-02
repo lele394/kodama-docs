@@ -20,7 +20,9 @@ Record shapes (1-based lines, stable across backends):
 import tree_sitter_lua as tslua
 from tree_sitter import Language, Parser
 
-from backends._shared import _all_comments, _dev_comment
+from backends._shared import _all_comments, _dev_comment, parse_llm_directive
+
+LANG = 'lua'
 
 BUILTIN_NAMES = {
     'print', 'pairs', 'ipairs', 'next', 'type', 'tonumber', 'tostring',
@@ -200,10 +202,14 @@ def extract(source: str, relpath: str) -> dict:
         seen_fn.add(fid)
         a, b = line - 1, min(end_line, len(lines))
         body = '\n'.join(lines[a:b])
-        fns.append({'id': fid, 'name': fname, 'qualified': qual or fname,
-                    'line': line, 'end_line': end_line,
-                    'params': list(params), 'vararg': bool(vararg),
-                    'body': body, 'developer_comment': dev})
+        dev, skip = parse_llm_directive(dev)
+        rec = {'id': fid, 'name': fname, 'qualified': qual or fname,
+               'line': line, 'end_line': end_line,
+               'params': list(params), 'vararg': bool(vararg),
+               'body': body, 'developer_comment': dev}
+        if skip:
+            rec['skip_llm'] = True
+        fns.append(rec)
 
     def note_call(node):
         name, method = _callee(node)
@@ -247,15 +253,20 @@ def extract(source: str, relpath: str) -> dict:
             # `A:method()` can be resolved to mod's method (one alias per
             # module — only attach it for a single declared name)
             mod = _require_module(first_val) if len(names) == 1 else None
+            dev, skip = parse_llm_directive(
+                _dev_comment(comments, _row(asm), _comment_text))
             for nm in names:
                 rec = {'name': nm, 'line': _row(asm),
-                       'init': _classify(first_val)}
+                       'init': _classify(first_val),
+                       'developer_comment': dev}
                 if first_val is not None:
                     val = _text(first_val).strip()
                     if val:
                         rec['value'] = val[:400]
                 if mod:
                     rec['module'] = mod
+                if skip:
+                    rec['skip_llm'] = True
                 file_vars.append(rec)
         # walk every value (closures get the first declared name, like the
         # previous hand-rolled extractor)

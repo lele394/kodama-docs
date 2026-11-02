@@ -275,6 +275,25 @@ def _ext(relpath: str) -> str:
 EXTRACTORS = {e: b['extract'] for e, b in _routing().items()}
 
 
+def _lang_for_backend(b, relpath: str) -> str:
+    """The language family a backend reports for a file.
+
+    Backends may expose ``LANG`` (``python``, ``lua``, ``c-family``, ...).
+    Without it the extension is the fallback, so third-party backends still
+    get a usable tag for language-scoped graph resolution."""
+    if b is not None and b.get('module') is not None:
+        lang = getattr(b['module'], 'LANG', None)
+        if isinstance(lang, str) and lang.strip():
+            return lang.strip()
+    return _ext(relpath).lstrip('.')
+
+
+def lang_for(relpath: str) -> str:
+    """Language family for a file path (routing-aware)."""
+    b = _routing().get(_ext(relpath))
+    return _lang_for_backend(b, relpath)
+
+
 def extract(source: str, relpath: str) -> dict:
     """Route one file to the ready backend that claims its extension."""
     routing = _routing()
@@ -283,7 +302,10 @@ def extract(source: str, relpath: str) -> dict:
         raise UnsupportedLanguage(
             f'no ready backend claims {_ext(relpath)!r} '
             f'(see --list-backends)')
-    return b['extract'](source, relpath)
+    r = b['extract'](source, relpath)
+    if isinstance(r, dict):
+        r.setdefault('lang', _lang_for_backend(b, relpath))
+    return r
 
 
 def builtins_for(relpath: str) -> set:

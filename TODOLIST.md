@@ -9,8 +9,9 @@ ordered by priority; each item says *where* to look.
       `variable.txt`, `summary.txt`). `function.txt` opens with "You are
       documenting **Lua** source code from a game installation" — but the
       same prompts are used for every corpus, including the Python
-      self-documenting run (`configs/self.yaml`). Decide: make them
-      language-neutral, or select the prompt file per `source_extensions`.
+      self-documenting run (`configs/self.yaml`) and the C/C++/CUDA
+      backend. Decide: make them language-neutral, or select the prompt
+      file per language family.
 - [ ] **Unescaped HTML in the web layer** (injection paths; low severity
       because the server is loopback-only, but they are real):
       - `web/render.py:35,53-57` — any `<...>` tag in markdown text passes

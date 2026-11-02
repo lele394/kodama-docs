@@ -296,7 +296,9 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
         for fn in funcs:
             rec = fn_records.get((rel, fn['name'], fn['line']))
             desc = ''
-            if rec and rec.get('prose'):
+            if fn.get('skip_llm'):
+                desc = '_LLM skipped_'
+            elif rec and rec.get('prose'):
                 desc = md_escape(trunc(rec['prose'].get('description', ''), 140))
             params = ', '.join(fn.get('params') or [])
             lines.append(f"| [{fn.get('qualified') or fn['name']}](#{_fn_anchor(fn)}) "
@@ -321,7 +323,10 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                 lines.append('')
             p = (rec.get('prose') if rec and isinstance(rec.get('prose'), dict)
                  else {})
-            if p.get('description'):
+            if fn.get('skip_llm'):
+                lines += [('**LLM generation:** skipped by developer comment '
+                           '(`kodama-docs-llm:skip`).'), '']
+            elif p.get('description'):
                 lines += ['**Description**', '',
                           md_escape(p['description']), '']
             else:
@@ -398,27 +403,35 @@ def render_file_md(finfo: dict, fn_records, var_records, summary,
                      '(`Name(...)`) that resolve here are linked from the '
                      'caller\'s References section.')
         lines.append('')
-        lines.append('| Class | Line |')
-        lines.append('| --- | --- |')
+        lines.append('| Class | Line | Developer comment |')
+        lines.append('| --- | --- | --- |')
         for c in classes:
             anchor = f"cls-{sanitize_id(c['name'])}-{c['line']}"
+            note = md_escape(trunc(c.get('developer_comment') or '', 140))
+            if c.get('skip_llm'):
+                note = (note + ' ' if note else '') + '_LLM skipped_'
             lines.append(f"| <a id=\"{anchor}\">"
                          f"[{c.get('qualified') or c['name']}](#{anchor})</a> "
-                         f"| {c['line']} |")
+                         f"| {c['line']} | {note} |")
         lines.append('')
 
     vars_ = finfo.get('file_vars') or []
     if vars_:
         lines += ['## File-level variables <a id="variables"></a>', '']
-        lines.append('| Variable | Line | Init | Description |')
-        lines.append('| --- | --- | --- | --- |')
+        lines.append('| Variable | Line | Init | Developer comment | '
+                     'Description |')
+        lines.append('| --- | --- | --- | --- | --- |')
         for v in vars_:
             rec = var_records.get((rel, v['name'], v['line']))
             desc = ''
-            if rec and rec.get('prose'):
+            if v.get('skip_llm'):
+                desc = '_LLM skipped_'
+            elif rec and rec.get('prose'):
                 desc = md_escape(trunc(rec['prose'].get('description', ''), 140))
+            dev = md_escape(trunc(v.get('developer_comment') or '', 140))
             lines.append(f"| `{v['name']}` | {v['line']} "
-                         f"| {md_escape(v.get('init', ''))} | {desc} |")
+                         f"| {md_escape(v.get('init', ''))} | {dev} "
+                         f"| {desc} |")
         lines.append('')
 
     lines += _unresolved_section(rel, diag)

@@ -17,11 +17,17 @@ human-readable text. Reruns are stable — unchanged symbols are never
 re-generated, and changing one file invalidates only the symbols that live in
 it.
 
-Supported languages: **Lua** and **Python** (each backed by its official
-tree-sitter grammar). Languages are pluggable **backends** — self-contained
-packages with a `manifest.toml` that the registry discovers automatically,
-and they can be added at runtime with `main.py --install <git-url>`
-(see [backends/backend_design.md](backends/backend_design.md)).
+Supported languages: **Lua**, **Python**, **C**, **C++** and **CUDA**
+(tree-sitter grammars; `tree-sitter-cuda` covers `.cu`/`.cuh`). Languages
+are pluggable **backends** — self-contained packages with a `manifest.toml`
+that the registry discovers automatically, and they can be added at runtime
+with `main.py --install <git-url>`
+(see [backends/backend_design.md](backends/backend_design.md)). Files are
+routed per extension, so a mixed Python + C + C++ + CUDA tree is supported
+in a single run: the graph is shared, while each file is parsed by its own
+backend. pybind11 exports (`PYBIND11_MODULE`, `py::class_`, `.def`) are read
+statically and become `EXPORTS` / `BRIDGES` graph edges, so a Python facade
+class can link to the C++ class it wraps.
 
 ---
 
@@ -50,8 +56,9 @@ the bowels of strange and unfamiliar code. Cheers!
 
 ### Planned language support 
 
-- [ ] C support
-- [ ] C++ support
+- [x] C support
+- [x] C++ support
+- [x] CUDA support
 - [ ] Fortran support
 
 ### Long-term planned feature
@@ -101,6 +108,27 @@ doc/
 Plus a `data/` directory of per-record JSON (functions, variables, summaries,
 long-function chunks) — this is the LLM-output cache keyed by content
 fingerprint.
+
+### Developer comments & LLM overrides
+
+A comment stuck directly above a definition — a run of `//`/`#` lines or a
+single multiline `/* ... */` block — becomes the **developer comment** shown
+on its page. This applies to functions, classes, macros/globals and the
+equivalent Python/Lua symbols.
+
+If the first non-empty line of that comment is `kodama-docs-llm:skip`, no
+LLM task is created for the symbol (and, for a class, for its methods,
+constructors and nested classes too). The marker line is removed from the
+displayed comment; the rest is kept. This is deterministic and useful for
+ABI shims, generated boilerplate, or code you do not want an LLM to describe.
+
+```c
+/*
+kodama-docs-llm:skip
+Legacy entry point kept for ABI compatibility.
+*/
+int legacy_entry(int value);
+```
 
 ## Quickstart
 
@@ -231,23 +259,27 @@ HTML in the browser:
   by `web/graph.js` (vanilla JS + canvas, no libraries), with two levels:
   **files** (one node per file; imports kept, calls re-aggregated
   file→file) and **functions** (functions and variables as nodes with
-  CONTAINS / CALLS / READS edges; external and built-in symbols can be
+  CONTAINS / CALLS / READS edges, plus BRIDGES / EXPORTS for explicit
+  pybind11 Python↔C++ connections; external and built-in symbols can be
   toggled on). Clicking a node opens its documentation in the left panel —
   in-panel links navigate within the panel, with a back button. Drag to
   move nodes, scroll to zoom, drag the background to pan. The layout is a
   force simulation with a fixed seed, so the same graph always settles into
-  the same arrangement.
+  the same arrangement. The legend lists both node colours and edge styles
+  (solid calls/contains, dashed imports, dotted reads, teal bridges, purple
+  exports); while a search is active, nodes and edges that do not touch a
+  match (or the selected node) are dimmed.
 - Rendering is deterministic (`web/render.py`) — only the markdown subset
   kodama-docs itself generates is supported.
 
 ## Testing on the sample codebases
 
-`test_codebases/` holds two small, self-contained **N-body simulation**
-samples — one per supported language — built to exercise every feature:
-file/variable/function extraction, developer-comment gluing (including a
-deliberate negative case), long functions for chunk-and-merge, method and
-class style OOP, and external-module imports. The sources are organised in
-**nested folders** (e.g. `codebase/physics/`, `codebase/sim/`) and their
+`test_codebases/` holds small, self-contained samples built to exercise
+every feature: file/variable/function extraction, developer-comment gluing
+(including a deliberate negative case), long functions for chunk-and-merge,
+method and class style OOP, and external-module imports. The Lua and Python
+samples are **N-body simulations**; the sources are organised in **nested
+folders** (e.g. `codebase/physics/`, `codebase/sim/`) and their
 `require`/`import` statements use dotted module paths (`physics.nbody`,
 `physics.body`, `sim.render`), so the samples also exercise multi-level
 directory handling and nested-import resolution end to end (the graph's
@@ -255,6 +287,20 @@ IMPORTS edges resolve to the real file nodes, and the sidebar renders the
 folders as a nested tree). Generated docs land in
 `test_codebases/<lang>/docs/` (mirroring the nesting under `docs/files/`),
 the LLM cache in `test_codebases/<lang>/data/`.
+
+`test_codebases/mixed-c-cpp-cu-py/` is the **multi-language** sample: a
+Python package calling a C core through ctypes and a C++/pybind11 extension,
+a C++ engine that includes the C headers and launches a CUDA kernel, and a
+CUDA translation unit with a `__global__` kernel and a `.cuh` header. It is
+parse-only (nothing needs to build) and exists to check per-extension
+routing, quoted-include resolution, cross-language call edges, and the
+`.cu`/`.cuh` rendering path. Run it with `--no-llm` and its structural check
+script:
+
+```bash
+python main.py --config test_codebases/mixed-c-cpp-cu-py/settings.yaml --no-llm
+python test_codebases/mixed-c-cpp-cu-py/check_mixed.py
+```
 
 To run the tool on a sample (from the repo root):
 
@@ -410,10 +456,10 @@ are not cross-file links), and the graph asks
 `backends.module_candidates(module, relpath)` for the file paths a module
 import could resolve to. Implement both for the new language, declare its
 grammar in the manifest's `requirements.python`, done.
-`backends/lua/` and `backends/python/` are the reference implementations;
-external ones arrive via `main.py --install <git-url>` and leave via
-`main.py --remove <name>` (`--list-backends` shows the state of all of
-them).
+`backends/lua/`, `backends/python/` and `backends/cpp/` are the reference
+implementations; external ones arrive via `main.py --install <git-url>` and
+leave via `main.py --remove <name>` (`--list-backends` shows the state of
+all of them).
 
 ## Repository layout
 
@@ -455,9 +501,10 @@ backends/
   backend_design.md  # the backend contract (read this before adding a language)
   lua/               # Lua backend: manifest.toml + __init__.py (tree-sitter-lua)
   python/            # Python backend: manifest.toml + __init__.py (tree-sitter-python)
+  cpp/               # C/C++/CUDA backend (tree-sitter-cpp + tree-sitter-cuda)
 prompts/           # system prompts: function / chunk / variable / summary
 settings.yaml      # default config (game codebase)
-test_codebases/    # small lua + python N-body samples for end-to-end testing
+test_codebases/    # lua + python N-body samples, and the mixed C/C++/CUDA/Python sample
 configs/
   test.yaml        # small local test corpus
   self.yaml        # kodama-docs documenting itself (Python)

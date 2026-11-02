@@ -1,0 +1,27 @@
+[backend]
+name = "kodama-cpp"
+description = "Kodama C/C++/CUDA backend (tree-sitter)"
+source = "https://github.com/lele394/kodama-docs"
+version = "0.1.0"
+api_version = "1"
+
+[capabilities]
+languages = ["c", "cpp", "cuda"]
+extensions = [
+    ".c", ".h",
+    ".cc", ".cpp", ".cxx",
+    ".hh", ".hpp", ".hxx",
+    ".cu", ".cuh",
+]
+symbols = true
+references = true
+call_graph = true
+types = false
+
+[requirements]
+executables = []
+python = [
+    "tree-sitter==0.26.0",
+    "tree-sitter-cpp==0.23.4",
+    "tree-sitter-cuda==0.21.2",
+]

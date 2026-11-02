@@ -64,6 +64,59 @@ def node_id_cls(relpath, name, line):
     return f'cls:{relpath}::{name}@{line}'
 
 
+_C_FAMILY_EXTS = ('.c', '.h', '.cc', '.cpp', '.cxx',
+                  '.hh', '.hpp', '.hxx', '.cu', '.cuh')
+
+
+def lang_of_file(f: dict) -> str:
+    """Language family for an analysis record.
+
+    The backend supplies ``lang`` (``python``, ``lua``, ``c-family``, ...);
+    older cached records and third-party backends fall back to the extension.
+    """
+    lang = f.get('lang')
+    if isinstance(lang, str) and lang.strip():
+        return lang.strip()
+    ext = os.path.splitext(str(f.get('relpath') or ''))[1].lower()
+    if ext in ('.py', '.pyi'):
+        return 'python'
+    if ext == '.lua':
+        return 'lua'
+    if ext in _C_FAMILY_EXTS:
+        return 'c-family'
+    return ext.lstrip('.')
+
+
+def apply_llm_class_skips(files) -> None:
+    """Propagate a class-level ``kodama-docs-llm:skip`` to its members.
+
+    Classes do not have their own LLM task today, so a class-level directive
+    means "skip the class and everything qualified under it" — methods,
+    constructors/destructors, nested classes. The match is language-scoped
+    and prefix-based (``mixed.Engine`` covers ``mixed.Engine.step``).
+    """
+    prefixes = {}
+    for f in files:
+        lang = lang_of_file(f)
+        for c in f.get('classes') or []:
+            if c.get('skip_llm'):
+                q = c.get('qualified') or c.get('name')
+                if q:
+                    prefixes.setdefault(lang, []).append(q)
+    if not prefixes:
+        return
+    for f in files:
+        ps = prefixes.get(lang_of_file(f)) or []
+        if not ps:
+            continue
+        for fn in f.get('functions') or []:
+            if fn.get('skip_llm'):
+                continue
+            q = fn.get('qualified') or fn.get('name') or ''
+            if any(q == p or q.startswith(p + '.') for p in ps):
+                fn['skip_llm'] = True
+
+
 def _var_reads(body: str, name: str, is_py: bool, params=()) -> bool:
     """True if `body` references file variable `name`.
 
@@ -152,6 +205,19 @@ def _cand_display(nid: str) -> str:
     return nid
 
 
+def _enclosing_class(fentry, fn):
+    """Innermost class in ``fentry`` whose qualified name owns ``fn``."""
+    q = fn.get('qualified') or fn.get('name') or ''
+    hits = []
+    for c in fentry.get('classes') or []:
+        cq = c.get('qualified') or c['name']
+        if q == cq or q.startswith(cq + '.'):
+            hits.append(c)
+    if not hits:
+        return None
+    return max(hits, key=lambda c: len(c.get('qualified') or c['name']))
+
+
 def _parent_of(f, fn_list):
     """Innermost function that strictly contains ``f``'s def line, or None.
 
@@ -161,9 +227,12 @@ def _parent_of(f, fn_list):
     for g in fn_list:
         if g is f:
             continue
-        if g['line'] < f['line'] and f['line'] <= g.get('end_line', g['line']):
-            if best is None or g.get('end_line', g['line']) < best.get('end_line', best['line']):
-                best = g
+        if g['line'] < f['line'] \
+                and f['line'] <= g.get('end_line', g['line']) \
+                and (best is None
+                     or g.get('end_line', g['line'])
+                     < best.get('end_line', best['line'])):
+            best = g
     return best
 
 
@@ -243,6 +312,9 @@ def _resolve_in_scope(fn_list, name, line, plain_ids=None):
 def build_graph(files):
     """files: list of per-file dicts with relpath/lines/functions/file_vars/calls.
 
+    Class-level LLM skips are propagated to members before the graph is
+    built, so the LLM phase, renderer and checks all see the same flags.
+
     Returns (graph, diagnostics) where diagnostics is:
         {'ambiguous_calls':    [{file, line, name, candidates[]}, ...],
          'inferred_calls':     [{file, line, name}, ...],
@@ -250,6 +322,7 @@ def build_graph(files):
          'builtin_calls':      [{file, line, name}, ...],
          'unresolved_imports': [{file, line, module}, ...]}
     """
+    apply_llm_class_skips(files)
     g = nx.MultiDiGraph()
     edge_keys = set()
 
@@ -267,6 +340,7 @@ def build_graph(files):
 
     # ---- pass 1: nodes -------------------------------------------------
     qual_cands = {}    # qualified name -> [fn ids]
+    qual_cls_cands = {}  # qualified name -> [class ids]
     name_cands = {}    # plain name     -> [fn/class ids] (method inference)
     top_name_cands = {}  # plain name  -> [module-level fn/class ids]
     file_fn = {}       # (relpath, plain name) -> module-level fn id
@@ -276,32 +350,39 @@ def build_graph(files):
     plain_ids = set()  # id(fn) for functions callable by their bare name
     for f in files:
         rp = f['relpath']
+        lang = lang_of_file(f)
         fid = node_id_file(rp)
         classes_all = f.get('classes') or []
         fns_all = f.get('functions') or []
-        g.add_node(fid, kind='file', relpath=rp,
+        g.add_node(fid, kind='file', relpath=rp, lang=lang,
                    lines=f.get('lines'),
                    function_count=len(fns_all),
                    variable_count=len(f.get('file_vars') or []))
         for c in classes_all:
             cid = node_id_cls(rp, c['name'], c['line'])
-            g.add_node(cid, kind='class', relpath=rp, name=c['name'],
+            g.add_node(cid, kind='class', relpath=rp, lang=lang,
+                       name=c['name'],
                        qualified=c.get('qualified') or c['name'],
                        line=c['line'],
-                       end_line=c.get('end_line', c['line']), file_id=fid)
+                       end_line=c.get('end_line', c['line']), file_id=fid,
+                       skip_llm=bool(c.get('skip_llm')))
             add_edge(fid, cid, 'CONTAINS')
-            if (c.get('qualified') or c['name']) == c['name']:
+            cq = c.get('qualified') or c['name']
+            qual_cls_cands.setdefault(cq, []).append(cid)
+            if cq == c['name']:
                 file_cls[(rp, c['name'])] = cid
                 top_name_cands.setdefault(c['name'], []).append(cid)
             name_cands.setdefault(c['name'], []).append(cid)
         for fn in fns_all:
             nid = node_id_fn(rp, fn['name'], fn['line'])
-            g.add_node(nid, kind='function', relpath=rp, name=fn['name'],
+            g.add_node(nid, kind='function', relpath=rp, lang=lang,
+                       name=fn['name'],
                        qualified=fn.get('qualified') or fn['name'],
                        line=fn['line'], end_line=fn.get('end_line', fn['line']),
                        params=list(fn.get('params') or []),
                        vararg=bool(fn.get('vararg')), file_id=fid,
-                       body=fn.get('body', ''))
+                       body=fn.get('body', ''),
+                       skip_llm=bool(fn.get('skip_llm')))
             add_edge(fid, nid, 'CONTAINS')
             qual = fn.get('qualified') or fn['name']
             qual_cands.setdefault(qual, []).append(nid)
@@ -314,11 +395,13 @@ def build_graph(files):
                 top_name_cands.setdefault(fn['name'], []).append(nid)
         for v in f.get('file_vars') or []:
             vid = node_id_var(rp, v['name'], v['line'])
-            g.add_node(vid, kind='variable', relpath=rp, name=v['name'],
+            g.add_node(vid, kind='variable', relpath=rp, lang=lang,
+                       name=v['name'],
                        line=v['line'], init=v.get('init', 'expr'),
-                       file_id=fid)
+                       file_id=fid, skip_llm=bool(v.get('skip_llm')))
             add_edge(fid, vid, 'CONTAINS')
-    for ids in (list(qual_cands.values()) + list(name_cands.values())
+    for ids in (list(qual_cands.values()) + list(qual_cls_cands.values())
+                + list(name_cands.values())
                 + list(top_name_cands.values())
                 + list(file_named.values())):
         ids.sort()
@@ -326,6 +409,52 @@ def build_graph(files):
     # ---- pass 2: edges ----------------------------------------------------
     known_files = {f['relpath'] for f in files}
     files_by_rp = {f['relpath']: f for f in files}
+
+    # Explicit cross-language exports (currently pybind11). A binding record
+    # names a Python export and the C++ symbol it exposes; resolving the C++
+    # target here is exact, never a same-name guess.
+    #   {module: {'file', 'classes': {py: [ids]},
+    #             'functions': {py: [ids]}, 'methods': {(owner, py): [ids]}}}
+    binding_modules = {}
+    for f in files:
+        rp = f['relpath']
+        for rec in f.get('bindings') or []:
+            mod = rec.get('module')
+            kind = rec.get('kind')
+            name = rec.get('name')
+            target = rec.get('target')
+            if not mod or not kind or not name or not target:
+                continue
+            info = binding_modules.setdefault(
+                mod, {'file': rp, 'classes': {}, 'functions': {},
+                      'methods': {}, 'records': []})
+            info['records'].append(rec)
+            if kind == 'class':
+                ids = qual_cls_cands.get(target) or []
+                if ids:
+                    info['classes'][name] = ids
+            elif kind == 'function':
+                ids = qual_cands.get(target) or []
+                if ids:
+                    info['functions'][name] = ids
+            elif kind == 'method' and rec.get('owner'):
+                ids = qual_cands.get(target) or []
+                if ids:
+                    info['methods'][(rec['owner'], name)] = ids
+
+    # The binding file exports its targets; this is visible in both graph
+    # views (file -> C++ file/class/function).
+    for mod, info in binding_modules.items():
+        bfid = node_id_file(info['file'])
+        for rec in info['records']:
+            if rec.get('kind') == 'class':
+                ids = qual_cls_cands.get(rec.get('target')) or []
+            else:
+                ids = qual_cands.get(rec.get('target')) or []
+            for tid in ids:
+                add_edge(bfid, tid, 'EXPORTS', line=rec.get('line'),
+                         status='resolved', resolution_success=True,
+                         module=mod)
 
     def mod_file(mod, from_rp):
         for c in module_candidates(mod, from_rp):
@@ -347,7 +476,8 @@ def build_graph(files):
                 continue
             bs.append({'bind': imp.get('bind') or mod.rsplit('.', 1)[-1],
                        'file': mod_file(mod, rp),
-                       'name': imp.get('name')})
+                       'name': imp.get('name'),
+                       'binding': binding_modules.get(mod)})
         for v in f.get('file_vars') or []:
             mod = v.get('module')
             if mod:
@@ -355,6 +485,16 @@ def build_graph(files):
                            'file': mod_file(mod, rp),
                            'name': None})
         binds[rp] = bs
+
+    def binding_info_for(rp, local):
+        """Binding info for `local` (module name or import alias) in a file."""
+        info = binding_modules.get(local)
+        if info is not None:
+            return info
+        for b in binds.get(rp, []):
+            if b.get('bind') == local and b.get('binding'):
+                return b['binding']
+        return None
 
     def resolve(rp, name, method, line, owner_fn=None):
         """Resolve one call site using the context of file `rp`.
@@ -387,7 +527,6 @@ def build_graph(files):
             diag['ambiguous_calls'].append({
                 'file': rp, 'line': line, 'name': label,
                 'candidates': [_cand_display(c) for c in cands]})
-            return None
 
         def one_or_ambiguous(cands):
             cands = dedup(cands)
@@ -407,8 +546,29 @@ def build_graph(files):
             top = file_fn.get((bf, plain))
             return [top] if top else list(file_named.get((bf, plain), []))
 
+        def binding_for(local):
+            """Binding info for `local` (a module name or an import alias)."""
+            return binding_info_for(rp, local)
+
         if method and name:
-            # 0) self/cls: the enclosing class is known statically. Resolve
+            # 0) explicit pybind11 exports: `mixed_native.Engine`,
+            #    `mixed_native.add`, `mixed_native.Engine.step`. These are
+            #    declared by the binding, not guessed from a shared name.
+            info = binding_for(name)
+            if info:
+                ids = (info['classes'].get(method)
+                       or info['functions'].get(method))
+                if ids:
+                    return one_or_ambiguous(ids)
+            if '.' in name:
+                mod, _, owner = name.partition('.')
+                info = binding_for(mod)
+                if info:
+                    ids = info['methods'].get((owner, method))
+                    if ids:
+                        return one_or_ambiguous(ids)
+
+            # 0b) self/cls: the enclosing class is known statically. Resolve
             #    `Class.method` directly; never classify self/cls as a
             #    builtin (they are not callables).
             if name in ('self', 'cls'):
@@ -476,6 +636,13 @@ def build_graph(files):
 
         if '.' in name:
             base, _, rest = name.partition('.')
+            # 0) explicit pybind11 module export (`mixed_native.add(...)`)
+            info = binding_for(base)
+            if info:
+                ids = (info['functions'].get(rest)
+                       or info['classes'].get(rest))
+                if ids:
+                    return one_or_ambiguous(ids)
             # 1) base bound to a project module in this file
             hits = []
             for b in file_bs:
@@ -517,11 +684,35 @@ def build_graph(files):
             if cands:
                 c = cands[-1]
                 return node_id_cls(rp, c['name'], c['line']), 'resolved'
+        # 1b) C-family only: a bare call inside a namespace/class is
+        #     addressable through the enclosing scope (`clamp_value` inside
+        #     `mixed.Engine.describe` -> `mixed.clamp_value`; an implicit
+        #     `this->helper()` in a method).  This must NOT apply to Python
+        #     or Lua: there a bare `helper()` is not a method call, and
+        #     inventing `A.helper` would be wrong.
+        if lang_of_file(files_by_rp.get(rp) or {}) == 'c-family':
+            owner_q = ((owner_fn or {}).get('qualified')
+                       or (owner_fn or {}).get('name'))
+            scope = owner_q.rsplit('.', 1)[0] if owner_q and '.' in owner_q \
+                else None
+            while scope:
+                cands = qual_cands.get(f'{scope}.{name}')
+                if cands:
+                    return one_or_ambiguous(cands)
+                scope = scope.rsplit('.', 1)[0] if '.' in scope else None
+
         # 2) bound by this file's imports to a project file
         #    (`from users import validate` then `validate()`, or
         #    `from physics.body import Body` then `Body(...)`)
         hits = []
         for b in file_bs:
+            if b['bind'] == name and b.get('binding'):
+                info = b['binding']
+                key = b.get('name') or name
+                ids = (info['classes'].get(key)
+                       or info['functions'].get(key))
+                if ids:
+                    return one_or_ambiguous(ids)
             if b['bind'] == name and b['file'] and b['name']:
                 hit = (file_fn.get((b['file'], b['name']))
                        or file_cls.get((b['file'], b['name'])))
@@ -544,7 +735,7 @@ def build_graph(files):
         fid = node_id_file(rp)
         fns = f.get('functions') or []
 
-        def owner(call_line):
+        def owner(call_line, fns=fns):
             best = None
             for fn in fns:
                 if fn['line'] <= call_line <= fn.get('end_line', fn['line']):
@@ -555,6 +746,25 @@ def build_graph(files):
 
         for c in f.get('calls') or []:
             fn = owner(c['line'])
+
+            # Python facade -> C++ class bridge: a method of a Python class
+            # constructs/uses a pybind11-exported class. The binding record
+            # says which C++ class it is, so this is declaration-driven.
+            if lang_of_file(f) == 'python' and fn is not None:
+                info = binding_info_for(rp, c.get('callee'))
+                class_ids = (info['classes'].get(c.get('method'))
+                             if info and c.get('method') else None)
+                if class_ids:
+                    owner_cls = _enclosing_class(f, fn)
+                    if owner_cls is not None:
+                        py_cls = node_id_cls(rp, owner_cls['name'],
+                                             owner_cls['line'])
+                        for cid in class_ids:
+                            add_edge(py_cls, cid, 'BRIDGES',
+                                     line=c['line'], status='resolved',
+                                     resolution_success=True,
+                                     module=c.get('callee'))
+
             res = resolve(rp, c['callee'], c.get('method'), c['line'],
                           owner_fn=fn)
             if res is None:  # ambiguous: diagnostic recorded, no edge
@@ -588,6 +798,14 @@ def build_graph(files):
 
         for imp in f.get('imports') or []:
             mod = imp['module']
+            binfo = binding_modules.get(mod)
+            if binfo:
+                # `import mixed_native` -> the file that declares the
+                # pybind11 module, not an unresolved `mod:` placeholder.
+                add_edge(fid, node_id_file(binfo['file']), 'IMPORTS',
+                         line=imp.get('line'), status='resolved',
+                         resolution_success=True, cross_language=True)
+                continue
             hit = mod_file(mod, rp)
             if hit:
                 add_edge(fid, node_id_file(hit), 'IMPORTS',
@@ -619,9 +837,36 @@ def build_graph(files):
                 if body and _var_reads(body, v['name'], is_py,
                                        fn.get('params') or ()):
                     src = node_id_fn(rp, fn['name'], fn['line'])
-                    # A READS edge only exists when the variable is defined
-                    # in the same file, so it is always resolved.
+                    # A same-file READS edge is always resolved.
                     add_edge(src, vid, 'READS', resolution_success=True)
+
+        # C-family: a quoted #include is textual inclusion, so a file-level
+        # variable/macro in a directly included project file is visible to
+        # this TU too (`mixed_version()` reads MIXED_VERSION from version.h).
+        # Only direct includes are followed; transitive includes and
+        # #define shadowing are deliberately left to the compiler.
+        if lang_of_file(f) == 'c-family':
+            for b in binds.get(rp, []):
+                bf = b.get('file')
+                if not bf or bf == rp:
+                    continue
+                bfile = files_by_rp.get(bf) or {}
+                for v in bfile.get('file_vars') or []:
+                    if v.get('module'):
+                        continue
+                    if not (v.get('init') in ('table', 'string', 'number')
+                            or v.get('value') is not None):
+                        continue
+                    vid = node_id_var(bf, v['name'], v['line'])
+                    for fn in fns:
+                        body = fn.get('body') or ''
+                        if not body or v['name'] == fn['name']:
+                            continue
+                        if _var_reads(body, v['name'], False,
+                                      fn.get('params') or ()):
+                            src = node_id_fn(rp, fn['name'], fn['line'])
+                            add_edge(src, vid, 'READS',
+                                     resolution_success=True)
 
     return g, diag
 

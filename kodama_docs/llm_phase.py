@@ -99,10 +99,13 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
 
     # ---- build a flat, deterministic job list ---------------------------
     jobs = []
+    skipped_syms = 0
     if doccfg.get('generate_function_docs'):
-        tasks = [(f, fn) for f in ordered
-                 for fn in f.get('functions') or []
-                 if include_anon or fn['name'] != 'anon']
+        all_fns = [(f, fn) for f in ordered
+                   for fn in f.get('functions') or []
+                   if include_anon or fn['name'] != 'anon']
+        tasks = [(f, fn) for f, fn in all_fns if not fn.get('skip_llm')]
+        skipped_syms += len(all_fns) - len(tasks)
         nchunked = sum(1 for _, fn in tasks if maxlines and fn_length(fn) > maxlines)
         log(f'function docs: {len(tasks)} tasks ({nchunked} via chunk-and-merge)')
         for f, fn in tasks:
@@ -110,7 +113,10 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                          'nid': gmod.node_id_fn(f['relpath'], fn['name'], fn['line']),
                          'tag': f'{f["relpath"]}::{fn["name"]}@{fn["line"]}'})
     if doccfg.get('generate_variable_docs'):
-        tasks = [(f, v) for f in ordered for v in f.get('file_vars') or []]
+        all_vars = [(f, v) for f in ordered
+                    for v in f.get('file_vars') or []]
+        tasks = [(f, v) for f, v in all_vars if not v.get('skip_llm')]
+        skipped_syms += len(all_vars) - len(tasks)
         log(f'variable docs: {len(tasks)} tasks')
         for f, v in tasks:
             jobs.append({'kind': 'variable', 'f': f, 'sym': v,
@@ -121,6 +127,8 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
         for f in ordered:
             jobs.append({'kind': 'summary', 'f': f,
                          'sym': {'name': 'file', 'line': 1}, 'tag': f['relpath']})
+    if skipped_syms:
+        log(f'developer-comment skips: {skipped_syms} symbol(s)')
     if not jobs:
         return 0
 

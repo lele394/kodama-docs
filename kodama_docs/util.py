@@ -23,10 +23,24 @@ def log(msg: str) -> None:
             print(line, flush=True)
 
 
+#: Extensions whose highlight.js language differs from the extension itself.
+#: The vendored bundle has no CUDA grammar, so .cu/.cuh render as C++ (CUDA
+#: is a C++ dialect; only the <<<...>>> launch syntax goes unhighlighted).
+_FENCE_ALIASES = {
+    'cu': 'cpp', 'cuh': 'cpp',
+    'cc': 'cpp', 'cxx': 'cpp', 'hpp': 'cpp', 'hh': 'cpp', 'hxx': 'cpp',
+    # .h is ambiguous (C or C++); the C++ grammar is a superset and handles
+    # both, so it is the safer highlight for header pages.
+    'h': 'cpp',
+}
+
+
 def fence_lang(relpath: str) -> str:
     """Code-fence language label for a file path ('lua', 'py', ...)."""
     ext = os.path.splitext(str(relpath))[1].lower().lstrip('.')
-    return ext or 'text'
+    if not ext:
+        return 'text'
+    return _FENCE_ALIASES.get(ext, ext)
 
 
 def read_env_file(path: str) -> dict:

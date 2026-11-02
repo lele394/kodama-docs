@@ -88,8 +88,10 @@ Returns:
       'body': str,            # the exact source lines, joined with '\n'
                                # (== source.splitlines()[line-1:end_line])
       'developer_comment': str | None,   # see comment-glue rule below
+      'skip_llm': bool,       # optional: dev comment said skip
   }],
-  'file_vars': [{'name': str, 'line': int, 'init': str}],
+  'file_vars': [{'name': str, 'line': int, 'init': str,
+                 'developer_comment': str|None, 'skip_llm': bool}],
       # init is one of: 'empty' | 'table' | 'string' | 'number' |
       #                 'function' | 'call' | 'expr'
   'calls': [{'callee': str | None, 'line': int, 'method': str | None}],
@@ -113,7 +115,8 @@ Returns:
       # name:   the specific symbol inside the module (for 'from X import y'
       #         the imported y; None for a plain module import).
       # level:  relative-import depth (0 = absolute).
-  'classes': [{'name': str, 'qualified': str, 'line': int, 'end_line': int}],
+  'classes': [{'name': str, 'qualified': str, 'line': int, 'end_line': int,
+               'developer_comment': str|None, 'skip_llm': bool}],
       # top-level and nested class definitions, in source order.
       # name:      the class's own name ('Vec3').
       # qualified: full dotted name ('outer.Vec3').
@@ -165,23 +168,59 @@ Invariants (the pipeline relies on these):
   (language builtins, stdlib, self/cls). `graph.py` asks
   `backends.builtins_for(relpath)`; without it every undefined name
   becomes a dangling graph edge.
+- `LANG: str` — optional language-family tag (`python`, `lua`,
+  `c-family`, ...). The registry stamps it onto every analysis record, so
+  the graph can tell a Python symbol from a C++ one and the UI can group
+  nodes. Without it the extension is used. C, C++ and CUDA deliberately
+  share `c-family` so a C++ call into a C function is a real edge.
 - `module_candidates(module, relpath) -> list[str]` — the relpaths a
   language import of `module` could resolve to (e.g. Python
   `import physics.vec3` → `['physics/vec3.py', 'physics/vec3/__init__.py', ...]`).
   Without it the registry falls back to
   `<module><ext>` and `<module>/init<ext>` (plus the dotted→path form).
+- `bindings: [...]` — optional **explicit cross-language exports**. Today
+  the C-family backend emits pybind11 declarations from
+  `PYBIND11_MODULE` / `py::class_<T>` / `.def(...)`:
+
+  ```python
+  {'kind': 'class'|'function'|'method',
+   'module': 'mixed_native',      # Python module name
+   'name': 'Engine',              # exported Python name
+   'target': 'mixed.Engine',      # C++ qualified name (dotted)
+   'line': 18,
+   'owner': 'Engine'}             # method only: Python class name
+  ```
+
+  `graph.py` resolves each target to an existing node and creates
+  `EXPORTS` (binding file → C++ symbol) and `BRIDGES` (Python class → C++
+  class) edges, and resolves `mixed_native.Engine(...)` calls exactly.
+  Only declarations are followed — never a same-name guess. Other FFI
+  styles (ctypes, Cython, torch extensions) can add their own binding
+  records the same way.
 - Comment-glue helpers live in `backends/_shared.py`:
   `_all_comments(root)`, `_dev_comment(comments, fn_line, clean)` — use
   them so `developer_comment` behaves identically across languages.
 
 ## Comment glue (developer_comment)
 
-A comment is *glued* to a function when its **last line is exactly the
-line above the function's first line** (no blank line or code between
+A comment is *glued* to a definition when its **last line is exactly the
+line above the definition's first line** (no blank line or code between
 them). The block is the **maximal run**: keep extending upward while the
 previous comment's last line sits exactly on the line above the current
-top. Any other content between comment and function (code, blank line)
+top. Any other content between comment and definition (code, blank line)
 breaks the glue → `None`.
+
+A **multiline block comment** (`/* ... */`) is one comment node and glues
+exactly like a run of single-line comments. The same rule applies to
+functions, classes, file variables and function-like macros (and to the
+equivalent symbol in every backend).
+
+If the **first non-empty line** of the cleaned developer comment is
+`kodama-docs-llm:skip`, the backend sets `skip_llm: True` on the symbol and
+removes the marker line from the comment. No LLM task is created for that
+symbol; a class-level marker also covers its methods, constructors and
+nested classes (matched by qualified-name prefix). A marker later in the
+comment is ordinary prose.
 
 Backends supply a per-language `clean(node)` that strips the comment
 markers (Lua `comment_content`, Python leading `#` + one space).
@@ -230,8 +269,16 @@ declared python deps, and reports the resulting status.
 
 ## Reference implementations
 
-`backends/lua/__init__.py` (tree-sitter-lua) and
-`backends/python/__init__.py` (tree-sitter-python) are the reference
-implementations. Both use `tree-sitter` (pinned in `requirements.txt` and
-re-declared in their manifests) and the `_shared.py` comment-glue helpers.
-No hand-rolled tokenizers.
+`backends/lua/__init__.py` (tree-sitter-lua),
+`backends/python/__init__.py` (tree-sitter-python) and
+`backends/cpp/__init__.py` (tree-sitter-cpp + tree-sitter-cuda) are the
+reference implementations. All use `tree-sitter` (pinned in
+`requirements.txt` and re-declared in their manifests) and the
+`_shared.py` comment-glue helpers. No hand-rolled tokenizers.
+
+The C-family backend is the reference for a **mixed-language** setup: it
+claims `.c`, `.h`, `.cc`, `.cpp`, `.cxx`, `.hh`, `.hpp`, `.hxx`, `.cu` and
+`.cuh`, records definitions (not prototypes), maps quoted `#include`s to
+project files, and treats CUDA `kernel<<<...>>>(...)` launches as ordinary
+calls. C, C++ and CUDA share `LANG = 'c-family'` so the graph may link
+across them.
