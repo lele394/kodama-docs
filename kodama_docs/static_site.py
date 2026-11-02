@@ -98,6 +98,26 @@ def _theme_default(webdir: str) -> str:
     return 'light'
 
 
+def _theme_init(base: str) -> str:
+    """Apply the per-browser theme during <head> parsing.
+
+    Static pages are baked with one default theme, so without this the
+    browser paints the default (usually light) CSS before ``app.js`` gets a
+    chance to read localStorage and switch, producing a white flash on every
+    navigation. The script runs before deferred scripts and before first
+    paint, so the saved theme is in place immediately.
+    """
+    js = ('(function(){try{var t=localStorage.getItem("kodama.theme");'
+          'if(t!=="light"&&t!=="dark")return;'
+          'var l=document.getElementById("doc-theme");'
+          f'if(l)l.href="{base}theme/"+t+"/style.css?v=2";'
+          'var a=document.getElementById("hljs-light"),'
+          'b=document.getElementById("hljs-dark");'
+          'if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}'
+          '}catch(e){}})();')
+    return '<script>' + js + '</script>'
+
+
 def _load_template(webdir: str, name: str) -> str:
     return _read(os.path.join(webdir, 'templates', name))
 
@@ -119,6 +139,7 @@ def _render_page(md: str, title: str, theme: str, base: str,
         # JS static-mode switch (see web/sidebar.js); under --serve the
         # server renders the same slot as `undefined`
         base_json=f"'{base}'",
+        theme_init=_theme_init(base),
         # external classic script with the search index (file:// forbids
         # fetch of local JSON). One file shared by every page, instead of
         # inlining the whole index into every page.
@@ -329,6 +350,7 @@ def build(cfg: dict, webdir: str = None) -> str:
             hljs_light=' disabled' if theme == 'dark' else '',
             hljs_dark='' if theme == 'dark' else ' disabled',
             base='', index_href='index.html', base_json="''",
+            theme_init=_theme_init(''),
             # graph data inlined (file:// forbids fetch); classic bundled
             # script at the site root
             graph_json=graph_inline,

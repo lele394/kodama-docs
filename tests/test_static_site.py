@@ -207,6 +207,11 @@ def main():
         check('href="lib/github-dark.min.css">' in idx
               and 'lib/github-dark.min.css" disabled>' not in idx,
               'index: dark hljs css enabled')
+        check('localStorage.getItem("kodama.theme")' in idx,
+              'index: saved theme applied during head parsing')
+        check(idx.index('localStorage.getItem("kodama.theme")')
+              < idx.index('src="app.js"'),
+              'index: theme bootstrap runs before app.js')
 
         # ---- JS switch + base prefix -------------------------------------
         check('window.__KODAMA_BASE__ = \'\'' in idx,

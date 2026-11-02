@@ -177,6 +177,7 @@ class DocsHandler(BaseHTTPRequestHandler):
                            hljs_dark='' if dark else ' disabled',
                            base='/', index_href='/index.md',
                            graph_href='/graph', base_json='undefined',
+                           theme_init='',
                            # the server ships the real ES modules (served
                            # over http, so <script type="module"> works) and
                            # the data via /api/* — the inline slots stay
@@ -304,6 +305,7 @@ class DocsHandler(BaseHTTPRequestHandler):
             hljs_light=' disabled' if dark else '',
             hljs_dark='' if dark else ' disabled',
             base='/', index_href='/index.md', base_json='undefined',
+            theme_init='',
             graph_json='undefined',
             graph_tag='<script type="module" src="/graph.js"></script>')
         self._send(200, page.encode('utf-8'), 'text/html; charset=utf-8')
