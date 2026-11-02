@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuration</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Configuration</h1>
+<p>Everything is driven by one YAML file (default <code>settings.yaml</code>, override with <code>--config PATH</code>). Relative paths are resolved against the <strong>config file&#x27;s directory</strong>, not the current working directory.</p>
+<h2>Where each group lives</h2>
+<ul>
+<li><code>project</code> — what to read and where to write.
+</li>
+<li><code>llm</code> — the OpenAI-compatible endpoint and its knobs.
+</li>
+<li><code>context</code> — how much surrounding context each LLM task receives.
+</li>
+<li><code>documentation</code> — what to generate and how to chunk long functions.
+</li>
+<li><code>concurrency</code> — how many LLM agents run in parallel.
+</li>
+<li><code>tui</code> — the live progress view.
+</li>
+<li><code>prompts</code> — the per-task prompt files.
+</li>
+</ul>
+<h2>The keys you will touch most</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>project.source_dir</code></td><td>required</td><td>Folder to document.</td></tr>
+<tr><td><code>project.output_dir</code></td><td>required</td><td>Where <code>doc/</code> is written.</td></tr>
+<tr><td><code>project.data_dir</code></td><td>required</td><td>Cache: symbols, graph, LLM records.</td></tr>
+<tr><td><code>project.exclude</code></td><td><code>[]</code></td><td>Folder names to skip.</td></tr>
+<tr><td><code>project.max_file_bytes</code></td><td><code>26214400</code></td><td>Files larger than this are skipped.</td></tr>
+<tr><td><code>project.copy_meta</code></td><td><code>false</code></td><td>Also write <code>meta/symbols.json</code>, <code>meta/graph.json</code>.</td></tr>
+<tr><td><code>project.manual_doc</code></td><td>unset</td><td>A folder of hand-written pages (section 0).</td></tr>
+<tr><td><code>llm.base_url</code></td><td><code>env</code></td><td>Endpoint, or <code>env</code> to read <code>.env</code>.</td></tr>
+<tr><td><code>llm.api_key</code></td><td><code>env</code></td><td>Key, or <code>env</code> to read <code>.env</code>.</td></tr>
+<tr><td><code>llm.model</code></td><td>—</td><td>Model name.</td></tr>
+<tr><td><code>llm.timeout</code></td><td><code>300</code></td><td>Per-request seconds.</td></tr>
+<tr><td><code>llm.max_retries</code></td><td><code>5</code></td><td>Retries on failure.</td></tr>
+<tr><td><code>concurrency</code></td><td><code>2</code></td><td>Parallel LLM agents.</td></tr>
+<tr><td><code>documentation.max_function_lines</code></td><td><code>20</code></td><td>Functions longer than this are chunked.</td></tr>
+<tr><td><code>documentation.chunk_target_tokens</code></td><td><code>20000</code></td><td>Target size of one chunk.</td></tr>
+<tr><td><code>documentation.skip_existing</code></td><td><code>true</code></td><td>Reuse cached prose instead of regenerating.</td></tr>
+</tbody>
+</table>
+<h2>The <code>env</code> shorthand</h2>
+<p><code>llm.base_url: env</code> and <code>llm.api_key: env</code> tell kodama-docs to read the real values from a <code>.env</code> file — looked up in the project root first, then next to the config. This keeps secrets out of the YAML.</p>
+<p>The full, key-by-key reference lives in <a href="../04%20-%20Reference/01%20-%20Config%20Reference.html">Config Reference</a>.</p>
+</main>
+</div>
+</body>
+</html>

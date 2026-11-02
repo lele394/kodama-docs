@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/context.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/context.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-fn_chunks-6">fn_chunks</a></td><td>6</td><td>body, max_lines, target_tokens, chars_per_token</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_name_list-49">_name_list</a></td><td>49</td><td>names, limit</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-fn_context_text-53">fn_context_text</a></td><td>53</td><td>fn, calls_in, calls_out, ctx_cfg, body_note, reads, imports</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-var_context_text-84">var_context_text</a></td><td>84</td><td>var, ctx_cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-summary_context_text-97">summary_context_text</a></td><td>97</td><td>finfo, ctx_cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>fn_chunks <a id="fn-fn_chunks-6"></a></h3>
+<p><em>kodama_docs/context.py:6-46</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>body</code></td><td></td></tr>
+<tr><td><code>max_lines</code></td><td></td></tr>
+<tr><td><code>target_tokens</code></td><td></td></tr>
+<tr><td><code>chars_per_token</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">body.splitlines</span>
+</li>
+<li>len
+</li>
+<li>int
+</li>
+<li>max
+</li>
+<li>any
+</li>
+<li><span style="color:#e67e22">l.strip</span>
+</li>
+<li>sum
+</li>
+<li><span style="color:#e67e22">l.lstrip</span>
+</li>
+<li>min
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">chunks.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def fn_chunks(body: str, max_lines: int, target_tokens: int = 0,
+              chars_per_token: int = 4) -&gt; list:
+    &quot;&quot;&quot;Split a function body into deterministic chunks.
+
+    A chunk holds at most `max_lines` lines and (if target_tokens &gt; 0) at
+    most ~target_tokens input tokens, estimated with the configured
+    chars-per-token ratio (a conservative upper bound for Lua). Breaks are
+    preferred after top-level statements (indent &lt;= the body&#x27;s base
+    indent) so chunks rarely start mid-block.
+    &quot;&quot;&quot;
+    lines = body.splitlines()
+    n = len(lines)
+    cpt = max(1, int(chars_per_token or 4))
+    budget = target_tokens * cpt if target_tokens else None
+    if n == 0 or not any(l.strip() for l in lines):
+        return []
+    if n &lt;= max_lines and (budget is None
+                           or sum(len(l) + 1 for l in lines) &lt;= budget):
+        return [body]
+    base = min((len(l) - len(l.lstrip()) for l in lines if l.strip()),
+               default=0)
+    chunks, i = [], 0
+    while i &lt; n:
+        j, chars, last = i, 0, i
+        while j &lt; n and (j - i) &lt; max_lines:
+            if budget is not None and j &gt; i \
+                    and chars + len(lines[j]) + 1 &gt; budget:
+                break
+            l = lines[j]
+            chars += len(l) + 1
+            if j &gt; i and (len(l) - len(l.lstrip())) &lt;= base:
+                last = j + 1
+            j += 1
+        end = j
+        if end &lt;= i:                      # one line over budget: force progress
+            end = i + 1
+        elif end &lt; n and last &gt; i:        # split after the last top-level stmt
+            end = last
+        chunks.append(&#x27;\n&#x27;.join(lines[i:end]))
+        i = end
+    return chunks</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:43</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_name_list <a id="fn-_name_list-49"></a></h3>
+<p><em>kodama_docs/context.py:49-50</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>names</code></td><td></td></tr>
+<tr><td><code>limit</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li>dict.fromkeys
+</li>
+<li>list
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _name_list(names, limit):
+    return &#x27;, &#x27;.join(list(dict.fromkeys(names))[:limit])</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="context.py.html">kodama_docs/context.py</a>
+<ul>
+<li><a href="context.py.html#fn-fn_context_text-53">fn_context_text:69</a>
+</li>
+<li><a href="context.py.html#fn-fn_context_text-53">fn_context_text:71</a>
+</li>
+<li><a href="context.py.html#fn-fn_context_text-53">fn_context_text:73</a>
+</li>
+<li><a href="context.py.html#fn-fn_context_text-53">fn_context_text:75</a>
+</li>
+<li><a href="context.py.html#fn-summary_context_text-97">summary_context_text:120</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>fn_context_text <a id="fn-fn_context_text-53"></a></h3>
+<p><em>kodama_docs/context.py:53-81</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fn</code></td><td></td></tr>
+<tr><td><code>calls_in</code></td><td></td></tr>
+<tr><td><code>calls_out</code></td><td></td></tr>
+<tr><td><code>ctx_cfg</code></td><td></td></tr>
+<tr><td><code>body_note</code></td><td></td></tr>
+<tr><td><code>reads</code></td><td></td></tr>
+<tr><td><code>imports</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">ctx_cfg.get</span>
+</li>
+<li>int
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><span style="color:#e67e22">body.splitlines</span>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><a href="context.py.html#fn-_name_list-49">_name_list</a>
+</li>
+<li><span style="color:#e67e22">parts.append</span>
+</li>
+<li><a href="util.py.html#fn-fence_lang-38">fence_lang</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def fn_context_text(fn: dict, calls_in, calls_out, ctx_cfg: dict,
+                    body_note: str = None, reads=None, imports=None) -&gt; str:
+    max_list = int(ctx_cfg.get(&#x27;max_symbols_per_list&#x27;, 25))
+    max_lines = int(ctx_cfg.get(&#x27;max_source_lines&#x27;, 300))
+    body = fn.get(&#x27;body&#x27;, &#x27;&#x27;)
+    blines = body.splitlines()
+    if len(blines) &gt; max_lines:
+        body = &#x27;\n&#x27;.join(blines[:max_lines]) + f&#x27;\n-- ... ({len(blines) - max_lines} more lines)&#x27;
+    parts = [
+        f&quot;Symbol: {fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;]} (line {fn[&#x27;line&#x27;]}&quot;
+        + (f&quot;-{fn[&#x27;end_line&#x27;]}&quot; if fn.get(&#x27;end_line&#x27;, 0) &gt; fn[&#x27;line&#x27;] else &#x27;&#x27;) + &#x27;)&#x27;,
+        f&quot;File: {fn[&#x27;relpath&#x27;]}&quot;,
+        &#x27;Parameters: &#x27; + (&#x27;, &#x27;.join(fn.get(&#x27;params&#x27;) or []) or &#x27;(none)&#x27;)
+        + (&#x27; + varargs&#x27; if fn.get(&#x27;vararg&#x27;) else &#x27;&#x27;),
+    ]
+    if calls_in:
+        parts.append(&#x27;Called by: &#x27; + _name_list(calls_in, max_list))
+    if calls_out:
+        parts.append(&#x27;Calls: &#x27; + _name_list(calls_out, max_list))
+    if reads:
+        parts.append(&#x27;Reads file variables: &#x27; + _name_list(reads, max_list))
+    if imports:
+        parts.append(&#x27;Imports: &#x27; + _name_list(imports, max_list))
+    if body_note is not None:
+        parts.append(body_note)
+    else:
+        lang = fence_lang(fn[&#x27;relpath&#x27;])
+        parts.append(f&#x27;Source ({lang}):\n```{lang}\n&#x27; + body + &#x27;\n```&#x27;)
+    return &#x27;\n&#x27;.join(parts)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:203</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:209</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_context.py.html">tests/test_context.py</a>
+<ul>
+<li><a href="../tests/test_context.py.html#fn-test_fn_context_includes_reads_and_imports-14">test_fn_context_includes_reads_and_imports:18</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>var_context_text <a id="fn-var_context_text-84"></a></h3>
+<p><em>kodama_docs/context.py:84-94</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>var</code></td><td></td></tr>
+<tr><td><code>ctx_cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">var.get</span>
+</li>
+<li><span style="color:#e67e22">parts.append</span>
+</li>
+<li>str
+</li>
+<li><a href="util.py.html#fn-trunc-65">trunc</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def var_context_text(var: dict, ctx_cfg: dict) -&gt; str:
+    parts = [
+        f&quot;Symbol: {var[&#x27;name&#x27;]} (line {var[&#x27;line&#x27;]})&quot;,
+        f&quot;File: {var[&#x27;relpath&#x27;]}&quot;,
+        f&quot;Initialization: {var.get(&#x27;init&#x27;, &#x27;unknown&#x27;)}&quot;,
+    ]
+    if var.get(&#x27;module&#x27;):
+        parts.append(&#x27;Loaded module: &#x27; + str(var[&#x27;module&#x27;]))
+    if var.get(&#x27;value&#x27;):
+        parts.append(&#x27;Initializer: &#x27; + trunc(str(var[&#x27;value&#x27;]), 300))
+    return &#x27;\n&#x27;.join(parts)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:241</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_context.py.html">tests/test_context.py</a>
+<ul>
+<li><a href="../tests/test_context.py.html#fn-test_var_context_includes_initializer-27">test_var_context_includes_initializer:30</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>summary_context_text <a id="fn-summary_context_text-97"></a></h3>
+<p><em>kodama_docs/context.py:97-122</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>finfo</code></td><td></td></tr>
+<tr><td><code>ctx_cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">ctx_cfg.get</span>
+</li>
+<li>int
+</li>
+<li><span style="color:#e67e22">finfo.get</span>
+</li>
+<li><span style="color:#e67e22">i.get</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><span style="color:#e67e22">h.get</span>
+</li>
+<li><a href="util.py.html#fn-trunc-65">trunc</a>
+</li>
+<li>len
+</li>
+<li><a href="context.py.html#fn-_name_list-49">_name_list</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def summary_context_text(finfo: dict, ctx_cfg: dict) -&gt; str:
+    max_list = int(ctx_cfg.get(&#x27;max_symbols_per_list&#x27;, 25))
+    fns = finfo.get(&#x27;functions&#x27;) or []
+    vars_ = finfo.get(&#x27;file_vars&#x27;) or []
+    classes = finfo.get(&#x27;classes&#x27;) or []
+    imports = [i.get(&#x27;module&#x27;) for i in (finfo.get(&#x27;imports&#x27;) or [])
+               if i.get(&#x27;module&#x27;)]
+    fns_txt = &#x27;, &#x27;.join(
+        (f.get(&#x27;qualified&#x27;) or f[&#x27;name&#x27;]) for f in fns[:max_list])
+    vars_txt = &#x27;, &#x27;.join(v[&#x27;name&#x27;] for v in vars_[:max_list])
+    cls_txt = &#x27;, &#x27;.join((c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;])
+                        for c in classes[:max_list])
+    heads = [f for f in fns[:6] if (f.get(&#x27;body&#x27;) or &#x27;&#x27;).strip()]
+    head_txt = &#x27;&#x27;
+    for h in heads:
+        head_txt += f&quot;\n--- {h.get(&#x27;qualified&#x27;) or h[&#x27;name&#x27;]} ---\n&quot;
+        head_txt += trunc(h.get(&#x27;body&#x27;, &#x27;&#x27;), 600)
+    return &#x27;\n&#x27;.join([
+        f&quot;File: {finfo[&#x27;relpath&#x27;]} ({finfo.get(&#x27;lines&#x27;, &#x27;?&#x27;)} lines)&quot;,
+        f&quot;Function count: {len(fns)}&quot; + (f&quot; (showing {max_list})&quot; if len(fns) &gt; max_list else &#x27;&#x27;),
+        &#x27;Functions: &#x27; + (fns_txt or &#x27;(none)&#x27;),
+        &#x27;File-level variables: &#x27; + (vars_txt or &#x27;(none)&#x27;),
+        &#x27;Classes: &#x27; + (cls_txt or &#x27;(none)&#x27;),
+        &#x27;Imports: &#x27; + (_name_list(imports, max_list) or &#x27;(none)&#x27;),
+        &#x27;Representative code:&#x27; + (head_txt or &#x27; (none)&#x27;),
+    ])</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:265</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_context.py.html">tests/test_context.py</a>
+<ul>
+<li><a href="../tests/test_context.py.html#fn-test_summary_context_includes_imports_and_classes-36">test_summary_context_includes_imports_and_classes:43</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

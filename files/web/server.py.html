@@ -1,0 +1,1599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>web/server.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>web/server.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-log-27">log</a></td><td>27</td><td>msg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_load_template-30">_load_template</a></td><td>30</td><td>name</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-load_settings-42">load_settings</a></td><td>42</td><td>path</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_title-64">_title</a></td><td>64</td><td>md, relpath</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-log_message-82">DocsHandler.log_message</a></td><td>82</td><td>self, fmt, args</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-do_GET-86">DocsHandler.do_GET</a></td><td>86</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-do_POST-147">DocsHandler.do_POST</a></td><td>147</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_set_theme-153">DocsHandler._set_theme</a></td><td>153</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_page-168">DocsHandler._page</a></td><td>168</td><td>self, relpath</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_page_body-191">DocsHandler._page_body</a></td><td>191</td><td>self, relpath</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_load_doc-200">DocsHandler._load_doc</a></td><td>200</td><td>self, relpath</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_rendered-215">DocsHandler._rendered</a></td><td>215</td><td>self, full, md, st</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_manual_pages-224">DocsHandler._manual_pages</a></td><td>224</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_symbols_index-246">DocsHandler._symbols_index</a></td><td>246</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_docfile-291">DocsHandler._docfile</a></td><td>291</td><td>self, rel, ctype</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_graph_page-301">DocsHandler._graph_page</a></td><td>301</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_webfile-313">DocsHandler._webfile</a></td><td>313</td><td>self, filename, ctype</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_iconfile-321">DocsHandler._iconfile</a></td><td>321</td><td>self, name, ctype</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_safe-334">DocsHandler._safe</a></td><td>334</td><td>root, rel</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_send-342">DocsHandler._send</a></td><td>342</td><td>self, code, data, ctype, extra</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_error-352">DocsHandler._error</a></td><td>352</td><td>self, code, msg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_redirect-360">DocsHandler._redirect</a></td><td>360</td><td>self, location</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-html_escape-366">html_escape</a></td><td>366</td><td>s</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-serve-371">serve</a></td><td>371</td><td>docs_dir, settings, web_root</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>log <a id="fn-log-27"></a></h3>
+<p><em>web/server.py:27-28</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>msg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>print
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def log(msg):
+        print(msg, flush=True)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-log_message-82">DocsHandler.log_message:83</a>
+</li>
+<li><a href="server.py.html#fn-serve-371">serve:395</a>
+</li>
+<li><a href="server.py.html#fn-serve-371">serve:396</a>
+</li>
+<li><a href="server.py.html#fn-serve-371">serve:403</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_load_template <a id="fn-_load_template-30"></a></h3>
+<p><em>web/server.py:30-34</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.abspath
+</li>
+<li>os.path.dirname
+</li>
+<li>os.path.join
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _load_template(name: str) -&gt; str:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        &#x27;templates&#x27;, name)
+    with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        return fh.read()</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html">top-level:37</a>
+</li>
+<li><a href="server.py.html">top-level:39</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>load_settings <a id="fn-load_settings-42"></a></h3>
+<p><em>web/server.py:42-61</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">ruamel.yaml.YAML</span>
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">yaml.load</span>
+</li>
+<li>os.path.abspath
+</li>
+<li>os.path.dirname
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><span style="color:#e67e22">raw.get</span>
+</li>
+<li>str
+</li>
+<li>SystemExit
+</li>
+<li>os.path.isabs
+</li>
+<li>os.path.join
+</li>
+<li>os.path.normpath
+</li>
+<li>int
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def load_settings(path: str) -&gt; dict:
+    yaml = ruamel.yaml.YAML()
+    with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        raw = yaml.load(fh)
+    base = os.path.dirname(os.path.abspath(path))
+    theme = str(raw.get(&#x27;default_theme&#x27;) or &#x27;light&#x27;).strip().lower()
+    if theme not in (&#x27;light&#x27;, &#x27;dark&#x27;):
+        raise SystemExit(f&#x27;web_settings: default_theme must be light or &#x27;
+                         f&#x27;dark (got {theme!r})&#x27;)
+    docs_dir = raw.get(&#x27;docs_dir&#x27;)
+    if docs_dir:
+        docs_dir = str(docs_dir)
+        if not os.path.isabs(docs_dir):
+            docs_dir = os.path.normpath(os.path.join(base, docs_dir))
+    return {
+        &#x27;host&#x27;: str(raw.get(&#x27;host&#x27;) or &#x27;127.0.0.1&#x27;),
+        &#x27;port&#x27;: int(raw.get(&#x27;port&#x27;) or 8123),
+        &#x27;theme&#x27;: theme,
+        &#x27;docs_dir&#x27;: docs_dir,
+    }</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:286</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_title <a id="fn-_title-64"></a></h3>
+<p><em>web/server.py:64-68</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>md</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">md.split</span>
+</li>
+<li><span style="color:#e67e22">line.startswith</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _title(md: str, relpath: str) -&gt; str:
+    for line in md.split(&#x27;\n&#x27;):
+        if line.startswith(&#x27;# &#x27;):
+            return line[2:].strip()
+    return relpath</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-_page-168">DocsHandler._page:174</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler.log_message <a id="fn-log_message-82"></a></h3>
+<p><em>web/server.py:82-83</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>fmt</code></td><td></td></tr>
+<tr><td><code>args</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#fn-log-27">log</a>
+</li>
+<li><span style="color:#e67e22">self.address_string</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def log_message(self, fmt, *args):
+        log(f&#x27;web: {self.address_string()} {fmt % args}&#x27;)</code></pre>
+</details>
+<hr>
+<h3>DocsHandler.do_GET <a id="fn-do_GET-86"></a></h3>
+<p><em>web/server.py:86-145</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>------------------------------------------------------------ dispatch</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">unquote</span>
+</li>
+<li><span style="color:#e67e22">urlsplit</span>
+</li>
+<li><a href="server.py.html#fn-_redirect-360">_redirect</a>
+</li>
+<li><span style="color:#e67e22">path.endswith</span>
+</li>
+<li><span style="color:#e67e22">path.startswith</span>
+</li>
+<li><a href="server.py.html#fn-_webfile-313">_webfile</a>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">name.rsplit</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><a href="server.py.html#fn-_iconfile-321">_iconfile</a>
+</li>
+<li><a href="server.py.html#fn-_graph_page-301">_graph_page</a>
+</li>
+<li><a href="server.py.html#fn-_safe-334">_safe</a>
+</li>
+<li>os.path.isfile
+</li>
+<li><a href="server.py.html#fn-_docfile-291">_docfile</a>
+</li>
+<li><a href="server.py.html#fn-_symbols_index-246">_symbols_index</a>
+</li>
+<li><a href="server.py.html#fn-_page_body-191">_page_body</a>
+</li>
+<li><a href="server.py.html#fn-_page-168">_page</a>
+</li>
+<li><span style="color:#e67e22">path.lstrip</span>
+</li>
+<li><span style="color:#e67e22">path.rsplit</span>
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def do_GET(self):
+        path = unquote(urlsplit(self.path).path)
+        if path == &#x27;/&#x27;:
+            return self._redirect(&#x27;/index.md&#x27;)
+        if path.startswith(&#x27;/theme/&#x27;) and path.endswith(&#x27;.css&#x27;):
+            return self._webfile(&#x27;themes/&#x27; + path[len(&#x27;/theme/&#x27;):],
+                                 &#x27;text/css; charset=utf-8&#x27;)
+        if (path in (&#x27;/app.js&#x27;, &#x27;/graph.js&#x27;, &#x27;/sidebar.js&#x27;, &#x27;/fuzzy.js&#x27;)
+                or path.startswith(&#x27;/graph/&#x27;)):
+            return self._webfile(path[1:], &#x27;text/javascript; charset=utf-8&#x27;)
+        if path.startswith(&#x27;/lib/&#x27;):
+            name = path[len(&#x27;/lib/&#x27;):]
+            ext = name.rsplit(&#x27;.&#x27;, 1)[-1] if &#x27;.&#x27; in name else &#x27;&#x27;
+            ctype = {&#x27;js&#x27;: &#x27;text/javascript; charset=utf-8&#x27;,
+                     &#x27;css&#x27;: &#x27;text/css; charset=utf-8&#x27;,
+                     &#x27;txt&#x27;: &#x27;text/plain; charset=utf-8&#x27;}.get(
+                ext, &#x27;application/octet-stream&#x27;)
+            return self._webfile(&#x27;lib/&#x27; + name, ctype)
+        if path.startswith(&#x27;/icon/&#x27;):
+            name = path[len(&#x27;/icon/&#x27;):]
+            ext = name.rsplit(&#x27;.&#x27;, 1)[-1] if &#x27;.&#x27; in name else &#x27;&#x27;
+            ctype = {&#x27;png&#x27;: &#x27;image/png&#x27;,
+                     &#x27;ico&#x27;: &#x27;image/x-icon&#x27;}.get(
+                ext, &#x27;application/octet-stream&#x27;)
+            return self._iconfile(name, ctype)
+        if path == &#x27;/graph&#x27;:
+            return self._graph_page()
+        if path == &#x27;/api/graph&#x27;:
+            # Serve the diet graph (no function bodies) when the pipeline
+            # wrote one; fall back to the full artifact for old runs.
+            rel = &#x27;meta/graph_diet.json&#x27;
+            full = self._safe(self.docs_root, rel)
+            if full is None or not os.path.isfile(full):
+                rel = &#x27;meta/graph.json&#x27;
+            return self._docfile(rel, &#x27;application/json; charset=utf-8&#x27;)
+        if path == &#x27;/api/symbols&#x27;:
+            return self._symbols_index()
+        if path.startswith(&#x27;/page/&#x27;) and path.endswith(&#x27;.md&#x27;):
+            return self._page_body(path[len(&#x27;/page/&#x27;):])
+        if path.endswith(&#x27;.md&#x27;):
+            return self._page(path.lstrip(&#x27;/&#x27;))
+        if path.startswith(&#x27;/manual/&#x27;) and not path.endswith(&#x27;.md&#x27;):
+            # static assets that ship with hand-written manual docs
+            # (images, css, ...) — serve the raw bytes, never render.
+            name = path.rsplit(&#x27;/&#x27;, 1)[-1]
+            ext = name.rsplit(&#x27;.&#x27;, 1)[-1].lower() if &#x27;.&#x27; in name else &#x27;&#x27;
+            ctype = {
+                &#x27;css&#x27;: &#x27;text/css; charset=utf-8&#x27;,
+                &#x27;js&#x27;: &#x27;text/javascript; charset=utf-8&#x27;,
+                &#x27;txt&#x27;: &#x27;text/plain; charset=utf-8&#x27;,
+                &#x27;html&#x27;: &#x27;text/html; charset=utf-8&#x27;,
+                &#x27;json&#x27;: &#x27;application/json; charset=utf-8&#x27;,
+                &#x27;png&#x27;: &#x27;image/png&#x27;, &#x27;jpg&#x27;: &#x27;image/jpeg&#x27;,
+                &#x27;jpeg&#x27;: &#x27;image/jpeg&#x27;, &#x27;gif&#x27;: &#x27;image/gif&#x27;,
+                &#x27;svg&#x27;: &#x27;image/svg+xml&#x27;, &#x27;ico&#x27;: &#x27;image/x-icon&#x27;,
+                &#x27;webp&#x27;: &#x27;image/webp&#x27;, &#x27;woff&#x27;: &#x27;font/woff&#x27;,
+                &#x27;woff2&#x27;: &#x27;font/woff2&#x27;,
+            }.get(ext, &#x27;application/octet-stream&#x27;)
+            return self._docfile(path[1:], ctype)
+        return self._error(404, &#x27;not found&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../tests/test_web_manual.py.html">tests/test_web_manual.py</a>
+<ul>
+<li><a href="../tests/test_web_manual.py.html#fn-_get-48">_get:50</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler.do_POST <a id="fn-do_POST-147"></a></h3>
+<p><em>web/server.py:147-151</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">unquote</span>
+</li>
+<li><span style="color:#e67e22">urlsplit</span>
+</li>
+<li><a href="server.py.html#fn-_set_theme-153">_set_theme</a>
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def do_POST(self):
+        path = unquote(urlsplit(self.path).path)
+        if path == &#x27;/api/theme&#x27;:
+            return self._set_theme()
+        return self._error(404, &#x27;not found&#x27;)</code></pre>
+</details>
+<hr>
+<h3>DocsHandler._set_theme <a id="fn-_set_theme-153"></a></h3>
+<p><em>web/server.py:153-165</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>int
+</li>
+<li><span style="color:#e67e22">self.headers.get</span>
+</li>
+<li><span style="color:#e67e22">?.decode</span>
+</li>
+<li>min
+</li>
+<li>read (inferred)
+</li>
+<li><span style="color:#e67e22">body.strip</span>
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+<li>open
+</li>
+<li>json.dump
+</li>
+<li>str
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _set_theme(self):
+        length = int(self.headers.get(&#x27;Content-Length&#x27;) or 0)
+        body = self.rfile.read(min(length, 16)).decode(&#x27;utf-8&#x27;, &#x27;replace&#x27;)
+        body = body.strip()
+        if body not in (&#x27;light&#x27;, &#x27;dark&#x27;):
+            return self._error(400, &#x27;theme must be light or dark&#x27;)
+        try:
+            with open(self.theme_state, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+                json.dump({&#x27;theme&#x27;: body}, fh)
+        except OSError as e:
+            return self._error(500, str(e))
+        DocsHandler.default_theme = body
+        self._send(200, b&#x27;ok&#x27;, &#x27;text/plain; charset=utf-8&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_POST-147">DocsHandler.do_POST:150</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._page <a id="fn-_page-168"></a></h3>
+<p><em>web/server.py:168-189</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>------------------------------------------------------------ handlers</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#variables">PAGE</a>
+</li>
+<li><a href="server.py.html#fn-_load_doc-200">_load_doc</a>
+</li>
+<li><a href="server.py.html#fn-_rendered-215">_rendered</a>
+</li>
+<li><span style="color:#e67e22">PAGE.format</span>
+</li>
+<li><a href="server.py.html#fn-_title-64">_title</a>
+</li>
+<li>html_escape (inferred)
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+<li><span style="color:#e67e22">page.encode</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _page(self, relpath: str):
+        full, md, st = self._load_doc(relpath)
+        if full is None:
+            return
+        body = self._rendered(full, md, st)
+        dark = self.default_theme == &#x27;dark&#x27;
+        page = PAGE.format(title=html_escape(_title(md, relpath)),
+                           theme=self.default_theme,
+                           hljs_light=&#x27; disabled&#x27; if dark else &#x27;&#x27;,
+                           hljs_dark=&#x27;&#x27; if dark else &#x27; disabled&#x27;,
+                           base=&#x27;/&#x27;, index_href=&#x27;/index.md&#x27;,
+                           graph_href=&#x27;/graph&#x27;, base_json=&#x27;undefined&#x27;,
+                           theme_init=&#x27;&#x27;,
+                           # the server ships the real ES modules (served
+                           # over http, so &lt;script type=&quot;module&quot;&gt; works) and
+                           # the data via /api/* — the inline slots stay
+                           # undefined so the JS falls back to those.
+                           symbols_tag=&#x27;&#x27;,
+                           sidebar_tag=&#x27;&lt;script type=&quot;module&quot; &#x27;
+                                       &#x27;src=&quot;/sidebar.js&quot;&gt;&lt;/script&gt;&#x27;,
+                           body=body)
+        self._send(200, page.encode(&#x27;utf-8&#x27;), &#x27;text/html; charset=utf-8&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:126</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._page_body <a id="fn-_page_body-191"></a></h3>
+<p><em>web/server.py:191-198</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#fn-_load_doc-200">_load_doc</a>
+</li>
+<li><a href="server.py.html#fn-_rendered-215">_rendered</a>
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+<li><span style="color:#e67e22">body.encode</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _page_body(self, relpath: str):
+        &quot;&quot;&quot;Rendered doc body without the page shell — for the /graph
+        left panel.&quot;&quot;&quot;
+        full, md, st = self._load_doc(relpath)
+        if full is None:
+            return
+        body = self._rendered(full, md, st)
+        self._send(200, body.encode(&#x27;utf-8&#x27;), &#x27;text/html; charset=utf-8&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:124</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._load_doc <a id="fn-_load_doc-200"></a></h3>
+<p><em>web/server.py:200-213</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#fn-_safe-334">_safe</a>
+</li>
+<li>os.path.isfile
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+<li>os.stat
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li>str
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _load_doc(self, relpath: str):
+        &quot;&quot;&quot;(full_path, md_text, stat) or (None, None, None) — errors sent.&quot;&quot;&quot;
+        full = self._safe(self.docs_root, relpath)
+        if full is None or not os.path.isfile(full):
+            self._error(404, f&#x27;no such doc: {relpath}&#x27;)
+            return None, None, None
+        try:
+            st = os.stat(full)
+            with open(full, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+                md = fh.read()
+        except OSError as e:
+            self._error(500, str(e))
+            return None, None, None
+        return full, md, st</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-_page-168">DocsHandler._page:169</a>
+</li>
+<li><a href="server.py.html#fn-_page_body-191">DocsHandler._page_body:194</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._rendered <a id="fn-_rendered-215"></a></h3>
+<p><em>web/server.py:215-222</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>full</code></td><td></td></tr>
+<tr><td><code>md</code></td><td></td></tr>
+<tr><td><code>st</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">self._cache.get</span>
+</li>
+<li><a href="render.py.html#fn-render_md-165">render_md</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _rendered(self, full: str, md: str, st) -&gt; str:
+        with self._cache_lock:
+            hit = self._cache.get(full)
+            if hit and hit[0] == st.st_mtime and hit[1] == st.st_size:
+                return hit[2]
+            body = render_md(md)
+            self._cache[full] = (st.st_mtime, st.st_size, body)
+            return body</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-_page-168">DocsHandler._page:172</a>
+</li>
+<li><a href="server.py.html#fn-_page_body-191">DocsHandler._page_body:197</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._manual_pages <a id="fn-_manual_pages-224"></a></h3>
+<p><em>web/server.py:224-244</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#fn-_safe-334">_safe</a>
+</li>
+<li>os.path.isfile
+</li>
+<li>os.stat
+</li>
+<li><span style="color:#e67e22">self._cache.get</span>
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li>json.load
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _manual_pages(self):
+        &quot;&quot;&quot;(key, pages) for the manual-doc list, read from meta/manual.json
+        and cached by its mtime+size. key is None when there is no
+        manual.json (the feature is off / nothing to serve).&quot;&quot;&quot;
+        mfull = self._safe(self.docs_root, &#x27;meta/manual.json&#x27;)
+        if mfull is None or not os.path.isfile(mfull):
+            return None, []
+        try:
+            mst = os.stat(mfull)
+            key = (mfull, mst.st_mtime, mst.st_size)
+            with self._cache_lock:
+                hit = self._cache.get(mfull)
+                if hit and hit[0] == mst.st_mtime and hit[1] == mst.st_size:
+                    return key, hit[2]
+            with open(mfull, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+                pages = json.load(fh).get(&#x27;pages&#x27;, [])
+            with self._cache_lock:
+                self._cache[mfull] = (mst.st_mtime, mst.st_size, pages)
+            return key, pages
+        except (OSError, ValueError):
+            return None, []</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-_symbols_index-246">DocsHandler._symbols_index:259</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._symbols_index <a id="fn-_symbols_index-246"></a></h3>
+<p><em>web/server.py:246-289</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#fn-_safe-334">_safe</a>
+</li>
+<li>os.path.isfile
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+<li>os.stat
+</li>
+<li><a href="server.py.html#fn-_manual_pages-224">_manual_pages</a>
+</li>
+<li><span style="color:#e67e22">self._cache.get</span>
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">src.get</span>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">s.get</span>
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+<li><span style="color:#e67e22">?.encode</span>
+</li>
+<li>json.dumps
+</li>
+<li>str
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _symbols_index(self):
+        &quot;&quot;&quot;Slim symbol index for the docs sidebar (web/sidebar.js).
+
+        meta/symbols.json also carries every function body — far too heavy
+        for a sidebar payload — so this keeps only names, lines and file
+        paths. The optional manual-doc list (meta/manual.json) is merged in
+        as ``manual``. Cached by (symbols.json mtime+size, manual key).&quot;&quot;&quot;
+        full = self._safe(self.docs_root, &#x27;meta/symbols.json&#x27;)
+        if full is None or not os.path.isfile(full):
+            return self._error(404, &#x27;no symbols index — run the pipeline &#x27;
+                                    &#x27;first&#x27;)
+        try:
+            st = os.stat(full)
+            mkey, manual_pages = self._manual_pages()
+            with self._cache_lock:
+                hit = self._cache.get(full)
+                if (hit and hit[0] == st.st_mtime
+                        and hit[1] == st.st_size
+                        and hit[2] == mkey):
+                    return self._send(
+                        200, hit[3], &#x27;application/json; charset=utf-8&#x27;)
+            with open(full, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+                src = json.load(fh)
+            slim = {
+                &#x27;file_count&#x27;: src.get(&#x27;file_count&#x27;) or 0,
+                &#x27;files&#x27;: [
+                    {&#x27;relpath&#x27;: f.get(&#x27;relpath&#x27;),
+                     &#x27;lines&#x27;: f.get(&#x27;lines&#x27;),
+                     &#x27;functions&#x27;: [{&#x27;name&#x27;: s.get(&#x27;name&#x27;),
+                                    &#x27;qualified&#x27;: s.get(&#x27;qualified&#x27;),
+                                    &#x27;line&#x27;: s.get(&#x27;line&#x27;)}
+                                   for s in (f.get(&#x27;functions&#x27;) or [])],
+                     &#x27;vars&#x27;: [{&#x27;name&#x27;: v.get(&#x27;name&#x27;),
+                               &#x27;line&#x27;: v.get(&#x27;line&#x27;)}
+                              for v in (f.get(&#x27;file_vars&#x27;) or [])]}
+                    for f in (src.get(&#x27;files&#x27;) or [])],
+                &#x27;manual&#x27;: manual_pages,
+            }
+            data = json.dumps(slim).encode(&#x27;utf-8&#x27;)
+            with self._cache_lock:
+                self._cache[full] = (st.st_mtime, st.st_size, mkey, data)
+        except (OSError, ValueError) as e:
+            return self._error(500, str(e))
+        self._send(200, data, &#x27;application/json; charset=utf-8&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:122</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._docfile <a id="fn-_docfile-291"></a></h3>
+<p><em>web/server.py:291-299</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>ctype</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#fn-_safe-334">_safe</a>
+</li>
+<li>os.path.isfile
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _docfile(self, rel: str, ctype: str):
+        &quot;&quot;&quot;Serve a raw file from the docs root (meta/graph.json, and the
+        non-markdown assets under manual/).&quot;&quot;&quot;
+        full = self._safe(self.docs_root, rel)
+        if full is None or not os.path.isfile(full):
+            return self._error(404, f&#x27;no such file: {rel}&#x27;)
+        with open(full, &#x27;rb&#x27;) as fh:
+            data = fh.read()
+        self._send(200, data, ctype)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:120</a>
+</li>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:144</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._graph_page <a id="fn-_graph_page-301"></a></h3>
+<p><em>web/server.py:301-311</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#variables">GRAPH_PAGE</a>
+</li>
+<li><span style="color:#e67e22">GRAPH_PAGE.format</span>
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+<li><span style="color:#e67e22">page.encode</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _graph_page(self):
+        dark = self.default_theme == &#x27;dark&#x27;
+        page = GRAPH_PAGE.format(
+            theme=self.default_theme,
+            hljs_light=&#x27; disabled&#x27; if dark else &#x27;&#x27;,
+            hljs_dark=&#x27;&#x27; if dark else &#x27; disabled&#x27;,
+            base=&#x27;/&#x27;, index_href=&#x27;/index.md&#x27;, base_json=&#x27;undefined&#x27;,
+            theme_init=&#x27;&#x27;,
+            graph_json=&#x27;undefined&#x27;,
+            graph_tag=&#x27;&lt;script type=&quot;module&quot; src=&quot;/graph.js&quot;&gt;&lt;/script&gt;&#x27;)
+        self._send(200, page.encode(&#x27;utf-8&#x27;), &#x27;text/html; charset=utf-8&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:112</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._webfile <a id="fn-_webfile-313"></a></h3>
+<p><em>web/server.py:313-319</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>filename</code></td><td></td></tr>
+<tr><td><code>ctype</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="server.py.html#fn-_safe-334">_safe</a>
+</li>
+<li>os.path.isfile
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _webfile(self, filename: str, ctype: str):
+        full = self._safe(self.web_root, filename)
+        if full is None or not os.path.isfile(full):
+            return self._error(404, &#x27;not found&#x27;)
+        with open(full, &#x27;rb&#x27;) as fh:
+            data = fh.read()
+        self._send(200, data, ctype)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:91</a>
+</li>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:95</a>
+</li>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:103</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._iconfile <a id="fn-_iconfile-321"></a></h3>
+<p><em>web/server.py:321-330</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>ctype</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.abspath
+</li>
+<li>os.path.dirname
+</li>
+<li>os.path.join
+</li>
+<li><a href="server.py.html#fn-_safe-334">_safe</a>
+</li>
+<li>os.path.isfile
+</li>
+<li><a href="server.py.html#fn-_error-352">_error</a>
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _iconfile(self, name: str, ctype: str):
+        &quot;&quot;&quot;Serve a project icon from the repo-root ``icon/`` folder.&quot;&quot;&quot;
+        root = os.path.join(os.path.dirname(os.path.abspath(self.web_root)),
+                            &#x27;icon&#x27;)
+        full = self._safe(root, name)
+        if full is None or not os.path.isfile(full):
+            return self._error(404, &#x27;not found&#x27;)
+        with open(full, &#x27;rb&#x27;) as fh:
+            data = fh.read()
+        self._send(200, data, ctype)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:110</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._safe <a id="fn-_safe-334"></a></h3>
+<p><em>web/server.py:334-340</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>------------------------------------------------------------ plumbing</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>root</code></td><td></td></tr>
+<tr><td><code>rel</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.join
+</li>
+<li>os.path.realpath
+</li>
+<li><span style="color:#e67e22">rel.lstrip</span>
+</li>
+<li><span style="color:#e67e22">full.startswith</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _safe(root: str, rel: str):
+        &quot;&quot;&quot;Join + guarantee the result stays under root (no traversal).&quot;&quot;&quot;
+        full = os.path.realpath(os.path.join(root, rel.lstrip(&#x27;/&#x27;)))
+        root = os.path.realpath(root)
+        if full != root and not full.startswith(root + os.sep):
+            return None
+        return full</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:117</a>
+</li>
+<li><a href="server.py.html#fn-_load_doc-200">DocsHandler._load_doc:202</a>
+</li>
+<li><a href="server.py.html#fn-_manual_pages-224">DocsHandler._manual_pages:228</a>
+</li>
+<li><a href="server.py.html#fn-_symbols_index-246">DocsHandler._symbols_index:253</a>
+</li>
+<li><a href="server.py.html#fn-_docfile-291">DocsHandler._docfile:294</a>
+</li>
+<li><a href="server.py.html#fn-_webfile-313">DocsHandler._webfile:314</a>
+</li>
+<li><a href="server.py.html#fn-_iconfile-321">DocsHandler._iconfile:325</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._send <a id="fn-_send-342"></a></h3>
+<p><em>web/server.py:342-350</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>code</code></td><td></td></tr>
+<tr><td><code>data</code></td><td></td></tr>
+<tr><td><code>ctype</code></td><td></td></tr>
+<tr><td><code>extra</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">self.send_response</span>
+</li>
+<li><span style="color:#e67e22">self.send_header</span>
+</li>
+<li>len
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">self.end_headers</span>
+</li>
+<li><span style="color:#e67e22">self.wfile.write</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _send(self, code, data, ctype, extra=None):
+        self.send_response(code)
+        self.send_header(&#x27;Content-Type&#x27;, ctype)
+        self.send_header(&#x27;Content-Length&#x27;, str(len(data)))
+        self.send_header(&#x27;Cache-Control&#x27;, &#x27;no-cache&#x27;)
+        for k, v in (extra or {}).items():
+            self.send_header(k, v)
+        self.end_headers()
+        self.wfile.write(data)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-_set_theme-153">DocsHandler._set_theme:165</a>
+</li>
+<li><a href="server.py.html#fn-_page-168">DocsHandler._page:189</a>
+</li>
+<li><a href="server.py.html#fn-_page_body-191">DocsHandler._page_body:198</a>
+</li>
+<li><a href="server.py.html#fn-_symbols_index-246">DocsHandler._symbols_index:265</a>
+</li>
+<li><a href="server.py.html#fn-_symbols_index-246">DocsHandler._symbols_index:289</a>
+</li>
+<li><a href="server.py.html#fn-_docfile-291">DocsHandler._docfile:299</a>
+</li>
+<li><a href="server.py.html#fn-_graph_page-301">DocsHandler._graph_page:311</a>
+</li>
+<li><a href="server.py.html#fn-_webfile-313">DocsHandler._webfile:319</a>
+</li>
+<li><a href="server.py.html#fn-_iconfile-321">DocsHandler._iconfile:330</a>
+</li>
+<li><a href="server.py.html#fn-_error-352">DocsHandler._error:358</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._error <a id="fn-_error-352"></a></h3>
+<p><em>web/server.py:352-358</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>code</code></td><td></td></tr>
+<tr><td><code>msg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.encode</span>
+</li>
+<li>html_escape (inferred)
+</li>
+<li>str
+</li>
+<li><a href="server.py.html#fn-_send-342">_send</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _error(self, code, msg):
+        body = (f&#x27;&lt;!doctype html&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&#x27;
+                f&#x27;&lt;link rel=&quot;stylesheet&quot; href=&quot;/theme/{self.default_theme}&#x27;
+                f&#x27;/style.css&quot;&gt;&lt;body&gt;&lt;h1&gt;{code}&lt;/h1&gt;&#x27;
+                f&#x27;&lt;p&gt;{html_escape(str(msg))}&lt;/p&gt;&#x27;
+                f&#x27;&lt;p&gt;&lt;a href=&quot;/index.md&quot;&gt;back to index&lt;/a&gt;&lt;/body&gt;&#x27;).encode()
+        self._send(code, body, &#x27;text/html; charset=utf-8&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:145</a>
+</li>
+<li><a href="server.py.html#fn-do_POST-147">DocsHandler.do_POST:151</a>
+</li>
+<li><a href="server.py.html#fn-_set_theme-153">DocsHandler._set_theme:158</a>
+</li>
+<li><a href="server.py.html#fn-_set_theme-153">DocsHandler._set_theme:163</a>
+</li>
+<li><a href="server.py.html#fn-_load_doc-200">DocsHandler._load_doc:204</a>
+</li>
+<li><a href="server.py.html#fn-_load_doc-200">DocsHandler._load_doc:211</a>
+</li>
+<li><a href="server.py.html#fn-_symbols_index-246">DocsHandler._symbols_index:255</a>
+</li>
+<li><a href="server.py.html#fn-_symbols_index-246">DocsHandler._symbols_index:288</a>
+</li>
+<li><a href="server.py.html#fn-_docfile-291">DocsHandler._docfile:296</a>
+</li>
+<li><a href="server.py.html#fn-_webfile-313">DocsHandler._webfile:316</a>
+</li>
+<li><a href="server.py.html#fn-_iconfile-321">DocsHandler._iconfile:327</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>DocsHandler._redirect <a id="fn-_redirect-360"></a></h3>
+<p><em>web/server.py:360-363</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>location</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">self.send_response</span>
+</li>
+<li><span style="color:#e67e22">self.send_header</span>
+</li>
+<li><span style="color:#e67e22">self.end_headers</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _redirect(self, location):
+        self.send_response(302)
+        self.send_header(&#x27;Location&#x27;, location)
+        self.end_headers()</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-do_GET-86">DocsHandler.do_GET:89</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>html_escape <a id="fn-html_escape-366"></a></h3>
+<p><em>web/server.py:366-368</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>s</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.replace</span>
+</li>
+<li><span style="color:#e67e22">s.replace</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def html_escape(s: str) -&gt; str:
+    return (s.replace(&#x27;&amp;&#x27;, &#x27;&amp;amp;&#x27;).replace(&#x27;&lt;&#x27;, &#x27;&amp;lt;&#x27;)
+             .replace(&#x27;&gt;&#x27;, &#x27;&amp;gt;&#x27;).replace(&#x27;&quot;&#x27;, &#x27;&amp;quot;&#x27;))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-_page-168">DocsHandler._page:174</a>
+</li>
+<li><a href="server.py.html#fn-_error-352">DocsHandler._error:356</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>serve <a id="fn-serve-371"></a></h3>
+<p><em>web/server.py:371-403</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>docs_dir</code></td><td></td></tr>
+<tr><td><code>settings</code></td><td></td></tr>
+<tr><td><code>web_root</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.isfile
+</li>
+<li>os.path.join
+</li>
+<li>SystemExit
+</li>
+<li>os.path.realpath
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">ThreadingHTTPServer</span>
+</li>
+<li><a href="server.py.html#fn-log-27">log</a>
+</li>
+<li><span style="color:#e67e22">httpd.serve_forever</span>
+</li>
+<li><span style="color:#e67e22">httpd.server_close</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def serve(docs_dir: str, settings: dict, web_root: str):
+    &quot;&quot;&quot;Run the docs server until Ctrl-C (blocks).&quot;&quot;&quot;
+    if not os.path.isfile(os.path.join(docs_dir, &#x27;index.md&#x27;)):
+        raise SystemExit(f&#x27;web: no index.md in {docs_dir} — &#x27;
+                         f&#x27;run kodama-docs (without --serve) first&#x27;)
+    DocsHandler.docs_root = os.path.realpath(docs_dir)
+    DocsHandler.web_root = os.path.realpath(web_root)
+    DocsHandler.theme_state = os.path.join(
+        DocsHandler.web_root, &#x27;theme_state.json&#x27;)
+    # A theme picked earlier (POST /api/theme) wins over the settings
+    # default, so the choice survives server restarts and applies to
+    # every browser.
+    try:
+        with open(DocsHandler.theme_state, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            saved = json.load(fh).get(&#x27;theme&#x27;)
+        if saved in (&#x27;light&#x27;, &#x27;dark&#x27;):
+            settings[&#x27;theme&#x27;] = saved
+    except (OSError, ValueError):
+        pass
+    DocsHandler.default_theme = settings[&#x27;theme&#x27;]
+    host, port = settings[&#x27;host&#x27;], settings[&#x27;port&#x27;]
+    httpd = ThreadingHTTPServer((host, port), DocsHandler)
+    httpd.daemon_threads = True
+    shown = host if host not in (&#x27;0.0.0.0&#x27;, &#x27;::&#x27;) else &#x27;127.0.0.1&#x27;
+    log(f&#x27;web: serving docs from {docs_dir}&#x27;)
+    log(f&#x27;web: http://{shown}:{port}/  (Ctrl-C to stop)&#x27;)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        httpd.server_close()
+    log(&#x27;web: stopped&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:287</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Classes <a id="classes"></a></h2>
+<p>Classes are structural symbols: constructor calls (<code>Name(...)</code>) that resolve here are linked from the caller&#x27;s References section.</p>
+<table>
+<thead><tr>
+<th>Class</th>
+<th>Line</th>
+<th>Developer comment</th>
+</tr></thead>
+<tbody>
+<tr><td><a id="cls-DocsHandler-71"><a href="#cls-DocsHandler-71">DocsHandler</a></a></td><td>71</td><td></td></tr>
+</tbody>
+</table>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>PAGE</code></td><td>37</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>GRAPH_PAGE</code></td><td>39</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 12: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 13: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 14: import of <span style="color:#e67e22">threading</span> — no matching file in the project
+</li>
+<li>line 16: import of <span style="color:#e67e22">http.server</span> — no matching file in the project
+</li>
+<li>line 16: import of <span style="color:#e67e22">http.server</span> — no matching file in the project
+</li>
+<li>line 17: import of <span style="color:#e67e22">urllib.parse</span> — no matching file in the project
+</li>
+<li>line 17: import of <span style="color:#e67e22">urllib.parse</span> — no matching file in the project
+</li>
+<li>line 19: import of <span style="color:#e67e22">ruamel.yaml</span> — no matching file in the project
+</li>
+<li>line 25: import of <span style="color:#e67e22">render</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

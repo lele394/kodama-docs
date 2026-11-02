@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Config Reference</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Config Reference</h1>
+<p>The configuration file (<code>settings.yaml</code> by default, or <code>--config PATH</code>) is plain YAML. Relative paths resolve against the config file&#x27;s own directory. Every key the pipeline actually reads is listed below with its effective default — the shipped <code>settings.yaml</code> value first, then the code fallback.</p>
+<blockquote><p><strong>Honesty note:</strong> <code>settings.yaml</code> ships with a few keys the current code does <strong>not</strong> consume (<code>project.source_extensions</code>, <code>documentation.variable_scope</code>, <code>context.include_imports</code>, <code>context.include_call_targets</code>, <code>context.include_referenced_variables</code>). They are listed at the end so their presence isn&#x27;t a surprise; changing them has no effect today.</p></blockquote>
+<h2>project</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>source_dir</code></td><td><code>&quot;.&quot;</code></td><td>folder scanned for source files.</td></tr>
+<tr><td><code>output_dir</code></td><td><code>&quot;docs&quot;</code></td><td>where rendered markdown is written.</td></tr>
+<tr><td><code>data_dir</code></td><td><code>&quot;docs/.data&quot;</code></td><td>where <code>graph.json</code>, <code>symbols.json</code>, <code>diagnostics.json</code> are kept.</td></tr>
+<tr><td><code>exclude</code></td><td><code>[]</code></td><td>path segments to skip (e.g. <code>vendor</code>, <code>generated</code>) — a file under any of them is skipped and reported, never fatal.</td></tr>
+<tr><td><code>max_file_bytes</code></td><td><code>26214400</code> (25 MiB)</td><td>files larger than this are skipped and reported.</td></tr>
+<tr><td><code>copy_meta</code></td><td><code>true</code> (settings) / <code>false</code> (code)</td><td>also copy the three meta JSON files into <code>&lt;output_dir&gt;/meta/</code> (needed for the web graph view; see <a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>).</td></tr>
+<tr><td><code>manual_doc</code></td><td>(empty)</td><td>a hand-written docs folder to copy into <code>&lt;output_dir&gt;/manual</code> and list on the index as &quot;Manual documentation&quot; (see <a href="../02%20-%20How%20It%20Works/07%20-%20Rendering.html">Rendering</a>).</td></tr>
+</tbody>
+</table>
+<h2>llm</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>model</code></td><td>—</td><td>model name sent to the API. <strong>Always from settings</strong> — there is no <code>.env</code> model key.</td></tr>
+<tr><td><code>base_url</code></td><td><code>&quot;env&quot;</code></td><td>read from <code>.env</code> key <code>base_url</code> (project root first, then the config&#x27;s directory).</td></tr>
+<tr><td><code>api_key</code></td><td><code>&quot;env&quot;</code></td><td>read from <code>.env</code> key <code>api_key</code>.</td></tr>
+<tr><td><code>max_retries</code></td><td><code>5</code></td><td>total transport attempts per call (see <a href="../03%20-%20Components/04%20-%20LLM%20Client.html">LLM client</a>).</td></tr>
+<tr><td><code>temperature</code></td><td><code>0.1</code></td><td>near-deterministic prose.</td></tr>
+<tr><td><code>max_tokens</code></td><td><code>900</code></td><td>reply budget.</td></tr>
+<tr><td><code>timeout</code></td><td><code>300</code></td><td>per-attempt socket timeout (seconds).</td></tr>
+</tbody>
+</table>
+<h2>context</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>max_symbols_per_list</code></td><td><code>25</code></td><td>how many functions appear in a file-summary context.</td></tr>
+<tr><td><code>max_source_lines</code></td><td><code>300</code></td><td>body lines included in a function&#x27;s context; beyond this the body is truncated and a note is added (see <a href="../02%20-%20How%20It%20Works/06%20-%20Chunk%20and%20Merge.html">Chunk and Merge</a>).</td></tr>
+</tbody>
+</table>
+<h2>documentation</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>generate_function_docs</code></td><td><code>true</code></td><td>produce per-function prose.</td></tr>
+<tr><td><code>generate_variable_docs</code></td><td><code>true</code></td><td>produce per-variable prose.</td></tr>
+<tr><td><code>generate_file_summaries</code></td><td><code>true</code></td><td>produce per-file summaries.</td></tr>
+<tr><td><code>include_anonymous_functions</code></td><td><code>false</code></td><td>also send <code>anon</code> (context-named) functions to the LLM phase; off by default to save tokens.</td></tr>
+<tr><td><code>max_function_lines</code></td><td><code>20</code> (settings) / <code>0</code> (code = off)</td><td>functions longer than this are documented via chunk-and-merge.</td></tr>
+<tr><td><code>chunk_target_tokens</code></td><td><code>20000</code></td><td>target size per chunk call (budget ≈ <code>chunk_target_tokens × chars_per_token</code> characters).</td></tr>
+<tr><td><code>chars_per_token</code></td><td><code>4</code></td><td>rough token estimate used with the budgets.</td></tr>
+<tr><td><code>max_chunk_lines</code></td><td><code>4000</code></td><td>hard cap on chunk size in lines.</td></tr>
+<tr><td><code>retry_invalid_json</code></td><td><code>2</code></td><td>extra attempts when the model returns malformed JSON.</td></tr>
+<tr><td><code>skip_existing</code></td><td><code>true</code></td><td>load previously generated records and skip re-generating unchanged symbols (the record cache, see <a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>).</td></tr>
+</tbody>
+</table>
+<h2>concurrency (top-level)</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>concurrency</code></td><td><code>2</code></td><td>parallel LLM workers in the <a href="../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.html">LLM phase</a>. Any positive integer.</td></tr>
+</tbody>
+</table>
+<h2>tui</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>enabled</code></td><td><code>true</code></td><td>show the Rich terminal panel during the LLM phase (auto-off when stdout is not a TTY).</td></tr>
+<tr><td><code>interval</code></td><td><code>0.5</code></td><td>refresh interval (seconds).</td></tr>
+</tbody>
+</table>
+<h2>prompts</h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>function</code></td><td><code>./prompts/function.txt</code></td><td>system-prompt template for function docs (<code>{language}</code>, <code>{file}</code>, <code>{symbol}</code>, …).</td></tr>
+<tr><td><code>chunk</code></td><td><code>./prompts/function_chunk.txt</code></td><td>system-prompt template for chunk summaries.</td></tr>
+<tr><td><code>variable</code></td><td><code>./prompts/variable.txt</code></td><td>system-prompt template for variable docs.</td></tr>
+<tr><td><code>summary</code></td><td><code>./prompts/summary.txt</code></td><td>system-prompt template for file summaries.</td></tr>
+</tbody>
+</table>
+<p>See <a href="03%20-%20Prompts.html">Prompts</a> for the complete template-key table.</p>
+<p>The <a href="03%20-%20Prompts.html">Prompts</a> page documents each file and how the JSON schema is appended at call time.</p>
+<h2>Keys present but not consumed by the current code</h2>
+<p>These appear in the shipped <code>settings.yaml</code>; the current code never reads them, so changing them has <strong>no effect</strong> today:</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Note</th>
+</tr></thead>
+<tbody>
+<tr><td><code>project.source_extensions</code></td><td>the scan routes files by the extensions the backends claim (<code>backends.EXTRACTORS</code>), not by a config list.</td></tr>
+<tr><td><code>documentation.variable_scope</code></td><td>the pipeline documents file-level variables; there is no scope switch in the code.</td></tr>
+<tr><td><code>context.include_imports</code></td><td>no code reads this key.</td></tr>
+<tr><td><code>context.include_call_targets</code></td><td>no code reads this key.</td></tr>
+<tr><td><code>context.include_referenced_variables</code></td><td>no code reads this key.</td></tr>
+</tbody>
+</table>
+<p>Related: <a href="../01%20-%20Getting%20Started/03%20-%20Configuration.html">Configuration</a>, <a href="../03%20-%20Components/06%20-%20CLI.html">CLI</a>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/outputs.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/outputs.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_dangerous_dirs-12">_dangerous_dirs</a></td><td>12</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_contains-18">_contains</a></td><td>18</td><td>parent, child</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_guard_delete-28">_guard_delete</a></td><td>28</td><td>path, cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-purge_outputs-41">purge_outputs</a></td><td>41</td><td>cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-reset_output-54">reset_output</a></td><td>54</td><td>cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_doc_cache_path-81">_doc_cache_path</a></td><td>81</td><td>cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-load_doc_cache-85">load_doc_cache</a></td><td>85</td><td>cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-write_doc_cache-94">write_doc_cache</a></td><td>94</td><td>cfg, files</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-check_doc_cache-103">check_doc_cache</a></td><td>103</td><td>cfg, files</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_dangerous_dirs <a id="fn-_dangerous_dirs-12"></a></h3>
+<p><em>kodama_docs/outputs.py:12-15</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>os.getcwd
+</li>
+<li>os.path.abspath
+</li>
+<li>os.path.splitdrive
+</li>
+<li>os.path.expanduser
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _dangerous_dirs() -&gt; set:
+    cwd = os.path.abspath(os.getcwd())
+    root = os.path.splitdrive(cwd)[0] + os.sep
+    return {cwd, os.path.abspath(os.path.expanduser(&#x27;~&#x27;)), root}</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="outputs.py.html">kodama_docs/outputs.py</a>
+<ul>
+<li><a href="outputs.py.html#fn-_guard_delete-28">_guard_delete:30</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_contains <a id="fn-_contains-18"></a></h3>
+<p><em>kodama_docs/outputs.py:18-25</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>parent</code></td><td></td></tr>
+<tr><td><code>child</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.realpath
+</li>
+<li>os.path.commonpath
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _contains(parent: str, child: str) -&gt; bool:
+    &quot;&quot;&quot;True when ``child`` is ``parent`` or lives under it (real paths).&quot;&quot;&quot;
+    p = os.path.realpath(parent)
+    c = os.path.realpath(child)
+    try:
+        return os.path.commonpath([p, c]) == p
+    except ValueError:  # different drives on Windows
+        return False</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="outputs.py.html">kodama_docs/outputs.py</a>
+<ul>
+<li><a href="outputs.py.html#fn-_guard_delete-28">_guard_delete:35</a>
+</li>
+<li><a href="outputs.py.html#fn-reset_output-54">reset_output:63</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_guard_delete <a id="fn-_guard_delete-28"></a></h3>
+<p><em>kodama_docs/outputs.py:28-38</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+<tr><td><code>cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.abspath
+</li>
+<li><a href="outputs.py.html#fn-_dangerous_dirs-12">_dangerous_dirs</a>
+</li>
+<li>SystemExit
+</li>
+<li><span style="color:#e67e22">cfg.get</span>
+</li>
+<li><a href="outputs.py.html#fn-_contains-18">_contains</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _guard_delete(path: str, cfg: dict) -&gt; str:
+    d = os.path.abspath(path)
+    if d in _dangerous_dirs():
+        raise SystemExit(f&#x27;refusing to delete dangerous path: {d}&#x27;)
+    for key, label in ((&#x27;source_dir&#x27;, &#x27;source directory&#x27;),
+                       (&#x27;manual_doc&#x27;, &#x27;manual-doc source&#x27;)):
+        protected = cfg.get(key)
+        if protected and _contains(d, protected):
+            raise SystemExit(f&#x27;refusing to delete {d}: it contains the &#x27;
+                             f&#x27;{label} {protected}&#x27;)
+    return d</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="outputs.py.html">kodama_docs/outputs.py</a>
+<ul>
+<li><a href="outputs.py.html#fn-purge_outputs-41">purge_outputs:46</a>
+</li>
+<li><a href="outputs.py.html#fn-reset_output-54">reset_output:61</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>purge_outputs <a id="fn-purge_outputs-41"></a></h3>
+<p><em>kodama_docs/outputs.py:41-51</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="outputs.py.html#fn-_guard_delete-28">_guard_delete</a>
+</li>
+<li>os.path.isdir
+</li>
+<li>shutil.rmtree
+</li>
+<li><span style="color:#e67e22">removed.append</span>
+</li>
+<li>log
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def purge_outputs(cfg: dict) -&gt; list:
+    &quot;&quot;&quot;Delete the output (docs + meta) and data directories. Returns the
+    paths actually removed.&quot;&quot;&quot;
+    removed = []
+    for d in (cfg[&#x27;output_dir&#x27;], cfg[&#x27;data_dir&#x27;]):
+        d = _guard_delete(d, cfg)
+        if os.path.isdir(d):
+            shutil.rmtree(d)
+            removed.append(d)
+            log(f&#x27;  purged {d}&#x27;)
+    return removed</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:291</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>reset_output <a id="fn-reset_output-54"></a></h3>
+<p><em>kodama_docs/outputs.py:54-78</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="outputs.py.html#fn-_guard_delete-28">_guard_delete</a>
+</li>
+<li><span style="color:#e67e22">cfg.get</span>
+</li>
+<li><a href="outputs.py.html#fn-_contains-18">_contains</a>
+</li>
+<li>SystemExit
+</li>
+<li>os.path.isdir
+</li>
+<li>os.listdir
+</li>
+<li>os.path.join
+</li>
+<li>os.path.islink
+</li>
+<li>shutil.rmtree
+</li>
+<li>os.remove
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def reset_output(cfg: dict) -&gt; None:
+    &quot;&quot;&quot;Remove generated docs before a render, so deleted source files and
+    disabled features cannot leave stale pages behind.
+
+    ``.doc_cache`` is deliberately kept: it is what lets the next run
+    detect changed/removed *sources* without a full analysis. Everything
+    else in the output directory is generated and safe to recreate.&quot;&quot;&quot;
+    out = _guard_delete(cfg[&#x27;output_dir&#x27;], cfg)
+    data = cfg.get(&#x27;data_dir&#x27;)
+    if data and _contains(out, data):
+        raise SystemExit(f&#x27;refusing to reset {out}: it contains the data &#x27;
+                         f&#x27;directory {data}&#x27;)
+    if not os.path.isdir(out):
+        return
+    for entry in os.listdir(out):
+        if entry == &#x27;.doc_cache&#x27;:
+            continue
+        path = os.path.join(out, entry)
+        if os.path.isdir(path) and not os.path.islink(path):
+            shutil.rmtree(path)
+        else:
+            try:
+                os.remove(path)
+            except OSError:
+                pass</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:112</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_reset_output_keeps_doc_cache_and_prunes-102">test_reset_output_keeps_doc_cache_and_prunes:110</a>
+</li>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_reset_refuses_output_containing_source-147">test_reset_refuses_output_containing_source:156</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_doc_cache_path <a id="fn-_doc_cache_path-81"></a></h3>
+<p><em>kodama_docs/outputs.py:81-82</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.join
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _doc_cache_path(cfg: dict) -&gt; str:
+    return os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;.doc_cache&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="outputs.py.html">kodama_docs/outputs.py</a>
+<ul>
+<li><a href="outputs.py.html#fn-load_doc_cache-85">load_doc_cache:87</a>
+</li>
+<li><a href="outputs.py.html#fn-write_doc_cache-94">write_doc_cache:97</a>
+</li>
+<li><a href="outputs.py.html#fn-write_doc_cache-94">write_doc_cache:100</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>load_doc_cache <a id="fn-load_doc_cache-85"></a></h3>
+<p><em>kodama_docs/outputs.py:85-91</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="outputs.py.html#fn-_doc_cache_path-81">_doc_cache_path</a>
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">data.get</span>
+</li>
+<li>str
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def load_doc_cache(cfg: dict):
+    try:
+        with open(_doc_cache_path(cfg), &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            data = json.load(fh)
+        return {str(k): str(v) for k, v in (data.get(&#x27;files&#x27;) or {}).items()}
+    except (ValueError, OSError):
+        return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="outputs.py.html">kodama_docs/outputs.py</a>
+<ul>
+<li><a href="outputs.py.html#fn-check_doc_cache-103">check_doc_cache:107</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>write_doc_cache <a id="fn-write_doc_cache-94"></a></h3>
+<p><em>kodama_docs/outputs.py:94-100</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="scan.py.html#fn-file_md5-49">file_md5</a>
+</li>
+<li>os.makedirs
+</li>
+<li><a href="outputs.py.html#fn-_doc_cache_path-81">_doc_cache_path</a>
+</li>
+<li>open
+</li>
+<li>json.dump
+</li>
+<li>len
+</li>
+<li>log
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def write_doc_cache(cfg: dict, files) -&gt; None:
+    md5s = {f[&#x27;relpath&#x27;]: file_md5(f[&#x27;full&#x27;]) for f in files}
+    os.makedirs(cfg[&#x27;output_dir&#x27;], exist_ok=True)
+    with open(_doc_cache_path(cfg), &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        json.dump({&#x27;schema&#x27;: &#x27;kodama_docs/doc_cache@1&#x27;, &#x27;files&#x27;: md5s},
+                  fh, ensure_ascii=False, indent=1)
+    log(f&#x27;doc cache: {len(md5s)} files -&gt; {_doc_cache_path(cfg)}&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:350</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>check_doc_cache <a id="fn-check_doc_cache-103"></a></h3>
+<p><em>kodama_docs/outputs.py:103-120</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="outputs.py.html#fn-load_doc_cache-85">load_doc_cache</a>
+</li>
+<li><a href="scan.py.html#fn-file_md5-49">file_md5</a>
+</li>
+<li>sorted
+</li>
+<li><a href="records.py.html#fn-delete_records_for-105">delete_records_for</a>
+</li>
+<li>set
+</li>
+<li>len
+</li>
+<li>log
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check_doc_cache(cfg: dict, files) -&gt; bool:
+    &quot;&quot;&quot;Compare the .doc_cache hashes (relpath -&gt; md5) against the current
+    files. For changed or removed files, delete their cached LLM records
+    and force a fresh analysis. Returns True if anything was stale.&quot;&quot;&quot;
+    cache = load_doc_cache(cfg)
+    if cache is None:
+        return False
+    cur = {f[&#x27;relpath&#x27;]: file_md5(f[&#x27;full&#x27;]) for f in files}
+    dirty = sorted(r for r in cur if r in cache and cache[r] != cur[r])
+    stale = sorted(r for r in cache if r not in cur)
+    if not dirty and not stale:
+        return False
+    removed = delete_records_for(cfg[&#x27;data_dir&#x27;], set(dirty) | set(stale))
+    log(f&#x27;doc cache stale: {len(dirty)} changed, {len(stale)} removed, &#x27;
+        f&#x27;{removed} cached record(s) deleted -&gt; those files will be re-run&#x27;)
+    for r in (dirty + stale)[:8]:
+        log(f&#x27;  stale: {r}&#x27;)
+    return True</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:302</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 3: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 4: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 5: import of <span style="color:#e67e22">shutil</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

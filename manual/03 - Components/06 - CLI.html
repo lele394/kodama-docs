@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLI</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>CLI</h1>
+<p><code>main.py</code> remains the implementation entry point. <code>pyproject.toml</code> also installs a <code>kodama-docs</code> console script (same CLI), so from a checkout either of these works:</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --config settings.yaml
+kodama-docs --config settings.yaml</code></pre>
+</details>
+<p>All flags live on one flat parser; the two subcommands are <code>init</code> and <code>test-backend</code>.</p>
+<h2>All flags</h2>
+<table>
+<thead><tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>init</code></td><td>—</td><td>write a starter <code>settings.yaml</code> and <code>prompts/</code> into the current directory. Refuses to overwrite without <code>--force</code>.</td></tr>
+<tr><td><code>--force</code></td><td>off</td><td><code>init</code> only: overwrite an existing <code>settings.yaml</code> and prompt files.</td></tr>
+<tr><td><code>--config PATH</code></td><td>—</td><td>config file (<code>.yaml</code> or <code>.yml</code>), required for pipeline/<code>--serve</code>/<code>--purge</code>/<code>--regenerate</code>; a relative path resolves against the config&#x27;s own directory for sibling keys. Bare <code>kodama-docs</code> prints help instead of guessing <code>settings.yaml</code>.</td></tr>
+<tr><td><code>--no-llm</code></td><td>off</td><td>offline mode: no model calls, stub prose, no per-task delays. Fast first pass / structure check. See <a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>.</td></tr>
+<tr><td><code>--fresh</code></td><td>off</td><td>ignore the per-file analysis cache (<code>&lt;data_dir&gt;/symbols.json</code>) and re-extract every file. Records and docs are still reused.</td></tr>
+<tr><td><code>--purge</code></td><td>off</td><td>delete the output dir, data dir, and record caches and <strong>exit</strong> — no run happens.</td></tr>
+<tr><td><code>--regenerate</code></td><td>off</td><td>same deletes as <code>--purge</code>, <strong>then run</strong> from scratch. (The two are mutually exclusive by construction — one runs, one doesn&#x27;t.)</td></tr>
+<tr><td><code>--list-backends</code></td><td>—</td><td>print the backend registry (name, version, api, extension, status, issues) and exit.</td></tr>
+<tr><td><code>--install URL</code></td><td>—</td><td>git-clone a backend repo into <code>backends/&lt;name&gt;/</code> and pip-install its declared python deps; exit.</td></tr>
+<tr><td><code>--remove NAME</code></td><td>—</td><td>delete one installed backend; exit.</td></tr>
+<tr><td><code>--serve</code></td><td>off</td><td>start the <a href="05%20-%20Web%20Server.html">web server</a> on <code>web/web_settings.yaml</code> (default <code>http://127.0.0.1:8123</code>) and exit.</td></tr>
+<tr><td><code>--static</code></td><td>off</td><td>combine with a normal run: afterwards also build a self-contained static site into <code>&lt;output_dir&gt;/site</code> (open <code>site/index.html</code> directly, or host the folder, e.g. GitHub Pages — no server needed). See <a href="05%20-%20Web%20Server.html">Web Server</a>.</td></tr>
+<tr><td><code>test-backend --backend NAME</code></td><td>—</td><td>run the named backend&#x27;s self-test harness and exit; <code>--backend</code> is required.</td></tr>
+</tbody>
+</table>
+<h2>Precedence</h2>
+<p>The CLI is evaluated in this order; the first matching mode wins and exits:</p>
+<ol>
+<li><strong><code>--list-backends</code> / <code>--install</code> / <code>--remove</code></strong> — printed, executed, done.
+</li>
+<li><strong><code>init</code></strong> — write starter <code>settings.yaml</code> + <code>prompts/</code> and exit.
+</li>
+<li><strong><code>test-backend</code></strong> — runs the harness with the named backend (status must be <code>ready</code>); exit code 0 on a full pass, non-zero on any failed check.
+</li>
+<li><strong><code>--purge</code></strong> / <strong><code>--regenerate</code></strong> — delete <code>output_dir</code>, <code>data_dir</code>, and the record caches (<code>--regenerate</code> continues, <code>--purge</code> stops).
+</li>
+<li><strong><code>--serve</code></strong> — web server on the config&#x27;s output dir (or <code>docs_dir</code>).
+</li>
+<li><strong>the pipeline run</strong> — scan → analyze → graph → <a href="../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.html">LLM phase</a> → <a href="../02%20-%20How%20It%20Works/07%20-%20Rendering.html">render</a> → (with <code>--static</code>) the static site build.
+</li>
+</ol>
+<h2>Exit codes</h2>
+<table>
+<thead><tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>0</code></td><td>success (including <code>--no-llm</code> runs, purges, clean backend lists).</td></tr>
+<tr><td><code>1</code></td><td>at least one LLM task failed after retries — docs were still written for everything that succeeded; the failing prose is a visible placeholder, not silent.</td></tr>
+<tr><td>non-zero</td><td>errors (<code>SystemExit</code> messages: config not found, no ready backend for a language, <code>test-backend</code> without <code>--backend</code>, self-test failures).</td></tr>
+</tbody>
+</table>
+<h2>Typical invocations</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash"># scaffold a new project (settings.yaml + prompts/)
+kodama-docs init
+
+# inspect the project, no model (console script works too)
+python main.py --config settings.yaml --no-llm
+kodama-docs --config settings.yaml --no-llm
+
+# full run (uses .env + settings.yaml)
+python main.py --config settings.yaml
+
+# full run from a clean slate (drops docs, records, caches)
+python main.py --config settings.yaml --regenerate
+
+# serve the last run
+python main.py --config settings.yaml --serve
+
+# build a server-free static site into &lt;output_dir&gt;/site
+python main.py --config settings.yaml --static
+
+# bare invocation is a safe help request; it never guesses a config
+python main.py
+kodama-docs
+
+# what backends are here, and what is missing? (no config needed)
+python main.py --list-backends
+
+# verify the Python backend (CI-friendly, no config needed)
+python main.py test-backend --backend python</code></pre>
+</details>
+<p>Related: <a href="../01%20-%20Getting%20Started/02%20-%20First%20Run.html">First Run</a>, <a href="../04%20-%20Reference/01%20-%20Config%20Reference.html">Config Reference</a>, <a href="../06%20-%20Troubleshooting/01%20-%20LLM%20Problems.html">Troubleshooting</a>.</p>
+</main>
+</div>
+</body>
+</html>

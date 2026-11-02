@@ -1,0 +1,1691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/markdown.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/markdown.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-enc_path-12">enc_path</a></td><td>12</td><td>path</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-md_escape-20">md_escape</a></td><td>20</td><td>s</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_html_escape-27">_html_escape</a></td><td>27</td><td>s</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_unresolved_span-37">_unresolved_span</a></td><td>37</td><td>name</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_fn_anchor-43">_fn_anchor</a></td><td>43</td><td>fn</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_rel_link-47">_rel_link</a></td><td>47</td><td>from_rel, to_rel</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-build_call_indexes-53">build_call_indexes</a></td><td>53</td><td>g</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-callers_of-77">callers_of</a></td><td>77</td><td>g, fn_id, call_in</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-callgraph_section-106">callgraph_section</a></td><td>106</td><td>rel, fn, g, call_in</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-symbol_index-130">symbol_index</a></td><td>130</td><td>g</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_pick_node-161">_pick_node</a></td><td>161</td><td>cands, rel</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-ref_line-170">ref_line</a></td><td>170</td><td>rel, ref, files, by_name, by_qname, by_ns, by_var</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-static_references-203">static_references</a></td><td>203</td><td>rel, fn, g, call_out, files, by_name, by_qname, by_ns, by_var</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_unresolved_section-244">_unresolved_section</a></td><td>244</td><td>rel, diag</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_file_md-272">render_file_md</a></td><td>272</td><td>finfo, fn_records, var_records, summary, output_root, graph, call_indexes, sym_index, diag</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_analysis_summary-445">_analysis_summary</a></td><td>445</td><td>diag, astatus, rs</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_manual_tree-487">_manual_tree</a></td><td>487</td><td>pages</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_manual_bullets-502">_manual_bullets</a></td><td>502</td><td>node, lines, depth</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_manual_section-515">_manual_section</a></td><td>515</td><td>pages</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_index-529">render_index</a></td><td>529</td><td>finfos, output_root, diag, astatus, rs, manual_pages</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-write_md-551">write_md</a></td><td>551</td><td>text, output_root, rel</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>enc_path <a id="fn-enc_path-12"></a></h3>
+<p><em>kodama_docs/markdown.py:12-17</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">quote</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def enc_path(path: str) -&gt; str:
+    &quot;&quot;&quot;Percent-encode a relative markdown link target for the static output
+    (spaces -&gt; ``%20``), keeping ``/`` path separators intact. The web server
+    ``unquote``s the URL on the way in, so encoded links resolve to the
+    on-disk files; raw spaces in a written ``.md`` link would not.&quot;&quot;&quot;
+    return quote(path, safe=&#x27;/&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-_rel_link-47">_rel_link:50</a>
+</li>
+<li><a href="markdown.py.html#fn-_manual_bullets-502">_manual_bullets:512</a>
+</li>
+<li><a href="markdown.py.html#fn-render_index-529">render_index:539</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>md_escape <a id="fn-md_escape-20"></a></h3>
+<p><em>kodama_docs/markdown.py:20-24</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>s</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li>re.sub
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">text.replace</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def md_escape(s: str) -&gt; str:
+    # LLM prose may contain newlines; a newline inside a table cell would
+    # split the Markdown row. Normalize all whitespace first.
+    text = re.sub(r&#x27;\s+&#x27;, &#x27; &#x27;, str(s)).strip()
+    return text.replace(&#x27;|&#x27;, &#x27;\\|&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:180</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:191</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:194</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:199</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:200</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:302</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:305</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:331</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:355</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:364</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:365</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:371</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:388</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:410</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:430</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:431</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:433</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_render_md.py.html">tests/test_render_md.py</a>
+<ul>
+<li><a href="../tests/test_render_md.py.html#fn-test_table_escape_flattens_newlines-66">test_table_escape_flattens_newlines:67</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_html_escape <a id="fn-_html_escape-27"></a></h3>
+<p><em>kodama_docs/markdown.py:27-29</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>s</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.replace</span>
+</li>
+<li>str
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _html_escape(s: str) -&gt; str:
+    return (str(s).replace(&#x27;&amp;&#x27;, &#x27;&amp;amp;&#x27;)
+            .replace(&#x27;&lt;&#x27;, &#x27;&amp;lt;&#x27;).replace(&#x27;&gt;&#x27;, &#x27;&amp;gt;&#x27;))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-_unresolved_span-37">_unresolved_span:40</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_unresolved_span <a id="fn-_unresolved_span-37"></a></h3>
+<p><em>kodama_docs/markdown.py:37-40</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="markdown.py.html#variables">UNRESOLVED_COLOR</a>
+</li>
+<li><a href="markdown.py.html#fn-_html_escape-27">_html_escape</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _unresolved_span(name: str) -&gt; str:
+    &quot;&quot;&quot;Orange inline-HTML span marking a reference that did not resolve.&quot;&quot;&quot;
+    return (f&#x27;&lt;span style=&quot;color:{UNRESOLVED_COLOR}&quot;&gt;&#x27;
+            f&#x27;{_html_escape(name)}&lt;/span&gt;&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-static_references-203">static_references:230</a>
+</li>
+<li><a href="markdown.py.html#fn-static_references-203">static_references:237</a>
+</li>
+<li><a href="markdown.py.html#fn-_unresolved_section-244">_unresolved_section:264</a>
+</li>
+<li><a href="markdown.py.html#fn-_unresolved_section-244">_unresolved_section:267</a>
+</li>
+<li><a href="markdown.py.html#fn-_analysis_summary-445">_analysis_summary:482</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_fn_anchor <a id="fn-_fn_anchor-43"></a></h3>
+<p><em>kodama_docs/markdown.py:43-44</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fn</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="util.py.html#fn-sanitize_id-60">sanitize_id</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _fn_anchor(fn: dict) -&gt; str:
+    return f&quot;fn-{sanitize_id(fn[&#x27;name&#x27;])}-{fn[&#x27;line&#x27;]}&quot;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:304</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:312</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_rel_link <a id="fn-_rel_link-47"></a></h3>
+<p><em>kodama_docs/markdown.py:47-50</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>from_rel</code></td><td></td></tr>
+<tr><td><code>to_rel</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.dirname
+</li>
+<li>os.path.relpath
+</li>
+<li><a href="markdown.py.html#fn-enc_path-12">enc_path</a>
+</li>
+<li><span style="color:#e67e22">p.replace</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _rel_link(from_rel: str, to_rel: str) -&gt; str:
+    &quot;&quot;&quot;Relative markdown link from files/&lt;from_rel&gt;.md to files/&lt;to_rel&gt;.md.&quot;&quot;&quot;
+    p = os.path.relpath(to_rel + &#x27;.md&#x27;, os.path.dirname(from_rel) or &#x27;.&#x27;)
+    return enc_path(p.replace(os.sep, &#x27;/&#x27;))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-callgraph_section-106">callgraph_section:116</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:180</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:188</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:194</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:199</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>build_call_indexes <a id="fn-build_call_indexes-53"></a></h3>
+<p><em>kodama_docs/markdown.py:53-74</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><span style="color:#e67e22">out.setdefault</span>
+</li>
+<li><span style="color:#e67e22">inc.setdefault</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def build_call_indexes(g):
+    &quot;&quot;&quot;One O(E) pass over the graph, used at render time instead of a full
+    edge scan per function (O(F×E) on a big corpus):
+
+    - ``out[u] = [(v, line, status), ...]`` — CALLS and READS edges
+      leaving u (the function&#x27;s deterministic references; status is
+      resolved/inferred/builtin/external for CALLS, None for READS);
+    - ``in[v]  = [(u, line), ...]`` — CALLS edges entering v
+      (the function&#x27;s call sites).
+    &quot;&quot;&quot;
+    out, inc = {}, {}
+    if g is None:
+        return out, inc
+    for u, v, d in g.edges(data=True):
+        t = d.get(&#x27;type&#x27;)
+        if t == &#x27;CALLS&#x27;:
+            out.setdefault(u, []).append(
+                (v, d.get(&#x27;line&#x27;), d.get(&#x27;status&#x27;)))
+            inc.setdefault(v, []).append((u, d.get(&#x27;line&#x27;)))
+        elif t == &#x27;READS&#x27;:
+            out.setdefault(u, []).append((v, d.get(&#x27;line&#x27;), None))
+    return out, inc</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-callers_of-77">callers_of:88</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:280</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:121</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>callers_of <a id="fn-callers_of-77"></a></h3>
+<p><em>kodama_docs/markdown.py:77-103</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>fn_id</code></td><td></td></tr>
+<tr><td><code>call_in</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="markdown.py.html#fn-build_call_indexes-53">build_call_indexes</a>
+</li>
+<li><span style="color:#e67e22">call_in.get</span>
+</li>
+<li><span style="color:#e67e22">s.get</span>
+</li>
+<li><span style="color:#e67e22">out.append</span>
+</li>
+<li><span style="color:#e67e22">out.sort</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def callers_of(g, fn_id: str, call_in=None):
+    &quot;&quot;&quot;Deterministic list of call sites targeting a function node.
+
+    Each item is a dict: file (caller relpath), name/qualified/line (the
+    calling function; all None when the call happens at file level) and
+    call (the call-site line). Sorted by (file, call, name).
+
+    With a prebuilt ``call_in`` index (from :func:`build_call_indexes`) this
+    is an O(in-degree) lookup; without one it builds the index on the fly.
+    &quot;&quot;&quot;
+    if call_in is None:
+        _, call_in = build_call_indexes(g)
+    out = []
+    for u, line in call_in.get(fn_id, ()):
+        s = g.nodes[u]
+        if s.get(&#x27;kind&#x27;) == &#x27;function&#x27;:
+            out.append({&#x27;file&#x27;: s.get(&#x27;relpath&#x27;) or &#x27;&#x27;,
+                        &#x27;name&#x27;: s.get(&#x27;name&#x27;) or &#x27;&#x27;,
+                        &#x27;qualified&#x27;: s.get(&#x27;qualified&#x27;) or s.get(&#x27;name&#x27;) or &#x27;&#x27;,
+                        &#x27;line&#x27;: s.get(&#x27;line&#x27;),
+                        &#x27;call&#x27;: line})
+        else:
+            out.append({&#x27;file&#x27;: s.get(&#x27;relpath&#x27;) or &#x27;&#x27;,
+                        &#x27;name&#x27;: None, &#x27;qualified&#x27;: None, &#x27;line&#x27;: None,
+                        &#x27;call&#x27;: line})
+    out.sort(key=lambda c: (c[&#x27;file&#x27;], c[&#x27;call&#x27;] or 0, c[&#x27;name&#x27;] or &#x27;&#x27;))
+    return out</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-callgraph_section-106">callgraph_section:108</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>callgraph_section <a id="fn-callgraph_section-106"></a></h3>
+<p><em>kodama_docs/markdown.py:106-127</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>fn</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>call_in</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="markdown.py.html#fn-callers_of-77">callers_of</a>
+</li>
+<li><a href="graph.py.html#fn-node_id_fn-55">node_id_fn</a>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><span style="color:#e67e22">by_file.setdefault</span>
+</li>
+<li>sorted
+</li>
+<li><a href="markdown.py.html#fn-_rel_link-47">_rel_link</a>
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+<li><a href="util.py.html#fn-sanitize_id-60">sanitize_id</a>
+</li>
+<li>str
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def callgraph_section(rel: str, fn: dict, g, call_in=None) -&gt; list:
+    &quot;&quot;&quot;Markdown lines for the deterministic Call graph section (or []).&quot;&quot;&quot;
+    sites = callers_of(g, node_id_fn(rel, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;]), call_in)
+    if not sites:
+        return []
+    lines = [&#x27;**Call graph**&#x27;, &#x27;&#x27;]
+    by_file = {}
+    for s in sites:
+        by_file.setdefault(s[&#x27;file&#x27;], []).append(s)
+    for cfile in sorted(by_file):
+        file_link = _rel_link(rel, cfile)
+        lines.append(f&#x27;- [{cfile}]({file_link})&#x27;)
+        for s in by_file[cfile]:
+            link = file_link
+            if s[&#x27;name&#x27;]:
+                label = f&quot;{s[&#x27;qualified&#x27;] or s[&#x27;name&#x27;]}:{s[&#x27;call&#x27;]}&quot;
+                link += &#x27;#fn-&#x27; + sanitize_id(s[&#x27;name&#x27;]) + &#x27;-&#x27; + str(s[&#x27;line&#x27;])
+            else:
+                label = f&#x27;top-level:{s[&quot;call&quot;]}&#x27;
+            lines.append(f&#x27;  - [{label}]({link})&#x27;)
+    lines.append(&#x27;&#x27;)
+    return lines</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:397</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>symbol_index <a id="fn-symbol_index-130"></a></h3>
+<p><em>kodama_docs/markdown.py:130-158</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>set
+</li>
+<li><span style="color:#e67e22">g.nodes</span>
+</li>
+<li><span style="color:#e67e22">nd.get</span>
+</li>
+<li><span style="color:#e67e22">files.add</span>
+</li>
+<li><span style="color:#e67e22">?.add</span>
+</li>
+<li><span style="color:#e67e22">by_var.setdefault</span>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><span style="color:#e67e22">by_name.setdefault</span>
+</li>
+<li><span style="color:#e67e22">by_qname.setdefault</span>
+</li>
+<li><span style="color:#e67e22">qn.split</span>
+</li>
+<li>len
+</li>
+<li>range
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">by_ns.setdefault</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def symbol_index(g):
+    &quot;&quot;&quot;Deterministic link targets for References bullets: file relpaths,
+    function nodes by name / qualified name, and module namespaces
+    (qualified-name prefixes) -&gt; the file(s) they live in (from the graph).&quot;&quot;&quot;
+    files, by_name, by_qname, by_ns, by_var = set(), {}, {}, {}, {}
+    if g is None:
+        return files, by_name, by_qname, by_ns, by_var
+    for nid, nd in g.nodes(data=True):
+        kind = nd.get(&#x27;kind&#x27;)
+        if kind not in (&#x27;function&#x27;, &#x27;variable&#x27;, &#x27;class&#x27;):
+            continue
+        rp = nd.get(&#x27;relpath&#x27;)
+        if rp:
+            files.add(rp)
+        nm = nd.get(&#x27;name&#x27;)
+        if kind == &#x27;variable&#x27;:
+            if nm and rp:
+                by_var.setdefault(nm, set()).add(rp)
+            continue
+        if nm:
+            by_name.setdefault(nm, []).append(nd)
+        qn = nd.get(&#x27;qualified&#x27;) or nm
+        if qn:
+            by_qname.setdefault(qn, []).append(nd)
+            if rp:
+                parts = qn.split(&#x27;.&#x27;)
+                for i in range(1, len(parts)):
+                    by_ns.setdefault(&#x27;.&#x27;.join(parts[:i]), set()).add(rp)
+    return files, by_name, by_qname, by_ns, by_var</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:277</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:122</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_pick_node <a id="fn-_pick_node-161"></a></h3>
+<p><em>kodama_docs/markdown.py:161-167</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cands</code></td><td></td></tr>
+<tr><td><code>rel</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>len
+</li>
+<li><span style="color:#e67e22">n.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _pick_node(cands, rel):
+    &quot;&quot;&quot;Deterministic choice among matching nodes: the current file wins,
+    then a unique match; anything ambiguous stays unlinked.&quot;&quot;&quot;
+    if len(cands) == 1:
+        return cands[0]
+    cur = [n for n in cands if n.get(&#x27;relpath&#x27;) == rel]
+    return cur[0] if len(cur) == 1 else None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:186</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>ref_line <a id="fn-ref_line-170"></a></h3>
+<p><em>kodama_docs/markdown.py:170-200</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>ref</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+<tr><td><code>by_name</code></td><td></td></tr>
+<tr><td><code>by_qname</code></td><td></td></tr>
+<tr><td><code>by_ns</code></td><td></td></tr>
+<tr><td><code>by_var</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">text.endswith</span>
+</li>
+<li><span style="color:#e67e22">t.replace</span>
+</li>
+<li><span style="color:#e67e22">ft.startswith</span>
+</li>
+<li><a href="markdown.py.html#fn-_rel_link-47">_rel_link</a>
+</li>
+<li><a href="markdown.py.html#fn-md_escape-20">md_escape</a>
+</li>
+<li><span style="color:#e67e22">mapping.get</span>
+</li>
+<li>all
+</li>
+<li><span style="color:#e67e22">cands.append</span>
+</li>
+<li><a href="markdown.py.html#fn-_pick_node-161">_pick_node</a>
+</li>
+<li><span style="color:#e67e22">node.get</span>
+</li>
+<li><a href="util.py.html#fn-sanitize_id-60">sanitize_id</a>
+</li>
+<li><span style="color:#e67e22">by_ns.get</span>
+</li>
+<li>len
+</li>
+<li>iter
+</li>
+<li>next
+</li>
+<li><span style="color:#e67e22">by_var.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def ref_line(rel, ref, files, by_name, by_qname, by_ns, by_var):
+    &quot;&quot;&quot;Markdown bullet for a References entry. Linked when the entry names
+    a known file, function, module namespace, or file-level variable;
+    plain text otherwise (e.g. builtins).&quot;&quot;&quot;
+    text = str(ref).strip()
+    t = text[:-2].strip() if text.endswith(&#x27;()&#x27;) else text
+    ft = t.replace(&#x27;\\&#x27;, &#x27;/&#x27;)
+    while ft.startswith(&#x27;./&#x27;):
+        ft = ft[2:]
+    if ft in files:
+        return f&#x27;- [{md_escape(ref)}]({_rel_link(rel, ft)})&#x27;
+    cands = []
+    for mapping in (by_name, by_qname):
+        for n in mapping.get(t) or []:
+            if all(n is not x for x in cands):
+                cands.append(n)
+    node = _pick_node(cands, rel) if cands else None
+    if node is not None:
+        link = _rel_link(rel, node[&#x27;relpath&#x27;])
+        anchor = &#x27;cls-&#x27; if node.get(&#x27;kind&#x27;) == &#x27;class&#x27; else &#x27;fn-&#x27;
+        link += &#x27;#&#x27; + anchor + sanitize_id(node[&#x27;name&#x27;]) + &#x27;-&#x27; + str(node[&#x27;line&#x27;])
+        return f&#x27;- [{md_escape(ref)}]({link})&#x27;
+    ns = by_ns.get(t)
+    if ns and len(ns) == 1:
+        return f&#x27;- [{md_escape(ref)}]({_rel_link(rel, next(iter(ns)))})&#x27;
+    vs = by_var.get(t)
+    if vs:
+        target = rel if rel in vs else (next(iter(vs)) if len(vs) == 1 else None)
+        if target is not None:
+            return f&#x27;- [{md_escape(ref)}]({_rel_link(rel, target)}#variables)&#x27;
+    return f&#x27;- {md_escape(ref)}&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-static_references-203">static_references:233</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:377</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>static_references <a id="fn-static_references-203"></a></h3>
+<p><em>kodama_docs/markdown.py:203-241</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>fn</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>call_out</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+<tr><td><code>by_name</code></td><td></td></tr>
+<tr><td><code>by_qname</code></td><td></td></tr>
+<tr><td><code>by_ns</code></td><td></td></tr>
+<tr><td><code>by_var</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#fn-node_id_fn-55">node_id_fn</a>
+</li>
+<li>set
+</li>
+<li><span style="color:#e67e22">call_out.get</span>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">seen.add</span>
+</li>
+<li><span style="color:#e67e22">refs.append</span>
+</li>
+<li><a href="markdown.py.html#fn-_unresolved_span-37">_unresolved_span</a>
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def static_references(rel: str, fn: dict, g, call_out,
+                      files, by_name, by_qname, by_ns, by_var) -&gt; list:
+    &quot;&quot;&quot;Deterministic **References** section straight from the graph: the
+    function&#x27;s call targets plus the file-level variables it reads, in
+    source order (deduped by name). Used when the function has no LLM
+    prose (e.g. a ``--no-llm`` run). Returns [] when it references nothing.
+    &quot;&quot;&quot;
+    fid = node_id_fn(rel, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+    refs, seen = [], set()
+    entries = sorted(call_out.get(fid, ()),
+                     key=lambda t: (t[1] or 0, str(g.nodes[t[0]].get(&#x27;name&#x27;) or t[0])))
+    for v, _line, status in entries:
+        nm = g.nodes[v].get(&#x27;name&#x27;) or v
+        # Inferred edges are kept (a unique project match) but the label
+        # says so — an inference is not a verified call (P0-2).
+        label = f&#x27;{nm} (inferred)&#x27; if status == &#x27;inferred&#x27; else nm
+        if label not in seen:
+            seen.add(label)
+            refs.append((label, status))
+    if not refs:
+        return []
+    lines = [&#x27;**References**&#x27;, &#x27;&#x27;]
+    has_unresolved = False
+    for label, status in refs:
+        if status == &#x27;external&#x27;:
+            # resolution_success == false: no matching symbol in this
+            # project — no link is written, highlighted orange.
+            lines.append(f&#x27;- {_unresolved_span(label)}&#x27;)
+            has_unresolved = True
+        else:
+            lines.append(ref_line(rel, label, files, by_name, by_qname,
+                                  by_ns, by_var))
+    if has_unresolved:
+        lines.append(&#x27;&#x27;)
+        lines.append(f&#x27;&gt; Note: {_unresolved_span(&quot;orange&quot;)} references &#x27;
+                     f&#x27;could not be resolved to a symbol in this project &#x27;
+                     f&#x27;(no link is written for them).&#x27;)
+    lines.append(&#x27;&#x27;)
+    return lines</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:381</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_unresolved_section <a id="fn-_unresolved_section-244"></a></h3>
+<p><em>kodama_docs/markdown.py:244-269</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>diag</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">diag.get</span>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+<li><a href="markdown.py.html#fn-_unresolved_span-37">_unresolved_span</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _unresolved_section(rel: str, diag) -&gt; list:
+    &quot;&quot;&quot;Per-file **Unresolved references** section (P0-2/P0-3): call sites
+    the resolver could not link to a single symbol (ambiguity or no
+    candidate) and imports with no matching file in the project. These are
+    shown as-is — the analyzer never wrote a guessed edge for them.
+    Returns [] when the file has none.&quot;&quot;&quot;
+    if not diag:
+        return []
+    amb = [d for d in diag.get(&#x27;ambiguous_calls&#x27;, []) if d.get(&#x27;file&#x27;) == rel]
+    unc = [d for d in diag.get(&#x27;unresolved_imports&#x27;, [])
+           if d.get(&#x27;file&#x27;) == rel]
+    if not amb and not unc:
+        return []
+    lines = [&#x27;## Unresolved references&#x27;, &#x27;&#x27;,
+             &#x27;The following references could not be resolved to a single &#x27;
+             &#x27;symbol and are **not linked**; the analyzer recorded them &#x27;
+             &#x27;instead of guessing:&#x27;, &#x27;&#x27;]
+    for d in sorted(amb, key=lambda d: d.get(&#x27;line&#x27;) or 0):
+        cands = &#x27;, &#x27;.join(f&#x27;`{c}`&#x27; for c in d.get(&#x27;candidates&#x27;) or []) or &#x27;—&#x27;
+        lines.append(f&quot;- line {d.get(&#x27;line&#x27;)}: call &quot;
+                     f&quot;{_unresolved_span(d.get(&#x27;name&#x27;))} — candidates: {cands}&quot;)
+    for d in sorted(unc, key=lambda d: d.get(&#x27;line&#x27;) or 0):
+        lines.append(f&quot;- line {d.get(&#x27;line&#x27;)}: import of &quot;
+                     f&quot;{_unresolved_span(d.get(&#x27;module&#x27;))} — no matching file in the project&quot;)
+    lines.append(&#x27;&#x27;)
+    return lines</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:437</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_file_md <a id="fn-render_file_md-272"></a></h3>
+<p><em>kodama_docs/markdown.py:272-442</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>finfo</code></td><td></td></tr>
+<tr><td><code>fn_records</code></td><td></td></tr>
+<tr><td><code>var_records</code></td><td></td></tr>
+<tr><td><code>summary</code></td><td></td></tr>
+<tr><td><code>output_root</code></td><td></td></tr>
+<tr><td><code>graph</code></td><td></td></tr>
+<tr><td><code>call_indexes</code></td><td></td></tr>
+<tr><td><code>sym_index</code></td><td></td></tr>
+<tr><td><code>diag</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="markdown.py.html#fn-symbol_index-130">symbol_index</a>
+</li>
+<li><a href="markdown.py.html#fn-build_call_indexes-53">build_call_indexes</a>
+</li>
+<li><span style="color:#e67e22">summary.get</span>
+</li>
+<li><span style="color:#e67e22">finfo.get</span>
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+<li><span style="color:#e67e22">fn_records.get</span>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><span style="color:#e67e22">rec.get</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><a href="markdown.py.html#fn-md_escape-20">md_escape</a>
+</li>
+<li><a href="util.py.html#fn-trunc-65">trunc</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><a href="markdown.py.html#fn-_fn_anchor-43">_fn_anchor</a>
+</li>
+<li>enumerate
+</li>
+<li><span style="color:#e67e22">dev.splitlines</span>
+</li>
+<li><span style="color:#e67e22">dl.strip</span>
+</li>
+<li>isinstance
+</li>
+<li><span style="color:#e67e22">p.get</span>
+</li>
+<li><span style="color:#e67e22">a.get</span>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">pnames.append</span>
+</li>
+<li><span style="color:#e67e22">pargs.get</span>
+</li>
+<li><span style="color:#e67e22">o.get</span>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line</a>
+</li>
+<li><a href="markdown.py.html#fn-static_references-203">static_references</a>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><a href="util.py.html#fn-fence_lang-38">fence_lang</a>
+</li>
+<li><a href="markdown.py.html#fn-callgraph_section-106">callgraph_section</a>
+</li>
+<li><a href="util.py.html#fn-sanitize_id-60">sanitize_id</a>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li><span style="color:#e67e22">var_records.get</span>
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+<li><a href="markdown.py.html#fn-_unresolved_section-244">_unresolved_section</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_file_md(finfo: dict, fn_records, var_records, summary,
+                   output_root: str, graph=None, call_indexes=None,
+                   sym_index=None, diag=None) -&gt; str:
+    rel = finfo[&#x27;relpath&#x27;]
+    if sym_index is None:
+        sym_index = symbol_index(graph)
+    files, by_name, by_qname, by_ns, by_var = sym_index
+    if call_indexes is None:
+        call_out, call_in = build_call_indexes(graph)
+    else:
+        call_out, call_in = call_indexes
+    lines = [f&#x27;# {rel}&#x27;, &#x27;&#x27;]
+    if summary:
+        lines += [&#x27;## Summary&#x27;, &#x27;&#x27;, summary.get(&#x27;summary&#x27;, &#x27;&#x27;),
+                  f&quot;**Main purpose:** {summary.get(&#x27;main_purpose&#x27;, &#x27;&#x27;)}&quot;,
+                  f&quot;**Role in project:** {summary.get(&#x27;role&#x27;, &#x27;&#x27;)}&quot;, &#x27;&#x27;]
+    else:
+        lines += [&#x27;_No summary generated._&#x27;, &#x27;&#x27;]
+
+    funcs = finfo.get(&#x27;functions&#x27;) or []
+    if funcs:
+        lines += [&#x27;## Functions&#x27;, &#x27;&#x27;]
+        lines.append(&#x27;| Function | Line | Parameters | Description |&#x27;)
+        lines.append(&#x27;| --- | --- | --- | --- |&#x27;)
+        for fn in funcs:
+            rec = fn_records.get((rel, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;]))
+            desc = &#x27;&#x27;
+            if fn.get(&#x27;skip_llm&#x27;):
+                desc = &#x27;_LLM skipped_&#x27;
+            elif rec and rec.get(&#x27;prose&#x27;):
+                desc = md_escape(trunc(rec[&#x27;prose&#x27;].get(&#x27;description&#x27;, &#x27;&#x27;), 140))
+            params = &#x27;, &#x27;.join(fn.get(&#x27;params&#x27;) or [])
+            lines.append(f&quot;| [{fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;]}](#{_fn_anchor(fn)}) &quot;
+                         f&quot;| {fn[&#x27;line&#x27;]} | {md_escape(params)} | {desc} |&quot;)
+        lines.append(&#x27;&#x27;)
+        for idx, fn in enumerate(funcs):
+            if idx:
+                lines += [&#x27;---&#x27;, &#x27;&#x27;]
+            rec = fn_records.get((rel, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;]))
+            lines.append(f&quot;### {fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;]}&quot;
+                         f&quot; &lt;a id=\&quot;{_fn_anchor(fn)}\&quot;&gt;&lt;/a&gt;&quot;)
+            lines.append(&#x27;&#x27;)
+            lines.append(f&quot;*{rel}:{fn[&#x27;line&#x27;]}&quot;
+                         + (f&quot;-{fn[&#x27;end_line&#x27;]}&quot; if fn.get(&#x27;end_line&#x27;, 0) &gt; fn[&#x27;line&#x27;] else &#x27;&#x27;)
+                         + &#x27;*&#x27;)
+            lines.append(&#x27;&#x27;)
+            dev = fn.get(&#x27;developer_comment&#x27;)
+            if dev:
+                lines += [&#x27;**Developer comment**&#x27;, &#x27;&#x27;]
+                for dl in dev.splitlines():
+                    lines.append(&#x27;&gt; &#x27; + dl if dl.strip() else &#x27;&gt;&#x27;)
+                lines.append(&#x27;&#x27;)
+            p = (rec.get(&#x27;prose&#x27;) if rec and isinstance(rec.get(&#x27;prose&#x27;), dict)
+                 else {})
+            if fn.get(&#x27;skip_llm&#x27;):
+                lines += [(&#x27;**LLM generation:** skipped by developer comment &#x27;
+                           &#x27;(`kodama-docs-llm:skip`).&#x27;), &#x27;&#x27;]
+            elif p.get(&#x27;description&#x27;):
+                lines += [&#x27;**Description**&#x27;, &#x27;&#x27;,
+                          md_escape(p[&#x27;description&#x27;]), &#x27;&#x27;]
+            else:
+                lines.append(&#x27;_No description generated._&#x27;)
+                lines.append(&#x27;&#x27;)
+            # Parameters: names always come from the static analysis (the
+            # LLM never decides which parameters exist); prose only adds
+            # descriptions. Extra prose arguments are appended after the
+            # static ones.
+            pargs = {}
+            for a in p.get(&#x27;arguments&#x27;) or []:
+                nm = a.get(&#x27;name&#x27;)
+                if nm:
+                    pargs[str(nm)] = a
+            pnames = [str(n) for n in (fn.get(&#x27;params&#x27;) or [])]
+            for n in pargs:
+                if n not in pnames:
+                    pnames.append(n)
+            if pnames:
+                lines.append(&#x27;**Parameters**&#x27;)
+                lines.append(&#x27;&#x27;)
+                lines.append(&#x27;| Name | Description |&#x27;)
+                lines.append(&#x27;| --- | --- |&#x27;)
+                for nm in pnames:
+                    d = pargs.get(nm, {}).get(&#x27;description&#x27;, &#x27;&#x27;)
+                    lines.append(f&quot;| `{nm}` | {md_escape(d)} |&quot;)
+                lines.append(&#x27;&#x27;)
+            if p.get(&#x27;outputs&#x27;):
+                lines.append(&#x27;**Outputs**&#x27;)
+                lines.append(&#x27;&#x27;)
+                lines.append(&#x27;| Name | Description |&#x27;)
+                lines.append(&#x27;| --- | --- |&#x27;)
+                for o in p[&#x27;outputs&#x27;]:
+                    nm = o.get(&#x27;name&#x27;) or &#x27;return value&#x27;
+                    lines.append(f&quot;| `{md_escape(nm)}` &quot;
+                                 f&quot;| {md_escape(o.get(&#x27;description&#x27;, &#x27;&#x27;))} |&quot;)
+                lines.append(&#x27;&#x27;)
+            if p.get(&#x27;side_effects&#x27;):
+                lines.append(&#x27;**Side effects**&#x27;)
+                lines.append(&#x27;&#x27;)
+                for s in p[&#x27;side_effects&#x27;]:
+                    lines.append(f&#x27;- {md_escape(s)}&#x27;)
+                lines.append(&#x27;&#x27;)
+            if p.get(&#x27;references&#x27;):
+                lines.append(&#x27;**References**&#x27;)
+                lines.append(&#x27;&#x27;)
+                for r in p[&#x27;references&#x27;]:
+                    lines.append(ref_line(rel, r, files, by_name, by_qname,
+                                          by_ns, by_var))
+                lines.append(&#x27;&#x27;)
+            elif graph is not None:
+                lines += static_references(rel, fn, graph, call_out,
+                                           files, by_name, by_qname,
+                                           by_ns, by_var)
+            if p.get(&#x27;uncertainties&#x27;):
+                lines.append(&#x27;**Uncertainties**&#x27;)
+                lines.append(&#x27;&#x27;)
+                for u in p[&#x27;uncertainties&#x27;]:
+                    lines.append(f&#x27;- {md_escape(u)}&#x27;)
+                lines.append(&#x27;&#x27;)
+            body = (fn.get(&#x27;body&#x27;) or &#x27;&#x27;).strip()
+            if body:
+                lines.append(&#x27;```&#x27; + fence_lang(rel))
+                lines.append(body)
+                lines.append(&#x27;```&#x27;)
+                lines.append(&#x27;&#x27;)
+            if graph is not None:
+                lines += callgraph_section(rel, fn, graph, call_in)
+
+    classes = finfo.get(&#x27;classes&#x27;) or []
+    if classes:
+        lines += [&#x27;## Classes &lt;a id=&quot;classes&quot;&gt;&lt;/a&gt;&#x27;, &#x27;&#x27;]
+        lines.append(&#x27;Classes are structural symbols: constructor calls &#x27;
+                     &#x27;(`Name(...)`) that resolve here are linked from the &#x27;
+                     &#x27;caller\&#x27;s References section.&#x27;)
+        lines.append(&#x27;&#x27;)
+        lines.append(&#x27;| Class | Line | Developer comment |&#x27;)
+        lines.append(&#x27;| --- | --- | --- |&#x27;)
+        for c in classes:
+            anchor = f&quot;cls-{sanitize_id(c[&#x27;name&#x27;])}-{c[&#x27;line&#x27;]}&quot;
+            note = md_escape(trunc(c.get(&#x27;developer_comment&#x27;) or &#x27;&#x27;, 140))
+            if c.get(&#x27;skip_llm&#x27;):
+                note = (note + &#x27; &#x27; if note else &#x27;&#x27;) + &#x27;_LLM skipped_&#x27;
+            lines.append(f&quot;| &lt;a id=\&quot;{anchor}\&quot;&gt;&quot;
+                         f&quot;[{c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;]}](#{anchor})&lt;/a&gt; &quot;
+                         f&quot;| {c[&#x27;line&#x27;]} | {note} |&quot;)
+        lines.append(&#x27;&#x27;)
+
+    vars_ = finfo.get(&#x27;file_vars&#x27;) or []
+    if vars_:
+        lines += [&#x27;## File-level variables &lt;a id=&quot;variables&quot;&gt;&lt;/a&gt;&#x27;, &#x27;&#x27;]
+        lines.append(&#x27;| Variable | Line | Init | Developer comment | &#x27;
+                     &#x27;Description |&#x27;)
+        lines.append(&#x27;| --- | --- | --- | --- | --- |&#x27;)
+        for v in vars_:
+            rec = var_records.get((rel, v[&#x27;name&#x27;], v[&#x27;line&#x27;]))
+            desc = &#x27;&#x27;
+            if v.get(&#x27;skip_llm&#x27;):
+                desc = &#x27;_LLM skipped_&#x27;
+            elif rec and rec.get(&#x27;prose&#x27;):
+                desc = md_escape(trunc(rec[&#x27;prose&#x27;].get(&#x27;description&#x27;, &#x27;&#x27;), 140))
+            dev = md_escape(trunc(v.get(&#x27;developer_comment&#x27;) or &#x27;&#x27;, 140))
+            lines.append(f&quot;| `{v[&#x27;name&#x27;]}` | {v[&#x27;line&#x27;]} &quot;
+                         f&quot;| {md_escape(v.get(&#x27;init&#x27;, &#x27;&#x27;))} | {dev} &quot;
+                         f&quot;| {desc} |&quot;)
+        lines.append(&#x27;&#x27;)
+
+    lines += _unresolved_section(rel, diag)
+    lines.append(&#x27;---&#x27;)
+    lines.append(&#x27;_Generated by kodama-docs. Prose produced by an LLM; &#x27;
+                 &#x27;structure and links generated deterministically._&#x27;)
+    lines.append(&#x27;&#x27;)
+    return &#x27;\n&#x27;.join(lines)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:135</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_analysis_summary <a id="fn-_analysis_summary-445"></a></h3>
+<p><em>kodama_docs/markdown.py:445-484</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>diag</code></td><td></td></tr>
+<tr><td><code>astatus</code></td><td></td></tr>
+<tr><td><code>rs</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">astatus.values</span>
+</li>
+<li><span style="color:#e67e22">st.get</span>
+</li>
+<li><span style="color:#e67e22">counts.get</span>
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">astatus.items</span>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><span style="color:#e67e22">diag.get</span>
+</li>
+<li><span style="color:#e67e22">rs.get</span>
+</li>
+<li><span style="color:#e67e22">cs.get</span>
+</li>
+<li><span style="color:#e67e22">im.get</span>
+</li>
+<li><a href="markdown.py.html#fn-_unresolved_span-37">_unresolved_span</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _analysis_summary(diag, astatus, rs=None) -&gt; list:
+    &quot;&quot;&quot;Index footer: analysis status per file and the resolution outcome
+    counts (P0-3 — failures and unresolved references stay visible in the
+    docs, not just in the console). Returns [] when no data was passed.&quot;&quot;&quot;
+    if not diag and astatus is None and not rs:
+        return []
+    lines = [&#x27;&#x27;, &#x27;## Analysis summary&#x27;, &#x27;&#x27;]
+    if astatus is not None:
+        counts = {&#x27;ok&#x27;: 0, &#x27;failed&#x27;: 0, &#x27;binary&#x27;: 0}
+        for st in astatus.values():
+            k = st.get(&#x27;status&#x27;, &#x27;ok&#x27;)
+            counts[k] = counts.get(k, 0) + 1
+        lines.append(
+            f&quot;- Files: {len(astatus)} analyzed — {counts[&#x27;ok&#x27;]} ok, &quot;
+            f&quot;{counts[&#x27;failed&#x27;]} failed, {counts[&#x27;binary&#x27;]} binary&quot;)
+        for rel in sorted(k for k, v in astatus.items()
+                          if v.get(&#x27;status&#x27;) == &#x27;failed&#x27;):
+            lines.append(f&quot;  - `{rel}` — {astatus[rel].get(&#x27;error&#x27;, &#x27;&#x27;)}&quot;)
+    if diag:
+        amb = len(diag.get(&#x27;ambiguous_calls&#x27;, []))
+        extc = len(diag.get(&#x27;external_calls&#x27;, []))
+        unc = len(diag.get(&#x27;unresolved_imports&#x27;, []))
+        inf = len(diag.get(&#x27;inferred_calls&#x27;, []))
+        lines.append(
+            f&quot;- Call references: {extc} external, {inf} inferred, &quot;
+            f&quot;**{amb} ambiguous** (recorded, not linked), &quot;
+            f&quot;{unc} unresolved import(s)&quot;)
+    if rs:
+        cs, im = rs.get(&#x27;calls&#x27;, {}), rs.get(&#x27;imports&#x27;, {})
+        cok = cs.get(&#x27;success&#x27;, 0)
+        cfail = cs.get(&#x27;failed&#x27;, 0)
+        iok = im.get(&#x27;success&#x27;, 0)
+        ifail = im.get(&#x27;failed&#x27;, 0)
+        lines.append(
+            f&quot;- Resolution: **{cok}/{cok + cfail}** call references and &quot;
+            f&quot;**{iok}/{iok + ifail}** imports resolved successfully. &quot;
+            f&quot;References that did not resolve are highlighted &quot;
+            f&quot;{_unresolved_span(&#x27;orange&#x27;)} on each page.&quot;)
+    lines.append(&#x27;&#x27;)
+    return lines</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_index-529">render_index:544</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_manual_tree <a id="fn-_manual_tree-487"></a></h3>
+<p><em>kodama_docs/markdown.py:487-499</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>pages</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.split</span>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">?.setdefault</span>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _manual_tree(pages):
+    &quot;&quot;&quot;Nested tree of the manual pages, from each page&#x27;s ``rel``:
+    node = {&#x27;children&#x27;: {name: node}, &#x27;pages&#x27;: [page]} — the same shape
+    the web sidebar builds (web/sidebar.js).&quot;&quot;&quot;
+    root = {&#x27;children&#x27;: {}, &#x27;pages&#x27;: []}
+    for p in pages:
+        parts = str(p[&#x27;rel&#x27;]).split(&#x27;/&#x27;)
+        node = root
+        for seg in parts[:-1]:
+            node = node[&#x27;children&#x27;].setdefault(
+                seg, {&#x27;children&#x27;: {}, &#x27;pages&#x27;: []})
+        node[&#x27;pages&#x27;].append(p)
+    return root</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-_manual_section-515">_manual_section:524</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_manual_bullets <a id="fn-_manual_bullets-502"></a></h3>
+<p><em>kodama_docs/markdown.py:502-512</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>node</code></td><td></td></tr>
+<tr><td><code>lines</code></td><td></td></tr>
+<tr><td><code>depth</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+<li><a href="markdown.py.html#fn-_manual_bullets-502">_manual_bullets</a>
+</li>
+<li><span style="color:#e67e22">p.get</span>
+</li>
+<li><a href="markdown.py.html#fn-enc_path-12">enc_path</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _manual_bullets(node, lines, depth=0):
+    &quot;&quot;&quot;One bullet per folder and page, nested one level per folder:
+    folders first (sorted), then the pages living in that folder (sorted).&quot;&quot;&quot;
+    pad = &#x27;  &#x27; * depth
+    for name in sorted(node[&#x27;children&#x27;]):
+        lines.append(f&#x27;{pad}- {name}&#x27;)
+        _manual_bullets(node[&#x27;children&#x27;][name], lines, depth + 1)
+    for p in sorted(node[&#x27;pages&#x27;], key=lambda p: p[&#x27;rel&#x27;]):
+        label = p.get(&#x27;title&#x27;) or p[&#x27;rel&#x27;]
+        lines.append(
+            f&#x27;{pad}- [{label}]({enc_path(&quot;manual/&quot; + p[&quot;rel&quot;])})&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-_manual_bullets-502">_manual_bullets:508</a>
+</li>
+<li><a href="markdown.py.html#fn-_manual_section-515">_manual_section:524</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_manual_section <a id="fn-_manual_section-515"></a></h3>
+<p><em>kodama_docs/markdown.py:515-526</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>pages</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="markdown.py.html#fn-_manual_bullets-502">_manual_bullets</a>
+</li>
+<li><a href="markdown.py.html#fn-_manual_tree-487">_manual_tree</a>
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _manual_section(pages):
+    &quot;&quot;&quot;The section-0 **Manual documentation** block, placed above the
+    generated-files table: a nested bullet list mirroring the manual&#x27;s
+    folder hierarchy (plain bullets for folders, links for pages). Links
+    are relative to index.md, so the pages (copied to &lt;output_dir&gt;/manual/)
+    are ``manual/&lt;rel&gt;``. Returns [] when there are no pages.&quot;&quot;&quot;
+    if not pages:
+        return []
+    lines = [&#x27;## Manual documentation&#x27;, &#x27;&#x27;]
+    _manual_bullets(_manual_tree(pages), lines)
+    lines.append(&#x27;&#x27;)
+    return lines</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_index-529">render_index:532</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_index <a id="fn-render_index-529"></a></h3>
+<p><em>kodama_docs/markdown.py:529-548</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>finfos</code></td><td></td></tr>
+<tr><td><code>output_root</code></td><td></td></tr>
+<tr><td><code>diag</code></td><td></td></tr>
+<tr><td><code>astatus</code></td><td></td></tr>
+<tr><td><code>rs</code></td><td></td></tr>
+<tr><td><code>manual_pages</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="markdown.py.html#fn-_manual_section-515">_manual_section</a>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">lines.append</span>
+</li>
+<li><a href="markdown.py.html#fn-enc_path-12">enc_path</a>
+</li>
+<li><span style="color:#e67e22">finfo.get</span>
+</li>
+<li><a href="markdown.py.html#fn-_analysis_summary-445">_analysis_summary</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_index(finfos, output_root: str, diag=None, astatus=None,
+                 rs=None, manual_pages=None) -&gt; str:
+    lines = [&#x27;# Documentation index&#x27;, &#x27;&#x27;]
+    lines += _manual_section(manual_pages)
+    lines += [f&#x27;{len(finfos)} files documented.&#x27;, &#x27;&#x27;,
+              &#x27;| File | Lines | Functions | Variables |&#x27;,
+              &#x27;| --- | --- | --- | --- |&#x27;]
+    for finfo in finfos:
+        rel = finfo[&#x27;relpath&#x27;]
+        lines.append(
+            f&quot;| [{rel}]({enc_path(&#x27;files/&#x27; + rel + &#x27;.md&#x27;)}) &quot;
+            f&quot;| {finfo.get(&#x27;lines&#x27;, &#x27;?&#x27;)} &quot;
+            f&quot;| {len(finfo.get(&#x27;functions&#x27;) or [])} &quot;
+            f&quot;| {len(finfo.get(&#x27;file_vars&#x27;) or [])} |&quot;)
+    lines.append(&#x27;&#x27;)
+    lines += _analysis_summary(diag, astatus, rs)
+    lines.append(&#x27;---&#x27;)
+    lines.append(&#x27;_Generated by kodama-docs._&#x27;)
+    lines.append(&#x27;&#x27;)
+    return &#x27;\n&#x27;.join(lines)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:140</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_manual.py.html">tests/test_manual.py</a>
+<ul>
+<li><a href="../tests/test_manual.py.html#fn-test_index_section0_above_generated-117">test_index_section0_above_generated:121</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_index_section0_above_generated-117">test_index_section0_above_generated:129</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_index_manual_nested_bullets-132">test_index_manual_nested_bullets:143</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_index_manual_spaces_encoded-158">test_index_manual_spaces_encoded:164</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>write_md <a id="fn-write_md-551"></a></h3>
+<p><em>kodama_docs/markdown.py:551-556</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>text</code></td><td></td></tr>
+<tr><td><code>output_root</code></td><td></td></tr>
+<tr><td><code>rel</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.join
+</li>
+<li>os.makedirs
+</li>
+<li>os.path.dirname
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">fh.write</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def write_md(text: str, output_root: str, rel: str):
+    path = os.path.join(output_root, &#x27;files&#x27;, rel + &#x27;.md&#x27;)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        fh.write(text)
+    return path</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:138</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>UNRESOLVED_COLOR</code></td><td>34</td><td>string</td><td>Unresolved references (resolution_success == false) are highlighted with this color so the user can spot them at a glance (orange, per reque …</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 4: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 5: import of <span style="color:#e67e22">re</span> — no matching file in the project
+</li>
+<li>line 6: import of <span style="color:#e67e22">urllib.parse</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

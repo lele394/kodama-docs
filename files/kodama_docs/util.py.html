@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/util.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/util.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-set_log_sink-11">set_log_sink</a></td><td>11</td><td>fn</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-log-17">log</a></td><td>17</td><td>msg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-fence_lang-38">fence_lang</a></td><td>38</td><td>relpath</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-read_env_file-46">read_env_file</a></td><td>46</td><td>path</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-sanitize_id-60">sanitize_id</a></td><td>60</td><td>idstr</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-trunc-65">trunc</a></td><td>65</td><td>s, n</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>set_log_sink <a id="fn-set_log_sink-11"></a></h3>
+<p><em>kodama_docs/util.py:11-14</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fn</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def set_log_sink(fn):
+    &quot;&quot;&quot;Route log() lines to fn(line) instead of printing (None = print).&quot;&quot;&quot;
+    global _sink
+    _sink = fn</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:163</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:301</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>log <a id="fn-log-17"></a></h3>
+<p><em>kodama_docs/util.py:17-23</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>msg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="util.py.html#variables">_print_lock</a>
+</li>
+<li><a href="util.py.html#variables">_sink</a>
+</li>
+<li>time.strftime
+</li>
+<li>print
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def log(msg: str) -&gt; None:
+    with _print_lock:
+        line = f&quot;[{time.strftime(&#x27;%H:%M:%S&#x27;)}] {msg}&quot;
+        if _sink is not None:
+            _sink(line)
+        else:
+            print(line, flush=True)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm.py.html">kodama_docs/llm.py</a>
+<ul>
+<li><a href="llm.py.html#fn-chat-33">LLMClient.chat:60</a>
+</li>
+</ul>
+</li>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:93</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:96</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:123</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:133</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:139</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:144</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:281</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:285</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:296</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:303</a>
+</li>
+</ul>
+</li>
+<li><a href="manual.py.html">kodama_docs/manual.py</a>
+<ul>
+<li><a href="manual.py.html#fn-copy_manual_docs-77">copy_manual_docs:84</a>
+</li>
+<li><a href="manual.py.html#fn-copy_manual_docs-77">copy_manual_docs:88</a>
+</li>
+<li><a href="manual.py.html#fn-copy_manual_docs-77">copy_manual_docs:97</a>
+</li>
+</ul>
+</li>
+<li><a href="outputs.py.html">kodama_docs/outputs.py</a>
+<ul>
+<li><a href="outputs.py.html#fn-purge_outputs-41">purge_outputs:50</a>
+</li>
+<li><a href="outputs.py.html#fn-write_doc_cache-94">write_doc_cache:100</a>
+</li>
+<li><a href="outputs.py.html#fn-check_doc_cache-103">check_doc_cache:116</a>
+</li>
+<li><a href="outputs.py.html#fn-check_doc_cache-103">check_doc_cache:119</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-analyze_files-67">analyze_files:93</a>
+</li>
+<li><a href="scan.py.html#fn-analyze_files-67">analyze_files:102</a>
+</li>
+<li><a href="scan.py.html#fn-save_diagnostics-109">save_diagnostics:153</a>
+</li>
+<li><a href="scan.py.html#fn-save_symbols-161">save_symbols:170</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:284</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:291</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:295</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:298</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:307</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:312</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:318</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:321</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:323</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:326</a>
+</li>
+</ul>
+</li>
+<li><a href="static_site.py.html">kodama_docs/static_site.py</a>
+<ul>
+<li><a href="static_site.py.html#fn-build-249">build:303</a>
+</li>
+<li><a href="static_site.py.html#fn-build-249">build:316</a>
+</li>
+<li><a href="static_site.py.html#fn-build-249">build:389</a>
+</li>
+<li><a href="static_site.py.html#fn-build-249">build:390</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:148</a>
+</li>
+<li><a href="../main.py.html#fn-render_all-108">render_all:163</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:221</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:229</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:233</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:245</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:247</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:250</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:292</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:294</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:297</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:299</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:310</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:324</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:328</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:336</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:347</a>
+</li>
+<li><a href="../main.py.html#fn-main-166">main:356</a>
+</li>
+<li><a href="../main.py.html">top-level:363</a>
+</li>
+<li><a href="../main.py.html">top-level:364</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>fence_lang <a id="fn-fence_lang-38"></a></h3>
+<p><em>kodama_docs/util.py:38-43</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>relpath</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="util.py.html#variables">_FENCE_ALIASES</a>
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li><span style="color:#e67e22">?.lstrip</span>
+</li>
+<li>os.path.splitext
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">_FENCE_ALIASES.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def fence_lang(relpath: str) -&gt; str:
+    &quot;&quot;&quot;Code-fence language label for a file path (&#x27;lua&#x27;, &#x27;py&#x27;, ...).&quot;&quot;&quot;
+    ext = os.path.splitext(str(relpath))[1].lower().lstrip(&#x27;.&#x27;)
+    if not ext:
+        return &#x27;text&#x27;
+    return _FENCE_ALIASES.get(ext, ext)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="context.py.html">kodama_docs/context.py</a>
+<ul>
+<li><a href="context.py.html#fn-fn_context_text-53">fn_context_text:79</a>
+</li>
+</ul>
+</li>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:68</a>
+</li>
+</ul>
+</li>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:392</a>
+</li>
+</ul>
+</li>
+<li><a href="prompt_templates.py.html">kodama_docs/prompt_templates.py</a>
+<ul>
+<li><a href="prompt_templates.py.html#fn-prompt_fields-49">prompt_fields:69</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>read_env_file <a id="fn-read_env_file-46"></a></h3>
+<p><em>kodama_docs/util.py:46-57</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>open
+</li>
+<li><span style="color:#e67e22">line.strip</span>
+</li>
+<li><span style="color:#e67e22">line.startswith</span>
+</li>
+<li><span style="color:#e67e22">line.split</span>
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><span style="color:#e67e22">k.strip</span>
+</li>
+<li><span style="color:#e67e22">v.strip</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def read_env_file(path: str) -&gt; dict:
+    &quot;&quot;&quot;Parse a small .env file (KEY=value lines, # comments) into a dict
+    with lowercased keys. Values may be quoted.&quot;&quot;&quot;
+    vals = {}
+    with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        for line in fh:
+            line = line.strip()
+            if not line or line.startswith(&#x27;#&#x27;) or &#x27;=&#x27; not in line:
+                continue
+            k, v = line.split(&#x27;=&#x27;, 1)
+            vals[k.strip().lower()] = v.strip().strip(&#x27;&quot;&#x27;).strip(&quot;&#x27;&quot;)
+    return vals</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="config.py.html">kodama_docs/config.py</a>
+<ul>
+<li><a href="config.py.html#fn-load_config-9">load_config:29</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>sanitize_id <a id="fn-sanitize_id-60"></a></h3>
+<p><em>kodama_docs/util.py:60-62</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>idstr</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>re.sub
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def sanitize_id(idstr: str) -&gt; str:
+    &quot;&quot;&quot;Filesystem-safe form of a symbol id (for intermediate file names).&quot;&quot;&quot;
+    return re.sub(r&#x27;[^A-Za-z0-9._@-]&#x27;, &#x27;_&#x27;, idstr)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-_fn_anchor-43">_fn_anchor:44</a>
+</li>
+<li><a href="markdown.py.html#fn-callgraph_section-106">callgraph_section:122</a>
+</li>
+<li><a href="markdown.py.html#fn-ref_line-170">ref_line:190</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:409</a>
+</li>
+</ul>
+</li>
+<li><a href="records.py.html">kodama_docs/records.py</a>
+<ul>
+<li><a href="records.py.html#fn-record_path-16">record_path:20</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>trunc <a id="fn-trunc-65"></a></h3>
+<p><em>kodama_docs/util.py:65-67</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>s</code></td><td></td></tr>
+<tr><td><code>n</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>str
+</li>
+<li>len
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def trunc(s, n: int) -&gt; str:
+    s = str(s or &#x27;&#x27;)
+    return s if len(s) &lt;= n else s[:n] + &#x27; …&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="context.py.html">kodama_docs/context.py</a>
+<ul>
+<li><a href="context.py.html#fn-var_context_text-84">var_context_text:93</a>
+</li>
+<li><a href="context.py.html#fn-summary_context_text-97">summary_context_text:113</a>
+</li>
+</ul>
+</li>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:302</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:410</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:430</a>
+</li>
+<li><a href="markdown.py.html#fn-render_file_md-272">render_file_md:431</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>_print_lock</code></td><td>7</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_sink</code></td><td>8</td><td>expr</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_FENCE_ALIASES</code></td><td>29</td><td>table</td><td>: Extensions whose highlight.js language differs from the extension itself. : The vendored bundle has no CUDA grammar, so .cu/.cuh render as …</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 2: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 3: import of <span style="color:#e67e22">re</span> — no matching file in the project
+</li>
+<li>line 4: import of <span style="color:#e67e22">threading</span> — no matching file in the project
+</li>
+<li>line 5: import of <span style="color:#e67e22">time</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/tasks.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/tasks.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-task_fp-20">task_fp</a></td><td>20</td><td>parts</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-settings_fp-29">settings_fp</a></td><td>29</td><td>cfg, kind</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-function_fp-53">function_fp</a></td><td>53</td><td>rel, fn, calls_in, calls_out, settings, reads</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-variable_fp-63">variable_fp</a></td><td>63</td><td>rel, v, settings</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-summary_fp-70">summary_fp</a></td><td>70</td><td>rel, f, settings</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-chunk_fp-82">chunk_fp</a></td><td>82</td><td>rel, chunk_name, line, text, settings</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>task_fp <a id="fn-task_fp-20"></a></h3>
+<p><em>kodama_docs/tasks.py:20-26</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>parts</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>hashlib.sha256
+</li>
+<li><span style="color:#e67e22">?.encode</span>
+</li>
+<li><span style="color:#e67e22">h.update</span>
+</li>
+<li>repr
+</li>
+<li><span style="color:#e67e22">h.hexdigest</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def task_fp(*parts) -&gt; str:
+    &quot;&quot;&quot;sha256 over a deterministic serialization of the parts.&quot;&quot;&quot;
+    h = hashlib.sha256()
+    for p in parts:
+        h.update(repr(p).encode(&#x27;utf-8&#x27;))
+        h.update(b&#x27;\x00&#x27;)
+    return h.hexdigest()</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="tasks.py.html">kodama_docs/tasks.py</a>
+<ul>
+<li><a href="tasks.py.html#fn-settings_fp-29">settings_fp:42</a>
+</li>
+<li><a href="tasks.py.html#fn-function_fp-53">function_fp:54</a>
+</li>
+<li><a href="tasks.py.html#fn-variable_fp-63">variable_fp:64</a>
+</li>
+<li><a href="tasks.py.html#fn-summary_fp-70">summary_fp:78</a>
+</li>
+<li><a href="tasks.py.html#fn-chunk_fp-82">chunk_fp:83</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>settings_fp <a id="fn-settings_fp-29"></a></h3>
+<p><em>kodama_docs/tasks.py:29-50</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">cfg.get</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li>sorted
+</li>
+<li>str
+</li>
+<li><a href="tasks.py.html#fn-task_fp-20">task_fp</a>
+</li>
+<li><span style="color:#e67e22">llm.get</span>
+</li>
+<li><span style="color:#e67e22">doc.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def settings_fp(cfg: dict, kind: str) -&gt; str:
+    &quot;&quot;&quot;Fingerprint of the generation settings for one task kind:
+    model, base URL, prompt text and the context/generation knobs.&quot;&quot;&quot;
+    llm = cfg.get(&#x27;llm&#x27;) or {}
+    prompt_path = (cfg.get(&#x27;prompts&#x27;) or {}).get(kind)
+    try:
+        with open(prompt_path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            prompt = fh.read()
+    except (OSError, TypeError):
+        prompt = &#x27;&#x27;
+    doc = cfg.get(&#x27;documentation&#x27;) or {}
+    ctx = sorted((cfg.get(&#x27;context&#x27;) or {}).items(),
+                 key=lambda kv: str(kv[0]))
+    return task_fp(&#x27;settings&#x27;, kind,
+                   llm.get(&#x27;model&#x27;) or &#x27;&#x27;,
+                   llm.get(&#x27;base_url&#x27;) or &#x27;&#x27;,
+                   prompt,
+                   ctx,
+                   doc.get(&#x27;max_function_lines&#x27;),
+                   doc.get(&#x27;max_chunk_lines&#x27;),
+                   doc.get(&#x27;chunk_target_tokens&#x27;),
+                   doc.get(&#x27;chars_per_token&#x27;))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:55</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:100</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:101</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:102</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:103</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:206</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:207</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:208</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:69</a>
+</li>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:70</a>
+</li>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:71</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:76</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>function_fp <a id="fn-function_fp-53"></a></h3>
+<p><em>kodama_docs/tasks.py:53-60</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>fn</code></td><td></td></tr>
+<tr><td><code>calls_in</code></td><td></td></tr>
+<tr><td><code>calls_out</code></td><td></td></tr>
+<tr><td><code>settings</code></td><td></td></tr>
+<tr><td><code>reads</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="tasks.py.html#fn-task_fp-20">task_fp</a>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li>sorted
+</li>
+<li>bool
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def function_fp(rel, fn, calls_in, calls_out, settings, reads=()) -&gt; str:
+    return task_fp(&#x27;function&#x27;, rel,
+                   fn.get(&#x27;name&#x27;), fn.get(&#x27;line&#x27;),
+                   fn.get(&#x27;body&#x27;) or &#x27;&#x27;,
+                   sorted(fn.get(&#x27;params&#x27;) or []),
+                   bool(fn.get(&#x27;vararg&#x27;)),
+                   settings,
+                   sorted(calls_in), sorted(calls_out), sorted(reads))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:186</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:235</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:87</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:75</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>variable_fp <a id="fn-variable_fp-63"></a></h3>
+<p><em>kodama_docs/tasks.py:63-67</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>v</code></td><td></td></tr>
+<tr><td><code>settings</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="tasks.py.html#fn-task_fp-20">task_fp</a>
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def variable_fp(rel, v, settings) -&gt; str:
+    return task_fp(&#x27;variable&#x27;, rel,
+                   v.get(&#x27;name&#x27;), v.get(&#x27;line&#x27;),
+                   v.get(&#x27;init&#x27;), v.get(&#x27;module&#x27;), v.get(&#x27;value&#x27;),
+                   settings)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:230</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:242</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:97</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>summary_fp <a id="fn-summary_fp-70"></a></h3>
+<p><em>kodama_docs/tasks.py:70-79</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>f</code></td><td></td></tr>
+<tr><td><code>settings</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+<li><span style="color:#e67e22">i.get</span>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li><a href="tasks.py.html#fn-task_fp-20">task_fp</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def summary_fp(rel, f, settings) -&gt; str:
+    fns = sorted((fn.get(&#x27;qualified&#x27;) or fn.get(&#x27;name&#x27;), fn.get(&#x27;line&#x27;))
+                 for fn in (f.get(&#x27;functions&#x27;) or []))
+    vars_ = sorted((v.get(&#x27;name&#x27;), v.get(&#x27;line&#x27;))
+                   for v in (f.get(&#x27;file_vars&#x27;) or []))
+    imports = sorted(i.get(&#x27;module&#x27;) or &#x27;&#x27; for i in (f.get(&#x27;imports&#x27;) or []))
+    classes = sorted((c.get(&#x27;qualified&#x27;) or c.get(&#x27;name&#x27;))
+                     for c in (f.get(&#x27;classes&#x27;) or []))
+    return task_fp(&#x27;summary&#x27;, rel, f.get(&#x27;lines&#x27;), fns, vars_, imports,
+                   classes, settings)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:254</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:247</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:103</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>chunk_fp <a id="fn-chunk_fp-82"></a></h3>
+<p><em>kodama_docs/tasks.py:82-83</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rel</code></td><td></td></tr>
+<tr><td><code>chunk_name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+<tr><td><code>text</code></td><td></td></tr>
+<tr><td><code>settings</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="tasks.py.html#fn-task_fp-20">task_fp</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def chunk_fp(rel, chunk_name, line, text, settings) -&gt; str:
+    return task_fp(&#x27;chunk&#x27;, rel, chunk_name, line, text, settings)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:56</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 17: import of <span style="color:#e67e22">hashlib</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

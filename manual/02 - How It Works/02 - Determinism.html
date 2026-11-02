@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Determinism</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Determinism</h1>
+<p>The parts of kodama-docs that you can verify — what exists, what calls what, how things are linked — are computed without any LLM. This is a design rule, not an accident: the model may add prose, but it may never change the structure.</p>
+<h2>What is deterministic</h2>
+<ul>
+<li><strong>Extraction</strong> — the set of files, functions, variables, calls, and imports comes from the backend parsers reading the source text alone.
+</li>
+<li><strong>The graph</strong> — the <code>CONTAINS</code>, <code>CALLS</code>, <code>IMPORTS</code>, and <code>READS</code> edges, and their resolved/unresolved status, come from the records and the resolvers.
+</li>
+<li><strong>Rendering</strong> — page layout, anchors, cross-links, and call/import context are built from the graph.
+</li>
+</ul>
+<p>Given the same inputs, the same config, and the same backend versions, these produce the same output.</p>
+<h2>What the LLM adds (and nothing else)</h2>
+<p>Only the human explanations — function, variable, and file summaries — come from an LLM agent. They are stored separately as &quot;records&quot; and can be regenerated, deleted, or stubbed without touching the structure. See <a href="05%20-%20LLM%20Phase.html">LLM Phase</a>.</p>
+<h2>Proving it</h2>
+<p>Run with <code>--no-llm</code> and the whole site still renders: every page, link, graph, and diagnostic is present, and only the prose is a placeholder.</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --config settings.yaml --no-llm</code></pre>
+</details>
+<p>That placeholder prose is marked as a <strong>stub</strong> in the record cache; a later full run replaces stubs but reuses any already-good prose. See <a href="08%20-%20Caching.html">Caching</a>.</p>
+</main>
+</div>
+</body>
+</html>

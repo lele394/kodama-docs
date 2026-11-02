@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caching</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Caching</h1>
+<p>Re-running is cheap. Three independent layers make sure you only pay (in LLM calls and CPU) for what actually changed, and the layers stack.</p>
+<h2>The three layers</h2>
+<h3>1. File-level cache — <code>&lt;output_dir&gt;/.doc_cache</code></h3>
+<p>A small JSON file (<code>kodama_docs/doc_cache@1</code>) mapping every documented file&#x27;s relpath to its content md5. On the next run, <code>check_doc_cache()</code> compares:</p>
+<ul>
+<li><strong>changed</strong> (md5 differs) and <strong>stale</strong> (in the cache but the file no longer exists) → their LLM records are deleted and the files are re-analyzed from scratch;
+</li>
+<li><strong>unchanged</strong> files → their records are reused as-is.
+</li>
+</ul>
+<p>This is the coarse layer: it decides which files still need analysis and which records stay valid. The cache map is only rewritten when the run completes with <strong>no failed LLM tasks</strong> — a run with failures leaves the map untouched, so the next run retries exactly those files while reusing everything else.</p>
+<h3>2. Per-task records — <code>&lt;data_dir&gt;/{functions,variables,summaries,chunks}/</code></h3>
+<p>One JSON file per prose task, named <code>{kind}_{md5(relpath)[:10]}_{name}_{line}.json</code>. Every record stores a <strong>fingerprint</strong> (schema <code>kodama_docs/record@1</code>) computed from <em>everything</em> that could change the prose:</p>
+<ul>
+<li>the symbol&#x27;s name, line, body (or initializer), parameters;
+</li>
+<li>its graph neighbors (callers and callees for functions);
+</li>
+<li>the model, base URL, prompt file <em>content</em>, and the relevant <code>context.*</code> / <code>documentation.*</code> settings.
+</li>
+</ul>
+<p>A record is used only when its stored fingerprint matches the freshly computed one. Change the function, change who calls it, change the model or the prompt — the fingerprint differs, the record is a miss, and the task is regenerated. This is what makes &quot;edit one function, re-run, only that function&#x27;s page changes&quot; work.</p>
+<h3>3. Analysis cache — <code>&lt;data_dir&gt;/symbols.json</code></h3>
+<p>The extraction itself (tree-sitter parse → records → graph input) is cached per file, stamped with each backend&#x27;s <code>name@version</code> so a backend upgrade invalidates it. <code>--fresh</code> bypasses this layer and re-extracts everything (it still honors the record and doc caches).</p>
+<h2>How the layers interact</h2>
+<table>
+<thead><tr>
+<th>You …</th>
+<th>File cache</th>
+<th>Records</th>
+<th>symbols.json</th>
+</tr></thead>
+<tbody>
+<tr><td>re-run with nothing changed</td><td>hit — no re-analysis</td><td>all reuse (0 LLM calls)</td><td>hit</td></tr>
+<tr><td>edit one function</td><td>changed file → its records deleted → <strong>re-analyzed</strong></td><td>that file&#x27;s records miss → regenerated</td><td>that file re-extracted</td></tr>
+<tr><td>change model / prompt / <code>context.*</code></td><td>unchanged → no re-analysis</td><td><strong>all miss</strong> (settings are in the fingerprint) → regenerated</td><td>hit (settings don&#x27;t stamp it)</td></tr>
+<tr><td>replace the backend</td><td>unchanged</td><td>unchanged (fingerprint does not include the backend)</td><td><strong>miss</strong> (backend id changed) → re-extract; prose may then differ with the new records</td></tr>
+<tr><td><code>--fresh</code></td><td>unchanged</td><td>unchanged</td><td>bypassed → full re-extract</td></tr>
+<tr><td><code>skip_existing: false</code></td><td>unchanged</td><td><strong>never loaded</strong> → every prose task re-runs</td><td>unchanged</td></tr>
+<tr><td><code>--regenerate</code></td><td>deleted</td><td>deleted</td><td>deleted — output <em>and</em> data dirs wiped, then a full fresh run</td></tr>
+<tr><td><code>--purge</code></td><td>deleted</td><td>deleted</td><td>deleted — and the command exits (no run)</td></tr>
+</tbody>
+</table>
+<h2><code>--no-llm</code> and stub records</h2>
+<p><code>--no-llm</code> produces <strong>stub records</strong>: schema-conformant placeholders (<code>stubbed: true</code>) written so later full runs have <em>something</em> to show, and no network is touched. A full run treats a stub as a cache miss — real prose always overwrites it — while another <code>--no-llm</code> run happily reuses it. That is why you can preview a whole documentation set offline and then fill in the real prose without deleting anything.</p>
+<h2>What never is cached</h2>
+<p>The graph build and the markdown rendering are recomputed on every run from the current records; they are cheap and must always reflect the current set of files. The doc cache, records, and symbols cache together are the only state that carries between runs.</p>
+<p>Related: <a href="02%20-%20Determinism.html">Determinism</a>, <a href="05%20-%20LLM%20Phase.html">LLM Phase</a>, <a href="../04%20-%20Reference/02%20-%20Output%20and%20Data%20Formats.html">Output and Data Formats</a>.</p>
+</main>
+</div>
+</body>
+</html>

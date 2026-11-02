@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Glossary</h1>
+<p>Terms used throughout the manual, in the sense the code uses them.</p>
+<table>
+<thead><tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><strong>Backend</strong></td><td>A language extractor. A backend claims a source extension, provides <code>extract(source, relpath)</code>, and (for some languages) a builtin-name set. Backends register into a central registry and report <code>ready</code> / <code>unavailable</code> / <code>conflict</code> / <code>invalid</code>. See <a href="../03%20-%20Components/01%20-%20Backends.html">Backends</a>.</td></tr>
+<tr><td><strong>Built-in (builtin)</strong></td><td>A name from the caller language&#x27;s standard set (<code>print</code>, <code>pairs</code>, <code>os.path</code>, …). Calls to these are marked <code>builtin</code> — recognized, but not a project symbol, so they render as orange with no link.</td></tr>
+<tr><td><strong>Candidate</strong></td><td>One of several project definitions matching an ambiguous name. Ambiguous call sites record their <code>candidates</code> instead of linking to any one.</td></tr>
+<tr><td><strong>Chunk-and-merge</strong></td><td>For functions longer than <code>documentation.max_function_lines</code>, the body is split into chunks, each summarized separately, and the summaries are merged into a single description. See <a href="../02%20-%20How%20It%20Works/06%20-%20Chunk%20and%20Merge.html">Chunk and Merge</a>.</td></tr>
+<tr><td><strong>Dirty</strong></td><td>A file whose md5 changed since the last written <code>.doc_cache</code>. Its cached records are deleted and it is re-run.</td></tr>
+<tr><td><strong>Edge</strong></td><td>A directed relationship in the <a href="01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>: <code>CONTAINS</code>, <code>CALLS</code>, <code>IMPORTS</code>, or <code>READS</code>.</td></tr>
+<tr><td><strong>External</strong></td><td>A reference that is outside the documented project (third-party or system). Kept as a synthetic node so the docs can say &quot;unresolved&quot; rather than guess.</td></tr>
+<tr><td><strong>Fingerprint</strong></td><td>A hash used as a cache key. Record fingerprints fold in the symbol&#x27;s source, its callers/callees, shaping settings, and the model; the scan fingerprint and the <code>.doc_cache</code> md5s are separate, coarser keys.</td></tr>
+<tr><td><strong>Inferred</strong></td><td>A reference to a name defined exactly once project-wide but not import-bound. Kept and shown, but labeled <code>(inferred)</code> so the docs stay honest that it is a guess.</td></tr>
+<tr><td><strong>Node</strong></td><td>A symbol or file in the <a href="01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>. Kinds: <code>file</code>, <code>function</code>, <code>variable</code>, <code>class</code>, <code>module</code>, <code>builtin</code>, <code>external</code>.</td></tr>
+<tr><td><strong>Placeholder / stub</strong></td><td>The <code>--no-llm</code> prose (&quot;No summary generated (<code>--no-llm</code>)&quot;) written when the model is skipped. Records marked <code>stubbed</code> are treated as cache misses by a later full run.</td></tr>
+<tr><td><strong>Prose</strong></td><td>The human-readable description text generated by the LLM for a function, variable, or file summary — as opposed to the deterministic structure (links, tables, code) the pipeline always produces.</td></tr>
+<tr><td><strong>Record</strong></td><td>One generated LLM result stored under <code>data/{functions,variables,summaries,chunks}/</code>, with its <code>fingerprint</code> and optional <code>stubbed</code> flag.</td></tr>
+<tr><td><strong>Resolution</strong></td><td>Deciding, for a call/import, which definition it points to. Outcomes: <code>resolved</code>, <code>inferred</code>, <code>builtin</code>, <code>external</code>, or <strong>ambiguous</strong> (no edge). See <a href="01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>.</td></tr>
+<tr><td><strong>Schema</strong></td><td>The per-kind JSON shape the LLM must return (and the validator enforces). Embedded verbatim in the prompt, so the model and the validator can&#x27;t disagree. See <a href="../04%20-%20Reference/03%20-%20Prompts.html">Prompts</a>.</td></tr>
+<tr><td><strong>Skip</strong></td><td>Reusing a cached record for a symbol whose fingerprint matches, so no network call is made. Reported as <code>skipped=N</code> in the phase log.</td></tr>
+<tr><td><strong>Stale</strong></td><td>A file present in the <code>.doc_cache</code> but no longer in the scan (removed since). Its cached records are deleted.</td></tr>
+<tr><td><strong>Status (CALLS edge)</strong></td><td>One of <code>resolved</code> / <code>inferred</code> / <code>builtin</code> / <code>external</code>. See <a href="01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>.</td></tr>
+<tr><td><strong>Stub / <code>--no-llm</code></strong></td><td>Run the full pipeline without any LLM calls: real structure and links, placeholder prose.</td></tr>
+<tr><td><strong>Symbol</strong></td><td>A function, variable, or class extracted from a source file by a backend.</td></tr>
+<tr><td><strong>TUI</strong></td><td>The Rich terminal panel (per-agent rows, per-kind totals, log tail) shown during the LLM phase when stdout is a TTY.</td></tr>
+<tr><td><strong>Work item / job</strong></td><td>One LLM task (a function, variable, summary, or chunk) in the phase&#x27;s queue.</td></tr>
+</tbody>
+</table>
+<h2>Phases, in order</h2>
+<ol>
+<li><strong>Scan + extract</strong> — walk the tree, run the backends, cache <code>symbols.json</code>.
+</li>
+<li><strong>Graph</strong> — build the resolution graph and diagnostics.
+</li>
+<li><strong>LLM phase</strong> — generate (or reuse) prose per symbol, respecting the record cache.
+</li>
+<li><strong>Render</strong> — emit <code>index.md</code>, per-file pages, and (optionally) the manual and meta copies.
+</li>
+</ol>
+<p>Related: <a href="01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>, <a href="../02%20-%20How%20It%20Works/01%20-%20Overview.html">Overview</a>.</p>
+</main>
+</div>
+</body>
+</html>

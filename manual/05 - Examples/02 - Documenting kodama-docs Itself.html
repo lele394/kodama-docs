@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documenting kodama-docs itself</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Documenting kodama-docs itself</h1>
+<p>The repository ships a &quot;dogfooding&quot; setup: <code>configs/self.yaml</code> points kodama-docs at its own Python sources and embeds the hand-written <code>manual_doc/</code> (the manual you are reading) as a section. The generated result is the <code>doc_self/</code> tree, which is git-ignored; build it locally. This page shows how that works and what to look for.</p>
+<h2>The config — <code>configs/self.yaml</code></h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-yaml">project:
+  source_dir: &quot;..&quot;            # the repo root (the config lives in configs/)
+  output_dir: &quot;../doc_self&quot;   # rendered docs
+  data_dir: &quot;../data_self&quot;    # analysis cache + records
+  source_extensions: [&quot;.py&quot;]  # (inert key — see below)
+  exclude:
+    - &quot;.git&quot;
+    - &quot;.venv&quot;
+    - &quot;data&quot;
+    - &quot;data_self&quot;
+    - &quot;doc&quot;
+    - &quot;doc_self&quot;
+    - &quot;test_out&quot;
+    - &quot;manual_doc&quot;            # the manual is data, not code — never scan it
+    - &quot;backends&quot;              # backends are a package, excluded in this config
+    - &quot;test_codebases&quot;        # sample corpora, not the project itself
+  copy_meta: true             # emit meta/graph.json for the web graph view
+  manual_doc: &quot;../manual_doc&quot; # embed this manual as section 0
+
+llm:
+  base_url: env
+  api_key: env
+  model: &quot;your-model&quot;
+  # …
+concurrency: 4                # more agents than the default 2 (bigger project)</code></pre>
+</details>
+<blockquote><p><code>source_extensions</code> is one of the <a href="../04%20-%20Reference/01%20-%20Config%20Reference.html">keys the code does not consume</a> — the scan routes by the extensions the backends claim. Listing <code>.py</code> here is harmless; it is the <em>Python backend</em> being <code>ready</code> that actually makes <code>.py</code> files get extracted.</p></blockquote>
+<h2>Running it</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash"># structure-only pass (what doc_self/ currently is — placeholder prose)
+python main.py --config configs/self.yaml --no-llm
+
+# full pass (real prose)
+python main.py --config configs/self.yaml
+
+# structure + self-contained static site in doc_self/site/
+python main.py --config configs/self.yaml --no-llm --static</code></pre>
+</details>
+<h2>Reading <code>doc_self/</code></h2>
+<ul>
+<li><strong><code>doc_self/index.md</code></strong> — starts with a <strong>&quot;Manual documentation&quot;</strong> bullet list, nested one level per folder, that links every page of <code>manual_doc/</code> (because <code>manual_doc</code> is set), then the file count, the per-file table, and the Analysis summary. The manual pages are links to <code>manual/…</code>, which is the verbatim copy of this folder.
+</li>
+<li><strong><code>doc_self/files/kodama_docs/llm.py.md</code></strong> — a generated page for one of the source files. Even in a <code>--no-llm</code> run you can see the full deterministic structure: the function table, each function&#x27;s parameters, its <em>References</em> (with orange spans for things like <code>cfg.get</code> that can&#x27;t be resolved to a project symbol), and the exact source body. A full run replaces the &quot;No description generated (<code>--no-llm</code>)&quot; placeholders with real prose.
+</li>
+<li><strong><code>doc_self/meta/graph.json</code></strong> — the call/reference graph of the whole project; <code>--serve</code> renders it at <code>/graph</code>.
+</li>
+<li><strong><code>doc_self/manual/</code></strong> — the manual, copied in so its relative links and assets resolve under the docs root.
+</li>
+</ul>
+<h2>Why this is a good example</h2>
+<ul>
+<li>It exercises the <strong>Python backend</strong> on a real, non-trivial codebase (not just the bundled fixture).
+</li>
+<li>It shows the <strong>manual embedding</strong> feature end to end: <code>manual_doc/</code> → copied to <code>doc_self/manual/</code> → surfaced as the index&#x27;s first table and the web sidebar&#x27;s top group.
+</li>
+<li>It demonstrates that the tool can document <strong>itself</strong>, including its resolver, LLM client, static-site builder and tests — so the manual&#x27;s claims about the pipeline are directly verifiable against the generated pages.
+</li>
+<li>The <code>exclude</code> list is the working pattern for keeping generated artifacts (<code>doc_self</code>, <code>data_self</code>), third-party code (<code>.venv</code>), and the manual itself out of the analysis.
+</li>
+</ul>
+<p>Related: <a href="01%20-%20Documenting%20a%20Lua%20Project.html">Documenting a Lua Project</a>, <a href="../03%20-%20Components/03%20-%20Python%20Backend.html">Python Backend</a>, <a href="../02%20-%20How%20It%20Works/07%20-%20Rendering.html">Rendering</a>.</p>
+</main>
+</div>
+</body>
+</html>

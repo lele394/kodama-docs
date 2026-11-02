@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/llm.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/llm.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-__init__-21">LLMClient.<em>_init_</em></a></td><td>21</td><td>self, cfg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-chat-33">LLMClient.chat</a></td><td>33</td><td>self, system, user</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-generate-81">generate</a></td><td>81</td><td>client, kind, base_prompt, user_ctx, max_invalid_retries, no_llm</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>LLMClient.<em>_init_</em> <a id="fn-__init__-21"></a></h3>
+<p><em>kodama_docs/llm.py:21-31</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>cfg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.rstrip</span>
+</li>
+<li><span style="color:#e67e22">cfg.get</span>
+</li>
+<li>str
+</li>
+<li>SystemExit
+</li>
+<li>int
+</li>
+<li>float
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def __init__(self, cfg: dict):
+        self.base_url = str(cfg.get(&#x27;base_url&#x27;) or &#x27;&#x27;).rstrip(&#x27;/&#x27;)
+        self.api_key = str(cfg.get(&#x27;api_key&#x27;) or &#x27;&#x27;)
+        if not self.base_url or not self.api_key:
+            raise SystemExit(&#x27;llm: base_url/api_key are empty — create a &#x27;
+                             &#x27;.env with api_key/base_url, or use --no-llm&#x27;)
+        self.model = cfg[&#x27;model&#x27;]
+        self.max_retries = int(cfg.get(&#x27;max_retries&#x27;, 5))
+        self.temperature = float(cfg.get(&#x27;temperature&#x27;, 0.1))
+        self.max_tokens = int(cfg.get(&#x27;max_tokens&#x27;, 900))
+        self.timeout = int(cfg.get(&#x27;timeout&#x27;, 300))</code></pre>
+</details>
+<hr>
+<h3>LLMClient.chat <a id="fn-chat-33"></a></h3>
+<p><em>kodama_docs/llm.py:33-61</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>system</code></td><td></td></tr>
+<tr><td><code>user</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="llm.py.html#variables">USER_AGENT</a>
+</li>
+<li><span style="color:#e67e22">?.encode</span>
+</li>
+<li>json.dumps
+</li>
+<li>range
+</li>
+<li>urllib.request.Request
+</li>
+<li>urllib.request.urlopen
+</li>
+<li><span style="color:#e67e22">?.decode</span>
+</li>
+<li>json.loads
+</li>
+<li>read (inferred)
+</li>
+<li>log
+</li>
+<li><a href="llm.py.html#cls-LLMError-16">LLMError</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def chat(self, system: str, user: str) -&gt; str:
+        body = json.dumps({
+            &#x27;model&#x27;: self.model,
+            &#x27;temperature&#x27;: self.temperature,
+            &#x27;max_tokens&#x27;: self.max_tokens,
+            &#x27;messages&#x27;: [
+                {&#x27;role&#x27;: &#x27;system&#x27;, &#x27;content&#x27;: system},
+                {&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: user},
+            ],
+        }).encode(&#x27;utf-8&#x27;)
+        last_err = None
+        for attempt in range(1, self.max_retries + 1):
+            try:
+                req = urllib.request.Request(
+                    self.base_url + &#x27;/chat/completions&#x27;,
+                    data=body,
+                    headers={
+                        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+                        &#x27;Authorization&#x27;: &#x27;Bearer &#x27; + self.api_key,
+                        &#x27;User-Agent&#x27;: USER_AGENT,
+                    },
+                    method=&#x27;POST&#x27;)
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    data = json.loads(resp.read().decode(&#x27;utf-8&#x27;))
+                return data[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;]
+            except Exception as e:  # noqa: BLE001 - retried uniformly
+                last_err = e
+                log(f&#x27;    llm attempt {attempt}/{self.max_retries} failed: {e}&#x27;)
+        raise LLMError(&#x27;LLM call failed after retries: %r&#x27; % (last_err,))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm.py.html">kodama_docs/llm.py</a>
+<ul>
+<li><a href="llm.py.html#fn-generate-81">generate:102</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>generate <a id="fn-generate-81"></a></h3>
+<p><em>kodama_docs/llm.py:81-112</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>client</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+<tr><td><code>base_prompt</code></td><td></td></tr>
+<tr><td><code>user_ctx</code></td><td></td></tr>
+<tr><td><code>max_invalid_retries</code></td><td></td></tr>
+<tr><td><code>no_llm</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="llm.py.html#variables">NO_LLM_DESCRIPTION</a>
+</li>
+<li><a href="llm.py.html#variables">NO_LLM_PROSE</a>
+</li>
+<li><span style="color:#e67e22">NO_LLM_PROSE.get</span>
+</li>
+<li>dict
+</li>
+<li><span style="color:#e67e22">base_prompt.rstrip</span>
+</li>
+<li><a href="models.py.html#fn-schema_text-62">schema_text</a>
+</li>
+<li>range
+</li>
+<li>chat (inferred)
+</li>
+<li><a href="models.py.html#fn-extract_json_object-120">extract_json_object</a>
+</li>
+<li><a href="models.py.html#fn-validate-66">validate</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><a href="llm.py.html#cls-LLMError-16">LLMError</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def generate(client: LLMClient, kind: str, base_prompt: str, user_ctx: str,
+             max_invalid_retries: int = 2, no_llm: bool = False):
+    &quot;&quot;&quot;Ask the LLM for a JSON object of the given kind; validate; retry.
+
+    With no_llm=True the model call is skipped entirely and a per-kind stub
+    object is returned (no network, no retries).
+    &quot;&quot;&quot;
+    if no_llm:
+        return dict(NO_LLM_PROSE.get(kind, {&#x27;description&#x27;: NO_LLM_DESCRIPTION}))
+    system = (
+        base_prompt.rstrip()
+        + &#x27;\n\nReturn ONLY one JSON object, no markdown fences, matching this &#x27;
+          &#x27;schema exactly:\n&#x27; + schema_text(kind)
+        + &#x27;\n\nField values must be plain strings. Be concise and factual.&#x27;
+    )
+    errs_note = &#x27;&#x27;
+    for i in range(max_invalid_retries + 1):
+        user = user_ctx
+        if errs_note:
+            user += (&#x27;\n\nYour previous answer was INVALID: &#x27; + errs_note
+                     + &#x27;. Return corrected JSON only.&#x27;)
+        text = client.chat(system, user)
+        obj = extract_json_object(text)
+        if obj is None:
+            errs_note = &#x27;no JSON object found in response&#x27;
+            continue
+        errs = validate(kind, obj)
+        if not errs:
+            return obj
+        errs_note = &#x27;; &#x27;.join(errs[:4])
+    raise LLMError(&#x27;invalid JSON after %d retries: %s&#x27;
+                   % (max_invalid_retries, errs_note))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:69</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:193</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:216</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:237</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:246</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:261</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:270</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Classes <a id="classes"></a></h2>
+<p>Classes are structural symbols: constructor calls (<code>Name(...)</code>) that resolve here are linked from the caller&#x27;s References section.</p>
+<table>
+<thead><tr>
+<th>Class</th>
+<th>Line</th>
+<th>Developer comment</th>
+</tr></thead>
+<tbody>
+<tr><td><a id="cls-LLMError-16"><a href="#cls-LLMError-16">LLMError</a></a></td><td>16</td><td></td></tr>
+<tr><td><a id="cls-LLMClient-20"><a href="#cls-LLMClient-20">LLMClient</a></a></td><td>20</td><td></td></tr>
+</tbody>
+</table>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>USER_AGENT</code></td><td>12</td><td>expr</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>NO_LLM_DESCRIPTION</code></td><td>64</td><td>string</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>NO_LLM_SUMMARY</code></td><td>65</td><td>string</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>NO_LLM_PROSE</code></td><td>71</td><td>table</td><td>Per-kind placeholder prose for --no-llm runs: schema-consistent stubs so the whole document still renders (description/summary slots), with …</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 6: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 7: import of <span style="color:#e67e22">urllib.request</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Overview</h1>
+<p>kodama-docs turns a source tree into a documentation site in five stages. Only the last two can involve an LLM; the first three are pure code and are fully reproducible.</p>
+<h2>The pipeline</h2>
+<ul>
+<li><strong>Scan</strong> — walk <code>project.source_dir</code>, pick out the files a backend can parse, and read them. Excluded folders, unsupported extensions, and files over <code>project.max_file_bytes</code> are skipped (and reported).
+</li>
+<li><strong>Extract</strong> — for each file, the matching backend&#x27;s <code>extract(source, relpath)</code> produces a structured record of its functions, file-level variables, calls, and imports. See <a href="03%20-%20Extraction.html">Extraction</a>.
+</li>
+<li><strong>Graph</strong> — those records become a directed graph: files, symbols, and the <code>CONTAINS</code>, <code>CALLS</code>, <code>IMPORTS</code>, and <code>READS</code> relationships between them, each tagged with whether it resolved. See <a href="04%20-%20Graph.html">Graph</a>.
+</li>
+<li><strong>Prose</strong> <em>(optional)</em> — for every function, variable, and file summary, an LLM agent writes the human explanation. Skipped entirely with <code>--no-llm</code>. See <a href="05%20-%20LLM%20Phase.html">LLM Phase</a>.
+</li>
+<li><strong>Render</strong> — <code>index.md</code>, one page per file, the graph data, and diagnostics are written to <code>project.output_dir</code>. See <a href="07%20-%20Rendering.html">Rendering</a>.
+</li>
+</ul>
+<p>The stages run in that order; only the <strong>Prose</strong> stage can call an LLM.</p>
+<h2>The two-layer model</h2>
+<p>The tool is deliberately split in two:</p>
+<ul>
+<li>A <strong>deterministic core</strong> — backends, the graph, and rendering. Given the same inputs and the same backend versions, it always produces the same structure and the same links.
+</li>
+<li>An <strong>optional prose layer</strong> — the LLM phase, which only adds explanations on top of that structure and never changes it.
+</li>
+</ul>
+<p>This split is what makes the output trustworthy: the things you can verify (what exists, what calls what) never depend on a model, and the model is asked only to describe them. Details in <a href="02%20-%20Determinism.html">Determinism</a>.</p>
+<h2>A typical run</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --config settings.yaml            # full run (LLM included)
+python main.py --config settings.yaml --no-llm   # structure only, no LLM
+python main.py --config settings.yaml --serve    # browse the rendered docs</code></pre>
+</details>
+<p>The command-line verbs and flags are documented in <a href="../03%20-%20Components/06%20-%20CLI.html">CLI</a>.</p>
+</main>
+</div>
+</body>
+</html>

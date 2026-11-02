@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/records.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/records.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-record_path-16">record_path</a></td><td>16</td><td>data_dir, relpath, kind, name, line</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_read_record-24">_read_record</a></td><td>24</td><td>path</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-save_record-32">save_record</a></td><td>32</td><td>data_dir, relpath, kind, name, line, prose, fingerprint, symbol, stubbed</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-load_record-67">load_record</a></td><td>67</td><td>data_dir, relpath, kind, name, line, fingerprint, accept_stub</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-list_records-87">list_records</a></td><td>87</td><td>data_dir, kind</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-delete_records_for-105">delete_records_for</a></td><td>105</td><td>data_dir, relpaths</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>record_path <a id="fn-record_path-16"></a></h3>
+<p><em>kodama_docs/records.py:16-21</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>data_dir</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="records.py.html#variables">_SUBDIR</a>
+</li>
+<li><span style="color:#e67e22">?.hexdigest</span>
+</li>
+<li>hashlib.md5
+</li>
+<li><span style="color:#e67e22">relpath.encode</span>
+</li>
+<li><a href="util.py.html#fn-sanitize_id-60">sanitize_id</a>
+</li>
+<li>os.path.join
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def record_path(data_dir: str, relpath: str, kind: str, name: str,
+                line: int) -&gt; str:
+    sub = _SUBDIR[kind]
+    fhash = hashlib.md5(relpath.encode(&#x27;utf-8&#x27;)).hexdigest()[:10]
+    fname = f&#x27;{kind}_{fhash}_{sanitize_id(name)}_{line}.json&#x27;
+    return os.path.join(data_dir, sub, fname)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="records.py.html">kodama_docs/records.py</a>
+<ul>
+<li><a href="records.py.html#fn-save_record-32">save_record:42</a>
+</li>
+<li><a href="records.py.html#fn-load_record-67">load_record:72</a>
+</li>
+<li><a href="records.py.html#fn-delete_records_for-105">delete_records_for:112</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_no_llm_stub_never_overwrites_real_prose-52">test_no_llm_stub_never_overwrites_real_prose:60</a>
+</li>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:83</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_read_record <a id="fn-_read_record-24"></a></h3>
+<p><em>kodama_docs/records.py:24-29</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>open
+</li>
+<li>json.load
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _read_record(path):
+    try:
+        with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            return json.load(fh)
+    except (ValueError, OSError):
+        return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="records.py.html">kodama_docs/records.py</a>
+<ul>
+<li><a href="records.py.html#fn-save_record-32">save_record:44</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>save_record <a id="fn-save_record-32"></a></h3>
+<p><em>kodama_docs/records.py:32-64</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>data_dir</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+<tr><td><code>prose</code></td><td></td></tr>
+<tr><td><code>fingerprint</code></td><td></td></tr>
+<tr><td><code>symbol</code></td><td></td></tr>
+<tr><td><code>stubbed</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="records.py.html#fn-record_path-16">record_path</a>
+</li>
+<li><a href="records.py.html#fn-_read_record-24">_read_record</a>
+</li>
+<li><span style="color:#e67e22">existing.get</span>
+</li>
+<li>os.makedirs
+</li>
+<li>os.path.dirname
+</li>
+<li>open
+</li>
+<li>json.dump
+</li>
+<li>os.replace
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def save_record(data_dir: str, relpath: str, kind: str, name: str, line: int,
+                prose: dict, fingerprint: str, symbol: dict,
+                stubbed: bool = False):
+    &quot;&quot;&quot;Save one record. `stubbed=True` marks it as `--no-llm` placeholder
+    prose: full-mode runs treat such records as cache misses (and overwrite
+    them), --no-llm runs may reuse them.
+
+    A stub never overwrites real prose. ``--no-llm`` is a diagnostic mode;
+    losing paid/generated records because the prompt or a setting changed
+    would be surprising and irreversible.&quot;&quot;&quot;
+    path = record_path(data_dir, relpath, kind, name, line)
+    if stubbed:
+        existing = _read_record(path)
+        if existing is not None and not existing.get(&#x27;stubbed&#x27;):
+            return path
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    rec = {
+        &#x27;schema&#x27;: &#x27;kodama_docs/record@1&#x27;,
+        &#x27;kind&#x27;: kind,
+        &#x27;file&#x27;: relpath,
+        &#x27;name&#x27;: name,
+        &#x27;line&#x27;: line,
+        &#x27;symbol&#x27;: symbol,
+        &#x27;prose&#x27;: prose,
+        &#x27;fingerprint&#x27;: fingerprint,
+    }
+    if stubbed:
+        rec[&#x27;stubbed&#x27;] = True
+    tmp = path + &#x27;.tmp&#x27;
+    with open(tmp, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        json.dump(rec, fh, ensure_ascii=False, indent=1)
+    os.replace(tmp, path)
+    return path</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:71</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:222</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:248</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:272</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_no_llm_stub_never_overwrites_real_prose-52">test_no_llm_stub_never_overwrites_real_prose:55</a>
+</li>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_no_llm_stub_never_overwrites_real_prose-52">test_no_llm_stub_never_overwrites_real_prose:57</a>
+</li>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:77</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>load_record <a id="fn-load_record-67"></a></h3>
+<p><em>kodama_docs/records.py:67-84</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>data_dir</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+<tr><td><code>fingerprint</code></td><td></td></tr>
+<tr><td><code>accept_stub</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="records.py.html#fn-record_path-16">record_path</a>
+</li>
+<li>os.path.exists
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">rec.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def load_record(data_dir: str, relpath: str, kind: str, name: str,
+                line: int, fingerprint: str, accept_stub: bool = False):
+    &quot;&quot;&quot;Load a cached record&#x27;s prose, or None on miss. Records flagged
+    `stubbed` (i.e. `--no-llm` placeholders) count as a miss unless
+    `accept_stub=True`, so a full run regenerates real prose over them.&quot;&quot;&quot;
+    path = record_path(data_dir, relpath, kind, name, line)
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            rec = json.load(fh)
+    except (ValueError, OSError):
+        return None
+    if rec.get(&#x27;fingerprint&#x27;) != fingerprint:
+        return None
+    if rec.get(&#x27;stubbed&#x27;) and not accept_stub:
+        return None
+    return rec.get(&#x27;prose&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:57</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:187</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:231</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:255</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:234</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:241</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:246</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>list_records <a id="fn-list_records-87"></a></h3>
+<p><em>kodama_docs/records.py:87-102</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>data_dir</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="records.py.html#variables">_SUBDIR</a>
+</li>
+<li>os.path.join
+</li>
+<li>os.path.isdir
+</li>
+<li>os.listdir
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">fname.endswith</span>
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">rec.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def list_records(data_dir: str, kind: str):
+    sub = _SUBDIR[kind]
+    d = os.path.join(data_dir, sub)
+    out = {}
+    if not os.path.isdir(d):
+        return out
+    for fname in sorted(os.listdir(d)):
+        if not fname.endswith(&#x27;.json&#x27;):
+            continue
+        try:
+            with open(os.path.join(d, fname), &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+                rec = json.load(fh)
+            out[(rec.get(&#x27;file&#x27;), rec.get(&#x27;name&#x27;), rec.get(&#x27;line&#x27;))] = rec
+        except (ValueError, OSError):
+            continue
+    return out</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="records.py.html">kodama_docs/records.py</a>
+<ul>
+<li><a href="records.py.html#fn-delete_records_for-105">delete_records_for:109</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:66</a>
+</li>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:67</a>
+</li>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:68</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>delete_records_for <a id="fn-delete_records_for-105"></a></h3>
+<p><em>kodama_docs/records.py:105-116</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>data_dir</code></td><td></td></tr>
+<tr><td><code>relpaths</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="records.py.html#variables">_SUBDIR</a>
+</li>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><a href="records.py.html#fn-list_records-87">list_records</a>
+</li>
+<li>os.remove
+</li>
+<li><a href="records.py.html#fn-record_path-16">record_path</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def delete_records_for(data_dir: str, relpaths) -&gt; int:
+    &quot;&quot;&quot;Delete cached LLM records that belong to the given source files.&quot;&quot;&quot;
+    removed = 0
+    for kind in _SUBDIR:
+        for (file, name, line), _rec in list_records(data_dir, kind).items():
+            if file in relpaths:
+                try:
+                    os.remove(record_path(data_dir, file, kind, name, line))
+                    removed += 1
+                except OSError:
+                    pass
+    return removed</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="outputs.py.html">kodama_docs/outputs.py</a>
+<ul>
+<li><a href="outputs.py.html#fn-check_doc_cache-103">check_doc_cache:115</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>_SUBDIR</code></td><td>12</td><td>table</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 6: import of <span style="color:#e67e22">hashlib</span> — no matching file in the project
+</li>
+<li>line 7: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 8: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

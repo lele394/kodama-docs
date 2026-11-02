@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lua backend</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Lua backend</h1>
+<p><code>backends/lua/</code> — the Lua backend (manifest name <code>kodama-lua</code>). Parsing is delegated to the official <strong>tree-sitter-lua</strong> grammar; the package only walks the concrete syntax tree and projects it into the <a href="../02%20-%20How%20It%20Works/03%20-%20Extraction.html">record contract</a>. There is no hand-rolled tokenizer.</p>
+<p><code>__init__.py</code> is a thin entrypoint; the implementation lives in <code>constants.py</code>, <code>builtins.py</code>, <code>parser.py</code>, <code>nodes.py</code>, and <code>extract.py</code>.</p>
+<h2>What it extracts</h2>
+<table>
+<thead><tr>
+<th>Construct</th>
+<th>How it appears in the record</th>
+</tr></thead>
+<tbody>
+<tr><td><code>function foo(...)</code>, <code>local function bar(...)</code>, <code>A:method(...)</code>, <code>A.b = function ...</code></td><td><code>functions</code> — <code>name</code>, <code>qualified</code> (dotted path, e.g. <code>A.method</code>), 1-based <code>line</code>/<code>end_line</code>, <code>params</code>, <code>vararg</code>, the exact source <code>body</code>, and a <code>developer_comment</code> when a comment block sits directly above the definition.</td></tr>
+<tr><td><code>local X = ...</code> / <code>X = ...</code> at file scope</td><td><code>file_vars</code> — <code>name</code>, <code>line</code>, <code>init</code> form (<code>empty</code> / <code>table</code> / <code>string</code> / <code>number</code> / <code>function</code> / <code>call</code> / <code>expr</code>); for <code>local A = require(&#x27;mod&#x27;)</code> / <code>dofile(&#x27;path&#x27;)</code> a <code>module</code> field is added, which is what lets the graph resolve <code>A:method()</code> to that module&#x27;s method.</td></tr>
+<tr><td><code>f(x)</code>, <code>A.b(x)</code>, <code>x:m(x)</code></td><td><code>calls</code> — <code>callee</code> plus, for a method call, the object part as <code>callee</code> and the method name as <code>method</code>. Computed receivers (<code>foo()()</code>) come out as <code>callee: null</code>.</td></tr>
+<tr><td><code>require(&#x27;m&#x27;)</code>, <code>dofile(&#x27;p&#x27;)</code></td><td><code>imports</code> — the module string and its line.</td></tr>
+<tr><td><code>local h = function ...</code>, <code>{ key = function ... }</code>, <code>foo(function ...)</code></td><td><code>functions</code> too — closures are named from their context (the declared name, the table field key, or the callee they&#x27;re passed to); if none applies they are recorded as <code>anon</code>.</td></tr>
+</tbody>
+</table>
+<h2>Lua-specific behavior</h2>
+<ul>
+<li><strong>Method calls</strong> use the colon form (<code>x:m</code>), so the caller side splits <code>m</code> into <code>method</code> and the object into <code>callee</code>; the resolver then matches against the method name in the target file (e.g. <code>Body:new()</code> → <code>new</code> in the module that defines it).
+</li>
+<li><strong><code>BUILTIN_NAMES</code></strong> lists the Lua standard globals and libraries (<code>print</code>, <code>pairs</code>, <code>table</code>, <code>math</code>, <code>io</code>, …) so the resolver classifies them as <code>builtin</code> calls instead of unresolved project references.
+</li>
+<li><strong><code>self</code> / <code>_G</code> / <code>_VERSION</code></strong> are treated as builtin names, and a definition written as <code>A:method</code> is only recognized as a method when its first parameter is <code>self</code> — keeping <code>A.x = function(self)</code> honest.
+</li>
+<li><strong>Closures get context names.</strong> <code>local h = function … end</code> → <code>h</code>; a table field <code>{ handler = function … end }</code> → <code>handler</code>; a closure passed to a call → the callee&#x27;s base name. A closure with no such context is recorded as <code>anon</code> — it still appears in the graph and on the page, but the LLM phase skips <code>anon</code> functions unless <code>documentation.include_anonymous_functions</code> is set (default <code>false</code>).
+</li>
+</ul>
+<h2>Requirements and self-test</h2>
+<ul>
+<li>python: <code>tree-sitter==0.26.0</code>, <code>tree-sitter-lua==0.5.0</code> (declared in the manifest; <code>--list-backends</code> shows them and <code>--install</code> pip-installs them for a new backend).
+</li>
+<li>The Lua backend does <strong>not</strong> implement the self-test protocol (<code>TEST_CODEBASE_DIR</code> / <code>collect_truth</code> / <code>parse_markers</code>) yet, so <code>test-backend --backend lua</code> reports that. Its behavior is covered by the same generic graph harness that the <a href="03%20-%20Python%20Backend.html">Python backend</a> uses.
+</li>
+</ul>
+<p>Related: <a href="01%20-%20Backends.html">Backends</a>, <a href="../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>.</p>
+</main>
+</div>
+</body>
+</html>

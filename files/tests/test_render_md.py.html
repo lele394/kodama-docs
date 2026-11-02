@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_render_md.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_render_md.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-test_markdown_image-18">test_markdown_image</a></td><td>18</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_image_alt_is_escaped-23">test_image_alt_is_escaped</a></td><td>23</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_ordered_list-29">test_ordered_list</a></td><td>29</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_blockquote-35">test_blockquote</a></td><td>35</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_raw_html_is_escaped-41">test_raw_html_is_escaped</a></td><td>41</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_generated_anchor_and_span_pass-47">test_generated_anchor_and_span_pass</a></td><td>47</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_script_url_is_rejected-54">test_script_url_is_rejected</a></td><td>54</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_link_label_is_escaped-60">test_link_label_is_escaped</a></td><td>60</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_table_escape_flattens_newlines-66">test_table_escape_flattens_newlines</a></td><td>66</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-72">main</a></td><td>72</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>test_markdown_image <a id="fn-test_markdown_image-18"></a></h3>
+<p><em>tests/test_render_md.py:18-20</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_md-165">render_md</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_markdown_image():
+    out = render_md(&#x27;![alt text](img/pic.png)\n&#x27;)
+    assert out == &#x27;&lt;p&gt;&lt;img src=&quot;img/pic.png&quot; alt=&quot;alt text&quot;&gt;&lt;/p&gt;&#x27;, out</code></pre>
+</details>
+<hr>
+<h3>test_image_alt_is_escaped <a id="fn-test_image_alt_is_escaped-23"></a></h3>
+<p><em>tests/test_render_md.py:23-26</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_image_alt_is_escaped():
+    out = render_inline(&#x27;![&lt;script&gt;](x.png)&#x27;)
+    assert &#x27;&lt;script&gt;&#x27; not in out, out
+    assert &#x27;&amp;lt;script&amp;gt;&#x27; in out, out</code></pre>
+</details>
+<hr>
+<h3>test_ordered_list <a id="fn-test_ordered_list-29"></a></h3>
+<p><em>tests/test_render_md.py:29-32</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_md-165">render_md</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_ordered_list():
+    out = render_md(&#x27;1. one\n2. two\n&#x27;)
+    assert &#x27;&lt;ol&gt;&#x27; in out and &#x27;&lt;/ol&gt;&#x27; in out, out
+    assert &#x27;&lt;li&gt;one&#x27; in out and &#x27;&lt;li&gt;two&#x27; in out, out</code></pre>
+</details>
+<hr>
+<h3>test_blockquote <a id="fn-test_blockquote-35"></a></h3>
+<p><em>tests/test_render_md.py:35-38</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_md-165">render_md</a>
+</li>
+<li><span style="color:#e67e22">out.startswith</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_blockquote():
+    out = render_md(&#x27;&gt; developer note\n&#x27;)
+    assert out.startswith(&#x27;&lt;blockquote&gt;&#x27;), out
+    assert &#x27;developer note&#x27; in out, out</code></pre>
+</details>
+<hr>
+<h3>test_raw_html_is_escaped <a id="fn-test_raw_html_is_escaped-41"></a></h3>
+<p><em>tests/test_render_md.py:41-44</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_raw_html_is_escaped():
+    out = render_inline(&#x27;&lt;script&gt;alert(1)&lt;/script&gt;&#x27;)
+    assert &#x27;&lt;script&gt;&#x27; not in out, out
+    assert &#x27;&amp;lt;script&amp;gt;&#x27; in out, out</code></pre>
+</details>
+<hr>
+<h3>test_generated_anchor_and_span_pass <a id="fn-test_generated_anchor_and_span_pass-47"></a></h3>
+<p><em>tests/test_render_md.py:47-51</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_generated_anchor_and_span_pass():
+    anchor = &#x27;&lt;a id=&quot;fn-go-4&quot;&gt;&lt;/a&gt;&#x27;
+    span = &#x27;&lt;span style=&quot;color:#e67e22&quot;&gt;unresolved&lt;/span&gt;&#x27;
+    assert render_inline(anchor) == anchor
+    assert render_inline(span) == span</code></pre>
+</details>
+<hr>
+<h3>test_script_url_is_rejected <a id="fn-test_script_url_is_rejected-54"></a></h3>
+<p><em>tests/test_render_md.py:54-57</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_script_url_is_rejected():
+    out = render_inline(&#x27;[click](javascript:alert(1))&#x27;)
+    assert &#x27;javascript:&#x27; not in out, out
+    assert &#x27;href=&quot;#&quot;&#x27; in out, out</code></pre>
+</details>
+<hr>
+<h3>test_link_label_is_escaped <a id="fn-test_link_label_is_escaped-60"></a></h3>
+<p><em>tests/test_render_md.py:60-63</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_link_label_is_escaped():
+    out = render_inline(&#x27;[&lt;script&gt;](x.md)&#x27;)
+    assert &#x27;&lt;script&gt;&#x27; not in out, out
+    assert &#x27;&amp;lt;script&amp;gt;&#x27; in out, out</code></pre>
+</details>
+<hr>
+<h3>test_table_escape_flattens_newlines <a id="fn-test_table_escape_flattens_newlines-66"></a></h3>
+<p><em>tests/test_render_md.py:66-69</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../kodama_docs/markdown.py.html#fn-md_escape-20">md_escape</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_table_escape_flattens_newlines():
+    out = md_escape(&#x27;line one\nline two | piped&#x27;)
+    assert &#x27;\n&#x27; not in out, out
+    assert out == &#x27;line one line two \\| piped&#x27;, out</code></pre>
+</details>
+<hr>
+<h3>main <a id="fn-main-72"></a></h3>
+<p><em>tests/test_render_md.py:72-78</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">globals</span>
+</li>
+<li>sorted
+</li>
+<li>callable
+</li>
+<li><span style="color:#e67e22">k.startswith</span>
+</li>
+<li><span style="color:#e67e22">fn</span>
+</li>
+<li>print
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    fns = [v for k, v in sorted(globals().items())
+           if k.startswith(&#x27;test_&#x27;) and callable(v)]
+    for fn in fns:
+        fn()
+        print(f&#x27;ok   {fn.__name__}&#x27;)
+    print(f&#x27;\n{len(fns)} render_md tests passed&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_render_md.py.html">tests/test_render_md.py</a>
+<ul>
+<li><a href="test_render_md.py.html">top-level:82</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 9: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 10: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

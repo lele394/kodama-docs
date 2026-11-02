@@ -1,0 +1,1438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/testing.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/testing.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_find_backend-32">_find_backend</a></td><td>32</td><td>name</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_backend_module-45">_backend_module</a></td><td>45</td><td>backend</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_fixture_files-54">_fixture_files</a></td><td>54</td><td>root, exts</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_edge-68">_edge</a></td><td>68</td><td>g, u, v, etype</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_edges_from-77">_edges_from</a></td><td>77</td><td>g, u, etype</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_owner_node-88">_owner_node</a></td><td>88</td><td>analysis, file, line</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_target_node-109">_target_node</a></td><td>109</td><td>g, relpath, name, line</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_target_display-122">_target_display</a></td><td>122</td><td>nid</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-check_truth_calls-129">check_truth_calls</a></td><td>129</td><td>truth, analysis, g</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-check_truth_imports-150">check_truth_imports</a></td><td>150</td><td>truth, analysis, g</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_analysis_by_file-195">_analysis_by_file</a></td><td>195</td><td>analysis</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-check_import_soundness-202">check_import_soundness</a></td><td>202</td><td>truth, analysis</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-check_function_meta-232">check_function_meta</a></td><td>232</td><td>truth, analysis</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-check_file_vars-280">check_file_vars</a></td><td>280</td><td>truth, analysis</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_diag_lines-306">_diag_lines</a></td><td>306</td><td>diag, key</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_node_name_at-310">_node_name_at</a></td><td>310</td><td>g, nid</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_matches_target-315">_matches_target</a></td><td>315</td><td>g, nid, file, name</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-check_markers-322">check_markers</a></td><td>322</td><td>markers_by_file, analysis, g, diag</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_check_one_marker-335">_check_one_marker</a></td><td>335</td><td>kind, file, line, targets, analysis, g, diag</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_backend-398">test_backend</a></td><td>398</td><td>name</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_find_backend <a id="fn-_find_backend-32"></a></h3>
+<p><em>kodama_docs/testing.py:32-42</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">backends.list_backends</span>
+</li>
+<li><span style="color:#e67e22">b.get</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li>SystemExit
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _find_backend(name):
+    for b in backends.list_backends():
+        if b[&#x27;name&#x27;] == name or b[&#x27;dir&#x27;] == name:
+            if b.get(&#x27;status&#x27;) != &#x27;ready&#x27;:
+                issues = &#x27;; &#x27;.join(b.get(&#x27;issues&#x27;, [])) or &#x27;unusable&#x27;
+                raise SystemExit(f&quot;backend {name!r} is {b.get(&#x27;status&#x27;)}: &quot;
+                                 f&quot;{issues}&quot;)
+            return b
+    available = &#x27;, &#x27;.join(x[&#x27;name&#x27;] for x in backends.list_backends()) \
+        or &#x27;none&#x27;
+    raise SystemExit(f&quot;no backend named {name!r} (installed: {available})&quot;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:401</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_backend_module <a id="fn-_backend_module-45"></a></h3>
+<p><em>kodama_docs/testing.py:45-51</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>backend</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>importlib.import_module
+</li>
+<li>SystemExit
+</li>
+<li>type
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _backend_module(backend):
+    try:
+        return importlib.import_module(f&quot;backends.{backend[&#x27;dir&#x27;]}&quot;)
+    except Exception as e:  # noqa: BLE001 - report, don&#x27;t crash-assert
+        raise SystemExit(
+            f&quot;could not import backend {backend[&#x27;name&#x27;]!r}: &quot;
+            f&quot;{type(e).__name__}: {e}&quot;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:402</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_fixture_files <a id="fn-_fixture_files-54"></a></h3>
+<p><em>kodama_docs/testing.py:54-63</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>root</code></td><td></td></tr>
+<tr><td><code>exts</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.walk
+</li>
+<li>sorted
+</li>
+<li>any
+</li>
+<li><span style="color:#e67e22">fn.endswith</span>
+</li>
+<li>os.path.join
+</li>
+<li><span style="color:#e67e22">?.replace</span>
+</li>
+<li>os.path.relpath
+</li>
+<li><span style="color:#e67e22">out.append</span>
+</li>
+<li><span style="color:#e67e22">out.sort</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _fixture_files(root, exts):
+    out = []
+    for dirpath, _dirs, files in os.walk(root):
+        for fn in sorted(files):
+            if any(fn.endswith(e) for e in exts):
+                full = os.path.join(dirpath, fn)
+                rel = os.path.relpath(full, root).replace(os.sep, &#x27;/&#x27;)
+                out.append((rel, full))
+    out.sort(key=lambda x: x[0])
+    return out</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:417</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_edge <a id="fn-_edge-68"></a></h3>
+<p><em>kodama_docs/testing.py:68-74</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>u</code></td><td></td></tr>
+<tr><td><code>v</code></td><td></td></tr>
+<tr><td><code>etype</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.has_edge</span>
+</li>
+<li><span style="color:#e67e22">?.values</span>
+</li>
+<li><span style="color:#e67e22">g.get_edge_data</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _edge(g, u, v, etype):
+    if u is None or v is None or not g.has_edge(u, v):
+        return None
+    for d in g.get_edge_data(u, v).values():
+        if d.get(&#x27;type&#x27;) == etype:
+            return d
+    return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-check_truth_calls-129">check_truth_calls:136</a>
+</li>
+<li><a href="testing.py.html#fn-check_truth_imports-150">check_truth_imports:158</a>
+</li>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:357</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_edges_from <a id="fn-_edges_from-77"></a></h3>
+<p><em>kodama_docs/testing.py:77-85</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>u</code></td><td></td></tr>
+<tr><td><code>etype</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.successors</span>
+</li>
+<li><span style="color:#e67e22">?.values</span>
+</li>
+<li><span style="color:#e67e22">g.get_edge_data</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">out.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _edges_from(g, u, etype):
+    out = []
+    if u is None:
+        return out
+    for v in g.successors(u):
+        for d in g.get_edge_data(u, v).values():
+            if d.get(&#x27;type&#x27;) == etype:
+                out.append((v, d))
+    return out</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-check_truth_imports-150">check_truth_imports:172</a>
+</li>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:373</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_owner_node <a id="fn-_owner_node-88"></a></h3>
+<p><em>kodama_docs/testing.py:88-106</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>analysis</code></td><td></td></tr>
+<tr><td><code>file</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">r.get</span>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><a href="graph.py.html#fn-node_id_fn-55">node_id_fn</a>
+</li>
+<li><a href="graph.py.html#fn-node_id_file-51">node_id_file</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _owner_node(analysis, file, line):
+    &quot;&quot;&quot;The innermost function enclosing (file, line), else the file node —
+    exactly the CALLS source ``graph.build_graph`` uses.&quot;&quot;&quot;
+    for r in analysis:
+        if r.get(&#x27;relpath&#x27;) != file:
+            continue
+        best = None
+        for fn in r.get(&#x27;functions&#x27;) or []:
+            lo = fn[&#x27;line&#x27;]
+            hi = fn.get(&#x27;end_line&#x27;, lo)
+            if lo &lt;= line &lt;= hi:
+                span = hi - lo
+                if best is None or span &lt; best[0]:
+                    best = (span, fn)
+        if best is not None:
+            fn = best[1]
+            return gmod.node_id_fn(file, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+        return gmod.node_id_file(file)
+    return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-check_truth_calls-129">check_truth_calls:134</a>
+</li>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:371</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_target_node <a id="fn-_target_node-109"></a></h3>
+<p><em>kodama_docs/testing.py:109-119</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>relpath</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.nodes</span>
+</li>
+<li><span style="color:#e67e22">data.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _target_node(g, relpath, name, line=None):
+    &quot;&quot;&quot;A function/class node in `relpath` named `name` (line, if given).&quot;&quot;&quot;
+    for nid, data in g.nodes(data=True):
+        if data.get(&#x27;relpath&#x27;) != relpath or data.get(&#x27;name&#x27;) != name:
+            continue
+        if data.get(&#x27;kind&#x27;) not in (&#x27;function&#x27;, &#x27;class&#x27;):
+            continue
+        if line is not None and data.get(&#x27;line&#x27;) != line:
+            continue
+        return nid
+    return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-check_truth_calls-129">check_truth_calls:135</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_target_display <a id="fn-_target_display-122"></a></h3>
+<p><em>kodama_docs/testing.py:122-124</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>nid</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">nid.partition</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _target_display(nid):
+    prefix, _, rest = nid.partition(&#x27;:&#x27;)
+    return rest if prefix in (&#x27;fn&#x27;, &#x27;var&#x27;, &#x27;cls&#x27;) else nid</code></pre>
+</details>
+<hr>
+<h3>check_truth_calls <a id="fn-check_truth_calls-129"></a></h3>
+<p><em>kodama_docs/testing.py:129-147</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>truth</code></td><td></td></tr>
+<tr><td><code>analysis</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">truth.get</span>
+</li>
+<li><a href="testing.py.html#fn-_owner_node-88">_owner_node</a>
+</li>
+<li><a href="testing.py.html#fn-_target_node-109">_target_node</a>
+</li>
+<li><span style="color:#e67e22">o.get</span>
+</li>
+<li><a href="testing.py.html#fn-_edge-68">_edge</a>
+</li>
+<li>bool
+</li>
+<li><span style="color:#e67e22">e.get</span>
+</li>
+<li><span style="color:#e67e22">results.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check_truth_calls(truth, analysis, g):
+    results = []
+    for c in truth.get(&#x27;calls&#x27;) or []:
+        sf, sl = c[&#x27;site&#x27;][&#x27;file&#x27;], c[&#x27;site&#x27;][&#x27;line&#x27;]
+        o = c[&#x27;origin&#x27;]
+        owner = _owner_node(analysis, sf, sl)
+        target = _target_node(g, o[&#x27;file&#x27;], o[&#x27;name&#x27;], o.get(&#x27;line&#x27;))
+        e = _edge(g, owner, target, &#x27;CALLS&#x27;)
+        ok = bool(e and e.get(&#x27;resolution_success&#x27;) is True)
+        if e is None:
+            detail = &#x27;no CALLS edge from the call site to the target&#x27;
+        else:
+            detail = (f&quot;status={e.get(&#x27;status&#x27;)} &quot;
+                      f&quot;resolution_success={e.get(&#x27;resolution_success&#x27;)}&quot;)
+        results.append({
+            &#x27;name&#x27;: f&quot;call {sf}:{sl} -&gt; {o[&#x27;file&#x27;]}::{o[&#x27;name&#x27;]}&quot;,
+            &#x27;ok&#x27;: ok, &#x27;detail&#x27;: detail,
+        })
+    return results</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:481</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>check_truth_imports <a id="fn-check_truth_imports-150"></a></h3>
+<p><em>kodama_docs/testing.py:150-182</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>truth</code></td><td></td></tr>
+<tr><td><code>analysis</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">truth.get</span>
+</li>
+<li><span style="color:#e67e22">imp.get</span>
+</li>
+<li><a href="graph.py.html#fn-node_id_file-51">node_id_file</a>
+</li>
+<li><a href="testing.py.html#fn-_edge-68">_edge</a>
+</li>
+<li>bool
+</li>
+<li><span style="color:#e67e22">e.get</span>
+</li>
+<li><span style="color:#e67e22">results.append</span>
+</li>
+<li><a href="testing.py.html#fn-_edges_from-77">_edges_from</a>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check_truth_imports(truth, analysis, g):
+    results = []
+    for imp in truth.get(&#x27;imports&#x27;) or []:
+        f, line = imp[&#x27;file&#x27;], imp[&#x27;line&#x27;]
+        mf = imp.get(&#x27;module_file&#x27;)
+        fid = gmod.node_id_file(f)
+        if mf:
+            tid = gmod.node_id_file(mf)
+            e = _edge(g, fid, tid, &#x27;IMPORTS&#x27;)
+            ok = bool(e and e.get(&#x27;resolution_success&#x27;) is True)
+            if e is None:
+                detail = f&#x27;no resolved IMPORTS edge to {mf}&#x27;
+            else:
+                detail = (f&quot;status={e.get(&#x27;status&#x27;)} &quot;
+                          f&quot;resolution_success={e.get(&#x27;resolution_success&#x27;)}&quot;)
+            results.append({
+                &#x27;name&#x27;: f&quot;import {f}:{line} -&gt; {mf}&quot;,
+                &#x27;ok&#x27;: ok, &#x27;detail&#x27;: detail,
+            })
+        else:
+            # stdlib / external module: must stay an *unresolved* edge,
+            # never dropped and never guessed as a project file.
+            bad = [(v, d) for v, d in _edges_from(g, fid, &#x27;IMPORTS&#x27;)
+                   if d.get(&#x27;line&#x27;) == line
+                   and d.get(&#x27;resolution_success&#x27;) is False]
+            ok = len(bad) &gt;= 1
+            results.append({
+                &#x27;name&#x27;: f&quot;import {f}:{line} (stdlib/external)&quot;,
+                &#x27;ok&#x27;: ok,
+                &#x27;detail&#x27;: (&#x27;unresolved IMPORTS edge present&#x27; if ok
+                           else &#x27;no unresolved IMPORTS edge on that line&#x27;),
+            })
+    return results</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:483</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_analysis_by_file <a id="fn-_analysis_by_file-195"></a></h3>
+<p><em>kodama_docs/testing.py:195-199</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>analysis</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _analysis_by_file(analysis):
+    out = {}
+    for a in analysis:
+        out[a[&#x27;relpath&#x27;]] = a
+    return out</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-check_import_soundness-202">check_import_soundness:207</a>
+</li>
+<li><a href="testing.py.html#fn-check_function_meta-232">check_function_meta:237</a>
+</li>
+<li><a href="testing.py.html#fn-check_file_vars-280">check_file_vars:284</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>check_import_soundness <a id="fn-check_import_soundness-202"></a></h3>
+<p><em>kodama_docs/testing.py:202-229</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>truth</code></td><td></td></tr>
+<tr><td><code>analysis</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="testing.py.html#fn-_analysis_by_file-195">_analysis_by_file</a>
+</li>
+<li><span style="color:#e67e22">truth.get</span>
+</li>
+<li><span style="color:#e67e22">truth_counts.get</span>
+</li>
+<li><span style="color:#e67e22">by_file.items</span>
+</li>
+<li><span style="color:#e67e22">a.get</span>
+</li>
+<li><span style="color:#e67e22">rec.get</span>
+</li>
+<li><span style="color:#e67e22">extract_counts.get</span>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">results.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check_import_soundness(truth, analysis):
+    &quot;&quot;&quot;Per (file, line): the extractor must emit exactly as many import
+    records as the runtime imported. A phantom `from m import n` that also
+    emits an import for `m` (one too many) or a dropped name (one too few)
+    fails here — invisible to the completeness-only import check above.&quot;&quot;&quot;
+    by_file = _analysis_by_file(analysis)
+    truth_counts = {}
+    for imp in truth.get(&#x27;imports&#x27;) or []:
+        key = (imp[&#x27;file&#x27;], imp[&#x27;line&#x27;])
+        truth_counts[key] = truth_counts.get(key, 0) + 1
+    extract_counts = {}
+    for rel, a in by_file.items():
+        for rec in a.get(&#x27;imports&#x27;) or []:
+            key = (rel, rec.get(&#x27;line&#x27;))
+            extract_counts[key] = extract_counts.get(key, 0) + 1
+    results = []
+    for key in sorted(truth_counts):
+        f, line = key
+        n_truth = truth_counts[key]
+        n_extract = extract_counts.get(key, 0)
+        ok = (n_truth == n_extract)
+        results.append({
+            &#x27;name&#x27;: f&#x27;import-count {f}:{line}&#x27;,
+            &#x27;ok&#x27;: ok,
+            &#x27;detail&#x27;: (f&#x27;runtime={n_truth} extracted={n_extract}&#x27;
+                       + (&#x27;&#x27; if ok else &#x27;  &lt;-- phantom/missing import&#x27;)),
+        })
+    return results</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:488</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>check_function_meta <a id="fn-check_function_meta-232"></a></h3>
+<p><em>kodama_docs/testing.py:232-277</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>truth</code></td><td></td></tr>
+<tr><td><code>analysis</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="testing.py.html#fn-_analysis_by_file-195">_analysis_by_file</a>
+</li>
+<li><span style="color:#e67e22">truth.get</span>
+</li>
+<li><span style="color:#e67e22">by_file.get</span>
+</li>
+<li><span style="color:#e67e22">a.get</span>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><span style="color:#e67e22">meta.get</span>
+</li>
+<li><span style="color:#e67e22">fns.get</span>
+</li>
+<li><span style="color:#e67e22">results.append</span>
+</li>
+<li><span style="color:#e67e22">got.get</span>
+</li>
+<li><span style="color:#e67e22">probs.append</span>
+</li>
+<li>bool
+</li>
+<li><span style="color:#e67e22">t.get</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check_function_meta(truth, analysis):
+    &quot;&quot;&quot;Per function the AST oracle recorded: the extractor&#x27;s params (order +
+    names, incl. *args/**kwargs), vararg flag, and qualified name (methods as
+    ``Class.method``) must match. Guards the *args/**kwargs drop, the
+    `size=1024*1024` vararg false positive, and the method-qualification gap.&quot;&quot;&quot;
+    by_file = _analysis_by_file(analysis)
+    results = []
+    for meta in truth.get(&#x27;modules&#x27;) or []:
+        f = meta[&#x27;file&#x27;]
+        a = by_file.get(f)
+        if a is None:
+            continue
+        # key by (name, line): a name like __init__ recurs across a class
+        # hierarchy, so name alone is not a unique identity.
+        fns = {(fn[&#x27;name&#x27;], fn.get(&#x27;line&#x27;)): fn for fn in a.get(&#x27;functions&#x27;) or []}
+        for t in meta.get(&#x27;functions&#x27;) or []:
+            name = t[&#x27;name&#x27;]
+            got = fns.get((name, t[&#x27;line&#x27;]))
+            if got is None:
+                results.append({
+                    &#x27;name&#x27;: f&#x27;function {f}::{name}&#x27;,
+                    &#x27;ok&#x27;: False,
+                    &#x27;detail&#x27;: &#x27;function not extracted&#x27;,
+                })
+                continue
+            probs = []
+            if got.get(&#x27;params&#x27;) != t[&#x27;params&#x27;]:
+                probs.append(f&quot;params {got.get(&#x27;params&#x27;)} != {t[&#x27;params&#x27;]}&quot;)
+            if bool(got.get(&#x27;vararg&#x27;)) != bool(t[&#x27;vararg&#x27;]):
+                probs.append(f&quot;vararg {got.get(&#x27;vararg&#x27;)} != {t[&#x27;vararg&#x27;]}&quot;)
+            if got.get(&#x27;qualified&#x27;) != t[&#x27;qualified&#x27;]:
+                probs.append(
+                    f&quot;qualified {got.get(&#x27;qualified&#x27;)!r} != {t[&#x27;qualified&#x27;]!r}&quot;)
+            if t.get(&#x27;has_comment&#x27;):
+                if not got.get(&#x27;developer_comment&#x27;):
+                    probs.append(
+                        &#x27;developer_comment missing (line above def is a comment)&#x27;)
+            results.append({
+                &#x27;name&#x27;: f&#x27;function {f}::{name}&#x27;,
+                &#x27;ok&#x27;: not probs,
+                &#x27;detail&#x27;: (&#x27;; &#x27;.join(probs) if probs
+                           else f&quot;{name}({&#x27;, &#x27;.join(t[&#x27;params&#x27;])})&quot;
+                              + (&#x27; *&#x27; if t[&#x27;vararg&#x27;] else &#x27;&#x27;)
+                              + f&quot; -&gt; {t[&#x27;qualified&#x27;]}&quot;),
+            })
+    return results</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:490</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>check_file_vars <a id="fn-check_file_vars-280"></a></h3>
+<p><em>kodama_docs/testing.py:280-301</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>truth</code></td><td></td></tr>
+<tr><td><code>analysis</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="testing.py.html#fn-_analysis_by_file-195">_analysis_by_file</a>
+</li>
+<li><span style="color:#e67e22">truth.get</span>
+</li>
+<li><span style="color:#e67e22">by_file.get</span>
+</li>
+<li><span style="color:#e67e22">a.get</span>
+</li>
+<li><span style="color:#e67e22">meta.get</span>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">results.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check_file_vars(truth, analysis):
+    &quot;&quot;&quot;Module-level variables must be extracted as file_vars; class
+    attributes must NOT leak out as file_vars. Guards the `class A: X=1`
+    leak (a class attr recorded as a module variable).&quot;&quot;&quot;
+    by_file = _analysis_by_file(analysis)
+    results = []
+    for meta in truth.get(&#x27;modules&#x27;) or []:
+        f = meta[&#x27;file&#x27;]
+        a = by_file.get(f)
+        if a is None:
+            continue
+        got_vars = {v[&#x27;name&#x27;] for v in a.get(&#x27;file_vars&#x27;) or []}
+        expected = {v[&#x27;name&#x27;] for v in meta.get(&#x27;file_vars&#x27;) or []}
+        forbidden = {c[&#x27;name&#x27;] for c in meta.get(&#x27;class_attrs&#x27;) or []}
+        missing = expected - got_vars
+        leaked = forbidden &amp; got_vars
+        ok = (not missing) and (not leaked)
+        detail = (f&quot;vars {sorted(expected)}&quot;
+                  + (f&quot;  missing={sorted(missing)}&quot; if missing else &#x27;&#x27;)
+                  + (f&quot;  leaked-class-attrs={sorted(leaked)}&quot; if leaked else &#x27;&#x27;))
+        results.append({&#x27;name&#x27;: f&#x27;file-vars {f}&#x27;, &#x27;ok&#x27;: ok, &#x27;detail&#x27;: detail})
+    return results</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:492</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_diag_lines <a id="fn-_diag_lines-306"></a></h3>
+<p><em>kodama_docs/testing.py:306-307</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>diag</code></td><td></td></tr>
+<tr><td><code>key</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">diag.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _diag_lines(diag, key):
+    return {(d.get(&#x27;file&#x27;), d.get(&#x27;line&#x27;)) for d in diag.get(key, [])}</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:337</a>
+</li>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:342</a>
+</li>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:348</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_node_name_at <a id="fn-_node_name_at-310"></a></h3>
+<p><em>kodama_docs/testing.py:310-312</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>nid</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.nodes.get</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _node_name_at(g, nid):
+    d = g.nodes.get(nid) or {}
+    return d.get(&#x27;name&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:380</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_matches_target <a id="fn-_matches_target-315"></a></h3>
+<p><em>kodama_docs/testing.py:315-319</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>nid</code></td><td></td></tr>
+<tr><td><code>file</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.nodes.get</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _matches_target(g, nid, file, name):
+    if nid is None:
+        return False
+    d = g.nodes.get(nid) or {}
+    return d.get(&#x27;relpath&#x27;) == file and d.get(&#x27;name&#x27;) == name</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:377</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>check_markers <a id="fn-check_markers-322"></a></h3>
+<p><em>kodama_docs/testing.py:322-332</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>markers_by_file</code></td><td></td></tr>
+<tr><td><code>analysis</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>diag</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>sorted
+</li>
+<li>_check_one_marker (inferred)
+</li>
+<li><span style="color:#e67e22">results.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check_markers(markers_by_file, analysis, g, diag):
+    results = []
+    for file in sorted(markers_by_file):
+        for m in markers_by_file[file]:
+            line, kind, targets = m[&#x27;line&#x27;], m[&#x27;kind&#x27;], m[&#x27;targets&#x27;]
+            label = f&quot;{kind} {file}:{line}&quot; + (
+                f&quot; ({targets[0]})&quot; if targets else &#x27;&#x27;)
+            ok, detail = _check_one_marker(
+                kind, file, line, targets, analysis, g, diag)
+            results.append({&#x27;name&#x27;: label, &#x27;ok&#x27;: ok, &#x27;detail&#x27;: detail})
+    return results</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:494</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_check_one_marker <a id="fn-_check_one_marker-335"></a></h3>
+<p><em>kodama_docs/testing.py:335-393</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>kind</code></td><td></td></tr>
+<tr><td><code>file</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+<tr><td><code>targets</code></td><td></td></tr>
+<tr><td><code>analysis</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>diag</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="testing.py.html#fn-_diag_lines-306">_diag_lines</a>
+</li>
+<li><a href="testing.py.html#fn-_edge-68">_edge</a>
+</li>
+<li><a href="graph.py.html#fn-node_id_file-51">node_id_file</a>
+</li>
+<li>bool
+</li>
+<li><span style="color:#e67e22">e.get</span>
+</li>
+<li><span style="color:#e67e22">tgt.split</span>
+</li>
+<li><a href="testing.py.html#fn-_owner_node-88">_owner_node</a>
+</li>
+<li><a href="testing.py.html#fn-_edges_from-77">_edges_from</a>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><a href="testing.py.html#fn-_matches_target-315">_matches_target</a>
+</li>
+<li><a href="testing.py.html#fn-_node_name_at-310">_node_name_at</a>
+</li>
+<li>sorted
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _check_one_marker(kind, file, line, targets, analysis, g, diag):
+    if kind == &#x27;ambiguous&#x27;:
+        hit = (file, line) in _diag_lines(diag, &#x27;ambiguous_calls&#x27;)
+        return (hit, &#x27;recorded as ambiguous (no edge, candidates shown)&#x27;
+                if hit else &#x27;not in ambiguous_calls&#x27;)
+
+    if kind == &#x27;import-unresolved&#x27;:
+        hit = (file, line) in _diag_lines(diag, &#x27;unresolved_imports&#x27;)
+        return (hit, &#x27;recorded as an unresolved import&#x27; if hit
+                else &#x27;not in unresolved_imports&#x27;)
+
+    if kind in (&#x27;external&#x27;, &#x27;builtin&#x27;):
+        key = &#x27;external_calls&#x27; if kind == &#x27;external&#x27; else &#x27;builtin_calls&#x27;
+        hit = (file, line) in _diag_lines(diag, key)
+        return (hit, f&#x27;recorded in {key}&#x27; if hit
+                else f&#x27;not in {key}&#x27;)
+
+    if kind == &#x27;import&#x27;:
+        # `import &lt;file&gt;`: a resolved IMPORTS edge to that project file.
+        mf = targets[0] if targets else None
+        if not mf:
+            return (False, &#x27;marker needs a target file&#x27;)
+        e = _edge(g, gmod.node_id_file(file), gmod.node_id_file(mf),
+                  &#x27;IMPORTS&#x27;)
+        ok = bool(e and e.get(&#x27;resolution_success&#x27;) is True)
+        return (ok, &#x27;resolved IMPORTS edge present&#x27; if ok
+                else f&#x27;no resolved IMPORTS edge to {mf}&#x27;)
+
+    # resolved / inferred: a CALLS edge to the named symbol with the
+    # expected status (never the other, and never ambiguous/external).
+    if kind in (&#x27;resolved&#x27;, &#x27;inferred&#x27;):
+        tgt = targets[0] if targets else None
+        if not tgt or &#x27;::&#x27; not in tgt:
+            return (False, f&#x27;marker needs a &lt;file&gt;::&lt;name&gt; target &#x27;
+                           f&#x27;(got {tgt!r})&#x27;)
+        tfile, tname = tgt.split(&#x27;::&#x27;, 1)
+        owner = _owner_node(analysis, file, line)
+        # find the CALLS edge(s) on this line leaving the owner
+        hits = [(v, d) for v, d in _edges_from(g, owner, &#x27;CALLS&#x27;)
+                if d.get(&#x27;line&#x27;) == line]
+        # the one whose target is the expected symbol
+        good = [e for v, e in hits
+                if _matches_target(g, v, tfile, tname)]
+        if not good:
+            # maybe no edge at all (ambiguous) or wrong target
+            names = sorted(_node_name_at(g, v) or v for v, _d in hits)
+            return (False, f&#x27;no {kind} edge to {tfile}::{tname}&#x27;
+                           + (f&#x27; (edges to: {names})&#x27; if names
+                              else &#x27; (no CALLS edge on this line)&#x27;))
+        e = good[0]
+        status_ok = e.get(&#x27;status&#x27;) == kind
+        rs_ok = e.get(&#x27;resolution_success&#x27;) is True
+        ok = status_ok and rs_ok
+        detail = (f&quot;status={e.get(&#x27;status&#x27;)} &quot;
+                  f&quot;resolution_success={e.get(&#x27;resolution_success&#x27;)} &quot;
+                  f&quot;(expected {kind})&quot;)
+        return (ok, detail)
+
+    return (False, f&#x27;unknown marker kind {kind!r}&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-check_markers-322">check_markers:329</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_backend <a id="fn-test_backend-398"></a></h3>
+<p><em>kodama_docs/testing.py:398-517</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="testing.py.html#fn-_find_backend-32">_find_backend</a>
+</li>
+<li><a href="testing.py.html#fn-_backend_module-45">_backend_module</a>
+</li>
+<li>hasattr
+</li>
+<li>print
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li>os.path.abspath
+</li>
+<li>str
+</li>
+<li>os.path.isdir
+</li>
+<li><span style="color:#e67e22">backend.get</span>
+</li>
+<li><span style="color:#e67e22">e.lower</span>
+</li>
+<li><a href="testing.py.html#fn-_fixture_files-54">_fixture_files</a>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">mod.collect_truth</span>
+</li>
+<li><span style="color:#e67e22">truth.get</span>
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li><span style="color:#e67e22">extract_failures.append</span>
+</li>
+<li><span style="color:#e67e22">backends.extract</span>
+</li>
+<li>type
+</li>
+<li><span style="color:#e67e22">src.splitlines</span>
+</li>
+<li><span style="color:#e67e22">analysis.append</span>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph</a>
+</li>
+<li>os.path.join
+</li>
+<li><span style="color:#e67e22">mod.parse_markers</span>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><span style="color:#e67e22">markers_by_file.setdefault</span>
+</li>
+<li><span style="color:#e67e22">markers_by_file.values</span>
+</li>
+<li>sum
+</li>
+<li><a href="testing.py.html#fn-check_truth_calls-129">check_truth_calls</a>
+</li>
+<li><a href="testing.py.html#fn-check_truth_imports-150">check_truth_imports</a>
+</li>
+<li><a href="testing.py.html#fn-check_import_soundness-202">check_import_soundness</a>
+</li>
+<li><a href="testing.py.html#fn-check_function_meta-232">check_function_meta</a>
+</li>
+<li><a href="testing.py.html#fn-check_file_vars-280">check_file_vars</a>
+</li>
+<li><a href="testing.py.html#fn-check_markers-322">check_markers</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_backend(name):
+    &quot;&quot;&quot;Run one backend&#x27;s self-test. Returns the exit code (0 pass /
+    1 fail / 2 the backend has no test codebase).&quot;&quot;&quot;
+    backend = _find_backend(name)
+    mod = _backend_module(backend)
+
+    missing = [a for a in (&#x27;TEST_CODEBASE_DIR&#x27;, &#x27;collect_truth&#x27;,
+                           &#x27;parse_markers&#x27;) if not hasattr(mod, a)]
+    if missing:
+        print(f&quot;backend {backend[&#x27;name&#x27;]!r} does not implement the &quot;
+              f&quot;self-test protocol (missing: {&#x27;, &#x27;.join(missing)})&quot;)
+        return 2
+
+    root = os.path.abspath(str(mod.TEST_CODEBASE_DIR))
+    if not os.path.isdir(root):
+        print(f&quot;test codebase directory not found: {root}&quot;)
+        return 2
+
+    exts = [e.lower() for e in backend.get(&#x27;extensions&#x27;, [])] or [&#x27;&#x27;]
+    fixture = _fixture_files(root, exts)
+    if not fixture:
+        print(f&#x27;no fixture sources found under {root}&#x27;)
+        return 2
+
+    # 1) ground truth from the language runtime
+    print(f&quot;backend:    {backend[&#x27;name&#x27;]} ({backend[&#x27;dir&#x27;]})&quot;)
+    print(f&quot;fixture:    {root}  ({len(fixture)} files)&quot;)
+    print(&#x27;running fixture to collect runtime truth ...&#x27;)
+    try:
+        truth = mod.collect_truth()
+    except Exception as e:  # noqa: BLE001 - a broken fixture must fail loudly
+        print(f&#x27;  truth generation FAILED: {e}&#x27;)
+        return 1
+    n_truth_calls = len(truth.get(&#x27;calls&#x27;) or [])
+    n_truth_imports = len(truth.get(&#x27;imports&#x27;) or [])
+    print(f&#x27;  truth: {n_truth_calls} call sites, &#x27;
+          f&#x27;{n_truth_imports} import bindings&#x27;)
+
+    # 2) extract the fixture with this backend&#x27;s own translator
+    analysis, extract_failures = [], []
+    for rel, full in fixture:
+        try:
+            with open(full, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;, errors=&#x27;replace&#x27;) as fh:
+                src = fh.read()
+        except OSError as e:
+            extract_failures.append((rel, f&#x27;read: {e}&#x27;))
+            continue
+        try:
+            r = backends.extract(src, rel)
+        except Exception as e:  # noqa: BLE001 - per-file isolation by design
+            extract_failures.append(
+                (rel, f&#x27;{type(e).__name__}: {e}&#x27;))
+            continue
+        r[&#x27;relpath&#x27;] = rel
+        r[&#x27;lines&#x27;] = len(src.splitlines())
+        r[&#x27;status&#x27;] = &#x27;ok&#x27;
+        analysis.append(r)
+
+    if extract_failures:
+        print(f&#x27;  extraction FAILED for {len(extract_failures)} file(s):&#x27;)
+        for rel, err in extract_failures:
+            print(f&#x27;    {rel}: {err}&#x27;)
+
+    # 3) build the kodama-docs graph (the artifact under test)
+    g, diag = gmod.build_graph(analysis)
+
+    # 4) markers: the backend parses its own comment convention
+    markers_by_file = {}
+    for r in analysis:
+        rel = r[&#x27;relpath&#x27;]
+        full = os.path.join(root, rel)
+        try:
+            with open(full, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;, errors=&#x27;replace&#x27;) as fh:
+                src = fh.read()
+        except OSError:
+            continue
+        for m in mod.parse_markers(src):
+            markers_by_file.setdefault(rel, []).append(m)
+    n_markers = sum(len(v) for v in markers_by_file.values())
+
+    # 5) checks
+    results = []
+    results += [(&#x27;truth-call&#x27;, c) for c in
+                check_truth_calls(truth, analysis, g)]
+    results += [(&#x27;truth-import&#x27;, c) for c in
+                check_truth_imports(truth, analysis, g)]
+    # soundness + field checks (only when the truth supplies the extra module
+    # meta; a backend whose truth omits it is skipped, not failed)
+    if truth.get(&#x27;modules&#x27;):
+        results += [(&#x27;soundness-import&#x27;, c) for c in
+                    check_import_soundness(truth, analysis)]
+        results += [(&#x27;meta-function&#x27;, c) for c in
+                    check_function_meta(truth, analysis)]
+        results += [(&#x27;meta-filevars&#x27;, c) for c in
+                    check_file_vars(truth, analysis)]
+    results += [(&#x27;marker&#x27;, c) for c in
+                check_markers(markers_by_file, analysis, g, diag)]
+
+    passed = sum(1 for _tag, c in results if c[&#x27;ok&#x27;])
+    failed = sum(1 for _tag, c in results if not c[&#x27;ok&#x27;])
+
+    print(f&quot;  graph: {len(g.nodes)} nodes, {len(g.edges)} edges, &quot;
+          f&quot;{n_markers} markers&quot;)
+    print()
+    print(f&quot;{&#x27;CHECK&#x27;:&lt;6} {&#x27;ok&#x27;:&lt;4} {&#x27;detail&#x27;:&lt;42} check&quot;)
+    print(&#x27;-&#x27; * 96)
+    for _tag, c in results:
+        mark = &#x27;PASS&#x27; if c[&#x27;ok&#x27;] else &#x27;FAIL&#x27;
+        print(f&quot;{mark:&lt;6} {&#x27;yes&#x27; if c[&#x27;ok&#x27;] else &#x27;no&#x27;:&lt;4} &quot;
+              f&quot;{c[&#x27;detail&#x27;][:42]:&lt;42} {c[&#x27;name&#x27;]}&quot;)
+
+    print()
+    print(f&quot;RESULT: {passed}/{len(results)} passed, {failed} failed&quot;)
+    if failed:
+        print(&#x27;\nFailed checks:&#x27;)
+        for _tag, c in results:
+            if not c[&#x27;ok&#x27;]:
+                print(f&quot;  FAIL  {c[&#x27;name&#x27;]}: {c[&#x27;detail&#x27;]}&quot;)
+        return 1
+    return 0</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:262</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 23: import of <span style="color:#e67e22">importlib</span> — no matching file in the project
+</li>
+<li>line 24: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 27: import of <span style="color:#e67e22">backends</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Install</h1>
+<p>kodama-docs is a Python package. You only need Python, <code>git</code>, and the runtime dependencies in <code>requirements.txt</code>.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li><strong>Python 3.14</strong> (3.11+ is expected to work).
+</li>
+<li><strong>git</strong> — for installing and updating language backends.
+</li>
+<li>(Optional) an <strong>OpenAI-compatible LLM</strong> plus its key. You can skip this entirely and use <code>--no-llm</code> to produce the full deterministic structure with placeholder prose.
+</li>
+</ul>
+<h2>Create a virtual environment</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python3.14 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+# or, without installing the package:
+pip install -r requirements.txt</code></pre>
+</details>
+<p>V0.1 is installed from the checkout. <code>pip install -e .</code> uses <code>pyproject.toml</code> and also installs the <code>kodama-docs</code> console script; <code>requirements.txt</code> is the dependency-only path. Either way the source tree keeps <code>prompts/</code>, <code>settings.yaml</code>, <code>web/</code> and <code>icon/</code> next to <code>main.py</code>, which is what the default config expects.</p>
+<p>The runtime dependencies are <code>tree-sitter</code>, <code>tree-sitter-lua</code>, <code>tree-sitter-python</code>, <code>tree-sitter-cpp</code>, <code>tree-sitter-cuda</code>, <code>ruamel.yaml</code>, <code>networkx</code>, and <code>rich</code>.</p>
+<h2>Set up the LLM (optional)</h2>
+<p>The LLM endpoint is read from a <code>.env</code> file, looked up at the project root (next to <code>main.py</code>) first, then next to your config file. This is only needed for full runs, not for <code>--no-llm</code>:</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-dotenv">base_url=https://your-llm.example/v1
+api_key=sk-...</code></pre>
+</details>
+<p>That is all the <code>.env</code> carries. The model name is <strong>not</strong> a <code>.env</code> key — it comes from <code>llm.model</code> in <code>settings.yaml</code>. If your <code>settings.yaml</code> sets <code>llm.base_url: env</code> and <code>llm.api_key: env</code> (the defaults), these <code>.env</code> values are used. See <a href="03%20-%20Configuration.html">Configuration</a>.</p>
+<h2>Verify the install</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --list-backends</code></pre>
+</details>
+<p>For a new project, scaffold the config and prompt templates:</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">kodama-docs init</code></pre>
+</details>
+<p>That writes <code>settings.yaml</code> and <code>prompts/</code> into the current directory and refuses to overwrite without <code>--force</code>.</p>
+<p>A healthy install lists the built-in <code>kodama-lua</code>, <code>kodama-python</code> and <code>kodama-cpp</code> backends, each <code>ready</code>, with routing for <code>.lua</code>, <code>.py</code>, and the C/C++/CUDA extensions. The Python backend also ships an end-to-end self-test (it runs a small fixture through the real graph builder and checks every call/import edge):</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py test-backend --backend python</code></pre>
+</details>
+<p>The Lua backend does not implement the self-test protocol yet; its behavior is covered by the same generic machinery in <code>kodama_docs/testing.py</code>.</p>
+<p>Next: <a href="02%20-%20First%20Run.html">First Run</a>.</p>
+</main>
+</div>
+</body>
+</html>

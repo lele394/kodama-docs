@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/llm_phase.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/llm_phase.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-fn_length-34">fn_length</a></td><td>34</td><td>fn</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-chunk_notes-38">chunk_notes</a></td><td>38</td><td>client, cfg, f, fn, prompts, retry, skip, maxchunk, chunktok, cpt, stage_cb, no_llm, schunk</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-llm_phase-81">llm_phase</a></td><td>81</td><td>cfg, files, g, no_llm</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-wid-167">wid</a></td><td>167</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-run-174">run</a></td><td>174</td><td>job</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>fn_length <a id="fn-fn_length-34"></a></h3>
+<p><em>kodama_docs/llm_phase.py:34-35</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fn</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def fn_length(fn: dict) -&gt; int:
+    return (fn.get(&#x27;end_line&#x27;) or fn[&#x27;line&#x27;]) - fn[&#x27;line&#x27;] + 1</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:122</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:196</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>chunk_notes <a id="fn-chunk_notes-38"></a></h3>
+<p><em>kodama_docs/llm_phase.py:38-78</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>client</code></td><td></td></tr>
+<tr><td><code>cfg</code></td><td></td></tr>
+<tr><td><code>f</code></td><td></td></tr>
+<tr><td><code>fn</code></td><td></td></tr>
+<tr><td><code>prompts</code></td><td></td></tr>
+<tr><td><code>retry</code></td><td></td></tr>
+<tr><td><code>skip</code></td><td></td></tr>
+<tr><td><code>maxchunk</code></td><td></td></tr>
+<tr><td><code>chunktok</code></td><td></td></tr>
+<tr><td><code>cpt</code></td><td></td></tr>
+<tr><td><code>stage_cb</code></td><td></td></tr>
+<tr><td><code>no_llm</code></td><td></td></tr>
+<tr><td><code>schunk</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><a href="context.py.html#fn-fn_chunks-6">fn_chunks</a>
+</li>
+<li><a href="prompt_templates.py.html#fn-render_prompt-74">render_prompt</a>
+</li>
+<li><span style="color:#e67e22">prompts.get</span>
+</li>
+<li><a href="prompt_templates.py.html#fn-prompt_fields-49">prompt_fields</a>
+</li>
+<li>enumerate
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">stage_cb</span>
+</li>
+<li><a href="tasks.py.html#fn-settings_fp-29">settings_fp</a>
+</li>
+<li><a href="tasks.py.html#fn-chunk_fp-82">chunk_fp</a>
+</li>
+<li><a href="records.py.html#fn-load_record-67">load_record</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><a href="util.py.html#fn-fence_lang-38">fence_lang</a>
+</li>
+<li><a href="llm.py.html#fn-generate-81">generate</a>
+</li>
+<li><a href="records.py.html#fn-save_record-32">save_record</a>
+</li>
+<li><span style="color:#e67e22">cp.get</span>
+</li>
+<li><span style="color:#e67e22">notes.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def chunk_notes(client, cfg, f, fn, prompts, retry, skip,
+                maxchunk, chunktok, cpt=4, stage_cb=None, no_llm=False,
+                schunk=None):
+    &quot;&quot;&quot;Summarize a long function body part by part (each part cached
+    separately) and return the body_note text for the merge prompt.&quot;&quot;&quot;
+    chunks = fn_chunks(fn.get(&#x27;body&#x27;) or &#x27;&#x27;, maxchunk, chunktok, cpt)
+    if not chunks:
+        return &#x27;Source: (empty body)&#x27;
+    chunk_prompt = render_prompt(
+        prompts.get(&#x27;chunk&#x27;, &#x27;&#x27;),
+        prompt_fields(f, fn, &#x27;function chunk&#x27;))
+    notes = []
+    for ci, ct in enumerate(chunks, 1):
+        cname = f&#x27;{fn[&quot;name&quot;]}#c{ci}&#x27;
+        if stage_cb is not None:
+            stage_cb(f&#x27;chunk {ci}/{len(chunks)}&#x27;)
+        if schunk is None:
+            schunk = settings_fp(cfg, &#x27;chunk&#x27;)
+        cfp = chunk_fp(f[&#x27;relpath&#x27;], cname, fn[&#x27;line&#x27;], ct, schunk)
+        cp = (load_record(cfg[&#x27;data_dir&#x27;], f[&#x27;relpath&#x27;], &#x27;chunk&#x27;, cname,
+                          fn[&#x27;line&#x27;], cfp, accept_stub=no_llm) if skip
+              else None)
+        if cp is None:
+            cctx = (
+                f&quot;Symbol: {fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;]} &quot;
+                f&quot;(lines {fn[&#x27;line&#x27;]}-{fn.get(&#x27;end_line&#x27;) or fn[&#x27;line&#x27;]}), &quot;
+                f&quot;file {f[&#x27;relpath&#x27;]}\n&quot;
+                f&quot;Parameters: {&#x27;, &#x27;.join(fn.get(&#x27;params&#x27;) or []) or &#x27;(none)&#x27;}&quot;
+                + (&#x27; + varargs&#x27; if fn.get(&#x27;vararg&#x27;) else &#x27;&#x27;)
+                + f&quot;\nBody part {ci}/{len(chunks)} of a long function:\n&quot;
+                  + f&quot;```{fence_lang(f[&#x27;relpath&#x27;])}\n{ct}\n```&quot;)
+            cp = generate(client, &#x27;chunk&#x27;, chunk_prompt,
+                          cctx, retry, no_llm=no_llm)
+            save_record(cfg[&#x27;data_dir&#x27;], f[&#x27;relpath&#x27;], &#x27;chunk&#x27;, cname,
+                        fn[&#x27;line&#x27;], cp, cfp,
+                        {&#x27;file&#x27;: f[&#x27;relpath&#x27;], &#x27;fn&#x27;: fn[&#x27;name&#x27;],
+                         &#x27;part&#x27;: ci}, stubbed=no_llm)
+        notes.append(cp.get(&#x27;summary&#x27;, &#x27;&#x27;))
+    return (&#x27;The body is long; it was summarized part by part:\n&#x27;
+            + &#x27;\n&#x27;.join(f&#x27;{k}. {s}&#x27; for k, s in enumerate(notes, 1))
+            + &#x27;\nDescribe the WHOLE function, synthesizing these parts.&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:198</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>llm_phase <a id="fn-llm_phase-81"></a></h3>
+<p><em>kodama_docs/llm_phase.py:81-306</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>no_llm</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">doccfg.get</span>
+</li>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li>log
+</li>
+<li><a href="llm.py.html#cls-LLMClient-20">LLMClient</a>
+</li>
+<li><a href="tasks.py.html#fn-settings_fp-29">settings_fp</a>
+</li>
+<li>int
+</li>
+<li>bool
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li>len
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><a href="llm_phase.py.html#fn-fn_length-34">fn_length</a>
+</li>
+<li>sum
+</li>
+<li><span style="color:#e67e22">jobs.append</span>
+</li>
+<li><a href="graph.py.html#fn-node_id_fn-55">node_id_fn</a>
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+<li>list
+</li>
+<li><span style="color:#e67e22">cfg.get</span>
+</li>
+<li>max
+</li>
+<li><a href="tui.py.html#cls-TUI-51">TUI</a>
+</li>
+<li><span style="color:#e67e22">tcfg.get</span>
+</li>
+<li>float
+</li>
+<li>start (inferred)
+</li>
+<li><a href="util.py.html#fn-set_log_sink-11">set_log_sink</a>
+</li>
+<li>threading.Lock
+</li>
+<li>time.time
+</li>
+<li><span style="color:#e67e22">ThreadPoolExecutor</span>
+</li>
+<li><span style="color:#e67e22">ex.map</span>
+</li>
+<li><span style="color:#e67e22">ex.shutdown</span>
+</li>
+<li>snapshot (inferred)
+</li>
+<li>stop (inferred)
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def llm_phase(cfg: dict, files, g, no_llm: bool = False):
+    doccfg = cfg[&#x27;documentation&#x27;]
+    if not (doccfg.get(&#x27;generate_function_docs&#x27;) or
+            doccfg.get(&#x27;generate_variable_docs&#x27;) or
+            doccfg.get(&#x27;generate_file_summaries&#x27;)):
+        return 0
+    prompts = {}
+    for k, v in cfg[&#x27;prompts&#x27;].items():
+        try:
+            with open(v, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+                prompts[k] = fh.read()
+        except OSError:
+            log(f&#x27;  missing prompt file: {v}&#x27;)
+    client = None if no_llm else LLMClient(cfg[&#x27;llm&#x27;])
+    if no_llm:
+        log(&#x27;llm phase: --no-llm mode — model calls skipped, &#x27;
+            &#x27;stub prose cached (deterministic sections still rendered)&#x27;)
+    # Per-kind generation-settings fingerprints (shared definition in
+    # kodama_docs.tasks; also used by report_scan&#x27;s &quot;Skipped (cached)&quot;).
+    sfn = settings_fp(cfg, &#x27;function&#x27;)
+    svar = settings_fp(cfg, &#x27;variable&#x27;)
+    ssum = settings_fp(cfg, &#x27;summary&#x27;)
+    schunk = settings_fp(cfg, &#x27;chunk&#x27;)
+    retry = int(doccfg.get(&#x27;retry_invalid_json&#x27;, 2))
+    skip = bool(doccfg.get(&#x27;skip_existing&#x27;, True))
+    include_anon = bool(doccfg.get(&#x27;include_anonymous_functions&#x27;, False))
+    ordered = sorted(files, key=lambda f: -len(f.get(&#x27;functions&#x27;) or []))
+    maxlines = int(doccfg.get(&#x27;max_function_lines&#x27;) or 0)
+    maxchunk = int(doccfg.get(&#x27;max_chunk_lines&#x27;) or 0) or 4000
+    chunktok = int(doccfg.get(&#x27;chunk_target_tokens&#x27;) or 0)
+    cpt = int(doccfg.get(&#x27;chars_per_token&#x27;) or 4)
+
+    # ---- build a flat, deterministic job list ---------------------------
+    jobs = []
+    skipped_syms = 0
+    if doccfg.get(&#x27;generate_function_docs&#x27;):
+        all_fns = [(f, fn) for f in ordered
+                   for fn in f.get(&#x27;functions&#x27;) or []
+                   if include_anon or fn[&#x27;name&#x27;] != &#x27;anon&#x27;]
+        tasks = [(f, fn) for f, fn in all_fns if not fn.get(&#x27;skip_llm&#x27;)]
+        skipped_syms += len(all_fns) - len(tasks)
+        nchunked = sum(1 for _, fn in tasks if maxlines and fn_length(fn) &gt; maxlines)
+        log(f&#x27;function docs: {len(tasks)} tasks ({nchunked} via chunk-and-merge)&#x27;)
+        for f, fn in tasks:
+            jobs.append({&#x27;kind&#x27;: &#x27;function&#x27;, &#x27;f&#x27;: f, &#x27;sym&#x27;: fn,
+                         &#x27;nid&#x27;: gmod.node_id_fn(f[&#x27;relpath&#x27;], fn[&#x27;name&#x27;], fn[&#x27;line&#x27;]),
+                         &#x27;tag&#x27;: f&#x27;{f[&quot;relpath&quot;]}::{fn[&quot;name&quot;]}@{fn[&quot;line&quot;]}&#x27;})
+    if doccfg.get(&#x27;generate_variable_docs&#x27;):
+        all_vars = [(f, v) for f in ordered
+                    for v in f.get(&#x27;file_vars&#x27;) or []]
+        tasks = [(f, v) for f, v in all_vars if not v.get(&#x27;skip_llm&#x27;)]
+        skipped_syms += len(all_vars) - len(tasks)
+        log(f&#x27;variable docs: {len(tasks)} tasks&#x27;)
+        for f, v in tasks:
+            jobs.append({&#x27;kind&#x27;: &#x27;variable&#x27;, &#x27;f&#x27;: f, &#x27;sym&#x27;: v,
+                         &#x27;tag&#x27;: f&#x27;{f[&quot;relpath&quot;]}::{v[&quot;name&quot;]}@{v[&quot;line&quot;]}&#x27;})
+    if doccfg.get(&#x27;generate_file_summaries&#x27;):
+        tasks = list(ordered)
+        log(f&#x27;file summaries: {len(tasks)} tasks&#x27;)
+        for f in ordered:
+            jobs.append({&#x27;kind&#x27;: &#x27;summary&#x27;, &#x27;f&#x27;: f,
+                         &#x27;sym&#x27;: {&#x27;name&#x27;: &#x27;file&#x27;, &#x27;line&#x27;: 1}, &#x27;tag&#x27;: f[&#x27;relpath&#x27;]})
+    if skipped_syms:
+        log(f&#x27;developer-comment skips: {skipped_syms} symbol(s)&#x27;)
+    if not jobs:
+        return 0
+
+    # ---- run the jobs on N parallel agents ------------------------------
+    n = max(1, int(cfg.get(&#x27;concurrency&#x27;) or 2))
+    tcfg = cfg.get(&#x27;tui&#x27;) or {}
+    kind_label = {&#x27;function&#x27;: &#x27;functions&#x27;, &#x27;variable&#x27;: &#x27;variables&#x27;,
+                  &#x27;summary&#x27;: &#x27;files&#x27;}
+    kinds = {}
+    for lab, k in ((&#x27;files&#x27;, &#x27;summary&#x27;), (&#x27;functions&#x27;, &#x27;function&#x27;),
+                   (&#x27;variables&#x27;, &#x27;variable&#x27;)):
+        cnt = sum(1 for j in jobs if j[&#x27;kind&#x27;] == k)
+        if cnt:
+            kinds[lab] = cnt
+    tui = TUI(enabled=bool(tcfg.get(&#x27;enabled&#x27;, True)),
+              interval=float(tcfg.get(&#x27;interval&#x27;) or 0.5),
+              worker_count=n, total=len(jobs), kinds=kinds)
+    tui.start()
+    set_log_sink(tui.sink if tui.active else None)
+
+    wid_map, wid_lock = {}, threading.Lock()
+
+    def wid():
+        ident = threading.get_ident()
+        with wid_lock:
+            if ident not in wid_map:
+                wid_map[ident] = len(wid_map) + 1
+            return wid_map[ident]
+
+    def run(job):
+        w, f, sym = wid(), job[&#x27;f&#x27;], job[&#x27;sym&#x27;]
+        tag, rel, name = job[&#x27;tag&#x27;], f[&#x27;relpath&#x27;], sym[&#x27;name&#x27;]
+        tui.job_start(w, rel, name)
+        t0 = time.time()
+        try:
+            cached = False
+            if job[&#x27;kind&#x27;] == &#x27;function&#x27;:
+                ins, outs = gmod.graph_neighbor_names(g, job[&#x27;nid&#x27;])
+                reads = gmod.graph_read_names(g, job[&#x27;nid&#x27;])
+                imports = [i.get(&#x27;module&#x27;) for i in (f.get(&#x27;imports&#x27;) or [])
+                           if i.get(&#x27;module&#x27;)]
+                fp = function_fp(rel, sym, ins, outs, sfn, reads=reads)
+                prose = (load_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;function&#x27;,
+                                     name, sym[&#x27;line&#x27;], fp,
+                                     accept_stub=no_llm) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if no_llm:
+                        prose = generate(client, &#x27;function&#x27;, &#x27;&#x27;, &#x27;&#x27;, retry,
+                                         no_llm=True)
+                    else:
+                        if maxlines and fn_length(sym) &gt; maxlines:
+                            report = lambda stage: tui.stage(w, rel, name, stage)
+                            body_note = chunk_notes(client, cfg, f, sym,
+                                                    prompts, retry, skip,
+                                                    maxchunk, chunktok,
+                                                    cpt, stage_cb=report, schunk=schunk)
+                            report(&#x27;merge&#x27;)
+                            ctx = fn_context_text(
+                                {**sym, &#x27;relpath&#x27;: rel}, ins, outs,
+                                cfg[&#x27;context&#x27;], body_note=body_note,
+                                reads=reads, imports=imports)
+                        else:
+                            tui.stage(w, rel, name, &#x27;describe&#x27;)
+                            ctx = fn_context_text(
+                                {**sym, &#x27;relpath&#x27;: rel}, ins, outs,
+                                cfg[&#x27;context&#x27;], reads=reads,
+                                imports=imports)
+                        task_prompt = render_prompt(
+                            prompts.get(&#x27;function&#x27;, &#x27;&#x27;),
+                            prompt_fields(f, sym, &#x27;function&#x27;))
+                        prose = generate(client, &#x27;function&#x27;, task_prompt,
+                                         ctx, retry)
+                    # Save only newly generated prose (never rewrite a cache
+                    # hit — that would also drop the `stubbed` flag from a
+                    # stub loaded in --no-llm mode). In --no-llm mode the
+                    # generated prose is always a flagged stub.
+                    save_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;function&#x27;, name,
+                                sym[&#x27;line&#x27;], prose, fp,
+                                {&#x27;id&#x27;: job[&#x27;nid&#x27;],
+                                 &#x27;qualified&#x27;: sym.get(&#x27;qualified&#x27;),
+                                 &#x27;params&#x27;: sym.get(&#x27;params&#x27;),
+                                 &#x27;vararg&#x27;: sym.get(&#x27;vararg&#x27;)},
+                                stubbed=no_llm)
+            elif job[&#x27;kind&#x27;] == &#x27;variable&#x27;:
+                fp = variable_fp(rel, sym, svar)
+                prose = (load_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;variable&#x27;,
+                                     name, sym[&#x27;line&#x27;], fp,
+                                     accept_stub=no_llm) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if no_llm:
+                        prose = generate(client, &#x27;variable&#x27;, &#x27;&#x27;, &#x27;&#x27;, retry,
+                                         no_llm=True)
+                    else:
+                        tui.stage(w, rel, name, &#x27;describe&#x27;)
+                        ctx = var_context_text({**sym, &#x27;relpath&#x27;: rel},
+                                               cfg[&#x27;context&#x27;])
+                        task_prompt = render_prompt(
+                            prompts.get(&#x27;variable&#x27;, &#x27;&#x27;),
+                            prompt_fields(f, sym, &#x27;variable&#x27;))
+                        prose = generate(client, &#x27;variable&#x27;, task_prompt,
+                                         ctx, retry)
+                    save_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;variable&#x27;, name,
+                                sym[&#x27;line&#x27;], prose, fp,
+                                {&#x27;file&#x27;: rel, &#x27;name&#x27;: name, &#x27;line&#x27;: sym[&#x27;line&#x27;],
+                                 &#x27;init&#x27;: sym.get(&#x27;init&#x27;)},
+                                stubbed=no_llm)
+            else:  # file summary
+                fp = summary_fp(rel, f, ssum)
+                prose = (load_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;summary&#x27;,
+                                     &#x27;file&#x27;, 1, fp,
+                                     accept_stub=no_llm) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if no_llm:
+                        prose = generate(client, &#x27;summary&#x27;, &#x27;&#x27;, &#x27;&#x27;, retry,
+                                         no_llm=True)
+                    else:
+                        tui.stage(w, rel, &#x27;file&#x27;, &#x27;describe&#x27;)
+                        ctx = summary_context_text(f, cfg[&#x27;context&#x27;])
+                        task_prompt = render_prompt(
+                            prompts.get(&#x27;summary&#x27;, &#x27;&#x27;),
+                            prompt_fields(f, {&#x27;name&#x27;: &#x27;file&#x27;, &#x27;line&#x27;: 1},
+                                          &#x27;file summary&#x27;))
+                        prose = generate(client, &#x27;summary&#x27;, task_prompt,
+                                         ctx, retry)
+                    save_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;summary&#x27;, &#x27;file&#x27;, 1,
+                                prose, fp,
+                                {&#x27;file&#x27;: rel, &#x27;lines&#x27;: f.get(&#x27;lines&#x27;),
+                                 &#x27;function_count&#x27;: len(f.get(&#x27;functions&#x27;) or [])},
+                                stubbed=no_llm)
+            tui.job_end(w, time.time() - t0, generated=not cached,
+                        failed=False, kind=kind_label.get(job[&#x27;kind&#x27;]))
+            note = (&#x27; (cached)&#x27; if cached
+                    else &#x27; (stub, --no-llm)&#x27; if no_llm else &#x27;&#x27;)
+            log(f&#x27;  {tag} OK&#x27; + note)
+        except Exception as e:  # noqa: BLE001
+            tui.job_end(w, time.time() - t0, generated=False, failed=True,
+                        kind=kind_label.get(job[&#x27;kind&#x27;]))
+            log(f&#x27;  {tag} FAILED: {e}&#x27;)
+
+    t_start = time.time()
+    ex = ThreadPoolExecutor(max_workers=n)
+    try:
+        list(ex.map(run, jobs))
+    except KeyboardInterrupt:
+        # cancel everything still queued; let the in-flight tasks (at most
+        # n) finish so their records get saved
+        ex.shutdown(wait=True, cancel_futures=True)
+        s = tui.snapshot()
+        log(f&#x27;interrupted: {s[&quot;done&quot;]}/{len(jobs)} tasks done, &#x27;
+            f&#x27;failed={s[&quot;failed&quot;]} — saved records kept; rerun to continue&#x27;)
+        raise
+    finally:
+        tui.stop()
+        set_log_sink(None)
+    s = tui.snapshot()
+    log(f&#x27;llm phase: done={s[&quot;done&quot;]} skipped={s[&quot;skipped&quot;]} &#x27;
+        f&#x27;failed={s[&quot;failed&quot;]} in {time.time() - t_start:.0f}s &#x27;
+        f&#x27;with {n} agent{&quot;s&quot; if n != 1 else &quot;&quot;}&#x27;)
+    return s[&#x27;failed&#x27;]</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:343</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>wid <a id="fn-wid-167"></a></h3>
+<p><em>kodama_docs/llm_phase.py:167-172</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>threading.get_ident
+</li>
+<li>len
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def wid():
+        ident = threading.get_ident()
+        with wid_lock:
+            if ident not in wid_map:
+                wid_map[ident] = len(wid_map) + 1
+            return wid_map[ident]</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:175</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>run <a id="fn-run-174"></a></h3>
+<p><em>kodama_docs/llm_phase.py:174-285</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>job</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="llm_phase.py.html#fn-wid-167">wid</a>
+</li>
+<li>job_start (inferred)
+</li>
+<li>time.time
+</li>
+<li><a href="graph.py.html#fn-graph_neighbor_names-157">graph_neighbor_names</a>
+</li>
+<li><a href="graph.py.html#fn-graph_read_names-184">graph_read_names</a>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">i.get</span>
+</li>
+<li><a href="tasks.py.html#fn-function_fp-53">function_fp</a>
+</li>
+<li><a href="records.py.html#fn-load_record-67">load_record</a>
+</li>
+<li><a href="llm.py.html#fn-generate-81">generate</a>
+</li>
+<li><a href="llm_phase.py.html#fn-fn_length-34">fn_length</a>
+</li>
+<li>stage (inferred)
+</li>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes</a>
+</li>
+<li><span style="color:#e67e22">report</span>
+</li>
+<li><a href="context.py.html#fn-fn_context_text-53">fn_context_text</a>
+</li>
+<li><a href="prompt_templates.py.html#fn-render_prompt-74">render_prompt</a>
+</li>
+<li><span style="color:#e67e22">prompts.get</span>
+</li>
+<li><a href="prompt_templates.py.html#fn-prompt_fields-49">prompt_fields</a>
+</li>
+<li><a href="records.py.html#fn-save_record-32">save_record</a>
+</li>
+<li><span style="color:#e67e22">sym.get</span>
+</li>
+<li><a href="tasks.py.html#fn-variable_fp-63">variable_fp</a>
+</li>
+<li><a href="context.py.html#fn-var_context_text-84">var_context_text</a>
+</li>
+<li><a href="tasks.py.html#fn-summary_fp-70">summary_fp</a>
+</li>
+<li><a href="context.py.html#fn-summary_context_text-97">summary_context_text</a>
+</li>
+<li>len
+</li>
+<li>job_end (inferred)
+</li>
+<li><span style="color:#e67e22">kind_label.get</span>
+</li>
+<li>log
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def run(job):
+        w, f, sym = wid(), job[&#x27;f&#x27;], job[&#x27;sym&#x27;]
+        tag, rel, name = job[&#x27;tag&#x27;], f[&#x27;relpath&#x27;], sym[&#x27;name&#x27;]
+        tui.job_start(w, rel, name)
+        t0 = time.time()
+        try:
+            cached = False
+            if job[&#x27;kind&#x27;] == &#x27;function&#x27;:
+                ins, outs = gmod.graph_neighbor_names(g, job[&#x27;nid&#x27;])
+                reads = gmod.graph_read_names(g, job[&#x27;nid&#x27;])
+                imports = [i.get(&#x27;module&#x27;) for i in (f.get(&#x27;imports&#x27;) or [])
+                           if i.get(&#x27;module&#x27;)]
+                fp = function_fp(rel, sym, ins, outs, sfn, reads=reads)
+                prose = (load_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;function&#x27;,
+                                     name, sym[&#x27;line&#x27;], fp,
+                                     accept_stub=no_llm) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if no_llm:
+                        prose = generate(client, &#x27;function&#x27;, &#x27;&#x27;, &#x27;&#x27;, retry,
+                                         no_llm=True)
+                    else:
+                        if maxlines and fn_length(sym) &gt; maxlines:
+                            report = lambda stage: tui.stage(w, rel, name, stage)
+                            body_note = chunk_notes(client, cfg, f, sym,
+                                                    prompts, retry, skip,
+                                                    maxchunk, chunktok,
+                                                    cpt, stage_cb=report, schunk=schunk)
+                            report(&#x27;merge&#x27;)
+                            ctx = fn_context_text(
+                                {**sym, &#x27;relpath&#x27;: rel}, ins, outs,
+                                cfg[&#x27;context&#x27;], body_note=body_note,
+                                reads=reads, imports=imports)
+                        else:
+                            tui.stage(w, rel, name, &#x27;describe&#x27;)
+                            ctx = fn_context_text(
+                                {**sym, &#x27;relpath&#x27;: rel}, ins, outs,
+                                cfg[&#x27;context&#x27;], reads=reads,
+                                imports=imports)
+                        task_prompt = render_prompt(
+                            prompts.get(&#x27;function&#x27;, &#x27;&#x27;),
+                            prompt_fields(f, sym, &#x27;function&#x27;))
+                        prose = generate(client, &#x27;function&#x27;, task_prompt,
+                                         ctx, retry)
+                    # Save only newly generated prose (never rewrite a cache
+                    # hit — that would also drop the `stubbed` flag from a
+                    # stub loaded in --no-llm mode). In --no-llm mode the
+                    # generated prose is always a flagged stub.
+                    save_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;function&#x27;, name,
+                                sym[&#x27;line&#x27;], prose, fp,
+                                {&#x27;id&#x27;: job[&#x27;nid&#x27;],
+                                 &#x27;qualified&#x27;: sym.get(&#x27;qualified&#x27;),
+                                 &#x27;params&#x27;: sym.get(&#x27;params&#x27;),
+                                 &#x27;vararg&#x27;: sym.get(&#x27;vararg&#x27;)},
+                                stubbed=no_llm)
+            elif job[&#x27;kind&#x27;] == &#x27;variable&#x27;:
+                fp = variable_fp(rel, sym, svar)
+                prose = (load_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;variable&#x27;,
+                                     name, sym[&#x27;line&#x27;], fp,
+                                     accept_stub=no_llm) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if no_llm:
+                        prose = generate(client, &#x27;variable&#x27;, &#x27;&#x27;, &#x27;&#x27;, retry,
+                                         no_llm=True)
+                    else:
+                        tui.stage(w, rel, name, &#x27;describe&#x27;)
+                        ctx = var_context_text({**sym, &#x27;relpath&#x27;: rel},
+                                               cfg[&#x27;context&#x27;])
+                        task_prompt = render_prompt(
+                            prompts.get(&#x27;variable&#x27;, &#x27;&#x27;),
+                            prompt_fields(f, sym, &#x27;variable&#x27;))
+                        prose = generate(client, &#x27;variable&#x27;, task_prompt,
+                                         ctx, retry)
+                    save_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;variable&#x27;, name,
+                                sym[&#x27;line&#x27;], prose, fp,
+                                {&#x27;file&#x27;: rel, &#x27;name&#x27;: name, &#x27;line&#x27;: sym[&#x27;line&#x27;],
+                                 &#x27;init&#x27;: sym.get(&#x27;init&#x27;)},
+                                stubbed=no_llm)
+            else:  # file summary
+                fp = summary_fp(rel, f, ssum)
+                prose = (load_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;summary&#x27;,
+                                     &#x27;file&#x27;, 1, fp,
+                                     accept_stub=no_llm) if skip else None)
+                cached = prose is not None
+                if prose is None:
+                    if no_llm:
+                        prose = generate(client, &#x27;summary&#x27;, &#x27;&#x27;, &#x27;&#x27;, retry,
+                                         no_llm=True)
+                    else:
+                        tui.stage(w, rel, &#x27;file&#x27;, &#x27;describe&#x27;)
+                        ctx = summary_context_text(f, cfg[&#x27;context&#x27;])
+                        task_prompt = render_prompt(
+                            prompts.get(&#x27;summary&#x27;, &#x27;&#x27;),
+                            prompt_fields(f, {&#x27;name&#x27;: &#x27;file&#x27;, &#x27;line&#x27;: 1},
+                                          &#x27;file summary&#x27;))
+                        prose = generate(client, &#x27;summary&#x27;, task_prompt,
+                                         ctx, retry)
+                    save_record(cfg[&#x27;data_dir&#x27;], rel, &#x27;summary&#x27;, &#x27;file&#x27;, 1,
+                                prose, fp,
+                                {&#x27;file&#x27;: rel, &#x27;lines&#x27;: f.get(&#x27;lines&#x27;),
+                                 &#x27;function_count&#x27;: len(f.get(&#x27;functions&#x27;) or [])},
+                                stubbed=no_llm)
+            tui.job_end(w, time.time() - t0, generated=not cached,
+                        failed=False, kind=kind_label.get(job[&#x27;kind&#x27;]))
+            note = (&#x27; (cached)&#x27; if cached
+                    else &#x27; (stub, --no-llm)&#x27; if no_llm else &#x27;&#x27;)
+            log(f&#x27;  {tag} OK&#x27; + note)
+        except Exception as e:  # noqa: BLE001
+            tui.job_end(w, time.time() - t0, generated=False, failed=True,
+                        kind=kind_label.get(job[&#x27;kind&#x27;]))
+            log(f&#x27;  {tag} FAILED: {e}&#x27;)</code></pre>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 9: import of <span style="color:#e67e22">threading</span> — no matching file in the project
+</li>
+<li>line 10: import of <span style="color:#e67e22">time</span> — no matching file in the project
+</li>
+<li>line 11: import of <span style="color:#e67e22">concurrent.futures</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>web/render.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>web/render.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_safe_url-39">_safe_url</a></td><td>39</td><td>url</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_inline-52">render_inline</a></td><td>52</td><td>text</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-keep_raw-60">keep_raw</a></td><td>60</td><td>value</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-keep_tag-64">keep_tag</a></td><td>64</td><td>m</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-keep_img-73">keep_img</a></td><td>73</td><td>m</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-keep_link-82">keep_link</a></td><td>82</td><td>m</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-keep_u-95">keep_u</a></td><td>95</td><td>m</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-restore-103">restore</a></td><td>103</td><td>m</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_table_cells-112">_table_cells</a></td><td>112</td><td>row</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_table-122">render_table</a></td><td>122</td><td>rows</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_list-135">render_list</a></td><td>135</td><td>items, ordered</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-emit-151">emit</a></td><td>151</td><td>nodes</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_md-165">render_md</a></td><td>165</td><td>md</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_safe_url <a id="fn-_safe_url-39"></a></h3>
+<p><em>web/render.py:39-49</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>url</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">u.lower</span>
+</li>
+<li><span style="color:#e67e22">low.startswith</span>
+</li>
+<li>re.match
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _safe_url(url: str) -&gt; str:
+    &quot;&quot;&quot;Allow only ordinary relative/absolute links, never script URLs.&quot;&quot;&quot;
+    u = str(url or &#x27;&#x27;).strip()
+    low = u.lower()
+    if low.startswith((&#x27;javascript:&#x27;, &#x27;vbscript:&#x27;, &#x27;data:&#x27;)):
+        return &#x27;#&#x27;
+    # has an explicit scheme? permit the harmless ones
+    m = re.match(r&#x27;^([A-Za-z][A-Za-z0-9+.-]*):&#x27;, u)
+    if m and m.group(1).lower() not in (&#x27;http&#x27;, &#x27;https&#x27;, &#x27;mailto&#x27;):
+        return &#x27;#&#x27;
+    return u</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-keep_img-73">keep_img:75</a>
+</li>
+<li><a href="render.py.html#fn-keep_link-82">keep_link:84</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_inline <a id="fn-render_inline-52"></a></h3>
+<p><em>web/render.py:52-109</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>text</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="render.py.html#variables">_BOLD_RE</a>
+</li>
+<li><a href="render.py.html#variables">_CODE_RE</a>
+</li>
+<li><a href="render.py.html#variables">_IMG_RE</a>
+</li>
+<li><a href="render.py.html#variables">_INTRA_U_RE</a>
+</li>
+<li><a href="render.py.html#variables">_LINK_RE</a>
+</li>
+<li><a href="render.py.html#variables">_SAFE_TAG_RE</a>
+</li>
+<li><a href="render.py.html#variables">_STAR_RE</a>
+</li>
+<li><a href="render.py.html#variables">_STASH_RE</a>
+</li>
+<li><a href="render.py.html#variables">_TAG_RE</a>
+</li>
+<li><a href="render.py.html#variables">_UNDER_RE</a>
+</li>
+<li><span style="color:#e67e22">_TAG_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">_CODE_RE.sub</span>
+</li>
+<li><a href="render.py.html#fn-keep_raw-60">keep_raw</a>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><span style="color:#e67e22">_IMG_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">_LINK_RE.sub</span>
+</li>
+<li>html.escape
+</li>
+<li><span style="color:#e67e22">_BOLD_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">_STAR_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">_INTRA_U_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">_UNDER_RE.sub</span>
+</li>
+<li>re.sub
+</li>
+<li><span style="color:#e67e22">_STASH_RE.sub</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_inline(text: str) -&gt; str:
+    &quot;&quot;&quot;Inline markdown -&gt; HTML.
+
+    Only the few tags generated by kodama-docs (anchors and the unresolved
+    span) pass through; every other tag is escaped. Inline code stays
+    literal, links get safe hrefs, and markdown images are supported.&quot;&quot;&quot;
+    stash = []
+
+    def keep_raw(value):
+        stash.append(value)
+        return f&#x27;\x00{len(stash) - 1}\x00&#x27;
+
+    def keep_tag(m):
+        tag = m.group(0)
+        if _SAFE_TAG_RE.match(tag):
+            return keep_raw(tag)
+        return tag  # html.escape() below escapes it
+
+    text = _TAG_RE.sub(keep_tag, text)   # raw anchors like &lt;a id=&quot;fn-x-3&quot;&gt;
+    text = _CODE_RE.sub(lambda m: keep_raw(m.group(0)), text)  # literal code
+
+    def keep_img(m):
+        alt = html.escape(m.group(1), quote=True)
+        src = html.escape(_safe_url(m.group(2)), quote=True)
+        return keep_raw(f&#x27;&lt;img src=&quot;{src}&quot; alt=&quot;{alt}&quot;&gt;&#x27;)
+
+    text = _IMG_RE.sub(keep_img, text)
+
+    # Links are stashed as complete anchors, protecting both the label and
+    # the target from the underscore pass (so __init__.py links survive).
+    def keep_link(m):
+        label = render_inline(m.group(1))
+        href = html.escape(_safe_url(m.group(2)), quote=True)
+        return keep_raw(f&#x27;&lt;a href=&quot;{href}&quot;&gt;{label}&lt;/a&gt;&#x27;)
+
+    text = _LINK_RE.sub(keep_link, text)
+    text = html.escape(text)
+    text = _BOLD_RE.sub(r&#x27;&lt;strong&gt;\1&lt;/strong&gt;&#x27;, text)
+    text = _STAR_RE.sub(r&#x27;&lt;em&gt;\1&lt;/em&gt;&#x27;, text)
+    # protect intraword underscores (e.g. kodama_docs) from the italic pass,
+    # like GFM&#x27;s intraword rule
+    u_stash = []
+
+    def keep_u(m):
+        u_stash.append(&#x27;_&#x27;)
+        return f&#x27;\x01{len(u_stash) - 1}\x01&#x27;
+
+    text = _INTRA_U_RE.sub(keep_u, text)
+    text = _UNDER_RE.sub(r&#x27;&lt;em&gt;\1&lt;/em&gt;&#x27;, text)
+    text = re.sub(r&#x27;\x01(\d+)\x01&#x27;, lambda m: &#x27;_&#x27;, text)
+
+    def restore(m):
+        item = stash[int(m.group(1))]
+        if item.startswith(&#x27;&lt;&#x27;):
+            return item
+        return &#x27;&lt;code&gt;&#x27; + html.escape(item[1:-1]) + &#x27;&lt;/code&gt;&#x27;
+
+    return _STASH_RE.sub(restore, text)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../tests/test_render_md.py.html">tests/test_render_md.py</a>
+<ul>
+<li><a href="../tests/test_render_md.py.html#fn-test_image_alt_is_escaped-23">test_image_alt_is_escaped:24</a>
+</li>
+<li><a href="../tests/test_render_md.py.html#fn-test_raw_html_is_escaped-41">test_raw_html_is_escaped:42</a>
+</li>
+<li><a href="../tests/test_render_md.py.html#fn-test_generated_anchor_and_span_pass-47">test_generated_anchor_and_span_pass:50</a>
+</li>
+<li><a href="../tests/test_render_md.py.html#fn-test_generated_anchor_and_span_pass-47">test_generated_anchor_and_span_pass:51</a>
+</li>
+<li><a href="../tests/test_render_md.py.html#fn-test_script_url_is_rejected-54">test_script_url_is_rejected:55</a>
+</li>
+<li><a href="../tests/test_render_md.py.html#fn-test_link_label_is_escaped-60">test_link_label_is_escaped:61</a>
+</li>
+</ul>
+</li>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-keep_link-82">keep_link:83</a>
+</li>
+<li><a href="render.py.html#fn-render_table-122">render_table:126</a>
+</li>
+<li><a href="render.py.html#fn-render_table-122">render_table:129</a>
+</li>
+<li><a href="render.py.html#fn-emit-151">emit:153</a>
+</li>
+<li><a href="render.py.html#fn-render_md-165">render_md:216</a>
+</li>
+<li><a href="render.py.html#fn-render_md-165">render_md:268</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>keep_raw <a id="fn-keep_raw-60"></a></h3>
+<p><em>web/render.py:60-62</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>value</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">stash.append</span>
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def keep_raw(value):
+        stash.append(value)
+        return f&#x27;\x00{len(stash) - 1}\x00&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-keep_tag-64">keep_tag:67</a>
+</li>
+<li><a href="render.py.html#fn-render_inline-52">render_inline:71</a>
+</li>
+<li><a href="render.py.html#fn-keep_img-73">keep_img:76</a>
+</li>
+<li><a href="render.py.html#fn-keep_link-82">keep_link:85</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>keep_tag <a id="fn-keep_tag-64"></a></h3>
+<p><em>web/render.py:64-68</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>m</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="render.py.html#variables">_SAFE_TAG_RE</a>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><span style="color:#e67e22">_SAFE_TAG_RE.match</span>
+</li>
+<li><a href="render.py.html#fn-keep_raw-60">keep_raw</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def keep_tag(m):
+        tag = m.group(0)
+        if _SAFE_TAG_RE.match(tag):
+            return keep_raw(tag)
+        return tag  # html.escape() below escapes it</code></pre>
+</details>
+<hr>
+<h3>keep_img <a id="fn-keep_img-73"></a></h3>
+<p><em>web/render.py:73-76</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>m</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>html.escape
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><a href="render.py.html#fn-_safe_url-39">_safe_url</a>
+</li>
+<li><a href="render.py.html#fn-keep_raw-60">keep_raw</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def keep_img(m):
+        alt = html.escape(m.group(1), quote=True)
+        src = html.escape(_safe_url(m.group(2)), quote=True)
+        return keep_raw(f&#x27;&lt;img src=&quot;{src}&quot; alt=&quot;{alt}&quot;&gt;&#x27;)</code></pre>
+</details>
+<hr>
+<h3>keep_link <a id="fn-keep_link-82"></a></h3>
+<p><em>web/render.py:82-85</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>Links are stashed as complete anchors, protecting both the label and the target from the underscore pass (so <em>_init_</em>.py links survive).</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>m</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><a href="render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+<li><a href="render.py.html#fn-_safe_url-39">_safe_url</a>
+</li>
+<li>html.escape
+</li>
+<li><a href="render.py.html#fn-keep_raw-60">keep_raw</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def keep_link(m):
+        label = render_inline(m.group(1))
+        href = html.escape(_safe_url(m.group(2)), quote=True)
+        return keep_raw(f&#x27;&lt;a href=&quot;{href}&quot;&gt;{label}&lt;/a&gt;&#x27;)</code></pre>
+</details>
+<hr>
+<h3>keep_u <a id="fn-keep_u-95"></a></h3>
+<p><em>web/render.py:95-97</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>m</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">u_stash.append</span>
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def keep_u(m):
+        u_stash.append(&#x27;_&#x27;)
+        return f&#x27;\x01{len(u_stash) - 1}\x01&#x27;</code></pre>
+</details>
+<hr>
+<h3>restore <a id="fn-restore-103"></a></h3>
+<p><em>web/render.py:103-107</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>m</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>int
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><span style="color:#e67e22">item.startswith</span>
+</li>
+<li>html.escape
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def restore(m):
+        item = stash[int(m.group(1))]
+        if item.startswith(&#x27;&lt;&#x27;):
+            return item
+        return &#x27;&lt;code&gt;&#x27; + html.escape(item[1:-1]) + &#x27;&lt;/code&gt;&#x27;</code></pre>
+</details>
+<hr>
+<h3>_table_cells <a id="fn-_table_cells-112"></a></h3>
+<p><em>web/render.py:112-119</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>row</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">row.strip</span>
+</li>
+<li><span style="color:#e67e22">r.startswith</span>
+</li>
+<li><span style="color:#e67e22">r.endswith</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><span style="color:#e67e22">part.replace</span>
+</li>
+<li>re.split
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _table_cells(row: str) -&gt; list:
+    r = row.strip()
+    if r.startswith(&#x27;|&#x27;):
+        r = r[1:]
+    if r.endswith(&#x27;|&#x27;):
+        r = r[:-1]
+    return [part.replace(&#x27;\\|&#x27;, &#x27;|&#x27;).strip()
+            for part in re.split(r&#x27;(?&lt;!\\)\|&#x27;, r)]</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-render_table-122">render_table:123</a>
+</li>
+<li><a href="render.py.html#fn-render_table-122">render_table:124</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_table <a id="fn-render_table-122"></a></h3>
+<p><em>web/render.py:122-132</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rows</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="render.py.html#fn-_table_cells-112">_table_cells</a>
+</li>
+<li>len
+</li>
+<li><a href="render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">h.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_table(rows) -&gt; str:
+    header = _table_cells(rows[0])
+    body = [_table_cells(r) for r in rows[2:]] if len(rows) &gt;= 3 else []
+    h = [&#x27;&lt;table&gt;&#x27;, &#x27;&lt;thead&gt;&lt;tr&gt;&#x27;]
+    h += [f&#x27;&lt;th&gt;{render_inline(c)}&lt;/th&gt;&#x27; for c in header]
+    h += [&#x27;&lt;/tr&gt;&lt;/thead&gt;&#x27;, &#x27;&lt;tbody&gt;&#x27;]
+    for row in body:
+        h.append(&#x27;&lt;tr&gt;&#x27; + &#x27;&#x27;.join(f&#x27;&lt;td&gt;{render_inline(c)}&lt;/td&gt;&#x27; for c in row)
+                 + &#x27;&lt;/tr&gt;&#x27;)
+    h += [&#x27;&lt;/tbody&gt;&#x27;, &#x27;&lt;/table&gt;&#x27;]
+    return &#x27;\n&#x27;.join(h)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-render_md-165">render_md:228</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_list <a id="fn-render_list-135"></a></h3>
+<p><em>web/render.py:135-162</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>items</code></td><td></td></tr>
+<tr><td><code>ordered</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">stack.pop</span>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><span style="color:#e67e22">stack.append</span>
+</li>
+<li><a href="render.py.html#fn-emit-151">emit</a>
+</li>
+<li><span style="color:#e67e22">h.append</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_list(items, ordered: bool = False) -&gt; str:
+    &quot;&quot;&quot;items: (indent, text) pairs; each item indented deeper than the
+    one before it nests under the most recent shallower item (arbitrary
+    depth). ``ordered`` renders the whole list as &lt;ol&gt; (nested branches
+    stay unordered, matching the generated documentation&#x27;s needs).&quot;&quot;&quot;
+    tree = []
+    stack = []  # (indent, node) — the current branch, shallowest first
+    for indent, text in items:
+        node = {&#x27;text&#x27;: text, &#x27;children&#x27;: []}
+        while stack and stack[-1][0] &gt;= indent:
+            stack.pop()
+        (stack[-1][1][&#x27;children&#x27;] if stack else tree).append(node)
+        stack.append((indent, node))
+    tag = &#x27;ol&#x27; if ordered else &#x27;ul&#x27;
+    h = [f&#x27;&lt;{tag}&gt;&#x27;]
+
+    def emit(nodes):
+        for n in nodes:
+            h.append(f&#x27;&lt;li&gt;{render_inline(n[&quot;text&quot;])}&#x27;)
+            if n[&#x27;children&#x27;]:
+                h.append(&#x27;&lt;ul&gt;&#x27;)
+                emit(n[&#x27;children&#x27;])
+                h.append(&#x27;&lt;/ul&gt;&#x27;)
+            h.append(&#x27;&lt;/li&gt;&#x27;)
+
+    emit(tree)
+    h.append(f&#x27;&lt;/{tag}&gt;&#x27;)
+    return &#x27;\n&#x27;.join(h)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../tests/test_render_list.py.html">tests/test_render_list.py</a>
+<ul>
+<li><a href="../tests/test_render_list.py.html#fn-test_flat_list-24">test_flat_list:25</a>
+</li>
+<li><a href="../tests/test_render_list.py.html#fn-test_two_level_nesting-35">test_two_level_nesting:36</a>
+</li>
+<li><a href="../tests/test_render_list.py.html#fn-test_three_level_nesting-52">test_three_level_nesting:53</a>
+</li>
+<li><a href="../tests/test_render_list.py.html#fn-test_sibling_branches_stay_separate-73">test_sibling_branches_stay_separate:75</a>
+</li>
+<li><a href="../tests/test_render_list.py.html#fn-test_inline_markdown_in_items-80">test_inline_markdown_in_items:81</a>
+</li>
+<li><a href="../tests/test_render_list.py.html#fn-test_first_item_deeper_than_zero_is_top_level-85">test_first_item_deeper_than_zero_is_top_level:88</a>
+</li>
+</ul>
+</li>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-render_md-165">render_md:207</a>
+</li>
+<li><a href="render.py.html#fn-render_md-165">render_md:237</a>
+</li>
+<li><a href="render.py.html#fn-render_md-165">render_md:247</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>emit <a id="fn-emit-151"></a></h3>
+<p><em>web/render.py:151-158</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>nodes</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">h.append</span>
+</li>
+<li><a href="render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+<li><a href="render.py.html#fn-emit-151">emit</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def emit(nodes):
+        for n in nodes:
+            h.append(f&#x27;&lt;li&gt;{render_inline(n[&quot;text&quot;])}&#x27;)
+            if n[&#x27;children&#x27;]:
+                h.append(&#x27;&lt;ul&gt;&#x27;)
+                emit(n[&#x27;children&#x27;])
+                h.append(&#x27;&lt;/ul&gt;&#x27;)
+            h.append(&#x27;&lt;/li&gt;&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-emit-151">emit:156</a>
+</li>
+<li><a href="render.py.html#fn-render_list-135">render_list:160</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_md <a id="fn-render_md-165"></a></h3>
+<p><em>web/render.py:165-269</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>md</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="render.py.html#variables">_HEAD_RE</a>
+</li>
+<li><a href="render.py.html#variables">_HR_RE</a>
+</li>
+<li><a href="render.py.html#variables">_OL_RE</a>
+</li>
+<li><span style="color:#e67e22">?.split</span>
+</li>
+<li><span style="color:#e67e22">md.replace</span>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><span style="color:#e67e22">stripped.startswith</span>
+</li>
+<li><span style="color:#e67e22">?.startswith</span>
+</li>
+<li><span style="color:#e67e22">buf.append</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">chr</span>
+</li>
+<li>html.escape
+</li>
+<li><span style="color:#e67e22">items.append</span>
+</li>
+<li><span style="color:#e67e22">raw.lstrip</span>
+</li>
+<li><span style="color:#e67e22">raw.strip</span>
+</li>
+<li><span style="color:#e67e22">out.append</span>
+</li>
+<li><a href="render.py.html#fn-render_list-135">render_list</a>
+</li>
+<li><span style="color:#e67e22">_HEAD_RE.match</span>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><a href="render.py.html#fn-render_inline-52">render_inline</a>
+</li>
+<li><span style="color:#e67e22">_HR_RE.match</span>
+</li>
+<li><span style="color:#e67e22">rows.append</span>
+</li>
+<li><a href="render.py.html#fn-render_table-122">render_table</a>
+</li>
+<li><span style="color:#e67e22">_OL_RE.match</span>
+</li>
+<li><span style="color:#e67e22">_OL_RE.sub</span>
+</li>
+<li>re.sub
+</li>
+<li><a href="render.py.html#fn-render_md-165">render_md</a>
+</li>
+<li><span style="color:#e67e22">?.lstrip</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_md(md: str) -&gt; str:
+    &quot;&quot;&quot;Markdown text (kodama-docs&#x27;s generated subset) -&gt; HTML body.&quot;&quot;&quot;
+    lines = md.replace(&#x27;\r\n&#x27;, &#x27;\n&#x27;).split(&#x27;\n&#x27;)
+    out = []
+    i, n = 0, len(lines)
+    while i &lt; n:
+        stripped = lines[i].strip()
+        if not stripped:
+            i += 1
+            continue
+        if stripped.startswith(&#x27;```&#x27;):
+            lang = stripped[3:].strip()
+            i += 1
+            buf = []
+            while i &lt; n and not lines[i].strip().startswith(&#x27;```&#x27;):
+                buf.append(lines[i])
+                i += 1
+            i += 1  # skip closing fence
+            cls = f&#x27; class=&quot;lang-{lang}&quot;&#x27; if lang else &#x27;&#x27;
+            pre = (f&#x27;&lt;pre&gt;&lt;code{cls}&gt;&#x27;
+                   f&#x27;{html.escape(chr(10).join(buf))}&lt;/code&gt;&lt;/pre&gt;&#x27;)
+            # Two separate collapsible zones, both closed by default:
+            # the source, and (when present) its &quot;Call graph&quot; list.
+            j = i
+            while j &lt; n and not lines[j].strip():
+                j += 1
+            if j &lt; n and lines[j].strip() == &#x27;**Call graph**&#x27;:
+                j += 1
+                while j &lt; n and not lines[j].strip():
+                    j += 1
+                items = []
+                while j &lt; n and lines[j].strip().startswith(&#x27;- &#x27;):
+                    raw = lines[j]
+                    items.append((len(raw) - len(raw.lstrip()),
+                                 raw.strip()[2:]))
+                    j += 1
+                if items:
+                    out.append(&#x27;&lt;details class=&quot;src&quot;&gt;&#x27;
+                               &#x27;&lt;summary&gt;Source&lt;/summary&gt;\n&#x27;
+                               + pre + &#x27;\n&lt;/details&gt;&#x27;)
+                    out.append(&#x27;&lt;details class=&quot;cg&quot;&gt;&#x27;
+                               &#x27;&lt;summary&gt;Call graph&lt;/summary&gt;\n&#x27;
+                               + render_list(items) + &#x27;\n&lt;/details&gt;&#x27;)
+                    i = j
+                    continue
+            out.append(&#x27;&lt;details class=&quot;src&quot;&gt;&lt;summary&gt;Source&lt;/summary&gt;\n&#x27;
+                       + pre + &#x27;\n&lt;/details&gt;&#x27;)
+            continue
+        m = _HEAD_RE.match(lines[i])
+        if m:
+            lvl = len(m.group(1))
+            out.append(f&#x27;&lt;h{lvl}&gt;{render_inline(m.group(2))}&lt;/h{lvl}&gt;&#x27;)
+            i += 1
+            continue
+        if _HR_RE.match(stripped):
+            out.append(&#x27;&lt;hr&gt;&#x27;)
+            i += 1
+            continue
+        if stripped.startswith(&#x27;|&#x27;):
+            rows = []
+            while i &lt; n and lines[i].strip().startswith(&#x27;|&#x27;):
+                rows.append(lines[i])
+                i += 1
+            out.append(render_table(rows))
+            continue
+        if stripped.startswith(&#x27;- &#x27;):
+            items = []
+            while i &lt; n and lines[i].strip().startswith(&#x27;- &#x27;):
+                raw = lines[i]
+                indent = len(raw) - len(raw.lstrip())
+                items.append((indent, raw.strip()[2:]))
+                i += 1
+            out.append(render_list(items))
+            continue
+        if _OL_RE.match(stripped):
+            items = []
+            while i &lt; n and _OL_RE.match(lines[i].strip()):
+                raw = lines[i]
+                indent = len(raw) - len(raw.lstrip())
+                text = _OL_RE.sub(&#x27;&#x27;, raw.strip(), count=1)
+                items.append((indent, text))
+                i += 1
+            out.append(render_list(items, ordered=True))
+            continue
+        if stripped.startswith(&#x27;&gt;&#x27;):
+            buf = []
+            while i &lt; n and lines[i].strip().startswith(&#x27;&gt;&#x27;):
+                buf.append(re.sub(r&#x27;^\s*&gt;\s?&#x27;, &#x27;&#x27;, lines[i]))
+                i += 1
+            out.append(&#x27;&lt;blockquote&gt;&#x27;
+                       + render_md(&#x27;\n&#x27;.join(buf))
+                       + &#x27;&lt;/blockquote&gt;&#x27;)
+            continue
+        # paragraph: until a blank line or another block start
+        buf = [lines[i].strip()]
+        i += 1
+        while (i &lt; n and lines[i].strip()
+               and not lines[i].lstrip().startswith((&#x27;#&#x27;, &#x27;```&#x27;, &#x27;|&#x27;, &#x27;- &#x27;))
+               and not _OL_RE.match(lines[i].strip())
+               and not lines[i].strip().startswith(&#x27;&gt;&#x27;)
+               and not _HR_RE.match(lines[i].strip())):
+            buf.append(lines[i].strip())
+            i += 1
+        out.append(&#x27;&lt;p&gt;&#x27; + render_inline(&#x27; &#x27;.join(buf)) + &#x27;&lt;/p&gt;&#x27;)
+    return &#x27;\n&#x27;.join(out)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../kodama_docs/static_site.py.html">kodama_docs/static_site.py</a>
+<ul>
+<li><a href="../kodama_docs/static_site.py.html#fn-build-249">build:341</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_render_md.py.html">tests/test_render_md.py</a>
+<ul>
+<li><a href="../tests/test_render_md.py.html#fn-test_markdown_image-18">test_markdown_image:19</a>
+</li>
+<li><a href="../tests/test_render_md.py.html#fn-test_ordered_list-29">test_ordered_list:30</a>
+</li>
+<li><a href="../tests/test_render_md.py.html#fn-test_blockquote-35">test_blockquote:36</a>
+</li>
+</ul>
+</li>
+<li><a href="render.py.html">web/render.py</a>
+<ul>
+<li><a href="render.py.html#fn-render_md-165">render_md:255</a>
+</li>
+</ul>
+</li>
+<li><a href="server.py.html">web/server.py</a>
+<ul>
+<li><a href="server.py.html#fn-_rendered-215">DocsHandler._rendered:220</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>_TAG_RE</code></td><td>18</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_SAFE_TAG_RE</code></td><td>21</td><td>call</td><td>Only the tags kodama-docs itself emits may pass through. Anything else is escaped as text: LLM prose and manual pages must not inject markup …</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_CODE_RE</code></td><td>26</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_BOLD_RE</code></td><td>27</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_STAR_RE</code></td><td>28</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_UNDER_RE</code></td><td>29</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_INTRA_U_RE</code></td><td>30</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_LINK_RE</code></td><td>31</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_IMG_RE</code></td><td>32</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_STASH_RE</code></td><td>33</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_HEAD_RE</code></td><td>34</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_HR_RE</code></td><td>35</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_OL_RE</code></td><td>36</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 15: import of <span style="color:#e67e22">html</span> — no matching file in the project
+</li>
+<li>line 16: import of <span style="color:#e67e22">re</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

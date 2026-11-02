@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_cli.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_cli.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-run-14">run</a></td><td>14</td><td>args, cwd</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_bare_command_prints_help-19">test_bare_command_prints_help</a></td><td>19</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_pipeline_requires_explicit_config-29">test_pipeline_requires_explicit_config</a></td><td>29</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_backend_listing_needs_no_config-38">test_backend_listing_needs_no_config</a></td><td>38</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_init_creates_settings_and_prompts-46">test_init_creates_settings_and_prompts</a></td><td>46</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_init_config_runs_without_llm-66">test_init_config_runs_without_llm</a></td><td>66</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-75">main</a></td><td>75</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>run <a id="fn-run-14"></a></h3>
+<p><em>tests/test_cli.py:14-16</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>args</code></td><td></td></tr>
+<tr><td><code>cwd</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cli.py.html#variables">MAIN</a>
+</li>
+<li>subprocess.run
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def run(args, cwd):
+    return subprocess.run([sys.executable, MAIN, *args], cwd=cwd,
+                          capture_output=True, text=True, timeout=120)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cli.py.html">tests/test_cli.py</a>
+<ul>
+<li><a href="test_cli.py.html#fn-test_bare_command_prints_help-19">test_bare_command_prints_help:21</a>
+</li>
+<li><a href="test_cli.py.html#fn-test_pipeline_requires_explicit_config-29">test_pipeline_requires_explicit_config:31</a>
+</li>
+<li><a href="test_cli.py.html#fn-test_backend_listing_needs_no_config-38">test_backend_listing_needs_no_config:40</a>
+</li>
+<li><a href="test_cli.py.html#fn-test_init_creates_settings_and_prompts-46">test_init_creates_settings_and_prompts:48</a>
+</li>
+<li><a href="test_cli.py.html#fn-test_init_creates_settings_and_prompts-46">test_init_creates_settings_and_prompts:59</a>
+</li>
+<li><a href="test_cli.py.html#fn-test_init_creates_settings_and_prompts-46">test_init_creates_settings_and_prompts:62</a>
+</li>
+<li><a href="test_cli.py.html#fn-test_init_config_runs_without_llm-66">test_init_config_runs_without_llm:68</a>
+</li>
+<li><a href="test_cli.py.html#fn-test_init_config_runs_without_llm-66">test_init_config_runs_without_llm:70</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_bare_command_prints_help <a id="fn-test_bare_command_prints_help-19"></a></h3>
+<p><em>tests/test_cli.py:19-26</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>tempfile.TemporaryDirectory
+</li>
+<li><a href="test_cli.py.html#fn-run-14">run</a>
+</li>
+<li>os.path.exists
+</li>
+<li>os.path.join
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_bare_command_prints_help():
+    with tempfile.TemporaryDirectory() as td:
+        r = run([], td)
+        assert r.returncode == 0, r
+        assert &#x27;usage:&#x27; in r.stdout
+        assert &#x27;--config&#x27; in r.stdout
+        assert not os.path.exists(os.path.join(td, &#x27;doc&#x27;))
+        assert not os.path.exists(os.path.join(td, &#x27;data&#x27;))</code></pre>
+</details>
+<hr>
+<h3>test_pipeline_requires_explicit_config <a id="fn-test_pipeline_requires_explicit_config-29"></a></h3>
+<p><em>tests/test_cli.py:29-35</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>tempfile.TemporaryDirectory
+</li>
+<li><a href="test_cli.py.html#fn-run-14">run</a>
+</li>
+<li>os.path.exists
+</li>
+<li>os.path.join
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_pipeline_requires_explicit_config():
+    with tempfile.TemporaryDirectory() as td:
+        r = run([&#x27;--no-llm&#x27;], td)
+        assert r.returncode == 2, r
+        assert &#x27;--config PATH is required&#x27; in r.stderr
+        assert not os.path.exists(os.path.join(td, &#x27;doc&#x27;))
+        assert not os.path.exists(os.path.join(td, &#x27;data&#x27;))</code></pre>
+</details>
+<hr>
+<h3>test_backend_listing_needs_no_config <a id="fn-test_backend_listing_needs_no_config-38"></a></h3>
+<p><em>tests/test_cli.py:38-43</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>tempfile.TemporaryDirectory
+</li>
+<li><a href="test_cli.py.html#fn-run-14">run</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_backend_listing_needs_no_config():
+    with tempfile.TemporaryDirectory() as td:
+        r = run([&#x27;--list-backends&#x27;], td)
+        assert r.returncode == 0, r
+        assert &#x27;kodama-cpp&#x27; in r.stdout
+        assert &#x27;kodama-python&#x27; in r.stdout</code></pre>
+</details>
+<hr>
+<h3>test_init_creates_settings_and_prompts <a id="fn-test_init_creates_settings_and_prompts-46"></a></h3>
+<p><em>tests/test_cli.py:46-63</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>tempfile.TemporaryDirectory
+</li>
+<li><a href="test_cli.py.html#fn-run-14">run</a>
+</li>
+<li>os.path.join
+</li>
+<li>os.path.isfile
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_init_creates_settings_and_prompts():
+    with tempfile.TemporaryDirectory() as td:
+        r = run([&#x27;init&#x27;], td)
+        assert r.returncode == 0, r
+        settings = os.path.join(td, &#x27;settings.yaml&#x27;)
+        assert os.path.isfile(settings)
+        with open(settings, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            text = fh.read()
+        assert &#x27;source_dir: &quot;.&quot;&#x27; in text
+        for name in (&#x27;function.txt&#x27;, &#x27;function_chunk.txt&#x27;,
+                     &#x27;variable.txt&#x27;, &#x27;summary.txt&#x27;):
+            assert os.path.isfile(os.path.join(td, &#x27;prompts&#x27;, name))
+        # refuse to clobber an existing config without --force
+        r = run([&#x27;init&#x27;], td)
+        assert r.returncode != 0, r
+        assert &#x27;already exists&#x27; in (r.stdout + r.stderr)
+        r = run([&#x27;init&#x27;, &#x27;--force&#x27;], td)
+        assert r.returncode == 0, r</code></pre>
+</details>
+<hr>
+<h3>test_init_config_runs_without_llm <a id="fn-test_init_config_runs_without_llm-66"></a></h3>
+<p><em>tests/test_cli.py:66-72</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>tempfile.TemporaryDirectory
+</li>
+<li><a href="test_cli.py.html#fn-run-14">run</a>
+</li>
+<li>os.path.isfile
+</li>
+<li>os.path.join
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_init_config_runs_without_llm():
+    with tempfile.TemporaryDirectory() as td:
+        r = run([&#x27;init&#x27;], td)
+        assert r.returncode == 0, r
+        r = run([&#x27;--config&#x27;, &#x27;settings.yaml&#x27;, &#x27;--no-llm&#x27;], td)
+        assert r.returncode == 0, r
+        assert os.path.isfile(os.path.join(td, &#x27;doc&#x27;, &#x27;index.md&#x27;))</code></pre>
+</details>
+<hr>
+<h3>main <a id="fn-main-75"></a></h3>
+<p><em>tests/test_cli.py:75-91</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">globals</span>
+</li>
+<li>sorted
+</li>
+<li>callable
+</li>
+<li><span style="color:#e67e22">k.startswith</span>
+</li>
+<li><span style="color:#e67e22">t</span>
+</li>
+<li>print
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    tests = [v for k, v in sorted(globals().items())
+             if k.startswith(&#x27;test_&#x27;) and callable(v)]
+    failed = 0
+    for t in tests:
+        try:
+            t()
+            print(f&#x27;ok   {t.__name__}&#x27;)
+        except AssertionError as e:
+            failed += 1
+            print(f&#x27;FAIL {t.__name__}: {e}&#x27;)
+    print()
+    if failed:
+        print(f&#x27;{failed} CLI test(s) failed&#x27;)
+        return 1
+    print(f&#x27;{len(tests)} CLI tests passed&#x27;)
+    return 0</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cli.py.html">tests/test_cli.py</a>
+<ul>
+<li><a href="test_cli.py.html">top-level:95</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>ROOT</code></td><td>10</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>MAIN</code></td><td>11</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 5: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 6: import of <span style="color:#e67e22">subprocess</span> — no matching file in the project
+</li>
+<li>line 7: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+<li>line 8: import of <span style="color:#e67e22">tempfile</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

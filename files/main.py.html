@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>main.py</title>
+<link rel="icon" type="image/x-icon" href="../icon/icon.ico">
+<link rel="icon" type="image/png" href="../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../symbols-data.js" defer></script>
+<script src="../lib/highlight.min.js" defer></script>
+<script src="../app.js" defer></script>
+<script src="../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../index.html"><img class="brand-icon"
+     src="../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>main.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_print_backend-33">_print_backend</a></td><td>33</td><td>b</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_print_backends-45">_print_backends</a></td><td>45</td><td>bs</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_valid_records-54">_valid_records</a></td><td>54</td><td>cfg, files, g</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_all-108">render_all</a></td><td>108</td><td>cfg, files, g, diag, astatus</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-166">main</a></td><td>166</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_print_backend <a id="fn-_print_backend-33"></a></h3>
+<p><em>main.py:33-42</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>b</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>print
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">status.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _print_backend(b: dict):
+    status = {&#x27;ready&#x27;: &#x27;green&#x27;, &#x27;unavailable&#x27;: &#x27;yellow&#x27;,
+              &#x27;invalid&#x27;: &#x27;red&#x27;, &#x27;conflict&#x27;: &#x27;red&#x27;}
+    print(f&quot;  {b[&#x27;name&#x27;]}  {b[&#x27;version&#x27;]}  api={b[&#x27;api_version&#x27;]}  &quot;
+          f&quot;ext={&#x27;,&#x27;.join(b[&#x27;extensions&#x27;]) or &#x27;-&#x27;}  &quot;
+          f&quot;status={b[&#x27;status&#x27;]} ({status.get(b[&#x27;status&#x27;], &#x27;white&#x27;)})&quot;)
+    if b[&#x27;description&#x27;]:
+        print(f&quot;      {b[&#x27;description&#x27;]}&quot;)
+    for iss in b[&#x27;issues&#x27;]:
+        print(f&#x27;      ! {iss}&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="main.py.html">main.py</a>
+<ul>
+<li><a href="main.py.html#fn-_print_backends-45">_print_backends:48</a>
+</li>
+<li><a href="main.py.html#fn-main-166">main:225</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_print_backends <a id="fn-_print_backends-45"></a></h3>
+<p><em>main.py:45-51</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>bs</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>len
+</li>
+<li>print
+</li>
+<li><a href="main.py.html#fn-_print_backend-33">_print_backend</a>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _print_backends(bs):
+    print(f&#x27;backends ({len(bs)}):&#x27;)
+    for b in bs:
+        _print_backend(b)
+    ready = [b for b in bs if b[&#x27;status&#x27;] == &#x27;ready&#x27;]
+    exts = sorted(e for b in ready for e in b[&#x27;extensions&#x27;])
+    print(f&#x27;routing: {&quot;, &quot;.join(exts) or &quot;-&quot;}&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="main.py.html">main.py</a>
+<ul>
+<li><a href="main.py.html#fn-main-166">main:236</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_valid_records <a id="fn-_valid_records-54"></a></h3>
+<p><em>main.py:54-105</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>bool
+</li>
+<li><span style="color:#e67e22">doccfg.get</span>
+</li>
+<li><a href="kodama_docs/records.py.html#fn-list_records-87">list_records</a>
+</li>
+<li><a href="kodama_docs/tasks.py.html#fn-settings_fp-29">settings_fp</a>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><span style="color:#e67e22">fn_all.get</span>
+</li>
+<li><a href="kodama_docs/graph.py.html#fn-node_id_fn-55">node_id_fn</a>
+</li>
+<li><a href="kodama_docs/graph.py.html#fn-graph_neighbor_names-157">graph_neighbor_names</a>
+</li>
+<li><a href="kodama_docs/graph.py.html#fn-graph_read_names-184">graph_read_names</a>
+</li>
+<li><a href="kodama_docs/tasks.py.html#fn-function_fp-53">function_fp</a>
+</li>
+<li><span style="color:#e67e22">rec.get</span>
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+<li><span style="color:#e67e22">var_all.get</span>
+</li>
+<li><a href="kodama_docs/tasks.py.html#fn-variable_fp-63">variable_fp</a>
+</li>
+<li><span style="color:#e67e22">sum_all.get</span>
+</li>
+<li><a href="kodama_docs/tasks.py.html#fn-summary_fp-70">summary_fp</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _valid_records(cfg: dict, files, g):
+    &quot;&quot;&quot;Load only records whose fingerprint matches the current input.
+
+    `list_records` returns every JSON on disk, including records left over
+    from an older prompt, an older model, a changed symbol, or a failed
+    regeneration. Rendering those as if current is worse than rendering a
+    placeholder, so the render phase filters them with the same
+    fingerprints the LLM phase uses.&quot;&quot;&quot;
+    doccfg = cfg[&#x27;documentation&#x27;]
+    want_fn = bool(doccfg.get(&#x27;generate_function_docs&#x27;))
+    want_var = bool(doccfg.get(&#x27;generate_variable_docs&#x27;))
+    want_sum = bool(doccfg.get(&#x27;generate_file_summaries&#x27;))
+    fn_all = list_records(cfg[&#x27;data_dir&#x27;], &#x27;function&#x27;) if want_fn else {}
+    var_all = list_records(cfg[&#x27;data_dir&#x27;], &#x27;variable&#x27;) if want_var else {}
+    sum_all = list_records(cfg[&#x27;data_dir&#x27;], &#x27;summary&#x27;) if want_sum else {}
+    sfn = settings_fp(cfg, &#x27;function&#x27;) if want_fn else None
+    svar = settings_fp(cfg, &#x27;variable&#x27;) if want_var else None
+    ssum = settings_fp(cfg, &#x27;summary&#x27;) if want_sum else None
+
+    fn_recs, var_recs, sum_recs = {}, {}, {}
+    for f in files:
+        rel = f[&#x27;relpath&#x27;]
+        if want_fn:
+            for fn in f.get(&#x27;functions&#x27;) or []:
+                if fn.get(&#x27;skip_llm&#x27;):
+                    continue
+                key = (rel, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+                rec = fn_all.get(key)
+                if rec is None:
+                    continue
+                nid = gmod.node_id_fn(rel, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+                ins, outs = gmod.graph_neighbor_names(g, nid)
+                reads = gmod.graph_read_names(g, nid)
+                fp = function_fp(rel, fn, ins, outs, sfn, reads=reads)
+                if rec.get(&#x27;fingerprint&#x27;) == fp:
+                    fn_recs[key] = rec
+        if want_var:
+            for v in f.get(&#x27;file_vars&#x27;) or []:
+                if v.get(&#x27;skip_llm&#x27;):
+                    continue
+                key = (rel, v[&#x27;name&#x27;], v[&#x27;line&#x27;])
+                rec = var_all.get(key)
+                if rec is not None and \
+                        rec.get(&#x27;fingerprint&#x27;) == variable_fp(rel, v, svar):
+                    var_recs[key] = rec
+        if want_sum:
+            key = (rel, &#x27;file&#x27;, 1)
+            rec = sum_all.get(key)
+            if rec is not None and \
+                    rec.get(&#x27;fingerprint&#x27;) == summary_fp(rel, f, ssum):
+                sum_recs[key] = rec
+    return fn_recs, var_recs, sum_recs</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="main.py.html">main.py</a>
+<ul>
+<li><a href="main.py.html#fn-render_all-108">render_all:113</a>
+</li>
+</ul>
+</li>
+<li><a href="tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:79</a>
+</li>
+<li><a href="tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:89</a>
+</li>
+<li><a href="tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:97</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_all <a id="fn-render_all-108"></a></h3>
+<p><em>main.py:108-163</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cfg</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>diag</code></td><td></td></tr>
+<tr><td><code>astatus</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="kodama_docs/outputs.py.html#fn-reset_output-54">reset_output</a>
+</li>
+<li><a href="main.py.html#fn-_valid_records-54">_valid_records</a>
+</li>
+<li>copy_manual_docs (inferred)
+</li>
+<li><span style="color:#e67e22">cfg.get</span>
+</li>
+<li><a href="kodama_docs/markdown.py.html#fn-build_call_indexes-53">build_call_indexes</a>
+</li>
+<li><a href="kodama_docs/markdown.py.html#fn-symbol_index-130">symbol_index</a>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">sum_recs.get</span>
+</li>
+<li><span style="color:#e67e22">summary.get</span>
+</li>
+<li><a href="kodama_docs/markdown.py.html#fn-render_file_md-272">render_file_md</a>
+</li>
+<li><a href="kodama_docs/markdown.py.html#fn-write_md-551">write_md</a>
+</li>
+<li><a href="kodama_docs/markdown.py.html#fn-render_index-529">render_index</a>
+</li>
+<li><a href="kodama_docs/graph.py.html#fn-resolution_summary-874">resolution_summary</a>
+</li>
+<li>os.path.join
+</li>
+<li>os.makedirs
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">fh.write</span>
+</li>
+<li>log
+</li>
+<li>write_manual_meta (inferred)
+</li>
+<li>os.path.exists
+</li>
+<li>shutil.copy2
+</li>
+<li><span style="color:#e67e22">copied.append</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_all(cfg: dict, files, g, diag=None, astatus=None):
+    # Recreate the generated output every run. This is simpler than tracking
+    # every stale page/manual/meta file, and guarantees that deleted sources
+    # and disabled features disappear. `.doc_cache` is preserved.
+    reset_output(cfg)
+    fn_recs, var_recs, sum_recs = _valid_records(cfg, files, g)
+    # Manual docs: copy the user&#x27;s folder into &lt;output&gt;/manual (fresh each
+    # run) and surface it as section 0 below. No LLM — prose only.
+    manual_pages = (manual.copy_manual_docs(cfg[&#x27;manual_doc&#x27;],
+                                            cfg[&#x27;output_dir&#x27;])
+                    if cfg.get(&#x27;manual_doc&#x27;) else [])
+    # One O(E) pass over the graph for the whole render, instead of a full
+    # edge scan per function (O(F×E) — the 10+ minute render tail).
+    call_idx = build_call_indexes(g)
+    sym_idx = symbol_index(g)
+    count = 0
+    for f in files:
+        finfo = {
+            &#x27;relpath&#x27;: f[&#x27;relpath&#x27;],
+            &#x27;lines&#x27;: f.get(&#x27;lines&#x27;),
+            &#x27;functions&#x27;: f.get(&#x27;functions&#x27;) or [],
+            &#x27;file_vars&#x27;: f.get(&#x27;file_vars&#x27;) or [],
+            &#x27;classes&#x27;: f.get(&#x27;classes&#x27;) or [],
+        }
+        summary = sum_recs.get((f[&#x27;relpath&#x27;], &#x27;file&#x27;, 1))
+        if summary:
+            summary = summary.get(&#x27;prose&#x27;)
+        out = render_file_md(finfo, fn_recs, var_recs, summary,
+                             cfg[&#x27;output_dir&#x27;], g, call_idx, sym_idx,
+                             diag=diag)
+        write_md(out, cfg[&#x27;output_dir&#x27;], f[&#x27;relpath&#x27;])
+        count += 1
+    index = render_index(files, cfg[&#x27;output_dir&#x27;],
+                         diag=diag, astatus=astatus,
+                         rs=gmod.resolution_summary(g),
+                         manual_pages=manual_pages)
+    ipath = os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;index.md&#x27;)
+    os.makedirs(cfg[&#x27;output_dir&#x27;], exist_ok=True)
+    with open(ipath, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        fh.write(index)
+    log(f&#x27;rendered {count} file pages + index -&gt; {cfg[&quot;output_dir&quot;]}&#x27;)
+    if cfg.get(&#x27;manual_doc&#x27;):
+        manual.write_manual_meta(cfg[&#x27;output_dir&#x27;], manual_pages)
+
+    if cfg.get(&#x27;copy_meta&#x27;):
+        meta_dir = os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;meta&#x27;)
+        copied = []
+        for name in (&#x27;graph.json&#x27;, &#x27;graph_diet.json&#x27;, &#x27;symbols.json&#x27;,
+                     &#x27;diagnostics.json&#x27;):
+            src = os.path.join(cfg[&#x27;data_dir&#x27;], name)
+            if os.path.exists(src):
+                os.makedirs(meta_dir, exist_ok=True)
+                shutil.copy2(src, os.path.join(meta_dir, name))
+                copied.append(name)
+        if copied:
+            log(f&#x27;copied {&quot;, &quot;.join(copied)} -&gt; {meta_dir}&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="main.py.html">main.py</a>
+<ul>
+<li><a href="main.py.html#fn-main-166">main:345</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>main <a id="fn-main-166"></a></h3>
+<p><em>main.py:166-356</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>argparse.ArgumentParser
+</li>
+<li><span style="color:#e67e22">ap.add_argument</span>
+</li>
+<li><span style="color:#e67e22">ap.parse_args</span>
+</li>
+<li>SystemExit
+</li>
+<li>bool
+</li>
+<li>sum
+</li>
+<li><span style="color:#e67e22">backends.install_backend</span>
+</li>
+<li>log
+</li>
+<li>print
+</li>
+<li><span style="color:#e67e22">backends.list_backends</span>
+</li>
+<li><a href="main.py.html#fn-_print_backend-33">_print_backend</a>
+</li>
+<li><span style="color:#e67e22">backends.remove_backend</span>
+</li>
+<li><a href="main.py.html#fn-_print_backends-45">_print_backends</a>
+</li>
+<li><a href="kodama_docs/init_project.py.html#fn-init_project-13">init_project</a>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><a href="kodama_docs/testing.py.html#fn-test_backend-398">test_backend</a>
+</li>
+<li><span style="color:#e67e22">ap.print_help</span>
+</li>
+<li><a href="kodama_docs/config.py.html#fn-load_config-9">load_config</a>
+</li>
+<li>os.path.abspath
+</li>
+<li>os.path.dirname
+</li>
+<li>os.path.join
+</li>
+<li>load_settings (inferred)
+</li>
+<li>serve (inferred)
+</li>
+<li><a href="kodama_docs/outputs.py.html#fn-purge_outputs-41">purge_outputs</a>
+</li>
+<li><a href="kodama_docs/scan.py.html#fn-scan_files-19">scan_files</a>
+</li>
+<li><span style="color:#e67e22">skipped.values</span>
+</li>
+<li><a href="kodama_docs/outputs.py.html#fn-check_doc_cache-103">check_doc_cache</a>
+</li>
+<li><a href="kodama_docs/scan.py.html#fn-scan_fingerprint-57">scan_fingerprint</a>
+</li>
+<li><a href="kodama_docs/scan.py.html#fn-load_symbols-173">load_symbols</a>
+</li>
+<li><span style="color:#e67e22">backends.backends_compatible</span>
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><a href="kodama_docs/scan.py.html#fn-analyze_files-67">analyze_files</a>
+</li>
+<li><span style="color:#e67e22">astatus.values</span>
+</li>
+<li><a href="kodama_docs/scan.py.html#fn-save_symbols-161">save_symbols</a>
+</li>
+<li><a href="kodama_docs/graph.py.html#fn-build_graph-312">build_graph</a>
+</li>
+<li><a href="kodama_docs/graph.py.html#fn-save_graph-896">save_graph</a>
+</li>
+<li><a href="kodama_docs/graph.py.html#fn-save_diet_graph-923">save_diet_graph</a>
+</li>
+<li><span style="color:#e67e22">g.number_of_edges</span>
+</li>
+<li><span style="color:#e67e22">g.number_of_nodes</span>
+</li>
+<li><a href="kodama_docs/scan.py.html#fn-save_diagnostics-109">save_diagnostics</a>
+</li>
+<li><a href="kodama_docs/scan.py.html#fn-report_scan-191">report_scan</a>
+</li>
+<li><a href="kodama_docs/llm_phase.py.html#fn-llm_phase-81">llm_phase</a>
+</li>
+<li><a href="main.py.html#fn-render_all-108">render_all</a>
+</li>
+<li><a href="kodama_docs/outputs.py.html#fn-write_doc_cache-94">write_doc_cache</a>
+</li>
+<li>build (inferred)
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    ap = argparse.ArgumentParser(description=&#x27;kodama-docs&#x27;)
+    ap.add_argument(&#x27;command&#x27;, nargs=&#x27;?&#x27;,
+                    choices=[None, &#x27;init&#x27;, &#x27;test-backend&#x27;],
+                    help=&quot;subcommands: &#x27;init&#x27; writes a starter settings.yaml &quot;
+                         &quot;+ prompts; &#x27;test-backend&#x27; runs a backend self-test; &quot;
+                         &quot;omit for a normal documentation run&quot;)
+    ap.add_argument(&#x27;--backend&#x27;, metavar=&#x27;NAME&#x27;,
+                    help=&#x27;backend name for test-backend (e.g. python)&#x27;)
+    ap.add_argument(&#x27;--config&#x27;, metavar=&#x27;PATH&#x27;,
+                    help=&#x27;settings file (required for pipeline, --serve, &#x27;
+                         &#x27;--purge and --regenerate; run with no arguments &#x27;
+                         &#x27;to print this help)&#x27;)
+    ap.add_argument(&#x27;--force&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;init: overwrite an existing settings.yaml and &#x27;
+                         &#x27;prompt files&#x27;)
+    ap.add_argument(&#x27;--fresh&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;ignore analysis cache&#x27;)
+    ap.add_argument(&#x27;--no-llm&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;skip the LLM model calls only (stub prose cached; &#x27;
+                         &#x27;all deterministic sections are still generated)&#x27;)
+    ap.add_argument(&#x27;--purge&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;delete docs/meta/data (output + data dirs) and exit&#x27;)
+    ap.add_argument(&#x27;--regenerate&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;delete docs/meta/data, then run everything fresh&#x27;)
+    ap.add_argument(&#x27;--serve&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;serve the rendered docs over HTTP instead of &#x27;
+                         &#x27;generating (needs a previous run)&#x27;)
+    ap.add_argument(&#x27;--static&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;also build a self-contained static site in &#x27;
+                         &#x27;&lt;output_dir&gt;/site (open site/index.html or host &#x27;
+                         &#x27;it, e.g. GitHub Pages — no server needed; see &#x27;
+                         &#x27;STATIC_SITE.md)&#x27;)
+    # backend management (mutually exclusive with a pipeline run)
+    ap.add_argument(&#x27;--list-backends&#x27;, action=&#x27;store_true&#x27;,
+                    help=&#x27;list installed backends (status + requirements) &#x27;
+                         &#x27;and exit&#x27;)
+    ap.add_argument(&#x27;--install&#x27;, metavar=&#x27;URL&#x27;,
+                    help=&#x27;install a backend from a git URL (or local path): &#x27;
+                         &#x27;clones it into backends/ and installs its python &#x27;
+                         &#x27;requirements (runs third-party code — review first)&#x27;)
+    ap.add_argument(&#x27;--remove&#x27;, metavar=&#x27;NAME&#x27;,
+                    help=&#x27;remove an installed backend by manifest name&#x27;)
+    args = ap.parse_args()
+    if args.purge and args.regenerate:
+        raise SystemExit(&#x27;--purge and --regenerate are mutually exclusive&#x27;)
+    if sum(bool(x) for x in (args.list_backends, args.install, args.remove)) \
+            &gt; 1:
+        raise SystemExit(&#x27;--list-backends / --install / --remove are &#x27;
+                         &#x27;mutually exclusive&#x27;)
+
+    if args.list_backends or args.install or args.remove:
+        if args.install is not None:
+            rep = backends.install_backend(args.install)
+            for ok, msg in rep[&#x27;steps&#x27;]:
+                log((&#x27;install: &#x27; if ok else &#x27;install (failed): &#x27;) + msg)
+            print()
+            for b in backends.list_backends():
+                if b[&#x27;dir&#x27;] == rep[&#x27;dir&#x27;]:
+                    _print_backend(b)
+            return
+        if args.remove is not None:
+            d = backends.remove_backend(args.remove)
+            log(f&#x27;remove: deleted backends/{d}&#x27;)
+            return
+        bs = backends.list_backends()
+        if not bs:
+            log(&#x27;no backends installed (backends/ has no manifest.toml &#x27;
+                &#x27;subdirectories)&#x27;)
+            return
+        _print_backends(bs)
+        return
+
+    if args.command == &#x27;init&#x27;:
+        from kodama_docs.init_project import init_project
+        try:
+            rep = init_project(&#x27;.&#x27;, force=args.force)
+        except FileExistsError as e:
+            raise SystemExit(f&#x27;init: {e}&#x27;)
+        log(f&#x27;init: wrote {rep[&quot;settings&quot;]}&#x27;)
+        if rep[&#x27;created&#x27;]:
+            log(f&#x27;init: wrote {len(rep[&quot;created&quot;])} prompt(s) to &#x27;
+                f&#x27;{rep[&quot;prompts_dir&quot;]}&#x27;)
+        if rep[&#x27;kept&#x27;]:
+            log(f&#x27;init: kept existing prompt(s): &#x27;
+                + &#x27;, &#x27;.join(rep[&#x27;kept&#x27;]))
+        print(&#x27;\nNext:&#x27;)
+        print(&#x27;  1. edit settings.yaml (source_dir and llm.model)&#x27;)
+        print(&#x27;  2. add .env with api_key/base_url, or use --no-llm&#x27;)
+        print(&#x27;  3. kodama-docs --config settings.yaml --no-llm&#x27;)
+        return
+
+    if args.command == &#x27;test-backend&#x27;:
+        if args.backend is None:
+            raise SystemExit(&#x27;test-backend needs --backend NAME &#x27;
+                             &#x27;(e.g. --backend python)&#x27;)
+        rc = test_backend(args.backend)
+        raise SystemExit(rc)
+
+    # Never fall back to an implicit settings.yaml: from a checkout it can
+    # point source_dir at the parent directory and generate docs somewhere
+    # unexpected. Bare `kodama-docs` is a help request; pipelines need an
+    # explicit config.
+    if args.config is None:
+        ap.print_help()
+        if len(sys.argv) &gt; 1:
+            print(&#x27;\nerror: --config PATH is required for a pipeline, &#x27;
+                  &#x27;--serve, --purge or --regenerate&#x27;, file=sys.stderr)
+            raise SystemExit(2)
+        return
+
+    # Serve / purge / --no-llm never call the model, so they must not
+    # require credentials in .env.
+    need_llm = not (args.no_llm or args.serve or args.purge)
+    cfg = load_config(args.config, require_llm=need_llm)
+
+    if args.serve:
+        from web import server as webserver
+        webdir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              &#x27;web&#x27;)
+        ws = webserver.load_settings(os.path.join(webdir, &#x27;web_settings.yaml&#x27;))
+        webserver.serve(ws[&#x27;docs_dir&#x27;] or cfg[&#x27;output_dir&#x27;], ws, webdir)
+        return
+
+    if args.purge or args.regenerate:
+        if not purge_outputs(cfg):
+            log(&#x27;nothing to purge (no output/data directories found)&#x27;)
+        if args.purge:
+            log(&#x27;purged, nothing else to do&#x27;)
+            return
+
+    log(f&#x27;source: {cfg[&quot;source_dir&quot;]}&#x27;)
+    files, skipped = scan_files(cfg)
+    log(f&#x27;scanned {len(files)} files &#x27;
+        f&#x27;({sum(len(v) for v in skipped.values())} skipped)&#x27;)
+
+    stale = check_doc_cache(cfg, files)
+
+    fp = scan_fingerprint(files)
+    cached, cfp, cback = (None, None, None) \
+        if (args.fresh or stale) else load_symbols(cfg)
+    if cached is not None and cfp == fp and \
+            backends.backends_compatible(cached, cback):
+        analysis = cached
+        log(f&#x27;loaded analysis cache ({len(analysis)} files, fp={cfp[:12]})&#x27;)
+        # Per-file analysis status from the last run&#x27;s diagnostics.json
+        # (files that failed/binary previously are still visible, P0-3).
+        astatus = {f[&#x27;relpath&#x27;]: {&#x27;status&#x27;: &#x27;ok&#x27;} for f in analysis}
+        dpath = os.path.join(cfg[&#x27;data_dir&#x27;], &#x27;diagnostics.json&#x27;)
+        try:
+            with open(dpath, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+                d = json.load(fh)
+            if d.get(&#x27;fingerprint&#x27;) == fp:
+                astatus = d[&#x27;analysis&#x27;][&#x27;files&#x27;]
+        except (OSError, ValueError, KeyError):
+            pass
+    else:
+        if cached is not None and cfp == fp:
+            log(&#x27;analysis cache stale (backends changed); re-extracting&#x27;)
+        analysis, astatus = analyze_files(cfg, files)
+        nfail = sum(1 for v in astatus.values() if v[&#x27;status&#x27;] == &#x27;failed&#x27;)
+        nbin = sum(1 for v in astatus.values() if v[&#x27;status&#x27;] == &#x27;binary&#x27;)
+        log(f&#x27;analysis: ok={len(analysis)} failed={nfail} &#x27;
+            f&#x27;binary_skipped={nbin}&#x27;)
+        save_symbols(cfg, analysis, fp)
+
+    g, diag = gmod.build_graph(analysis)
+    gpath = os.path.join(cfg[&#x27;data_dir&#x27;], &#x27;graph.json&#x27;)
+    gmod.save_graph(g, gpath)
+    gmod.save_diet_graph(g, os.path.join(cfg[&#x27;data_dir&#x27;], &#x27;graph_diet.json&#x27;))
+    log(f&#x27;graph: {g.number_of_nodes()} nodes / {g.number_of_edges()} edges &#x27;
+        f&#x27;-&gt; {gpath}&#x27;)
+
+    save_diagnostics(cfg[&#x27;data_dir&#x27;], fp, astatus, diag, g)
+
+    report_scan(cfg, analysis, skipped, g, diag, astatus)
+
+    failed = llm_phase(cfg, analysis, g, no_llm=args.no_llm)
+
+    render_all(cfg, analysis, g, diag, astatus)
+    if failed:
+        log(f&#x27;NOT updating .doc_cache ({failed} failed task(s) this run; &#x27;
+            f&#x27;unchanged cached records still reused next time)&#x27;)
+    else:
+        write_doc_cache(cfg, files)
+
+    if args.static:
+        from kodama_docs import static_site
+        static_site.build(cfg)
+
+    log(&#x27;done&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="main.py.html">main.py</a>
+<ul>
+<li><a href="main.py.html">top-level:361</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 8: import of <span style="color:#e67e22">argparse</span> — no matching file in the project
+</li>
+<li>line 9: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 10: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 11: import of <span style="color:#e67e22">shutil</span> — no matching file in the project
+</li>
+<li>line 12: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+<li>line 14: import of <span style="color:#e67e22">backends</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

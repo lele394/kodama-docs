@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompts</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Prompts</h1>
+<p>The prose each page carries is produced by four prompt files (one per <a href="../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.html">LLM phase</a> kind). They are plain text, live in <code>prompts/</code>, and are wired up by the <code>prompts</code> section of the config (see <a href="01%20-%20Config%20Reference.html">Config Reference</a>).</p>
+<h2>How a prompt becomes a call</h2>
+<p>At run time <code>generate()</code> (see <a href="../03%20-%20Components/04%20-%20LLM%20Client.html">LLM client</a>) assembles the <strong>system</strong> message as:</p>
+<details class="src"><summary>Source</summary>
+<pre><code>&lt;your prompt file, with {template} keys rendered&gt;
+
+Return ONLY one JSON object, no markdown fences, matching this schema exactly:
+&lt;the JSON schema for the kind, dumped from kodama_docs/models.py&gt;
+
+Field values must be plain strings. Be concise and factual.</code></pre>
+</details>
+<p>The prompt file is a <strong>template</strong>. Before the call, kodama-docs replaces the known <code>{key}</code> placeholders for that task (single pass; unknown braces are left untouched, so JSON examples in custom prompts are safe). The <strong>user</strong> message is the deterministic context (the symbol, its code, its callers/callees — see <a href="../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.html">LLM Phase</a> and <a href="../02%20-%20How%20It%20Works/06%20-%20Chunk%20and%20Merge.html">Chunk and Merge</a>). The schema is embedded verbatim from code, so the model and the validator can never disagree about the expected shape; a reply that doesn&#x27;t validate is rejected and retried (up to <code>documentation.retry_invalid_json</code> extra times).</p>
+<h3>Template keys</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr><td><code>{language}</code></td><td><code>Python</code>, <code>Lua</code>, <code>C</code>, <code>C++</code> or <code>CUDA</code></td></tr>
+<tr><td><code>{language_family}</code></td><td><code>python</code>, <code>lua</code> or <code>c-family</code></td></tr>
+<tr><td><code>{dialect}</code></td><td><code>c</code>, <code>cpp</code> or <code>cuda</code></td></tr>
+<tr><td><code>{file}</code></td><td>source relpath</td></tr>
+<tr><td><code>{symbol}</code></td><td>qualified symbol name; file path for summaries</td></tr>
+<tr><td><code>{name}</code></td><td>unqualified symbol name</td></tr>
+<tr><td><code>{kind}</code></td><td><code>function</code>, <code>function chunk</code>, <code>variable</code>, <code>file summary</code></td></tr>
+<tr><td><code>{line}</code> / <code>{line_end}</code></td><td>symbol start/end line</td></tr>
+<tr><td><code>{params}</code></td><td>comma-separated parameter names</td></tr>
+<tr><td><code>{fence}</code></td><td>code-fence language</td></tr>
+<tr><td><code>{developer_comment}</code></td><td>glued developer comment, or empty</td></tr>
+</tbody>
+</table>
+<p>The shipped prompts use <code>{language}</code> and <code>{file}</code>, so the same files work for every backend.</p>
+<h2>The four files</h2>
+<table>
+<thead><tr>
+<th>File</th>
+<th>Default path</th>
+<th>Kind</th>
+<th>Required output</th>
+</tr></thead>
+<tbody>
+<tr><td><code>function.txt</code></td><td><code>./prompts/function.txt</code></td><td><code>function</code></td><td><code>description</code> (1–3 sentences, min 8 chars) + optional <code>arguments</code>, <code>outputs</code>, <code>side_effects</code>, <code>references</code> (≤ ~10), <code>uncertainties</code> (≤ ~5).</td></tr>
+<tr><td><code>function_chunk.txt</code></td><td><code>./prompts/function_chunk.txt</code></td><td><code>chunk</code></td><td><code>summary</code> (2–4 sentences, min 12 chars) for <strong>one part</strong> of a long function.</td></tr>
+<tr><td><code>variable.txt</code></td><td><code>./prompts/variable.txt</code></td><td><code>variable</code></td><td><code>description</code> (1–2 sentences, min 8 chars) + optional <code>notes</code> (≤ 16).</td></tr>
+<tr><td><code>summary.txt</code></td><td><code>./prompts/summary.txt</code></td><td><code>summary</code></td><td><code>summary</code> (2–4 sentences, min 16), <code>main_purpose</code> (1 sentence), <code>role</code> (1 sentence).</td></tr>
+</tbody>
+</table>
+<p>All four share the same guardrails: <strong>base the answer only on the visible code, never invent behavior, and put doubts in <code>uncertainties</code></strong> (function) / keep it factual and minimal (variable). They are language-neutral and use <code>{language}</code> to ask for the right idioms; the surrounding pipeline is language-agnostic.</p>
+<h2>Editing them safely</h2>
+<ul>
+<li>Keep the contract: the model must return <strong>one JSON object</strong> matching the kind&#x27;s schema. The schema itself is fixed in code (<code>kodama_docs/models.py</code>), so your prompt can only <em>constrain the prose style</em>, not the shape.
+</li>
+<li>You can tighten tone, length, and which optional keys to fill — the validator will still enforce min-lengths and item caps, and reject extra keys (<code>additionalProperties: false</code>).
+</li>
+<li>If you want a different default, point the <code>prompts</code> config keys at your own files (relative paths resolve against the config&#x27;s directory).
+</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.html">LLM Phase</a> — what context each call sees.
+</li>
+<li><a href="../03%20-%20Components/04%20-%20LLM%20Client.html">LLM client</a> — retry and validation mechanics.
+</li>
+<li><a href="../06%20-%20Troubleshooting/01%20-%20LLM%20Problems.html">LLM Problems</a> — what invalid-JSON retries look like in the log.
+</li>
+</ul>
+</main>
+</div>
+</body>
+</html>

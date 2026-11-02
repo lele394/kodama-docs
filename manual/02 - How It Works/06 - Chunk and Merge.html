@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chunk and merge</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Chunk and merge</h1>
+<p>Long functions can outgrow a single prompt. Instead of truncating them, the LLM phase splits the body into <strong>chunks</strong>, asks the model to summarize each part, and then describes the whole function <strong>synthesizing those part summaries</strong>. Everything about the split is deterministic; only the prose is generated.</p>
+<h2>When it kicks in</h2>
+<p>A function goes through chunk-and-merge when <code>documentation.max_function_lines</code> is set (the shipped default is <code>20</code>) <strong>and</strong> the function body is longer than that many lines. With <code>max_function_lines: 0</code> the feature is off and every function is described in one call, body truncated to <code>context.max_source_lines</code> (default <code>300</code>).</p>
+<h2>How the body is split</h2>
+<p><code>fn_chunks()</code> in <code>kodama_docs/context.py</code> is a pure function of the body and two knobs:</p>
+<ul>
+<li><code>documentation.max_chunk_lines</code> — a hard line cap per chunk (fallback <code>4000</code>);
+</li>
+<li><code>documentation.chunk_target_tokens</code> — a soft size budget, converted to characters with <code>documentation.chars_per_token</code> (default <code>20000</code> × <code>4</code> ≈ 80k characters).
+</li>
+</ul>
+<p>Breaks are preferred <strong>after top-level statements</strong> (a line whose indent is no deeper than the body&#x27;s base indent), so a chunk rarely starts in the middle of a block. If a single line exceeds the budget it is forced as its own chunk, so the splitter always makes progress. The same body with the same settings always yields the same chunks.</p>
+<h2>The two kinds of prompts</h2>
+<ol>
+<li><strong><code>chunk</code></strong> — for each chunk, the model receives the function&#x27;s name, line span, parameters, and only that chunk&#x27;s code (labeled &quot;Body part <em>i</em>/<em>n</em> of a long function&quot;). It must return a single JSON object: <code>{&quot;summary&quot;: &quot;…&quot;}</code> (2–4 sentences, default prompt <code>prompts/function_chunk.txt</code>).
+</li>
+<li><strong><code>function</code></strong> — once every chunk has a summary, the function job runs <strong>without the raw body</strong>. Instead of the code it receives a note: &quot;The body is long; it was summarized part by part: 1. … 2. … — Describe the WHOLE function, synthesizing these parts.&quot; The rest of the function context (name, parameters, callers, callees) is unchanged.
+</li>
+</ol>
+<p>Each chunk summary is cached as its own record (kind <code>chunk</code>), keyed by chunk index and text, so re-runs never re-ask for a chunk that hasn&#x27;t changed.</p>
+<h2>What you see in the output</h2>
+<p>The rendered function page is identical whether or not chunking happened — the same <code>Description</code>, <code>Parameters</code>, <code>Outputs</code>, <code>Side effects</code> blocks. Chunking only changes how the prose was produced. In the TUI, a long function shows a <code>chunk i/n</code> stage followed by a <code>merge</code> stage before the job finishes.</p>
+<p>The job list, caching, and failure handling around these calls are covered in <a href="05%20-%20LLM%20Phase.html">LLM Phase</a> and <a href="08%20-%20Caching.html">Caching</a>; the prompt text itself is in <a href="../04%20-%20Reference/03%20-%20Prompts.html">Prompts</a>.</p>
+</main>
+</div>
+</body>
+</html>

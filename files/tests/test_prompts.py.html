@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_prompts.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_prompts.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-test_language_labels-13">test_language_labels</a></td><td>13</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_function_fields-25">test_function_fields</a></td><td>25</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_summary_fields_use_file_path-44">test_summary_fields_use_file_path</a></td><td>44</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_render_prompt_is_single_pass_and_keeps_unknown_keys-53">test_render_prompt_is_single_pass_and_keeps_unknown_keys</a></td><td>53</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_render_prompt_leaves_json_braces_alone-61">test_render_prompt_leaves_json_braces_alone</a></td><td>61</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_shipped_prompts_use_the_shared_language_key-67">test_shipped_prompts_use_the_shared_language_key</a></td><td>67</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-86">main</a></td><td>86</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>test_language_labels <a id="fn-test_language_labels-13"></a></h3>
+<p><em>tests/test_prompts.py:13-22</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../kodama_docs/prompt_templates.py.html#fn-language_name-36">language_name</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_language_labels():
+    assert language_name({&#x27;lang&#x27;: &#x27;python&#x27;, &#x27;relpath&#x27;: &#x27;a.py&#x27;}) == &#x27;Python&#x27;
+    assert language_name({&#x27;lang&#x27;: &#x27;lua&#x27;, &#x27;relpath&#x27;: &#x27;a.lua&#x27;}) == &#x27;Lua&#x27;
+    assert language_name({&#x27;lang&#x27;: &#x27;c-family&#x27;, &#x27;dialect&#x27;: &#x27;c&#x27;,
+                          &#x27;relpath&#x27;: &#x27;a.c&#x27;}) == &#x27;C&#x27;
+    assert language_name({&#x27;lang&#x27;: &#x27;c-family&#x27;, &#x27;dialect&#x27;: &#x27;cpp&#x27;,
+                          &#x27;relpath&#x27;: &#x27;a.cpp&#x27;}) == &#x27;C++&#x27;
+    assert language_name({&#x27;lang&#x27;: &#x27;c-family&#x27;, &#x27;dialect&#x27;: &#x27;cuda&#x27;,
+                          &#x27;relpath&#x27;: &#x27;a.cu&#x27;}) == &#x27;CUDA&#x27;
+    assert language_name({&#x27;relpath&#x27;: &#x27;a.hpp&#x27;}) == &#x27;C++&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_function_fields <a id="fn-test_function_fields-25"></a></h3>
+<p><em>tests/test_prompts.py:25-41</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../kodama_docs/prompt_templates.py.html#fn-prompt_fields-49">prompt_fields</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_function_fields():
+    f = {&#x27;relpath&#x27;: &#x27;cpp/engine.cpp&#x27;, &#x27;lang&#x27;: &#x27;c-family&#x27;,
+         &#x27;dialect&#x27;: &#x27;cpp&#x27;}
+    fn = {&#x27;name&#x27;: &#x27;step&#x27;, &#x27;qualified&#x27;: &#x27;mixed.Engine.step&#x27;, &#x27;line&#x27;: 14,
+          &#x27;end_line&#x27;: 17, &#x27;params&#x27;: [&#x27;value&#x27;],
+          &#x27;developer_comment&#x27;: &#x27;Advance one step.&#x27;}
+    fields = prompt_fields(f, fn, &#x27;function&#x27;)
+    assert fields[&#x27;language&#x27;] == &#x27;C++&#x27;
+    assert fields[&#x27;language_family&#x27;] == &#x27;c-family&#x27;
+    assert fields[&#x27;file&#x27;] == &#x27;cpp/engine.cpp&#x27;
+    assert fields[&#x27;symbol&#x27;] == &#x27;mixed.Engine.step&#x27;
+    assert fields[&#x27;name&#x27;] == &#x27;step&#x27;
+    assert fields[&#x27;kind&#x27;] == &#x27;function&#x27;
+    assert fields[&#x27;line&#x27;] == &#x27;14&#x27; and fields[&#x27;line_end&#x27;] == &#x27;17&#x27;
+    assert fields[&#x27;params&#x27;] == &#x27;value&#x27;
+    assert fields[&#x27;fence&#x27;] == &#x27;cpp&#x27;
+    assert fields[&#x27;developer_comment&#x27;] == &#x27;Advance one step.&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_summary_fields_use_file_path <a id="fn-test_summary_fields_use_file_path-44"></a></h3>
+<p><em>tests/test_prompts.py:44-50</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../kodama_docs/prompt_templates.py.html#fn-prompt_fields-49">prompt_fields</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_summary_fields_use_file_path():
+    f = {&#x27;relpath&#x27;: &#x27;python/mixed_py/host.py&#x27;, &#x27;lang&#x27;: &#x27;python&#x27;}
+    fields = prompt_fields(f, {&#x27;name&#x27;: &#x27;file&#x27;, &#x27;line&#x27;: 1}, &#x27;file summary&#x27;)
+    assert fields[&#x27;language&#x27;] == &#x27;Python&#x27;
+    assert fields[&#x27;symbol&#x27;] == &#x27;python/mixed_py/host.py&#x27;
+    assert fields[&#x27;name&#x27;] == &#x27;host.py&#x27;
+    assert fields[&#x27;kind&#x27;] == &#x27;file summary&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_render_prompt_is_single_pass_and_keeps_unknown_keys <a id="fn-test_render_prompt_is_single_pass_and_keeps_unknown_keys-53"></a></h3>
+<p><em>tests/test_prompts.py:53-58</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../kodama_docs/prompt_templates.py.html#fn-render_prompt-74">render_prompt</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_render_prompt_is_single_pass_and_keeps_unknown_keys():
+    fields = {&#x27;language&#x27;: &#x27;C++&#x27;, &#x27;file&#x27;: &#x27;a.cpp&#x27;, &#x27;symbol&#x27;: &#x27;{language}&#x27;}
+    out = render_prompt(
+        &#x27;This is a {language} file: {file} / {symbol} / {unknown}&#x27;, fields)
+    # values are not recursively re-rendered
+    assert out == &#x27;This is a C++ file: a.cpp / {language} / {unknown}&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_render_prompt_leaves_json_braces_alone <a id="fn-test_render_prompt_leaves_json_braces_alone-61"></a></h3>
+<p><em>tests/test_prompts.py:61-64</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../kodama_docs/prompt_templates.py.html#fn-render_prompt-74">render_prompt</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_render_prompt_leaves_json_braces_alone():
+    fields = {&#x27;language&#x27;: &#x27;Python&#x27;}
+    out = render_prompt(&#x27;{&quot;name&quot;: &quot;{language}&quot;, &quot;x&quot;: 1}&#x27;, fields)
+    assert out == &#x27;{&quot;name&quot;: &quot;Python&quot;, &quot;x&quot;: 1}&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_shipped_prompts_use_the_shared_language_key <a id="fn-test_shipped_prompts_use_the_shared_language_key-67"></a></h3>
+<p><em>tests/test_prompts.py:67-83</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.abspath
+</li>
+<li>os.path.dirname
+</li>
+<li><a href="../kodama_docs/prompt_templates.py.html#fn-prompt_fields-49">prompt_fields</a>
+</li>
+<li>open
+</li>
+<li>os.path.join
+</li>
+<li>read (inferred)
+</li>
+<li><a href="../kodama_docs/prompt_templates.py.html#fn-render_prompt-74">render_prompt</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_shipped_prompts_use_the_shared_language_key():
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    fields = prompt_fields(
+        {&#x27;relpath&#x27;: &#x27;cpp/engine.cpp&#x27;, &#x27;lang&#x27;: &#x27;c-family&#x27;,
+         &#x27;dialect&#x27;: &#x27;cpp&#x27;},
+        {&#x27;name&#x27;: &#x27;step&#x27;, &#x27;qualified&#x27;: &#x27;mixed.Engine.step&#x27;, &#x27;line&#x27;: 14,
+         &#x27;end_line&#x27;: 17, &#x27;params&#x27;: [&#x27;value&#x27;]},
+        &#x27;function&#x27;)
+    for name in (&#x27;function.txt&#x27;, &#x27;function_chunk.txt&#x27;, &#x27;variable.txt&#x27;,
+                 &#x27;summary.txt&#x27;):
+        with open(os.path.join(root, &#x27;prompts&#x27;, name), &#x27;r&#x27;,
+                  encoding=&#x27;utf-8&#x27;) as fh:
+            text = render_prompt(fh.read(), fields)
+        assert &#x27;{language}&#x27; not in text
+        assert &#x27;{file}&#x27; not in text
+        assert &#x27;C++&#x27; in text
+        assert &#x27;cpp/engine.cpp&#x27; in text</code></pre>
+</details>
+<hr>
+<h3>main <a id="fn-main-86"></a></h3>
+<p><em>tests/test_prompts.py:86-102</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">globals</span>
+</li>
+<li>sorted
+</li>
+<li>callable
+</li>
+<li><span style="color:#e67e22">k.startswith</span>
+</li>
+<li><span style="color:#e67e22">t</span>
+</li>
+<li>print
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    tests = [v for k, v in sorted(globals().items())
+             if k.startswith(&#x27;test_&#x27;) and callable(v)]
+    failed = 0
+    for t in tests:
+        try:
+            t()
+            print(f&#x27;ok   {t.__name__}&#x27;)
+        except AssertionError as e:
+            failed += 1
+            print(f&#x27;FAIL {t.__name__}: {e}&#x27;)
+    print()
+    if failed:
+        print(f&#x27;{failed} prompt test(s) failed&#x27;)
+        return 1
+    print(f&#x27;{len(tests)} prompt tests passed&#x27;)
+    return 0</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_prompts.py.html">tests/test_prompts.py</a>
+<ul>
+<li><a href="test_prompts.py.html">top-level:106</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 5: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 6: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

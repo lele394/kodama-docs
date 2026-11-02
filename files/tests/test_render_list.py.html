@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_render_list.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_render_list.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_balanced-18">_balanced</a></td><td>18</td><td>h</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_flat_list-24">test_flat_list</a></td><td>24</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_two_level_nesting-35">test_two_level_nesting</a></td><td>35</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_three_level_nesting-52">test_three_level_nesting</a></td><td>52</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_sibling_branches_stay_separate-73">test_sibling_branches_stay_separate</a></td><td>73</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_inline_markdown_in_items-80">test_inline_markdown_in_items</a></td><td>80</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_first_item_deeper_than_zero_is_top_level-85">test_first_item_deeper_than_zero_is_top_level</a></td><td>85</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-98">main</a></td><td>98</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_balanced <a id="fn-_balanced-18"></a></h3>
+<p><em>tests/test_render_list.py:18-21</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>h</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">h.count</span>
+</li>
+<li><span style="color:#e67e22">h.endswith</span>
+</li>
+<li><span style="color:#e67e22">h.startswith</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _balanced(h):
+    assert h.count(&#x27;&lt;ul&gt;&#x27;) == h.count(&#x27;&lt;/ul&gt;&#x27;), h
+    assert h.count(&#x27;&lt;li&gt;&#x27;) == h.count(&#x27;&lt;/li&gt;&#x27;), h
+    assert h.startswith(&#x27;&lt;ul&gt;&#x27;) and h.endswith(&#x27;&lt;/ul&gt;&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_render_list.py.html">tests/test_render_list.py</a>
+<ul>
+<li><a href="test_render_list.py.html#fn-test_flat_list-24">test_flat_list:32</a>
+</li>
+<li><a href="test_render_list.py.html#fn-test_two_level_nesting-35">test_two_level_nesting:49</a>
+</li>
+<li><a href="test_render_list.py.html#fn-test_three_level_nesting-52">test_three_level_nesting:70</a>
+</li>
+<li><a href="test_render_list.py.html#fn-test_sibling_branches_stay_separate-73">test_sibling_branches_stay_separate:77</a>
+</li>
+<li><a href="test_render_list.py.html#fn-test_first_item_deeper_than_zero_is_top_level-85">test_first_item_deeper_than_zero_is_top_level:95</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_flat_list <a id="fn-test_flat_list-24"></a></h3>
+<p><em>tests/test_render_list.py:24-32</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_list-135">render_list</a>
+</li>
+<li><a href="test_render_list.py.html#fn-_balanced-18">_balanced</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_flat_list():
+    h = render_list([(0, &#x27;a&#x27;), (0, &#x27;b&#x27;)])
+    assert h == (&#x27;&lt;ul&gt;\n&#x27;
+                 &#x27;&lt;li&gt;a\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;li&gt;b\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;/ul&gt;&#x27;), h
+    _balanced(h)</code></pre>
+</details>
+<hr>
+<h3>test_two_level_nesting <a id="fn-test_two_level_nesting-35"></a></h3>
+<p><em>tests/test_render_list.py:35-49</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_list-135">render_list</a>
+</li>
+<li><a href="test_render_list.py.html#fn-_balanced-18">_balanced</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_two_level_nesting():
+    h = render_list([(0, &#x27;a&#x27;), (2, &#x27;b&#x27;), (2, &#x27;c&#x27;), (0, &#x27;d&#x27;)])
+    assert h == (&#x27;&lt;ul&gt;\n&#x27;
+                 &#x27;&lt;li&gt;a\n&#x27;
+                 &#x27;&lt;ul&gt;\n&#x27;
+                 &#x27;&lt;li&gt;b\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;li&gt;c\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;/ul&gt;\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;li&gt;d\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;/ul&gt;&#x27;), h
+    _balanced(h)</code></pre>
+</details>
+<hr>
+<h3>test_three_level_nesting <a id="fn-test_three_level_nesting-52"></a></h3>
+<p><em>tests/test_render_list.py:52-70</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_list-135">render_list</a>
+</li>
+<li><a href="test_render_list.py.html#fn-_balanced-18">_balanced</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_three_level_nesting():
+    h = render_list([(0, &#x27;a&#x27;), (2, &#x27;b&#x27;), (4, &#x27;c&#x27;), (2, &#x27;d&#x27;), (0, &#x27;e&#x27;)])
+    assert h == (&#x27;&lt;ul&gt;\n&#x27;
+                 &#x27;&lt;li&gt;a\n&#x27;
+                 &#x27;&lt;ul&gt;\n&#x27;
+                 &#x27;&lt;li&gt;b\n&#x27;
+                 &#x27;&lt;ul&gt;\n&#x27;
+                 &#x27;&lt;li&gt;c\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;/ul&gt;\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;li&gt;d\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;/ul&gt;\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;li&gt;e\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;/ul&gt;&#x27;), h
+    _balanced(h)</code></pre>
+</details>
+<hr>
+<h3>test_sibling_branches_stay_separate <a id="fn-test_sibling_branches_stay_separate-73"></a></h3>
+<p><em>tests/test_render_list.py:73-77</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_list-135">render_list</a>
+</li>
+<li><span style="color:#e67e22">h.count</span>
+</li>
+<li><a href="test_render_list.py.html#fn-_balanced-18">_balanced</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_sibling_branches_stay_separate():
+    &quot;&quot;&quot;Each top-level item keeps its own nested list.&quot;&quot;&quot;
+    h = render_list([(0, &#x27;a&#x27;), (2, &#x27;x&#x27;), (0, &#x27;b&#x27;), (2, &#x27;y&#x27;)])
+    assert h.count(&#x27;&lt;ul&gt;&#x27;) == 3 and h.count(&#x27;&lt;li&gt;&#x27;) == 4, h
+    _balanced(h)</code></pre>
+</details>
+<hr>
+<h3>test_inline_markdown_in_items <a id="fn-test_inline_markdown_in_items-80"></a></h3>
+<p><em>tests/test_render_list.py:80-82</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_list-135">render_list</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_inline_markdown_in_items():
+    h = render_list([(0, &#x27;**Bold** and [link](u)&#x27;)])
+    assert &#x27;&lt;strong&gt;Bold&lt;/strong&gt; and &lt;a href=&quot;u&quot;&gt;link&lt;/a&gt;&#x27; in h, h</code></pre>
+</details>
+<hr>
+<h3>test_first_item_deeper_than_zero_is_top_level <a id="fn-test_first_item_deeper_than_zero_is_top_level-85"></a></h3>
+<p><em>tests/test_render_list.py:85-95</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="../web/render.py.html#fn-render_list-135">render_list</a>
+</li>
+<li><a href="test_render_list.py.html#fn-_balanced-18">_balanced</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_first_item_deeper_than_zero_is_top_level():
+    &quot;&quot;&quot;A list whose first item already has an indent still renders as a
+    flat top-level list (no phantom parent).&quot;&quot;&quot;
+    h = render_list([(2, &#x27;a&#x27;), (2, &#x27;b&#x27;)])
+    assert h == (&#x27;&lt;ul&gt;\n&#x27;
+                 &#x27;&lt;li&gt;a\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;li&gt;b\n&#x27;
+                 &#x27;&lt;/li&gt;\n&#x27;
+                 &#x27;&lt;/ul&gt;&#x27;), h
+    _balanced(h)</code></pre>
+</details>
+<hr>
+<h3>main <a id="fn-main-98"></a></h3>
+<p><em>tests/test_render_list.py:98-104</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">globals</span>
+</li>
+<li>sorted
+</li>
+<li>callable
+</li>
+<li><span style="color:#e67e22">k.startswith</span>
+</li>
+<li><span style="color:#e67e22">fn</span>
+</li>
+<li>print
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    fns = [v for k, v in sorted(globals().items())
+           if k.startswith(&#x27;test_&#x27;) and callable(v)]
+    for fn in fns:
+        fn()
+        print(f&#x27;ok   {fn.__name__}&#x27;)
+    print(f&#x27;\n{len(fns)} render_list tests passed&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_render_list.py.html">tests/test_render_list.py</a>
+<ul>
+<li><a href="test_render_list.py.html">top-level:108</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 10: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 11: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/tui.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/tui.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_fmt_dur-28">_fmt_dur</a></td><td>28</td><td>s</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_stage_style-37">_stage_style</a></td><td>37</td><td>stage</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-__init__-44"><em>Frame.</em>_init__</a></td><td>44</td><td>self, tui</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-__rich_console__-47"><em>Frame.</em>_rich_console__</a></td><td>47</td><td>self, console, options</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-__init__-54">TUI.<em>_init_</em></a></td><td>54</td><td>self, enabled, worker_count, total, interval, force, kinds</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-start-81">TUI.start</a></td><td>81</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_exit-95">TUI._exit</a></td><td>95</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-stop-98">TUI.stop</a></td><td>98</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_render-111">TUI._render</a></td><td>111</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-bar-149">TUI.bar</a></td><td>149</td><td>done, total, label</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-sink-197">TUI.sink</a></td><td>197</td><td>self, line</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_w-205">TUI._w</a></td><td>205</td><td>self, wid</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-job_start-211">TUI.job_start</a></td><td>211</td><td>self, wid, file, symbol</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-stage-219">TUI.stage</a></td><td>219</td><td>self, wid, file, symbol, stage</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-job_end-224">TUI.job_end</a></td><td>224</td><td>self, wid, duration, generated, failed, kind</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-snapshot-247">TUI.snapshot</a></td><td>247</td><td>self</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_fmt_dur <a id="fn-_fmt_dur-28"></a></h3>
+<p><em>kodama_docs/tui.py:28-34</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>s</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>int
+</li>
+<li>max
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _fmt_dur(s):
+    s = max(0, int(s))
+    if s &lt; 60:
+        return f&#x27;{s}s&#x27;
+    if s &lt; 3600:
+        return f&#x27;{s // 60}m{s % 60:02d}s&#x27;
+    return f&#x27;{s // 3600}h{(s % 3600) // 60:02d}m&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:132</a>
+</li>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:173</a>
+</li>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:175</a>
+</li>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:179</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_stage_style <a id="fn-_stage_style-37"></a></h3>
+<p><em>kodama_docs/tui.py:37-38</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>stage</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _stage_style(stage):
+    return {&#x27;describe&#x27;: &#x27;green&#x27;, &#x27;merge&#x27;: &#x27;cyan&#x27;}.get(stage or &#x27;&#x27;, &#x27;yellow&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:141</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3><em>Frame.</em>_init__ <a id="fn-__init__-44"></a></h3>
+<p><em>kodama_docs/tui.py:44-45</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>tui</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def __init__(self, tui):
+        self.tui = tui</code></pre>
+</details>
+<hr>
+<h3><em>Frame.</em>_rich_console__ <a id="fn-__rich_console__-47"></a></h3>
+<p><em>kodama_docs/tui.py:47-48</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>console</code></td><td></td></tr>
+<tr><td><code>options</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>_render (inferred)
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def __rich_console__(self, console, options):
+        yield self.tui._render()</code></pre>
+</details>
+<hr>
+<h3>TUI.<em>_init_</em> <a id="fn-__init__-54"></a></h3>
+<p><em>kodama_docs/tui.py:54-78</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>enabled</code></td><td></td></tr>
+<tr><td><code>worker_count</code></td><td></td></tr>
+<tr><td><code>total</code></td><td></td></tr>
+<tr><td><code>interval</code></td><td></td></tr>
+<tr><td><code>force</code></td><td></td></tr>
+<tr><td><code>kinds</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>bool
+</li>
+<li>int
+</li>
+<li>max
+</li>
+<li>float
+</li>
+<li>threading.Lock
+</li>
+<li>time.time
+</li>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li>range
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def __init__(self, enabled=True, worker_count=1, total=0,
+                 interval=0.5, force=False, kinds=None):
+        self.enabled = bool(enabled)
+        self.worker_count = max(1, int(worker_count))
+        self.interval = max(0.2, float(interval))
+        self.force = bool(force)
+        self.active = False
+        self.lock = threading.Lock()
+        self.st = {
+            &#x27;started_at&#x27;: time.time(),
+            &#x27;total&#x27;: int(total),
+            &#x27;done&#x27;: 0, &#x27;failed&#x27;: 0, &#x27;skipped&#x27;: 0, &#x27;generated&#x27;: 0,
+            &#x27;time_sum&#x27;: 0.0,
+            &#x27;kinds&#x27;: [{&#x27;label&#x27;: k, &#x27;total&#x27;: int(v), &#x27;done&#x27;: 0}
+                      for k, v in (kinds or {}).items()],
+            &#x27;workers&#x27;: [{&#x27;id&#x27;: i + 1, &#x27;name&#x27;: f&#x27;agent-{i + 1}&#x27;,
+                         &#x27;state&#x27;: &#x27;idle&#x27;, &#x27;file&#x27;: None, &#x27;symbol&#x27;: None,
+                         &#x27;stage&#x27;: None, &#x27;since&#x27;: None, &#x27;first_at&#x27;: None,
+                         &#x27;finished&#x27;: 0, &#x27;failed&#x27;: 0}
+                        for i in range(self.worker_count)],
+        }
+        self._logs = []
+        self._logs_lock = threading.Lock()
+        self._console = None
+        self._live = None</code></pre>
+</details>
+<hr>
+<h3>TUI.start <a id="fn-start-81"></a></h3>
+<p><em>kodama_docs/tui.py:81-93</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>-- lifecycle ---------------------------------------------------------</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>hasattr
+</li>
+<li>sys.stdout.isatty
+</li>
+<li><span style="color:#e67e22">Console</span>
+</li>
+<li><span style="color:#e67e22">Live</span>
+</li>
+<li><a href="tui.py.html#cls-_Frame-41">_Frame</a>
+</li>
+<li>max
+</li>
+<li>start (inferred)
+</li>
+<li>atexit.register
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def start(self):
+        if not self.enabled:
+            return False
+        self.active = self.force or (hasattr(sys.stdout, &#x27;isatty&#x27;)
+                                     and sys.stdout.isatty())
+        if not self.active:
+            return False
+        self._console = Console()
+        self._live = Live(_Frame(self), console=self._console,
+                          refresh_per_second=max(2, 1.0 / self.interval))
+        self._live.start(refresh=True)
+        atexit.register(self._exit)
+        return True</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html#fn-parse_module-63">parse_module:76</a>
+</li>
+<li><a href="js_bundle.py.html#fn-parse_module-63">parse_module:79</a>
+</li>
+<li><a href="js_bundle.py.html#fn-parse_module-63">parse_module:85</a>
+</li>
+</ul>
+</li>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:162</a>
+</li>
+</ul>
+</li>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-start-81">TUI.start:91</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI._exit <a id="fn-_exit-95"></a></h3>
+<p><em>kodama_docs/tui.py:95-96</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="tui.py.html#fn-stop-98">stop</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _exit(self):
+        self.stop()</code></pre>
+</details>
+<hr>
+<h3>TUI.stop <a id="fn-stop-98"></a></h3>
+<p><em>kodama_docs/tui.py:98-108</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>stop (inferred)
+</li>
+<li><span style="color:#e67e22">self._console.print</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def stop(self):
+        if not self.active:
+            return
+        self.active = False
+        try:
+            if self._live:
+                self._live.stop()
+            if self._console:
+                self._console.print()
+        except Exception:  # noqa: BLE001
+            pass</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:300</a>
+</li>
+</ul>
+</li>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-_exit-95">TUI._exit:96</a>
+</li>
+<li><a href="tui.py.html#fn-stop-98">TUI.stop:104</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI._render <a id="fn-_render-111"></a></h3>
+<p><em>kodama_docs/tui.py:111-194</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>-- rendering (runs on Rich&#x27;s refresh thread) --------------------------</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>time.time
+</li>
+<li><a href="tui.py.html#fn-snapshot-247">snapshot</a>
+</li>
+<li><span style="color:#e67e22">Text</span>
+</li>
+<li><span style="color:#e67e22">head.truncate</span>
+</li>
+<li><span style="color:#e67e22">Table</span>
+</li>
+<li><span style="color:#e67e22">table.add_column</span>
+</li>
+<li><a href="tui.py.html#fn-_fmt_dur-28">_fmt_dur</a>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">table.add_row</span>
+</li>
+<li><a href="tui.py.html#fn-_stage_style-37">_stage_style</a>
+</li>
+<li><span style="color:#e67e22">parts.append</span>
+</li>
+<li><span style="color:#e67e22">s.get</span>
+</li>
+<li>len
+</li>
+<li>max
+</li>
+<li><a href="tui.py.html#fn-bar-149">bar</a>
+</li>
+<li><span style="color:#e67e22">Text.assemble</span>
+</li>
+<li><span style="color:#e67e22">stats.append</span>
+</li>
+<li><span style="color:#e67e22">stats.truncate</span>
+</li>
+<li>min
+</li>
+<li>list
+</li>
+<li><span style="color:#e67e22">tline.truncate</span>
+</li>
+<li><span style="color:#e67e22">Group</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _render(self):
+        now = time.time()
+        s = self.snapshot()
+        width = self._console.width if self._console else 80
+        head = Text(f&#x27;kodama-docs · llm phase · {s[&quot;total&quot;]} tasks · &#x27;
+                    f&#x27;{self.worker_count} agents&#x27;, style=&#x27;bold&#x27;)
+        head.truncate(width, overflow=&#x27;ellipsis&#x27;)
+        parts = [head]
+
+        table = Table(box=box.SIMPLE, pad_edge=False, padding=(0, 1),
+                      header_style=&#x27;bold&#x27;, expand=False)
+        table.add_column(&#x27;agent&#x27;, width=8, no_wrap=True, overflow=&#x27;ellipsis&#x27;)
+        table.add_column(&#x27;symbol&#x27;, min_width=12, no_wrap=True,
+                         overflow=&#x27;ellipsis&#x27;)
+        table.add_column(&#x27;stage&#x27;, min_width=9, no_wrap=True, justify=&#x27;right&#x27;)
+        table.add_column(&#x27;time&#x27;, min_width=6, no_wrap=True, justify=&#x27;right&#x27;)
+        table.add_column(&#x27;done&#x27;, min_width=4, no_wrap=True, justify=&#x27;right&#x27;)
+        for wk in s[&#x27;workers&#x27;]:
+            if wk[&#x27;state&#x27;] == &#x27;working&#x27;:
+                sym = f&#x27;{wk[&quot;file&quot;]} :: {wk[&quot;symbol&quot;]}&#x27;
+                stage = wk[&#x27;stage&#x27;] or &#x27;…&#x27;
+                t = _fmt_dur(now - (wk[&#x27;since&#x27;] or now))
+            else:
+                sym = Text(&#x27;(idle)&#x27;, style=&#x27;dim&#x27;)
+                stage = &#x27;waiting&#x27;
+                t = &#x27;&#x27;
+            done = str(wk[&#x27;finished&#x27;])
+            if wk[&#x27;failed&#x27;]:
+                done += f&#x27; ({wk[&quot;failed&quot;]}✗)&#x27;
+            table.add_row(wk[&#x27;name&#x27;], sym,
+                          Text(f&#x27;[{stage}]&#x27;, style=_stage_style(stage)),
+                          t, done)
+        parts.append(table)
+
+        kinds = s.get(&#x27;kinds&#x27;) or []
+        labels = [k[&#x27;label&#x27;] for k in kinds] + [&#x27;total&#x27;]
+        pad = max(len(l) for l in labels) + 2
+
+        def bar(done, total, label):
+            frac = min(1.0, done / total) if total else 0.0
+            tail = f&#x27;  {done}/{total}&#x27;
+            if label == &#x27;total&#x27;:
+                tail += f&#x27;  {frac * 100:.0f}%&#x27;
+            bw = max(8, width - len(label) - pad + 2 - len(tail) - 1)
+            fill = int(round(bw * frac))
+            t = Text(label.ljust(pad), style=&#x27;bold&#x27;)
+            t.append(&#x27;█&#x27; * fill, style=&#x27;bold green&#x27;)
+            t.append(&#x27;░&#x27; * (bw - fill), style=&#x27;dim&#x27;)
+            t.append(tail, style=&#x27;bold&#x27;)
+            t.truncate(width, overflow=&#x27;ellipsis&#x27;)
+            return t
+
+        for k in kinds:
+            parts.append(bar(k[&#x27;done&#x27;], k[&#x27;total&#x27;], k[&#x27;label&#x27;]))
+        parts.append(bar(s[&#x27;done&#x27;], s[&#x27;total&#x27;], &#x27;total&#x27;))
+
+        avg = s[&#x27;time_sum&#x27;] / s[&#x27;done&#x27;] if s[&#x27;done&#x27;] else 0.0
+        stats = Text.assemble(
+            (&#x27;generated &#x27;, &#x27;green&#x27;), (str(s[&#x27;generated&#x27;]), &#x27;bold green&#x27;),
+            (&#x27;   ·   cached &#x27;, &#x27;dim&#x27;), (str(s[&#x27;skipped&#x27;]), &#x27;bold&#x27;),
+            (&#x27;   ·   failed &#x27;, &#x27;red&#x27; if s[&#x27;failed&#x27;] else &#x27;dim&#x27;),
+            (str(s[&#x27;failed&#x27;]), &#x27;bold red&#x27; if s[&#x27;failed&#x27;] else &#x27;bold&#x27;),
+            (&#x27;   ·   avg &#x27;, &#x27;dim&#x27;), (_fmt_dur(avg) + &#x27;/task&#x27;, &#x27;bold&#x27;),
+            (&#x27;   ·   elapsed &#x27;, &#x27;dim&#x27;),
+            (_fmt_dur(now - s[&#x27;started_at&#x27;]), &#x27;bold&#x27;))
+        remain = max(0, s[&#x27;total&#x27;] - s[&#x27;done&#x27;])
+        if remain and avg:
+            stats.append(&#x27;   ·   eta ~&#x27;
+                         + _fmt_dur(remain * avg / self.worker_count),
+                         style=&#x27;bold&#x27;)
+        stats.truncate(width, overflow=&#x27;ellipsis&#x27;)
+        parts.append(stats)
+
+        height = self._console.height if self._console else None
+        loglines = 4
+        if height:
+            loglines = max(2, min(6, height - (self.worker_count + 8)))
+        with self._logs_lock:
+            tail = list(self._logs[-loglines:])
+        for line in tail:
+            tline = Text(line, style=&#x27;dim&#x27;)
+            tline.truncate(width, overflow=&#x27;ellipsis&#x27;)
+            parts.append(tline)
+        return Group(*parts)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-__rich_console__-47"><em>Frame.</em>_rich_console__:48</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI.bar <a id="fn-bar-149"></a></h3>
+<p><em>kodama_docs/tui.py:149-161</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>done</code></td><td></td></tr>
+<tr><td><code>total</code></td><td></td></tr>
+<tr><td><code>label</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>min
+</li>
+<li>len
+</li>
+<li>max
+</li>
+<li>int
+</li>
+<li>round
+</li>
+<li><span style="color:#e67e22">Text</span>
+</li>
+<li><span style="color:#e67e22">label.ljust</span>
+</li>
+<li><span style="color:#e67e22">t.append</span>
+</li>
+<li><span style="color:#e67e22">t.truncate</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def bar(done, total, label):
+            frac = min(1.0, done / total) if total else 0.0
+            tail = f&#x27;  {done}/{total}&#x27;
+            if label == &#x27;total&#x27;:
+                tail += f&#x27;  {frac * 100:.0f}%&#x27;
+            bw = max(8, width - len(label) - pad + 2 - len(tail) - 1)
+            fill = int(round(bw * frac))
+            t = Text(label.ljust(pad), style=&#x27;bold&#x27;)
+            t.append(&#x27;█&#x27; * fill, style=&#x27;bold green&#x27;)
+            t.append(&#x27;░&#x27; * (bw - fill), style=&#x27;dim&#x27;)
+            t.append(tail, style=&#x27;bold&#x27;)
+            t.truncate(width, overflow=&#x27;ellipsis&#x27;)
+            return t</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:164</a>
+</li>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:165</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI.sink <a id="fn-sink-197"></a></h3>
+<p><em>kodama_docs/tui.py:197-203</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>-- reporting (called from worker threads) -----------------------------</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">self._logs.append</span>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">self._live.refresh</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def sink(self, line):
+        with self._logs_lock:
+            self._logs.append(line)
+            if len(self._logs) &gt; 60:
+                del self._logs[:len(self._logs) - 60]
+        if self._live:
+            self._live.refresh()</code></pre>
+</details>
+<hr>
+<h3>TUI._w <a id="fn-_w-205"></a></h3>
+<p><em>kodama_docs/tui.py:205-209</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>wid</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _w(self, wid):
+        for w in self.st[&#x27;workers&#x27;]:
+            if w[&#x27;id&#x27;] == wid:
+                return w
+        return self.st[&#x27;workers&#x27;][0]</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-job_start-211">TUI.job_start:213</a>
+</li>
+<li><a href="tui.py.html#fn-stage-219">TUI.stage:221</a>
+</li>
+<li><a href="tui.py.html#fn-job_end-224">TUI.job_end:227</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI.job_start <a id="fn-job_start-211"></a></h3>
+<p><em>kodama_docs/tui.py:211-217</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>wid</code></td><td></td></tr>
+<tr><td><code>file</code></td><td></td></tr>
+<tr><td><code>symbol</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="tui.py.html#fn-_w-205">_w</a>
+</li>
+<li><span style="color:#e67e22">w.update</span>
+</li>
+<li>time.time
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def job_start(self, wid, file, symbol):
+        with self.lock:
+            w = self._w(wid)
+            w.update(state=&#x27;working&#x27;, file=file, symbol=symbol,
+                     stage=&#x27;queued&#x27;, since=time.time())
+            if w[&#x27;first_at&#x27;] is None:
+                w[&#x27;first_at&#x27;] = w[&#x27;since&#x27;]</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:177</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI.stage <a id="fn-stage-219"></a></h3>
+<p><em>kodama_docs/tui.py:219-222</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>wid</code></td><td></td></tr>
+<tr><td><code>file</code></td><td></td></tr>
+<tr><td><code>symbol</code></td><td></td></tr>
+<tr><td><code>stage</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="tui.py.html#fn-_w-205">_w</a>
+</li>
+<li><span style="color:#e67e22">w.update</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def stage(self, wid, file, symbol, stage):
+        with self.lock:
+            w = self._w(wid)
+            w.update(file=file, symbol=symbol, stage=stage)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:197</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:208</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:240</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:264</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI.job_end <a id="fn-job_end-224"></a></h3>
+<p><em>kodama_docs/tui.py:224-244</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+<tr><td><code>wid</code></td><td></td></tr>
+<tr><td><code>duration</code></td><td></td></tr>
+<tr><td><code>generated</code></td><td></td></tr>
+<tr><td><code>failed</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="tui.py.html#fn-_w-205">_w</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def job_end(self, wid, duration, generated=False, failed=False,
+                kind=None):
+        with self.lock:
+            s, w = self.st, self._w(wid)
+            s[&#x27;done&#x27;] += 1
+            s[&#x27;time_sum&#x27;] += duration
+            if kind is not None:
+                for k in s[&#x27;kinds&#x27;]:
+                    if k[&#x27;label&#x27;] == kind:
+                        k[&#x27;done&#x27;] += 1
+                        break
+            w[&#x27;state&#x27;] = &#x27;idle&#x27;
+            w[&#x27;file&#x27;] = w[&#x27;symbol&#x27;] = w[&#x27;stage&#x27;] = w[&#x27;since&#x27;] = None
+            w[&#x27;finished&#x27;] += 1
+            if generated:
+                s[&#x27;generated&#x27;] += 1
+            elif not failed:
+                s[&#x27;skipped&#x27;] += 1
+            if failed:
+                s[&#x27;failed&#x27;] += 1
+                w[&#x27;failed&#x27;] += 1</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:277</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:283</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>TUI.snapshot <a id="fn-snapshot-247"></a></h3>
+<p><em>kodama_docs/tui.py:247-257</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>-- readout -------------------------------------------------------------</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>self</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>dict
+</li>
+<li>max
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def snapshot(self):
+        with self.lock:
+            s = dict(self.st)
+            s[&#x27;workers&#x27;] = [dict(x) for x in s[&#x27;workers&#x27;]]
+            s[&#x27;kinds&#x27;] = [dict(k) for k in s[&#x27;kinds&#x27;]]
+        done = s[&#x27;done&#x27;]
+        s[&#x27;avg_seconds&#x27;] = s[&#x27;time_sum&#x27;] / done if done else 0.0
+        remain = max(0, s[&#x27;total&#x27;] - done)
+        s[&#x27;eta_seconds&#x27;] = (remain * s[&#x27;avg_seconds&#x27;] / self.worker_count
+                            if remain else 0.0)
+        return s</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:295</a>
+</li>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:302</a>
+</li>
+</ul>
+</li>
+<li><a href="tui.py.html">kodama_docs/tui.py</a>
+<ul>
+<li><a href="tui.py.html#fn-_render-111">TUI._render:113</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Classes <a id="classes"></a></h2>
+<p>Classes are structural symbols: constructor calls (<code>Name(...)</code>) that resolve here are linked from the caller&#x27;s References section.</p>
+<table>
+<thead><tr>
+<th>Class</th>
+<th>Line</th>
+<th>Developer comment</th>
+</tr></thead>
+<tbody>
+<tr><td><a id="cls-_Frame-41"><a href="#cls-_Frame-41">_Frame</a></a></td><td>41</td><td></td></tr>
+<tr><td><a id="cls-TUI-51"><a href="#cls-TUI-51">TUI</a></a></td><td>51</td><td></td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 16: import of <span style="color:#e67e22">atexit</span> — no matching file in the project
+</li>
+<li>line 17: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+<li>line 18: import of <span style="color:#e67e22">threading</span> — no matching file in the project
+</li>
+<li>line 19: import of <span style="color:#e67e22">time</span> — no matching file in the project
+</li>
+<li>line 21: import of <span style="color:#e67e22">rich</span> — no matching file in the project
+</li>
+<li>line 22: import of <span style="color:#e67e22">rich.console</span> — no matching file in the project
+</li>
+<li>line 22: import of <span style="color:#e67e22">rich.console</span> — no matching file in the project
+</li>
+<li>line 23: import of <span style="color:#e67e22">rich.live</span> — no matching file in the project
+</li>
+<li>line 24: import of <span style="color:#e67e22">rich.table</span> — no matching file in the project
+</li>
+<li>line 25: import of <span style="color:#e67e22">rich.text</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

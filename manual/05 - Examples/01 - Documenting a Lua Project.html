@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documenting a Lua project</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Documenting a Lua project</h1>
+<p>A concrete walkthrough using the bundled Lua N-body sample at <code>test_codebases/lua/</code> (a small game-style project: <code>main.lua</code>, <code>physics/body.lua</code>, <code>physics/nbody.lua</code>, <code>physics/vec3.lua</code>). The steps are exactly what you would do for any Lua codebase.</p>
+<h2>1. Prepare a config</h2>
+<p><code>test_codebases/lua/settings.yaml</code> (paths resolve against that folder):</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-yaml">project:
+  source_dir: &quot;codebase&quot;      # the Lua project root
+  output_dir: &quot;docs&quot;          # rendered markdown lands here
+  data_dir: &quot;data&quot;            # analysis cache + records
+  exclude: []
+  max_file_bytes: 26214400
+  copy_meta: true             # emit meta/graph.json for the web graph view
+
+llm:
+  base_url: env               # read from .env
+  api_key: env                # read from .env
+  model: &quot;your-model&quot;
+  max_retries: 5
+  temperature: 0.1
+  max_tokens: 900
+  timeout: 300
+  # …see the full [Config Reference](../04%20-%20Reference/01%20-%20Config%20Reference.md)
+
+documentation:
+  generate_function_docs: true
+  generate_variable_docs: true
+  generate_file_summaries: true
+  max_function_lines: 20      # longer functions use chunk-and-merge</code></pre>
+</details>
+<p>A <code>.env</code> next to it holds <code>base_url</code> and <code>api_key</code>.</p>
+<h2>2. Check that the Lua backend is ready</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --list-backends</code></pre>
+</details>
+<p>You want to see <code>kodama-lua … status=ready</code>. If it is <code>unavailable</code>, the <code>tree-sitter-lua</code> dependency is missing — install it (or <code>--install</code> the backend) and re-check.</p>
+<h2>3. Run it (offline first, then with the model)</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash"># structure-only pass: no network, fast, shows you exactly what will be documented
+python main.py --config test_codebases/lua/settings.yaml --no-llm
+
+# full pass: real prose for every function/variable/summary
+python main.py --config test_codebases/lua/settings.yaml</code></pre>
+</details>
+<p>The offline pass writes the complete <code>docs/</code> set with placeholder prose and the full <code>data/</code> analysis (graph, symbols, diagnostics), so you can inspect the symbol graph before spending any tokens. The full pass fills in the prose and caches it in the record store.</p>
+<h2>4. Read the output</h2>
+<ul>
+<li><code>docs/index.md</code> — &quot;N files documented&quot;, the per-file table, and the Analysis summary (how many call references resolved, how many were ambiguous/external/unresolved).
+</li>
+<li><code>docs/files/main.lua.md</code> — one page per file. <code>main.lua</code>&#x27;s <code>local Body = require(&quot;physics.body&quot;)</code> binds <code>Body</code>, so calls to <code>Body:new(...)</code> link to the <code>new</code> definition in <code>physics/body.lua</code>. Calls through a type-unknown parameter (<code>sim:step(...)</code> in <code>tick</code>) show as <code>step (inferred)</code>, and <code>log.info</code> is orange (unresolved, because there is no <code>log</code> module in the project) — none of these are silently dropped.
+</li>
+<li><code>docs/meta/graph.json</code> — the full graph, ready for <code>--serve</code>.
+</li>
+</ul>
+<h2>5. Serve it</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --config test_codebases/lua/settings.yaml --serve</code></pre>
+</details>
+<p>Open <code>http://127.0.0.1:8123</code> for the rendered docs and <code>/graph</code> for the interactive call graph.</p>
+<h2>What the sample demonstrates</h2>
+<ul>
+<li><strong>Method-call resolution across files</strong> — <code>Body:new(...)</code> in <code>main.lua</code> links to <code>new</code> in <code>physics/body.lua</code> (rendered as <code>[new](physics/body.lua.md#fn-new-9)</code>). The <a href="../03%20-%20Components/02%20-%20Lua%20Backend.html">Lua backend</a> records <code>Body</code> as the bound module (from <code>require(&quot;physics.body&quot;)</code>) and <code>new</code> as the method, so the resolver can match them.
+</li>
+<li><strong>Inferred references</strong> — <code>sim:step(bodies, dt)</code> in <code>tick</code> is marked <code>step (inferred)</code>: <code>sim</code> is a plain parameter whose type the resolver can&#x27;t pin to one module, so the reference is kept but not linked.
+</li>
+<li><strong>Unresolved references stay visible</strong> — <code>log.info</code> is orange in the page (no link written) because there is no <code>log</code> module in the project; it is <em>not</em> silently dropped, and it shows up in the &quot;unresolved&quot; section and the Analysis summary.
+</li>
+</ul>
+<p>Related: <a href="../01%20-%20Getting%20Started/02%20-%20First%20Run.html">First Run</a>, <a href="02%20-%20Documenting%20kodama-docs%20Itself.html">Documenting kodama-docs Itself</a>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM problems</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>LLM problems</h1>
+<p>The LLM phase is the only part of a run that talks to the network. Everything it does is retried, logged, and resumable — but when it does fail you get exit code <strong>1</strong> (docs are still written, with placeholder prose) and a clear log trail. This page maps the symptoms to causes.</p>
+<h2>&quot;llm attempt N/5 failed&quot; then &quot;LLM call failed after retries&quot;</h2>
+<p>This is a <strong>transport</strong> failure — the request never produced a usable reply. Each line is one of the <code>llm.max_retries</code> (5) attempts.</p>
+<ul>
+<li><strong>Wrong <code>base_url</code>.</strong> The client POSTs to <code>{base_url}/chat/completions</code> (OpenAI-style). If you point it at a root that already ends in <code>/v1/chat/completions</code> or at a non-OpenAI endpoint, every attempt 404s. <code>base_url</code> should be the API root, e.g. <code>http://127.0.0.1:11434/v1</code>.
+</li>
+<li><strong>Missing / bad <code>api_key</code>.</strong> Both <code>base_url</code> and <code>api_key</code> are read from <code>.env</code> (project root first, then the config&#x27;s directory; keys are lowercased, quotes stripped). There is <strong>no model key in <code>.env</code></strong> — the model always comes from settings.
+</li>
+<li><strong>Network / timeout.</strong> Per-attempt socket timeout is <code>llm.timeout</code> (default 300 s). A cold model load on the first request can exceed this; raise it for local servers.
+</li>
+<li><strong>Model name.</strong> <code>llm.model</code> is passed verbatim. A typo here usually surfaces as an HTTP 400/404 from the provider.
+</li>
+</ul>
+<h2>&quot;invalid JSON after 2 retries&quot;</h2>
+<p>The model answered, but its reply didn&#x27;t validate against the kind&#x27;s schema (see <a href="../04%20-%20Reference/03%20-%20Prompts.html">Prompts</a>). The <code>generate()</code> loop gives the model up to <code>documentation.retry_invalid_json</code> (2) <strong>extra</strong> attempts after the first, appending the specific error (&quot;no JSON object found&quot;, &quot;missing required key …&quot;, &quot;string shorter than N chars&quot;, &quot;unknown key …&quot;) back to it.</p>
+<p>Common causes and fixes:</p>
+<table>
+<thead><tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Fix</th>
+</tr></thead>
+<tbody>
+<tr><td>reply truncated mid-sentence</td><td><code>llm.max_tokens</code> (900) too small for the requested fields</td><td>raise <code>max_tokens</code>; the validator will accept a complete object</td></tr>
+<tr><td>markdown fences around the JSON</td><td>model ignoring &quot;return ONLY one JSON object&quot;</td><td>the code already strips/scans for a balanced brace object — usually a weak model; try a stronger one or lower <code>temperature</code></td></tr>
+<tr><td>extra keys / wrong shape</td><td>model inventing fields</td><td>fixed by the prompt + schema; a different model usually behaves</td></tr>
+</tbody>
+</table>
+<h2>A task failed but the run &quot;succeeded&quot;</h2>
+<p>If <strong>any</strong> task fails, the run ends with exit code <strong>1</strong>, logs:</p>
+<details class="src"><summary>Source</summary>
+<pre><code>NOT updating .doc_cache (N failed task(s) this run; unchanged cached records still reused next time)</code></pre>
+</details>
+<p>and the affected pages carry placeholder prose. This is intentional (P0-3: failures must stay visible):</p>
+<ul>
+<li>Saved records from earlier in the run are <strong>kept</strong>, so a rerun picks up where it left off — unchanged symbols are reused from the record cache and only the failed ones are retried.
+</li>
+<li><code>.doc_cache</code> is only written when there were <strong>zero</strong> failures, so the next run won&#x27;t mark a partial result as &quot;current&quot;.
+</li>
+<li><code>--no-llm</code> writes <code>stubbed: true</code> records; a later <strong>full</strong> run treats those as cache misses and overwrites them with real prose (a <code>--no-llm</code> run may reuse them).
+</li>
+</ul>
+<h2>Interrupted runs (Ctrl-C)</h2>
+<details class="src"><summary>Source</summary>
+<pre><code>interrupted by user — saved docs and records kept; .doc_cache not updated; rerun to continue where it left off</code></pre>
+</details>
+<p>Exit code 130. In-flight tasks (at most <code>concurrency</code> of them) finish and save; queued work is cancelled. Just rerun.</p>
+<h2>Verifying your endpoint without the pipeline</h2>
+<p>The fastest way to separate &quot;my model is misbehaving&quot; from &quot;kodama-docs bug&quot; is a raw <code>curl</code> to the same <code>{base_url}/chat/completions</code> with the same <code>model</code> and a small <code>max_tokens</code>. If that returns valid JSON and the pipeline doesn&#x27;t, it&#x27;s the shape/length of the request — see the <a href="../03%20-%20Components/04%20-%20LLM%20Client.html">LLM client</a> for the exact request body.</p>
+<p>Related: <a href="../04%20-%20Reference/01%20-%20Config%20Reference.html">Config Reference</a>, <a href="../01%20-%20Getting%20Started/02%20-%20First%20Run.html">First Run</a>.</p>
+</main>
+</div>
+</body>
+</html>

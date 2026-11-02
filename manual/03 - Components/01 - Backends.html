@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backends</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Backends</h1>
+<p>A <strong>backend</strong> is a pluggable package that knows one language: it takes source text and returns the neutral record described in <a href="../02%20-%20How%20It%20Works/03%20-%20Extraction.html">Extraction</a>. Everything downstream — graph, LLM phase, rendering — is language-agnostic and only ever sees that record.</p>
+<h2>What a backend is</h2>
+<p>A backend is a directory under <code>backends/</code> containing:</p>
+<ul>
+<li><code>manifest.toml</code> — identity (<code>backend.name</code>, <code>version</code>, <code>api_version</code>), declared <code>capabilities.languages</code> / <code>capabilities.extensions</code>, and <code>requirements</code> (executable files and/or pip packages);
+</li>
+<li><code>__init__.py</code> — a <strong>thin entrypoint</strong> that re-exports <code>extract(source, relpath) -&gt; dict</code>, <code>BUILTIN_NAMES</code>, <code>LANG</code> and, where applicable, <code>module_candidates</code>;
+</li>
+<li>the implementation modules next to it (<code>extract.py</code>, <code>nodes.py</code>, <code>builtins.py</code>, <code>parser.py</code>, …);
+</li>
+<li>optional <code>BUILTIN_NAMES</code> — names the resolver should treat as language/stdlib (so calls to them never dangle as unresolved project references);
+</li>
+<li>optional <code>LANG</code> — the language family (<code>python</code>, <code>lua</code>, <code>c-family</code>) stamped onto analysis records and used for language-scoped graph resolution;
+</li>
+<li>optional <code>module_candidates(module, relpath)</code> — the file paths a language import could map to (the generic fallback guesses <code>x.lua</code>, <code>x/init.lua</code>, …; Python overrides this for <code>__init__.py</code> packages; the C-family backend resolves quoted <code>#include</code>s).
+</li>
+</ul>
+<p>The full contract, including every invariant the pipeline relies on, is in <code>backends/backend_design.md</code> in the repository.</p>
+<h2>The registry and its statuses</h2>
+<p><code>backends/__init__.py</code> scans <code>backends/*/manifest.toml</code> on every query (no cache — installing a backend changes the directory) and reports each one with a status:</p>
+<table>
+<thead><tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>ready</code></td><td>manifest valid, package imports, <code>extract</code> present, all declared requirements importable — this backend claims its extensions.</td></tr>
+<tr><td><code>unavailable</code></td><td>something is missing (dependency, executable) or the import failed.</td></tr>
+<tr><td><code>conflict</code></td><td>another ready backend claims the same name or the same extension.</td></tr>
+<tr><td><code>invalid</code></td><td>the manifest is missing or malformed.</td></tr>
+</tbody>
+</table>
+<p>Two rules make conflicts impossible in practice: <strong>no two backends may share a name, and no two may claim the same extension</strong> — ambiguity is a conflict for both, never a silent shadow. A file is routed to the <em>ready</em> backend that claims its extension (<code>EXTRACTORS</code>); a file with no ready backend is skipped and reported, never fatal.</p>
+<p><code>--list-backends</code> prints the whole table, and the registry is also what <code>test-backend</code>, <code>--install</code>, and <code>--remove</code> work against.</p>
+<h2>Installing and removing</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --install &lt;git-url-or-path&gt;   # clone into backends/&lt;name&gt;/, pip-install missing deps
+python main.py --remove &lt;name&gt;               # delete one installed backend</code></pre>
+</details>
+<p>Install runs <code>git clone --depth 1</code> with the directory name derived from the URL (lowercased, sanitized to a valid package name), then checks the manifest and pip-installs the backend&#x27;s declared python requirements. <strong>This executes third-party code at import time — only install backends you have reviewed.</strong> A backend is live the moment its directory exists, its manifest is valid, and its requirements are met; there is no separate registration step.</p>
+<h2>Verifying a backend</h2>
+<p><code>python main.py test-backend --backend &lt;name&gt;</code> runs the backend&#x27;s <strong>self-test protocol</strong> (implemented by the Python backend; see <a href="03%20-%20Python%20Backend.html">Python Backend</a>):</p>
+<ol>
+<li>the backend&#x27;s <code>collect_truth()</code> runs a bundled fixture with the real language runtime and records every call site and import binding it resolved;
+</li>
+<li>the fixture&#x27;s <code># expect: ...</code> marker lines pin the deliberately unresolvable cases (ambiguous names, external calls, unresolved imports) that the runtime cannot reach;
+</li>
+<li>the harness extracts the fixture with the backend&#x27;s own <code>extract</code>, builds the kodama-docs graph, and checks the graph against both sources of truth.
+</li>
+</ol>
+<p>The graph is the artifact under test: a failure means the <em>translation</em> (code → record → graph) is wrong, and the exit code is non-zero so the harness is CI-friendly. See <a href="../08%20-%20Contributing/01%20-%20Adding%20a%20Language.html">Adding a Language</a>.</p>
+<h2>Developer comments and LLM skips</h2>
+<p>A comment directly above a definition is glued as its <code>developer_comment</code>. That works for a run of <code>//</code>/<code>#</code>/<code>--</code> lines or one multiline <code>/* ... */</code> block, on functions, classes, globals/macros and their Python/Lua equivalents. If the <strong>first non-empty line</strong> is <code>kodama-docs-llm:skip</code>, the backend sets <code>skip_llm</code> and removes the marker line. No LLM task is created for that symbol; a class-level skip also covers its methods, constructors and nested classes.</p>
+<h2>The stable API</h2>
+<p>The registry exposes a small, stable surface the pipeline uses:</p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Used for</th>
+</tr></thead>
+<tbody>
+<tr><td><code>extract(source, relpath)</code></td><td>the record, per file (the contract); the registry stamps <code>LANG</code>.</td></tr>
+<tr><td><code>builtins_for(relpath)</code></td><td>the backend&#x27;s <code>BUILTIN_NAMES</code>, for the resolver.</td></tr>
+<tr><td><code>module_candidates(module, relpath)</code></td><td>import → file resolution candidates.</td></tr>
+<tr><td><code>list_backends()</code></td><td>status table for <code>--list-backends</code>.</td></tr>
+<tr><td><code>active_backend_ids()</code></td><td><code>name@version</code> per extension — stamped into <code>symbols.json</code> so a backend upgrade invalidates the analysis cache (see <a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>).</td></tr>
+<tr><td><code>install_backend(url)</code> / <code>remove_backend(name)</code></td><td>backend management.</td></tr>
+</tbody>
+</table>
+<p>The concrete backends ship in this repository: <a href="02%20-%20Lua%20Backend.html">Lua</a>, <a href="03%20-%20Python%20Backend.html">Python</a>, and <a href="03b%20-%20C%20C%2B%2B%20CUDA%20Backend.html">C/C++/CUDA</a>.</p>
+</main>
+</div>
+</body>
+</html>

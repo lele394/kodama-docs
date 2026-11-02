@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/prompt_templates.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/prompt_templates.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-language_name-36">language_name</a></td><td>36</td><td>f</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-prompt_fields-49">prompt_fields</a></td><td>49</td><td>f, sym, kind</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-render_prompt-74">render_prompt</a></td><td>74</td><td>template, fields</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>language_name <a id="fn-language_name-36"></a></h3>
+<p><em>kodama_docs/prompt_templates.py:36-46</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>f</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="prompt_templates.py.html#variables">_EXT_LANG</a>
+</li>
+<li><a href="prompt_templates.py.html#variables">_LANG_NAMES</a>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><span style="color:#e67e22">?.title</span>
+</li>
+<li><span style="color:#e67e22">_LANG_NAMES.get</span>
+</li>
+<li><span style="color:#e67e22">lang.replace</span>
+</li>
+<li>os.path.splitext
+</li>
+<li><span style="color:#e67e22">_EXT_LANG.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def language_name(f: dict) -&gt; str:
+    &quot;&quot;&quot;Human-readable language for a file record.&quot;&quot;&quot;
+    lang = str(f.get(&#x27;lang&#x27;) or &#x27;&#x27;).strip()
+    if lang == &#x27;c-family&#x27;:
+        dialect = str(f.get(&#x27;dialect&#x27;) or &#x27;&#x27;).lower()
+        return {&#x27;c&#x27;: &#x27;C&#x27;, &#x27;cpp&#x27;: &#x27;C++&#x27;, &#x27;cuda&#x27;: &#x27;CUDA&#x27;}.get(
+            dialect, &#x27;C/C++&#x27;)
+    if lang:
+        return _LANG_NAMES.get(lang, lang.replace(&#x27;-&#x27;, &#x27; &#x27;).title())
+    ext = os.path.splitext(str(f.get(&#x27;relpath&#x27;) or &#x27;&#x27;))[1].lower()
+    return _EXT_LANG.get(ext, &#x27;source&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="prompt_templates.py.html">kodama_docs/prompt_templates.py</a>
+<ul>
+<li><a href="prompt_templates.py.html#fn-prompt_fields-49">prompt_fields:59</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_prompts.py.html">tests/test_prompts.py</a>
+<ul>
+<li><a href="../tests/test_prompts.py.html#fn-test_language_labels-13">test_language_labels:14</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_language_labels-13">test_language_labels:15</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_language_labels-13">test_language_labels:16</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_language_labels-13">test_language_labels:18</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_language_labels-13">test_language_labels:20</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_language_labels-13">test_language_labels:22</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>prompt_fields <a id="fn-prompt_fields-49"></a></h3>
+<p><em>kodama_docs/prompt_templates.py:49-71</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>f</code></td><td></td></tr>
+<tr><td><code>sym</code></td><td></td></tr>
+<tr><td><code>kind</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li>str
+</li>
+<li>os.path.basename
+</li>
+<li><span style="color:#e67e22">sym.get</span>
+</li>
+<li><a href="prompt_templates.py.html#fn-language_name-36">language_name</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><a href="util.py.html#fn-fence_lang-38">fence_lang</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def prompt_fields(f: dict, sym: dict | None = None, kind: str = &#x27;&#x27;) -&gt; dict:
+    &quot;&quot;&quot;Values available to a prompt template for one LLM task.&quot;&quot;&quot;
+    sym = sym or {}
+    rel = str(f.get(&#x27;relpath&#x27;) or &#x27;&#x27;)
+    name = str(sym.get(&#x27;name&#x27;) or os.path.basename(rel) or &#x27;&#x27;)
+    qualified = str(sym.get(&#x27;qualified&#x27;) or name or rel)
+    if kind == &#x27;file summary&#x27;:
+        name = os.path.basename(rel)
+        qualified = rel
+    return {
+        &#x27;language&#x27;: language_name(f),
+        &#x27;language_family&#x27;: str(f.get(&#x27;lang&#x27;) or &#x27;&#x27;),
+        &#x27;dialect&#x27;: str(f.get(&#x27;dialect&#x27;) or &#x27;&#x27;),
+        &#x27;file&#x27;: rel,
+        &#x27;symbol&#x27;: qualified,
+        &#x27;name&#x27;: name,
+        &#x27;kind&#x27;: kind,
+        &#x27;line&#x27;: str(sym.get(&#x27;line&#x27;) or &#x27;&#x27;),
+        &#x27;line_end&#x27;: str(sym.get(&#x27;end_line&#x27;) or sym.get(&#x27;line&#x27;) or &#x27;&#x27;),
+        &#x27;params&#x27;: &#x27;, &#x27;.join(str(p) for p in (sym.get(&#x27;params&#x27;) or [])),
+        &#x27;fence&#x27;: fence_lang(rel),
+        &#x27;developer_comment&#x27;: str(sym.get(&#x27;developer_comment&#x27;) or &#x27;&#x27;),
+    }</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:48</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:215</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:245</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:268</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_prompts.py.html">tests/test_prompts.py</a>
+<ul>
+<li><a href="../tests/test_prompts.py.html#fn-test_function_fields-25">test_function_fields:31</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_summary_fields_use_file_path-44">test_summary_fields_use_file_path:46</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_shipped_prompts_use_the_shared_language_key-67">test_shipped_prompts_use_the_shared_language_key:69</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>render_prompt <a id="fn-render_prompt-74"></a></h3>
+<p><em>kodama_docs/prompt_templates.py:74-84</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>template</code></td><td></td></tr>
+<tr><td><code>fields</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="prompt_templates.py.html#variables">_FIELD_RE</a>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">_FIELD_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def render_prompt(template: str, fields: dict) -&gt; str:
+    &quot;&quot;&quot;Replace known ``{key}`` placeholders in one pass.
+
+    Unknown placeholders are left verbatim — they may be intentional (for
+    example a JSON example in a custom prompt).
+    &quot;&quot;&quot;
+    text = str(template or &#x27;&#x27;)
+    return _FIELD_RE.sub(
+        lambda m: str(fields[m.group(1)])
+        if m.group(1) in fields else m.group(0),
+        text)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-chunk_notes-38">chunk_notes:46</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:213</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:243</a>
+</li>
+<li><a href="llm_phase.py.html#fn-run-174">run:266</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_prompts.py.html">tests/test_prompts.py</a>
+<ul>
+<li><a href="../tests/test_prompts.py.html#fn-test_render_prompt_is_single_pass_and_keeps_unknown_keys-53">test_render_prompt_is_single_pass_and_keeps_unknown_keys:55</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_render_prompt_leaves_json_braces_alone-61">test_render_prompt_leaves_json_braces_alone:63</a>
+</li>
+<li><a href="../tests/test_prompts.py.html#fn-test_shipped_prompts_use_the_shared_language_key-67">test_shipped_prompts_use_the_shared_language_key:79</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>_FIELD_RE</code></td><td>26</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_LANG_NAMES</code></td><td>27</td><td>table</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_EXT_LANG</code></td><td>28</td><td>table</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 21: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 22: import of <span style="color:#e67e22">re</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

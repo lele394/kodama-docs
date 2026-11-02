@@ -1,0 +1,1329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_resolver.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_resolver.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-mk-21">mk</a></td><td>21</td><td>src, rel</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-calls_out-34">calls_out</a></td><td>34</td><td>g, node_id</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_from_import_binding_resolves_to_imported_module-39">test_from_import_binding_resolves_to_imported_module</a></td><td>39</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_builtin_wins_over_project_function_same_name-62">test_builtin_wins_over_project_function_same_name</a></td><td>62</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_aliased_imports_disambiguate-80">test_aliased_imports_disambiguate</a></td><td>80</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_double_bound_name_is_ambiguous_not_guessed-100">test_double_bound_name_is_ambiguous_not_guessed</a></td><td>100</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_lua_require_alias_resolves_method-120">test_lua_require_alias_resolves_method</a></td><td>120</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_unbound_object_unique_method_is_inference-144">test_unbound_object_unique_method_is_inference</a></td><td>144</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_import_as_module_binding-164">test_import_as_module_binding</a></td><td>164</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_local_scope_wins_over_same_name_elsewhere-181">test_local_scope_wins_over_same_name_elsewhere</a></td><td>181</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_unbound_multiple_project_names_are_ambiguous-199">test_unbound_multiple_project_names_are_ambiguous</a></td><td>199</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_lua_builtin_math_sqrt-221">test_lua_builtin_math_sqrt</a></td><td>221</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_python_class_constructor_resolves_via_import-231">test_python_class_constructor_resolves_via_import</a></td><td>231</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_module_dot_class_constructor_resolves-254">test_module_dot_class_constructor_resolves</a></td><td>254</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_external_call_has_resolution_success_false-270">test_external_call_has_resolution_success_false</a></td><td>270</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_unbound_unique_class_is_inferred-284">test_unbound_unique_class_is_inferred</a></td><td>284</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_unbound_multiple_classes_are_ambiguous-294">test_unbound_multiple_classes_are_ambiguous</a></td><td>294</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_nested_def_shadows_module_level-307">test_nested_def_shadows_module_level</a></td><td>307</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_module_redefinition_last_def_wins-331">test_module_redefinition_last_def_wins</a></td><td>331</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_dynamic_receiver_is_external_not_dropped-350">test_dynamic_receiver_is_external_not_dropped</a></td><td>350</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_dotted_module_path_resolves_to_module_method-362">test_dotted_module_path_resolves_to_module_method</a></td><td>362</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_relative_import_resolves_sibling-378">test_relative_import_resolves_sibling</a></td><td>378</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_no_phantom_import_for_from_import-394">test_no_phantom_import_for_from_import</a></td><td>394</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_file_var_dedup_by_name-412">test_file_var_dedup_by_name</a></td><td>412</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_splat_params_recorded-423">test_splat_params_recorded</a></td><td>423</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_vararg_not_triggered_by_star_in_default-435">test_vararg_not_triggered_by_star_in_default</a></td><td>435</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_class_attr_not_file_var-447">test_class_attr_not_file_var</a></td><td>447</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_default_arg_call_recorded-460">test_default_arg_call_recorded</a></td><td>460</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_decorated_function_comment_glued-477">test_decorated_function_comment_glued</a></td><td>477</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_method_qualified_name-491">test_method_qualified_name</a></td><td>491</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_self_method_resolves_to_enclosing_class-505">test_self_method_resolves_to_enclosing_class</a></td><td>505</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_lua_self_method_resolves_to_enclosing_table-520">test_lua_self_method_resolves_to_enclosing_table</a></td><td>520</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_class_qualified_method_uses_right_class-536">test_class_qualified_method_uses_right_class</a></td><td>536</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_bare_method_is_not_a_global_name-558">test_bare_method_is_not_a_global_name</a></td><td>558</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_parameter_shadow_does_not_create_reads_edge-574">test_parameter_shadow_does_not_create_reads_edge</a></td><td>574</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_lua_parameter_shadow_does_not_create_reads_edge-588">test_lua_parameter_shadow_does_not_create_reads_edge</a></td><td>588</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-601">main</a></td><td>601</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>mk <a id="fn-mk-21"></a></h3>
+<p><em>tests/test_resolver.py:21-27</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>src</code></td><td></td></tr>
+<tr><td><code>rel</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">backends.extract</span>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">src.splitlines</span>
+</li>
+<li><span style="color:#e67e22">src.encode</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def mk(src, rel):
+    r = backends.extract(src, rel)
+    r[&#x27;relpath&#x27;] = rel
+    r[&#x27;lines&#x27;] = len(src.splitlines())
+    r[&#x27;size&#x27;] = len(src.encode())
+    r[&#x27;status&#x27;] = &#x27;ok&#x27;
+    return r</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_resolver.py.html">tests/test_resolver.py</a>
+<ul>
+<li><a href="test_resolver.py.html">top-level:30</a>
+</li>
+<li><a href="test_resolver.py.html">top-level:31</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>calls_out <a id="fn-calls_out-34"></a></h3>
+<p><em>tests/test_resolver.py:34-36</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>node_id</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+<li>sorted
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def calls_out(g, node_id):
+    return sorted((v, d.get(&#x27;status&#x27;)) for u, v, d in g.edges(node_id, data=True)
+                  if d.get(&#x27;type&#x27;) == &#x27;CALLS&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_resolver.py.html">tests/test_resolver.py</a>
+<ul>
+<li><a href="test_resolver.py.html#fn-test_from_import_binding_resolves_to_imported_module-39">test_from_import_binding_resolves_to_imported_module:57</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_builtin_wins_over_project_function_same_name-62">test_builtin_wins_over_project_function_same_name:75</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_aliased_imports_disambiguate-80">test_aliased_imports_disambiguate:94</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_double_bound_name_is_ambiguous_not_guessed-100">test_double_bound_name_is_ambiguous_not_guessed:113</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_unbound_object_unique_method_is_inference-144">test_unbound_object_unique_method_is_inference:160</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_import_as_module_binding-164">test_import_as_module_binding:177</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_local_scope_wins_over_same_name_elsewhere-181">test_local_scope_wins_over_same_name_elsewhere:194</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_unbound_multiple_project_names_are_ambiguous-199">test_unbound_multiple_project_names_are_ambiguous:215</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_lua_builtin_math_sqrt-221">test_lua_builtin_math_sqrt:228</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_python_class_constructor_resolves_via_import-231">test_python_class_constructor_resolves_via_import:246</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_module_dot_class_constructor_resolves-254">test_module_dot_class_constructor_resolves:265</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_unbound_unique_class_is_inferred-284">test_unbound_unique_class_is_inferred:290</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_unbound_multiple_classes_are_ambiguous-294">test_unbound_multiple_classes_are_ambiguous:301</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_nested_def_shadows_module_level-307">test_nested_def_shadows_module_level:324</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_nested_def_shadows_module_level-307">test_nested_def_shadows_module_level:326</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_module_redefinition_last_def_wins-331">test_module_redefinition_last_def_wins:345</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_dynamic_receiver_is_external_not_dropped-350">test_dynamic_receiver_is_external_not_dropped:358</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_dotted_module_path_resolves_to_module_method-362">test_dotted_module_path_resolves_to_module_method:373</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_relative_import_resolves_sibling-378">test_relative_import_resolves_sibling:389</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_self_method_resolves_to_enclosing_class-505">test_self_method_resolves_to_enclosing_class:515</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_lua_self_method_resolves_to_enclosing_table-520">test_lua_self_method_resolves_to_enclosing_table:531</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_class_qualified_method_uses_right_class-536">test_class_qualified_method_uses_right_class:554</a>
+</li>
+<li><a href="test_resolver.py.html#fn-test_bare_method_is_not_a_global_name-558">test_bare_method_is_not_a_global_name:569</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_from_import_binding_resolves_to_imported_module <a id="fn-test_from_import_binding_resolves_to_imported_module-39"></a></h3>
+<p><em>tests/test_resolver.py:39-59</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_from_import_binding_resolves_to_imported_module():
+    &quot;&quot;&quot;The P0-1 case: `from users import validate` must link to users.py,
+    not to a same-named function in payments.py (old scan-order bug).&quot;&quot;&quot;
+    users = py(&quot;&quot;&quot;
+def validate(amount):
+    return amount &gt; 0
+&quot;&quot;&quot;, &#x27;users&#x27;)
+    payments = py(&quot;&quot;&quot;
+def validate(amount):
+    return amount &lt; 1000
+&quot;&quot;&quot;, &#x27;payments&#x27;)
+    checkout = py(&quot;&quot;&quot;
+from users import validate
+
+def charge(amount):
+    return validate(amount)
+&quot;&quot;&quot;, &#x27;checkout&#x27;)
+    g, diag = gmod.build_graph([users, payments, checkout])
+    assert calls_out(g, &#x27;fn:checkout.py::charge@4&#x27;) == \
+        [(&#x27;fn:users.py::validate@2&#x27;, &#x27;resolved&#x27;)]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_builtin_wins_over_project_function_same_name <a id="fn-test_builtin_wins_over_project_function_same_name-62"></a></h3>
+<p><em>tests/test_resolver.py:62-77</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_builtin_wins_over_project_function_same_name():
+    &quot;&quot;&quot;`math.sqrt` is stdlib even though the project defines `sqrt`.&quot;&quot;&quot;
+    mathutil = py(&quot;&quot;&quot;
+def sqrt(x):
+    return x ** 0.5
+&quot;&quot;&quot;, &#x27;mathutil&#x27;)
+    use = py(&quot;&quot;&quot;
+import math
+
+def go(x):
+    return math.sqrt(x)
+&quot;&quot;&quot;, &#x27;use&#x27;)
+    g, diag = gmod.build_graph([mathutil, use])
+    assert calls_out(g, &#x27;fn:use.py::go@4&#x27;) == \
+        [(&#x27;builtin:math.sqrt&#x27;, &#x27;builtin&#x27;)]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_aliased_imports_disambiguate <a id="fn-test_aliased_imports_disambiguate-80"></a></h3>
+<p><em>tests/test_resolver.py:80-97</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_aliased_imports_disambiguate():
+    &quot;&quot;&quot;Two modules, one shared symbol, two distinct local names: both
+    calls resolve (status: resolved), no diagnostic.&quot;&quot;&quot;
+    a1 = py(&quot;def validate(x):\n    return 1\n&quot;, &#x27;alpha&#x27;)
+    a2 = py(&quot;def validate(x):\n    return 2\n&quot;, &#x27;beta&#x27;)
+    amb = py(&quot;&quot;&quot;
+from alpha import validate as va
+from beta import validate as vb
+
+def go(x):
+    va(x)
+    vb(x)
+&quot;&quot;&quot;, &#x27;amb&#x27;)
+    g, diag = gmod.build_graph([a1, a2, amb])
+    edges = calls_out(g, &#x27;fn:amb.py::go@5&#x27;)
+    assert (&#x27;fn:alpha.py::validate@1&#x27;, &#x27;resolved&#x27;) in edges
+    assert (&#x27;fn:beta.py::validate@1&#x27;, &#x27;resolved&#x27;) in edges
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_double_bound_name_is_ambiguous_not_guessed <a id="fn-test_double_bound_name_is_ambiguous_not_guessed-100"></a></h3>
+<p><em>tests/test_resolver.py:100-117</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+<li>len
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_double_bound_name_is_ambiguous_not_guessed():
+    &quot;&quot;&quot;One local name bound to two different symbols: no edge is written
+    and the call site is recorded with its candidates (P0-2).&quot;&quot;&quot;
+    a1 = py(&quot;def validate(x):\n    return 1\n&quot;, &#x27;alpha&#x27;)
+    a2 = py(&quot;def validate(x):\n    return 2\n&quot;, &#x27;beta&#x27;)
+    amb2 = py(&quot;&quot;&quot;
+from alpha import validate
+from beta import validate as validate
+
+def go(x):
+    validate(x)
+&quot;&quot;&quot;, &#x27;amb2&#x27;)
+    g, diag = gmod.build_graph([a1, a2, amb2])
+    assert calls_out(g, &#x27;fn:amb2.py::go@5&#x27;) == []
+    assert len(diag[&#x27;ambiguous_calls&#x27;]) == 1
+    d = diag[&#x27;ambiguous_calls&#x27;][0]
+    assert d[&#x27;name&#x27;] == &#x27;validate&#x27;
+    assert d[&#x27;candidates&#x27;] == [&#x27;alpha.py::validate@1&#x27;, &#x27;beta.py::validate@1&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_lua_require_alias_resolves_method <a id="fn-test_lua_require_alias_resolves_method-120"></a></h3>
+<p><em>tests/test_resolver.py:120-141</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">lua</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_lua_require_alias_resolves_method():
+    &quot;&quot;&quot;`local NBody = require(&#x27;physics.nbody&#x27;)` then `NBody:new(...)` must
+    resolve to nbody&#x27;s `new` (require-alias contract).&quot;&quot;&quot;
+    nbody = lua(&quot;&quot;&quot;
+NBody = {}
+function NBody:new(mass)
+  self.mass = mass
+  return self
+end
+&quot;&quot;&quot;, &#x27;nbody&#x27;)
+    sim = lua(&quot;&quot;&quot;
+local NBody = require(&#x27;physics.nbody&#x27;)
+
+function make()
+  local b = NBody:new(1.0)
+  return b
+end
+&quot;&quot;&quot;, &#x27;sim&#x27;)
+    g, diag = gmod.build_graph([nbody, sim])
+    assert (&#x27;fn:sim.lua::make@4&#x27;, &#x27;fn:nbody.lua::new@3&#x27;, &#x27;resolved&#x27;) in \
+        [(u, v, d.get(&#x27;status&#x27;)) for u, v, d in g.edges(data=True)
+         if d.get(&#x27;type&#x27;) == &#x27;CALLS&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_unbound_object_unique_method_is_inference <a id="fn-test_unbound_object_unique_method_is_inference-144"></a></h3>
+<p><em>tests/test_resolver.py:144-161</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">lua</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_unbound_object_unique_method_is_inference():
+    &quot;&quot;&quot;`sim:step(...)` on a local instance (no import binding): the only
+    project match is an inference — kept, but marked `inferred`.&quot;&quot;&quot;
+    body = lua(&quot;&quot;&quot;
+local Body = {}
+function Body:step(dt)
+end
+&quot;&quot;&quot;, &#x27;body&#x27;)
+    world = lua(&quot;&quot;&quot;
+local sim = make_sim()
+
+function run()
+  sim:step(0.016)
+end
+&quot;&quot;&quot;, &#x27;world&#x27;)
+    g, diag = gmod.build_graph([body, world])
+    assert (&#x27;fn:body.lua::step@3&#x27;, &#x27;inferred&#x27;) in calls_out(
+        g, &#x27;fn:world.lua::run@4&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_import_as_module_binding <a id="fn-test_import_as_module_binding-164"></a></h3>
+<p><em>tests/test_resolver.py:164-178</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_import_as_module_binding():
+    &quot;&quot;&quot;`import payments as p` then `p.fee(x)` resolves to payments.py.&quot;&quot;&quot;
+    pmod = py(&quot;&quot;&quot;
+def fee(x):
+    return x * 0.1
+&quot;&quot;&quot;, &#x27;payments&#x27;)
+    caller = py(&quot;&quot;&quot;
+import payments as p
+
+def go(x):
+    return p.fee(x)
+&quot;&quot;&quot;, &#x27;caller&#x27;)
+    g, diag = gmod.build_graph([pmod, caller])
+    assert calls_out(g, &#x27;fn:caller.py::go@4&#x27;) == \
+        [(&#x27;fn:payments.py::fee@2&#x27;, &#x27;resolved&#x27;)]</code></pre>
+</details>
+<hr>
+<h3>test_local_scope_wins_over_same_name_elsewhere <a id="fn-test_local_scope_wins_over_same_name_elsewhere-181"></a></h3>
+<p><em>tests/test_resolver.py:181-196</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_local_scope_wins_over_same_name_elsewhere():
+    local = py(&quot;&quot;&quot;
+def helper(x):
+    return 1
+
+def go(x):
+    return helper(x)
+&quot;&quot;&quot;, &#x27;local&#x27;)
+    other = py(&quot;&quot;&quot;
+def helper(x):
+    return 2
+&quot;&quot;&quot;, &#x27;other&#x27;)
+    g, diag = gmod.build_graph([local, other])
+    assert calls_out(g, &#x27;fn:local.py::go@5&#x27;) == \
+        [(&#x27;fn:local.py::helper@2&#x27;, &#x27;resolved&#x27;)]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_unbound_multiple_project_names_are_ambiguous <a id="fn-test_unbound_multiple_project_names_are_ambiguous-199"></a></h3>
+<p><em>tests/test_resolver.py:199-218</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_unbound_multiple_project_names_are_ambiguous():
+    &quot;&quot;&quot;Bare name defined twice project-wide, no import binding: no edge,
+    diagnostic with both candidates (never pick one silently).&quot;&quot;&quot;
+    multi1 = py(&quot;&quot;&quot;
+def compute(x):
+    return 1
+&quot;&quot;&quot;, &#x27;m1&#x27;)
+    multi2 = py(&quot;&quot;&quot;
+def compute(x):
+    return 2
+&quot;&quot;&quot;, &#x27;m2&#x27;)
+    muse = py(&quot;&quot;&quot;
+def go(x):
+    return compute(x)
+&quot;&quot;&quot;, &#x27;muse&#x27;)
+    g, diag = gmod.build_graph([multi1, multi2, muse])
+    assert calls_out(g, &#x27;fn:muse.py::go@2&#x27;) == []
+    assert diag[&#x27;ambiguous_calls&#x27;][0][&#x27;name&#x27;] == &#x27;compute&#x27;
+    assert diag[&#x27;ambiguous_calls&#x27;][0][&#x27;candidates&#x27;] == \
+        [&#x27;m1.py::compute@2&#x27;, &#x27;m2.py::compute@2&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_lua_builtin_math_sqrt <a id="fn-test_lua_builtin_math_sqrt-221"></a></h3>
+<p><em>tests/test_resolver.py:221-228</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">lua</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_lua_builtin_math_sqrt():
+    lb = lua(&quot;&quot;&quot;
+function f(x)
+  return math.sqrt(x)
+end
+&quot;&quot;&quot;, &#x27;lb&#x27;)
+    g, diag = gmod.build_graph([lb])
+    assert (&#x27;builtin:math.sqrt&#x27;, &#x27;builtin&#x27;) in calls_out(g, &#x27;fn:lb.lua::f@2&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_python_class_constructor_resolves_via_import <a id="fn-test_python_class_constructor_resolves_via_import-231"></a></h3>
+<p><em>tests/test_resolver.py:231-251</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_python_class_constructor_resolves_via_import():
+    &quot;&quot;&quot;`from body import Body` + `Body(10)` must resolve to the class node
+    (classes are now graph symbols), with resolution_success=True.&quot;&quot;&quot;
+    body = py(&quot;&quot;&quot;
+class Body:
+    def __init__(self, mass):
+        self.mass = mass
+&quot;&quot;&quot;, &#x27;body&#x27;)
+    main = py(&quot;&quot;&quot;
+from body import Body
+
+def make():
+    return Body(10)
+&quot;&quot;&quot;, &#x27;main&#x27;)
+    g, diag = gmod.build_graph([body, main])
+    assert calls_out(g, &#x27;fn:main.py::make@4&#x27;) == \
+        [(&#x27;cls:body.py::Body@2&#x27;, &#x27;resolved&#x27;)]
+    flags = [d.get(&#x27;resolution_success&#x27;) for _u, v, d in g.edges(data=True)
+             if d.get(&#x27;type&#x27;) == &#x27;CALLS&#x27; and v == &#x27;cls:body.py::Body@2&#x27;]
+    assert flags == [True]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_module_dot_class_constructor_resolves <a id="fn-test_module_dot_class_constructor_resolves-254"></a></h3>
+<p><em>tests/test_resolver.py:254-267</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_module_dot_class_constructor_resolves():
+    &quot;&quot;&quot;`import body` + `body.Body(10)` resolves through the dotted branch
+    to the class node in body.py.&quot;&quot;&quot;
+    body = py(&quot;class Body:\n    pass\n&quot;, &#x27;body&#x27;)
+    main = py(&quot;&quot;&quot;
+import body
+
+def make():
+    return body.Body(10)
+&quot;&quot;&quot;, &#x27;main&#x27;)
+    g, diag = gmod.build_graph([body, main])
+    assert calls_out(g, &#x27;fn:main.py::make@4&#x27;) == \
+        [(&#x27;cls:body.py::Body@1&#x27;, &#x27;resolved&#x27;)]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_external_call_has_resolution_success_false <a id="fn-test_external_call_has_resolution_success_false-270"></a></h3>
+<p><em>tests/test_resolver.py:270-281</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_external_call_has_resolution_success_false():
+    &quot;&quot;&quot;A call with no project symbol and no binding is external — and its
+    edge carries resolution_success=False (the flag the renderers use).&quot;&quot;&quot;
+    a = py(&quot;&quot;&quot;
+def go():
+    return unknown_fn(1)
+&quot;&quot;&quot;, &#x27;a&#x27;)
+    g, diag = gmod.build_graph([a])
+    edges = [(v, d.get(&#x27;status&#x27;), d.get(&#x27;resolution_success&#x27;))
+             for _u, v, d in g.edges(data=True)
+             if d.get(&#x27;type&#x27;) == &#x27;CALLS&#x27;]
+    assert (&#x27;ext:unknown_fn&#x27;, &#x27;external&#x27;, False) in edges</code></pre>
+</details>
+<hr>
+<h3>test_unbound_unique_class_is_inferred <a id="fn-test_unbound_unique_class_is_inferred-284"></a></h3>
+<p><em>tests/test_resolver.py:284-291</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_unbound_unique_class_is_inferred():
+    &quot;&quot;&quot;A bare constructor call with no import, but exactly one project
+    class of that name: kept as an inference, marked `inferred`.&quot;&quot;&quot;
+    b1 = py(&quot;class Thing:\n    pass\n&quot;, &#x27;b1&#x27;)
+    b2 = py(&quot;def go():\n    return Thing()\n&quot;, &#x27;b2&#x27;)
+    g, diag = gmod.build_graph([b1, b2])
+    assert (&#x27;cls:b1.py::Thing@1&#x27;, &#x27;inferred&#x27;) in calls_out(g, &#x27;fn:b2.py::go@1&#x27;)
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_unbound_multiple_classes_are_ambiguous <a id="fn-test_unbound_multiple_classes_are_ambiguous-294"></a></h3>
+<p><em>tests/test_resolver.py:294-304</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_unbound_multiple_classes_are_ambiguous():
+    &quot;&quot;&quot;Bare constructor, two project classes of that name, no import:
+    no edge is written and both candidates are recorded (P0-2).&quot;&quot;&quot;
+    c1 = py(&quot;class Thing:\n    pass\n&quot;, &#x27;c1&#x27;)
+    c2 = py(&quot;class Thing:\n    pass\n&quot;, &#x27;c2&#x27;)
+    c3 = py(&quot;def go():\n    return Thing()\n&quot;, &#x27;c3&#x27;)
+    g, diag = gmod.build_graph([c1, c2, c3])
+    assert calls_out(g, &#x27;fn:c3.py::go@1&#x27;) == []
+    d = diag[&#x27;ambiguous_calls&#x27;][0]
+    assert d[&#x27;name&#x27;] == &#x27;Thing&#x27;
+    assert d[&#x27;candidates&#x27;] == [&#x27;c1.py::Thing@1&#x27;, &#x27;c2.py::Thing@1&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_nested_def_shadows_module_level <a id="fn-test_nested_def_shadows_module_level-307"></a></h3>
+<p><em>tests/test_resolver.py:307-328</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_nested_def_shadows_module_level():
+    &quot;&quot;&quot;A nested `inner` shadows the module-level `inner` only inside the
+    enclosing function; from other scopes the module-level one is live.
+    (First-wins by scan order would misroute the second call.)&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+def outer(x):
+    def inner(x):
+        return x + 1
+    return inner(x)
+
+def inner(x):
+    return x + 2
+
+def top_use(x):
+    return inner(x)
+&quot;&quot;&quot;, &#x27;nest&#x27;)
+    g, diag = gmod.build_graph([f])
+    assert (&#x27;fn:nest.py::inner@3&#x27;, &#x27;resolved&#x27;) in calls_out(
+        g, &#x27;fn:nest.py::outer@2&#x27;)
+    assert (&#x27;fn:nest.py::inner@7&#x27;, &#x27;resolved&#x27;) in calls_out(
+        g, &#x27;fn:nest.py::top_use@10&#x27;)
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_module_redefinition_last_def_wins <a id="fn-test_module_redefinition_last_def_wins-331"></a></h3>
+<p><em>tests/test_resolver.py:331-347</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_module_redefinition_last_def_wins():
+    &quot;&quot;&quot;Two module-level `compute` defs: a call after both must link to the
+    LATER one (the definition that is live at runtime), not the first.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+def compute(x):
+    return 1
+
+def compute(x):
+    return 2
+
+def run():
+    return compute(3)
+&quot;&quot;&quot;, &#x27;red&#x27;)
+    g, diag = gmod.build_graph([f])
+    assert calls_out(g, &#x27;fn:red.py::run@8&#x27;) == \
+        [(&#x27;fn:red.py::compute@5&#x27;, &#x27;resolved&#x27;)]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_dynamic_receiver_is_external_not_dropped <a id="fn-test_dynamic_receiver_is_external_not_dropped-350"></a></h3>
+<p><em>tests/test_resolver.py:350-359</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+<li>any
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_dynamic_receiver_is_external_not_dropped():
+    &quot;&quot;&quot;`cfg[&#x27;k&#x27;].update(1)` has a runtime-computed receiver: the call stays
+    VISIBLE as an external reference (`?.update`), never silently dropped.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+def go(cfg):
+    return cfg[&#x27;k&#x27;].update(1)
+&quot;&quot;&quot;, &#x27;dyn&#x27;)
+    g, diag = gmod.build_graph([f])
+    assert (&#x27;ext:?.update&#x27;, &#x27;external&#x27;) in calls_out(g, &#x27;fn:dyn.py::go@2&#x27;)
+    assert any(e[&#x27;name&#x27;] == &#x27;?.update&#x27; for e in diag[&#x27;external_calls&#x27;])</code></pre>
+</details>
+<hr>
+<h3>test_dotted_module_path_resolves_to_module_method <a id="fn-test_dotted_module_path_resolves_to_module_method-362"></a></h3>
+<p><em>tests/test_resolver.py:362-375</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_dotted_module_path_resolves_to_module_method():
+    &quot;&quot;&quot;`deep.pack.mod.launch(3)` resolves through the dotted module path to
+    the `launch` function inside deep/pack/mod.py — no binding required.&quot;&quot;&quot;
+    mod = py(&quot;def launch(x):\n    return x\n&quot;, &#x27;deep/pack/mod&#x27;)
+    user = py(&quot;&quot;&quot;
+import deep.pack.mod
+
+def go():
+    return deep.pack.mod.launch(3)
+&quot;&quot;&quot;, &#x27;deep_user&#x27;)
+    g, diag = gmod.build_graph([mod, user])
+    assert calls_out(g, &#x27;fn:deep_user.py::go@4&#x27;) == \
+        [(&#x27;fn:deep/pack/mod.py::launch@1&#x27;, &#x27;resolved&#x27;)]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_relative_import_resolves_sibling <a id="fn-test_relative_import_resolves_sibling-378"></a></h3>
+<p><em>tests/test_resolver.py:378-391</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_relative_import_resolves_sibling():
+    &quot;&quot;&quot;`from . import b` + `b.helper(1)` links to the sibling module&#x27;s
+    `helper`, even though the import name is the bare package-relative form.&quot;&quot;&quot;
+    b = py(&quot;def helper(x):\n    return x\n&quot;, &#x27;pkg/b&#x27;)
+    a = py(&quot;&quot;&quot;
+from . import b
+
+def go():
+    return b.helper(1)
+&quot;&quot;&quot;, &#x27;pkg/a&#x27;)
+    g, diag = gmod.build_graph([b, a])
+    assert calls_out(g, &#x27;fn:pkg/a.py::go@4&#x27;) == \
+        [(&#x27;fn:pkg/b.py::helper@1&#x27;, &#x27;resolved&#x27;)]
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_no_phantom_import_for_from_import <a id="fn-test_no_phantom_import_for_from_import-394"></a></h3>
+<p><em>tests/test_resolver.py:394-409</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">backends.extract</span>
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_no_phantom_import_for_from_import():
+    &quot;&quot;&quot;`from m import n` must yield exactly ONE import record (for n), not a
+    phantom second one for m. Guards the tree-sitter identity-vs-position
+    bug where the module path was treated as an imported symbol.&quot;&quot;&quot;
+    src = &quot;&quot;&quot;
+from m import n
+
+def go(x):
+    return n(x)
+&quot;&quot;&quot;
+    r = backends.extract(src, &#x27;user.py&#x27;)
+    # exactly one import record on line 2 (the from-import), not two
+    imports_line2 = [i for i in r[&#x27;imports&#x27;] if i[&#x27;line&#x27;] == 2]
+    assert len(imports_line2) == 1, f&quot;expected 1 import, got {imports_line2}&quot;
+    assert imports_line2[0][&#x27;name&#x27;] == &#x27;n&#x27;
+    assert imports_line2[0][&#x27;bind&#x27;] == &#x27;n&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_file_var_dedup_by_name <a id="fn-test_file_var_dedup_by_name-412"></a></h3>
+<p><em>tests/test_resolver.py:412-420</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_file_var_dedup_by_name():
+    &quot;&quot;&quot;A module-level variable assigned more than once in the same file yields
+    a single file_vars record (the first assignment wins).&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+X = 1
+X = 2
+&quot;&quot;&quot;, &#x27;fv&#x27;)
+    names = [v[&#x27;name&#x27;] for v in f[&#x27;file_vars&#x27;]]
+    assert names == [&#x27;X&#x27;], f&quot;expected [&#x27;X&#x27;], got {names}&quot;</code></pre>
+</details>
+<hr>
+<h3>test_splat_params_recorded <a id="fn-test_splat_params_recorded-423"></a></h3>
+<p><em>tests/test_resolver.py:423-432</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_splat_params_recorded():
+    &quot;&quot;&quot;`*args` and `**kwargs` must both appear in params and set vararg=True.
+    Guards the _PARAM_TYPES regression where splat patterns were dropped.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+def splat(*args, **kwargs):
+    return (args, kwargs)
+&quot;&quot;&quot;, &#x27;splat&#x27;)
+    fn = f[&#x27;functions&#x27;][0]
+    assert fn[&#x27;params&#x27;] == [&#x27;args&#x27;, &#x27;kwargs&#x27;], f&quot;got {fn[&#x27;params&#x27;]}&quot;
+    assert fn[&#x27;vararg&#x27;] is True</code></pre>
+</details>
+<hr>
+<h3>test_vararg_not_triggered_by_star_in_default <a id="fn-test_vararg_not_triggered_by_star_in_default-435"></a></h3>
+<p><em>tests/test_resolver.py:435-444</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_vararg_not_triggered_by_star_in_default():
+    &quot;&quot;&quot;A `*` inside a default expression (`size=1024*1024`) must NOT be
+    misread as a vararg. Guards the lstrip().startswith(&#x27;*&#x27;) fix.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+def sized(size=1024*1024, sep=&#x27;*&#x27;):
+    return (size, sep)
+&quot;&quot;&quot;, &#x27;sized&#x27;)
+    fn = f[&#x27;functions&#x27;][0]
+    assert fn[&#x27;vararg&#x27;] is False, f&quot;vararg should be False, got {fn[&#x27;vararg&#x27;]}&quot;
+    assert fn[&#x27;params&#x27;] == [&#x27;size&#x27;, &#x27;sep&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_class_attr_not_file_var <a id="fn-test_class_attr_not_file_var-447"></a></h3>
+<p><em>tests/test_resolver.py:447-457</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_class_attr_not_file_var():
+    &quot;&quot;&quot;A class attribute (`class A: X = 1`) must NOT leak into file_vars.
+    Guards the depth==0 check in walk().&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+class A:
+    X = 1
+    def m(self):
+        return self.X
+&quot;&quot;&quot;, &#x27;attr&#x27;)
+    names = [v[&#x27;name&#x27;] for v in f[&#x27;file_vars&#x27;]]
+    assert &#x27;X&#x27; not in names, f&quot;X must not be a file_var, got {names}&quot;</code></pre>
+</details>
+<hr>
+<h3>test_default_arg_call_recorded <a id="fn-test_default_arg_call_recorded-460"></a></h3>
+<p><em>tests/test_resolver.py:460-474</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_default_arg_call_recorded():
+    &quot;&quot;&quot;A call inside a default argument expression (`def f(x=make_default())`)
+    must be extracted as a call record. Guards the parameters-walk fix.&quot;&quot;&quot;
+    lib = py(&quot;def make_default():\n    return 42\n&quot;, &#x27;lib&#x27;)
+    user = py(&quot;&quot;&quot;
+from lib import make_default
+
+def go(x=make_default()):
+    return x
+&quot;&quot;&quot;, &#x27;user&#x27;)
+    calls = user[&#x27;calls&#x27;]
+    # the default-arg call is on the def line (line 3)
+    default_calls = [c for c in calls if c.get(&#x27;method&#x27;) == &#x27;make_default&#x27;
+                     or c.get(&#x27;callee&#x27;) == &#x27;make_default&#x27;]
+    assert default_calls, f&quot;no default-arg call recorded: {calls}&quot;</code></pre>
+</details>
+<hr>
+<h3>test_decorated_function_comment_glued <a id="fn-test_decorated_function_comment_glued-477"></a></h3>
+<p><em>tests/test_resolver.py:477-488</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_decorated_function_comment_glued():
+    &quot;&quot;&quot;A comment glued above the FIRST decorator line of a decorated
+    function must be captured as developer_comment. Guards the
+    anchor_line=top-of-block fix.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+# my doc comment
+def deco():
+    return 1
+&quot;&quot;&quot;, &#x27;deco&#x27;)
+    fn = f[&#x27;functions&#x27;][0]
+    assert fn[&#x27;developer_comment&#x27;] == &#x27;my doc comment&#x27;, \
+        f&quot;got {fn[&#x27;developer_comment&#x27;]!r}&quot;</code></pre>
+</details>
+<hr>
+<h3>test_method_qualified_name <a id="fn-test_method_qualified_name-491"></a></h3>
+<p><em>tests/test_resolver.py:491-502</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_method_qualified_name():
+    &quot;&quot;&quot;A method inside a class must carry the qualified name `Class.method`,
+    not just `method`. Guards the qual-tuple threading fix.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+class Vec:
+    def dot(self, other):
+        return self.x * other.x
+&quot;&quot;&quot;, &#x27;vec&#x27;)
+    methods = [fn for fn in f[&#x27;functions&#x27;] if fn[&#x27;name&#x27;] == &#x27;dot&#x27;]
+    assert methods, &quot;method not extracted&quot;
+    assert methods[0][&#x27;qualified&#x27;] == &#x27;Vec.dot&#x27;, \
+        f&quot;got {methods[0][&#x27;qualified&#x27;]!r}&quot;</code></pre>
+</details>
+<hr>
+<h3>test_self_method_resolves_to_enclosing_class <a id="fn-test_self_method_resolves_to_enclosing_class-505"></a></h3>
+<p><em>tests/test_resolver.py:505-517</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_self_method_resolves_to_enclosing_class():
+    &quot;&quot;&quot;`self.helper()` must link to A.helper, never to `builtin:self.helper`.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+class A:
+    def helper(self):
+        return 1
+    def run(self):
+        return self.helper()
+&quot;&quot;&quot;, &#x27;selfcall&#x27;)
+    g, diag = gmod.build_graph([f])
+    assert calls_out(g, &#x27;fn:selfcall.py::run@5&#x27;) == \
+        [(&#x27;fn:selfcall.py::helper@3&#x27;, &#x27;resolved&#x27;)]
+    assert not diag[&#x27;builtin_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_lua_self_method_resolves_to_enclosing_table <a id="fn-test_lua_self_method_resolves_to_enclosing_table-520"></a></h3>
+<p><em>tests/test_resolver.py:520-533</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">lua</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_lua_self_method_resolves_to_enclosing_table():
+    f = lua(&quot;&quot;&quot;
+local M = {}
+function M:new()
+  return self
+end
+function M:step()
+  return self:new()
+end
+&quot;&quot;&quot;, &#x27;selftable&#x27;)
+    g, diag = gmod.build_graph([f])
+    assert (&#x27;fn:selftable.lua::new@3&#x27;, &#x27;resolved&#x27;) in calls_out(
+        g, &#x27;fn:selftable.lua::step@6&#x27;)
+    assert not diag[&#x27;builtin_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_class_qualified_method_uses_right_class <a id="fn-test_class_qualified_method_uses_right_class-536"></a></h3>
+<p><em>tests/test_resolver.py:536-555</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_class_qualified_method_uses_right_class():
+    &quot;&quot;&quot;Two same-named methods: `Body.reset()` must not resolve to
+    `Other.reset` just because Other appears first in the file.&quot;&quot;&quot;
+    body = py(&quot;&quot;&quot;
+class Other:
+    def reset(self):
+        return &#x27;other&#x27;
+class Body:
+    def reset(self):
+        return &#x27;body&#x27;
+&quot;&quot;&quot;, &#x27;body&#x27;)
+    use = py(&quot;&quot;&quot;
+from body import Body
+
+def go():
+    return Body.reset()
+&quot;&quot;&quot;, &#x27;use&#x27;)
+    g, diag = gmod.build_graph([body, use])
+    assert calls_out(g, &#x27;fn:use.py::go@4&#x27;) == \
+        [(&#x27;fn:body.py::reset@6&#x27;, &#x27;resolved&#x27;)]</code></pre>
+</details>
+<hr>
+<h3>test_bare_method_is_not_a_global_name <a id="fn-test_bare_method_is_not_a_global_name-558"></a></h3>
+<p><em>tests/test_resolver.py:558-571</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_resolver.py.html#fn-calls_out-34">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_bare_method_is_not_a_global_name():
+    &quot;&quot;&quot;A method is not callable by its bare name; do not invent a resolved
+    edge from `helper()` to `A.helper`.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+class A:
+    def helper(self):
+        return 1
+    def run(self):
+        return helper()
+&quot;&quot;&quot;, &#x27;baremethod&#x27;)
+    g, diag = gmod.build_graph([f])
+    assert calls_out(g, &#x27;fn:baremethod.py::run@5&#x27;) == \
+        [(&#x27;ext:helper&#x27;, &#x27;external&#x27;)]
+    assert diag[&#x27;external_calls&#x27;][0][&#x27;name&#x27;] == &#x27;helper&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_parameter_shadow_does_not_create_reads_edge <a id="fn-test_parameter_shadow_does_not_create_reads_edge-574"></a></h3>
+<p><em>tests/test_resolver.py:574-585</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">py</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_parameter_shadow_does_not_create_reads_edge():
+    &quot;&quot;&quot;A parameter with the same name as a file variable is a shadow.&quot;&quot;&quot;
+    f = py(&quot;&quot;&quot;
+X = 1
+
+def f(X):
+    return X + 1
+&quot;&quot;&quot;, &#x27;shadow&#x27;)
+    g, diag = gmod.build_graph([f])
+    reads = [(u, v) for u, v, d in g.edges(data=True)
+             if d.get(&#x27;type&#x27;) == &#x27;READS&#x27;]
+    assert reads == [], reads</code></pre>
+</details>
+<hr>
+<h3>test_lua_parameter_shadow_does_not_create_reads_edge <a id="fn-test_lua_parameter_shadow_does_not_create_reads_edge-588"></a></h3>
+<p><em>tests/test_resolver.py:588-598</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_resolver.py.html#variables">lua</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_lua_parameter_shadow_does_not_create_reads_edge():
+    f = lua(&quot;&quot;&quot;
+local X = 1
+function f(X)
+  return X + 1
+end
+&quot;&quot;&quot;, &#x27;lshadow&#x27;)
+    g, diag = gmod.build_graph([f])
+    reads = [(u, v) for u, v, d in g.edges(data=True)
+             if d.get(&#x27;type&#x27;) == &#x27;READS&#x27;]
+    assert reads == [], reads</code></pre>
+</details>
+<hr>
+<h3>main <a id="fn-main-601"></a></h3>
+<p><em>tests/test_resolver.py:601-607</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">globals</span>
+</li>
+<li>sorted
+</li>
+<li>callable
+</li>
+<li><span style="color:#e67e22">k.startswith</span>
+</li>
+<li><span style="color:#e67e22">fn</span>
+</li>
+<li>print
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    fns = [v for k, v in sorted(globals().items())
+           if k.startswith(&#x27;test_&#x27;) and callable(v)]
+    for fn in fns:
+        fn()
+        print(f&#x27;ok   {fn.__name__}&#x27;)
+    print(f&#x27;\n{len(fns)} resolver tests passed&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_resolver.py.html">tests/test_resolver.py</a>
+<ul>
+<li><a href="test_resolver.py.html">top-level:611</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>py</code></td><td>30</td><td>function</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>lua</code></td><td>31</td><td>function</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 12: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 13: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+<li>line 17: import of <span style="color:#e67e22">backends</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

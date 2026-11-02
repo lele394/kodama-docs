@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_cache_safety.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_cache_safety.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-mk-27">mk</a></td><td>27</td><td>src, rel</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-cfg_for-36">cfg_for</a></td><td>36</td><td>tmp, generate</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_no_llm_stub_never_overwrites_real_prose-52">test_no_llm_stub_never_overwrites_real_prose</a></td><td>52</td><td>tmp</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records</a></td><td>68</td><td>tmp</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_reset_output_keeps_doc_cache_and_prunes-102">test_reset_output_keeps_doc_cache_and_prunes</a></td><td>102</td><td>tmp</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_config_without_credentials_for_non_llm_modes-118">test_config_without_credentials_for_non_llm_modes</a></td><td>118</td><td>tmp</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_reset_refuses_output_containing_source-147">test_reset_refuses_output_containing_source</a></td><td>147</td><td>tmp</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-163">main</a></td><td>163</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>mk <a id="fn-mk-27"></a></h3>
+<p><em>tests/test_cache_safety.py:27-33</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>src</code></td><td></td></tr>
+<tr><td><code>rel</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">backends.extract</span>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">src.splitlines</span>
+</li>
+<li><span style="color:#e67e22">src.encode</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def mk(src, rel):
+    r = backends.extract(src, rel)
+    r[&#x27;relpath&#x27;] = rel
+    r[&#x27;lines&#x27;] = len(src.splitlines())
+    r[&#x27;size&#x27;] = len(src.encode())
+    r[&#x27;status&#x27;] = &#x27;ok&#x27;
+    return r</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:71</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>cfg_for <a id="fn-cfg_for-36"></a></h3>
+<p><em>tests/test_cache_safety.py:36-49</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>tmp</code></td><td></td></tr>
+<tr><td><code>generate</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.join
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def cfg_for(tmp, generate=True):
+    return {
+        &#x27;data_dir&#x27;: os.path.join(tmp, &#x27;data&#x27;),
+        &#x27;output_dir&#x27;: os.path.join(tmp, &#x27;out&#x27;),
+        &#x27;source_dir&#x27;: os.path.join(tmp, &#x27;src&#x27;),
+        &#x27;documentation&#x27;: {
+            &#x27;generate_function_docs&#x27;: generate,
+            &#x27;generate_variable_docs&#x27;: generate,
+            &#x27;generate_file_summaries&#x27;: generate,
+        },
+        &#x27;context&#x27;: {},
+        &#x27;prompts&#x27;: {},
+        &#x27;llm&#x27;: {},
+    }</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="test_cache_safety.py.html#fn-test_no_llm_stub_never_overwrites_real_prose-52">test_no_llm_stub_never_overwrites_real_prose:53</a>
+</li>
+<li><a href="test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:69</a>
+</li>
+<li><a href="test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:96</a>
+</li>
+<li><a href="test_cache_safety.py.html#fn-test_reset_output_keeps_doc_cache_and_prunes-102">test_reset_output_keeps_doc_cache_and_prunes:103</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_no_llm_stub_never_overwrites_real_prose <a id="fn-test_no_llm_stub_never_overwrites_real_prose-52"></a></h3>
+<p><em>tests/test_cache_safety.py:52-65</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>tmp</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cache_safety.py.html#fn-cfg_for-36">cfg_for</a>
+</li>
+<li>os.makedirs
+</li>
+<li>save_record (inferred)
+</li>
+<li>record_path (inferred)
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">rec.get</span>
+</li>
+<li>print
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_no_llm_stub_never_overwrites_real_prose(tmp):
+    cfg = cfg_for(tmp)
+    os.makedirs(cfg[&#x27;data_dir&#x27;], exist_ok=True)
+    records.save_record(cfg[&#x27;data_dir&#x27;], &#x27;a.py&#x27;, &#x27;function&#x27;, &#x27;f&#x27;, 1,
+                        {&#x27;description&#x27;: &#x27;REAL PROSE&#x27;}, &#x27;fp-real&#x27;, {}, False)
+    records.save_record(cfg[&#x27;data_dir&#x27;], &#x27;a.py&#x27;, &#x27;function&#x27;, &#x27;f&#x27;, 1,
+                        {&#x27;description&#x27;: &#x27;No description generated&#x27;},
+                        &#x27;fp-new&#x27;, {}, True)
+    path = records.record_path(cfg[&#x27;data_dir&#x27;], &#x27;a.py&#x27;, &#x27;function&#x27;, &#x27;f&#x27;, 1)
+    with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        rec = json.load(fh)
+    assert rec[&#x27;prose&#x27;][&#x27;description&#x27;] == &#x27;REAL PROSE&#x27;, rec
+    assert not rec.get(&#x27;stubbed&#x27;), rec
+    print(&#x27;ok   test_no_llm_stub_never_overwrites_real_prose&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_render_filters_stale_and_disabled_records <a id="fn-test_render_filters_stale_and_disabled_records-68"></a></h3>
+<p><em>tests/test_cache_safety.py:68-99</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>tmp</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cache_safety.py.html#fn-cfg_for-36">cfg_for</a>
+</li>
+<li>os.makedirs
+</li>
+<li><a href="test_cache_safety.py.html#fn-mk-27">mk</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li>node_id_fn (inferred)
+</li>
+<li>graph_neighbor_names (inferred)
+</li>
+<li><a href="../kodama_docs/tasks.py.html#fn-function_fp-53">function_fp</a>
+</li>
+<li><a href="../kodama_docs/tasks.py.html#fn-settings_fp-29">settings_fp</a>
+</li>
+<li>save_record (inferred)
+</li>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records</a>
+</li>
+<li>record_path (inferred)
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li>json.dump
+</li>
+<li>print
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_render_filters_stale_and_disabled_records(tmp):
+    cfg = cfg_for(tmp)
+    os.makedirs(cfg[&#x27;data_dir&#x27;], exist_ok=True)
+    f = mk(&#x27;def f():\n    return 1\n&#x27;, &#x27;a.py&#x27;)
+    g, _diag = gmod.build_graph([f])
+    nid = gmod.node_id_fn(&#x27;a.py&#x27;, &#x27;f&#x27;, 1)
+    ins, outs = gmod.graph_neighbor_names(g, nid)
+    fp = function_fp(&#x27;a.py&#x27;, f[&#x27;functions&#x27;][0], ins, outs,
+                     settings_fp(cfg, &#x27;function&#x27;))
+    records.save_record(cfg[&#x27;data_dir&#x27;], &#x27;a.py&#x27;, &#x27;function&#x27;, &#x27;f&#x27;, 1,
+                        {&#x27;description&#x27;: &#x27;current&#x27;}, fp, {}, False)
+    fn_recs, _var, _sum = _valid_records(cfg, [f], g)
+    assert (&#x27;a.py&#x27;, &#x27;f&#x27;, 1) in fn_recs, fn_recs
+
+    # stale fingerprint -&gt; not rendered
+    path = records.record_path(cfg[&#x27;data_dir&#x27;], &#x27;a.py&#x27;, &#x27;function&#x27;, &#x27;f&#x27;, 1)
+    with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        rec = json.load(fh)
+    rec[&#x27;fingerprint&#x27;] = &#x27;stale&#x27;
+    with open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        json.dump(rec, fh)
+    fn_recs, _var, _sum = _valid_records(cfg, [f], g)
+    assert not fn_recs, fn_recs
+
+    # a disabled generator must not surface old prose either
+    rec[&#x27;fingerprint&#x27;] = fp
+    with open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        json.dump(rec, fh)
+    cfg_off = cfg_for(tmp, generate=False)
+    fn_recs, _var, _sum = _valid_records(cfg_off, [f], g)
+    assert not fn_recs, fn_recs
+    print(&#x27;ok   test_render_filters_stale_and_disabled_records&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_reset_output_keeps_doc_cache_and_prunes <a id="fn-test_reset_output_keeps_doc_cache_and_prunes-102"></a></h3>
+<p><em>tests/test_cache_safety.py:102-115</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>tmp</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cache_safety.py.html#fn-cfg_for-36">cfg_for</a>
+</li>
+<li>os.makedirs
+</li>
+<li>os.path.join
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">fh.write</span>
+</li>
+<li>reset_output (inferred)
+</li>
+<li>os.path.isfile
+</li>
+<li>os.path.exists
+</li>
+<li>print
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_reset_output_keeps_doc_cache_and_prunes(tmp):
+    cfg = cfg_for(tmp)
+    os.makedirs(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;files&#x27;), exist_ok=True)
+    os.makedirs(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;manual&#x27;), exist_ok=True)
+    with open(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;index.md&#x27;), &#x27;w&#x27;) as fh:
+        fh.write(&#x27;stale&#x27;)
+    with open(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;.doc_cache&#x27;), &#x27;w&#x27;) as fh:
+        fh.write(&#x27;{}&#x27;)
+    outputs.reset_output(cfg)
+    assert os.path.isfile(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;.doc_cache&#x27;))
+    assert not os.path.exists(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;index.md&#x27;))
+    assert not os.path.exists(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;files&#x27;))
+    assert not os.path.exists(os.path.join(cfg[&#x27;output_dir&#x27;], &#x27;manual&#x27;))
+    print(&#x27;ok   test_reset_output_keeps_doc_cache_and_prunes&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_config_without_credentials_for_non_llm_modes <a id="fn-test_config_without_credentials_for_non_llm_modes-118"></a></h3>
+<p><em>tests/test_cache_safety.py:118-144</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>tmp</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.join
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">fh.write</span>
+</li>
+<li><a href="../kodama_docs/config.py.html#fn-load_config-9">load_config</a>
+</li>
+<li><span style="color:#e67e22">AssertionError</span>
+</li>
+<li>print
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_config_without_credentials_for_non_llm_modes(tmp):
+    import kodama_docs.config as config
+    path = os.path.join(tmp, &#x27;settings.yaml&#x27;)
+    with open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        fh.write(&#x27;project:\n&#x27;
+                 &#x27;  source_dir: src\n&#x27;
+                 &#x27;  output_dir: out\n&#x27;
+                 &#x27;  data_dir: data\n&#x27;
+                 &#x27;llm:\n&#x27;
+                 &#x27;  base_url: env\n&#x27;
+                 &#x27;  api_key: env\n&#x27;
+                 &#x27;  model: dummy\n&#x27;)
+    old = config.read_env_file
+    config.read_env_file = lambda _p: {}
+    try:
+        cfg = config.load_config(path, require_llm=False)
+        assert cfg[&#x27;llm&#x27;][&#x27;api_key&#x27;] == &#x27;&#x27;, cfg[&#x27;llm&#x27;]
+        assert cfg[&#x27;llm&#x27;][&#x27;base_url&#x27;] == &#x27;&#x27;, cfg[&#x27;llm&#x27;]
+        try:
+            config.load_config(path, require_llm=True)
+        except SystemExit:
+            pass
+        else:
+            raise AssertionError(&#x27;require_llm=True accepted missing keys&#x27;)
+    finally:
+        config.read_env_file = old
+    print(&#x27;ok   test_config_without_credentials_for_non_llm_modes&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_reset_refuses_output_containing_source <a id="fn-test_reset_refuses_output_containing_source-147"></a></h3>
+<p><em>tests/test_cache_safety.py:147-160</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>tmp</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.join
+</li>
+<li>os.makedirs
+</li>
+<li>reset_output (inferred)
+</li>
+<li>print
+</li>
+<li><span style="color:#e67e22">AssertionError</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_reset_refuses_output_containing_source(tmp):
+    # output_dir == tmp, and the source lives at tmp/src: deleting the
+    # output would delete the source tree.
+    cfg = {
+        &#x27;output_dir&#x27;: tmp,
+        &#x27;source_dir&#x27;: os.path.join(tmp, &#x27;src&#x27;),
+    }
+    os.makedirs(cfg[&#x27;source_dir&#x27;], exist_ok=True)
+    try:
+        outputs.reset_output(cfg)
+    except SystemExit:
+        print(&#x27;ok   test_reset_refuses_output_containing_source&#x27;)
+        return
+    raise AssertionError(&#x27;reset_output deleted a directory containing source&#x27;)</code></pre>
+</details>
+<hr>
+<h3>main <a id="fn-main-163"></a></h3>
+<p><em>tests/test_cache_safety.py:163-174</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>tempfile.TemporaryDirectory
+</li>
+<li><span style="color:#e67e22">fn</span>
+</li>
+<li>len
+</li>
+<li>print
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    tests = [
+        test_no_llm_stub_never_overwrites_real_prose,
+        test_render_filters_stale_and_disabled_records,
+        test_config_without_credentials_for_non_llm_modes,
+        test_reset_output_keeps_doc_cache_and_prunes,
+        test_reset_refuses_output_containing_source,
+    ]
+    for fn in tests:
+        with tempfile.TemporaryDirectory() as tmp:
+            fn(tmp)
+    print(f&#x27;\n{len(tests)} cache-safety tests passed&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="test_cache_safety.py.html">top-level:178</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>REPO</code></td><td>16</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 11: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 12: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 13: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+<li>line 14: import of <span style="color:#e67e22">tempfile</span> — no matching file in the project
+</li>
+<li>line 20: import of <span style="color:#e67e22">backends</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

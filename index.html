@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation index</title>
+<link rel="icon" type="image/x-icon" href="icon/icon.ico">
+<link rel="icon" type="image/png" href="icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = ''</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="symbols-data.js" defer></script>
+<script src="lib/highlight.min.js" defer></script>
+<script src="app.js" defer></script>
+<script src="sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="index.html"><img class="brand-icon"
+     src="icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Documentation index</h1>
+<h2>Manual documentation</h2>
+<ul>
+<li>01 - Getting Started
+<ul>
+<li><a href="manual/01%20-%20Getting%20Started/01%20-%20Install.html">Install</a>
+</li>
+<li><a href="manual/01%20-%20Getting%20Started/02%20-%20First%20Run.html">First run</a>
+</li>
+<li><a href="manual/01%20-%20Getting%20Started/03%20-%20Configuration.html">Configuration</a>
+</li>
+<li><a href="manual/01%20-%20Getting%20Started/04%20-%20Serving.html">Serving</a>
+</li>
+</ul>
+</li>
+<li>02 - How It Works
+<ul>
+<li><a href="manual/02%20-%20How%20It%20Works/01%20-%20Overview.html">Overview</a>
+</li>
+<li><a href="manual/02%20-%20How%20It%20Works/02%20-%20Determinism.html">Determinism</a>
+</li>
+<li><a href="manual/02%20-%20How%20It%20Works/03%20-%20Extraction.html">Extraction</a>
+</li>
+<li><a href="manual/02%20-%20How%20It%20Works/04%20-%20Graph.html">Graph</a>
+</li>
+<li><a href="manual/02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.html">LLM phase</a>
+</li>
+<li><a href="manual/02%20-%20How%20It%20Works/06%20-%20Chunk%20and%20Merge.html">Chunk and merge</a>
+</li>
+<li><a href="manual/02%20-%20How%20It%20Works/07%20-%20Rendering.html">Rendering</a>
+</li>
+<li><a href="manual/02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>
+</li>
+</ul>
+</li>
+<li>03 - Components
+<ul>
+<li><a href="manual/03%20-%20Components/01%20-%20Backends.html">Backends</a>
+</li>
+<li><a href="manual/03%20-%20Components/02%20-%20Lua%20Backend.html">Lua backend</a>
+</li>
+<li><a href="manual/03%20-%20Components/03%20-%20Python%20Backend.html">Python backend</a>
+</li>
+<li><a href="manual/03%20-%20Components/03b%20-%20C%20C%2B%2B%20CUDA%20Backend.html">C/C++/CUDA backend</a>
+</li>
+<li><a href="manual/03%20-%20Components/04%20-%20LLM%20Client.html">LLM client</a>
+</li>
+<li><a href="manual/03%20-%20Components/05%20-%20Web%20Server.html">Web server</a>
+</li>
+<li><a href="manual/03%20-%20Components/06%20-%20CLI.html">CLI</a>
+</li>
+</ul>
+</li>
+<li>04 - Reference
+<ul>
+<li><a href="manual/04%20-%20Reference/01%20-%20Config%20Reference.html">Config Reference</a>
+</li>
+<li><a href="manual/04%20-%20Reference/02%20-%20Output%20and%20Data%20Formats.html">Output and Data Formats</a>
+</li>
+<li><a href="manual/04%20-%20Reference/03%20-%20Prompts.html">Prompts</a>
+</li>
+</ul>
+</li>
+<li>05 - Examples
+<ul>
+<li><a href="manual/05%20-%20Examples/01%20-%20Documenting%20a%20Lua%20Project.html">Documenting a Lua project</a>
+</li>
+<li><a href="manual/05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.html">Documenting kodama-docs itself</a>
+</li>
+</ul>
+</li>
+<li>06 - Troubleshooting
+<ul>
+<li><a href="manual/06%20-%20Troubleshooting/01%20-%20LLM%20Problems.html">LLM problems</a>
+</li>
+<li><a href="manual/06%20-%20Troubleshooting/02%20-%20Parsing%20and%20Resolution.html">Parsing and resolution</a>
+</li>
+<li><a href="manual/06%20-%20Troubleshooting/03%20-%20Performance.html">Performance</a>
+</li>
+</ul>
+</li>
+<li>07 - Concepts
+<ul>
+<li><a href="manual/07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>
+</li>
+<li><a href="manual/07%20-%20Concepts/02%20-%20Glossary.html">Glossary</a>
+</li>
+</ul>
+</li>
+<li>08 - Contributing
+<ul>
+<li><a href="manual/08%20-%20Contributing/01%20-%20Adding%20a%20Language.html">Adding a language</a>
+</li>
+<li><a href="manual/08%20-%20Contributing/02%20-%20Code%20Organization.html">Code organization</a>
+</li>
+</ul>
+</li>
+<li><a href="manual/00%20-%20Home.html">kodama-docs</a>
+</li>
+<li><a href="manual/09%20-%20FAQ.html">FAQ</a>
+</li>
+</ul>
+<p>37 files documented.</p>
+<table>
+<thead><tr>
+<th>File</th>
+<th>Lines</th>
+<th>Functions</th>
+<th>Variables</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="files/main.py.html">main.py</a></td><td>366</td><td>5</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/__init__.py.html">kodama_docs/<em>_init_</em>.py</a></td><td>7</td><td>0</td><td>1</td></tr>
+<tr><td><a href="files/kodama_docs/config.py.html">kodama_docs/config.py</a></td><td>65</td><td>2</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/context.py.html">kodama_docs/context.py</a></td><td>122</td><td>5</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/graph.py.html">kodama_docs/graph.py</a></td><td>935</td><td>37</td><td>2</td></tr>
+<tr><td><a href="files/kodama_docs/init_project.py.html">kodama_docs/init_project.py</a></td><td>44</td><td>1</td><td>1</td></tr>
+<tr><td><a href="files/kodama_docs/js_bundle.py.html">kodama_docs/js_bundle.py</a></td><td>188</td><td>8</td><td>4</td></tr>
+<tr><td><a href="files/kodama_docs/llm.py.html">kodama_docs/llm.py</a></td><td>112</td><td>3</td><td>4</td></tr>
+<tr><td><a href="files/kodama_docs/llm_phase.py.html">kodama_docs/llm_phase.py</a></td><td>306</td><td>5</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/manual.py.html">kodama_docs/manual.py</a></td><td>118</td><td>8</td><td>2</td></tr>
+<tr><td><a href="files/kodama_docs/markdown.py.html">kodama_docs/markdown.py</a></td><td>556</td><td>21</td><td>1</td></tr>
+<tr><td><a href="files/kodama_docs/models.py.html">kodama_docs/models.py</a></td><td>154</td><td>5</td><td>1</td></tr>
+<tr><td><a href="files/kodama_docs/outputs.py.html">kodama_docs/outputs.py</a></td><td>120</td><td>9</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/prompt_templates.py.html">kodama_docs/prompt_templates.py</a></td><td>84</td><td>3</td><td>3</td></tr>
+<tr><td><a href="files/kodama_docs/records.py.html">kodama_docs/records.py</a></td><td>116</td><td>6</td><td>1</td></tr>
+<tr><td><a href="files/kodama_docs/scan.py.html">kodama_docs/scan.py</a></td><td>326</td><td>8</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/static_site.py.html">kodama_docs/static_site.py</a></td><td>399</td><td>18</td><td>3</td></tr>
+<tr><td><a href="files/kodama_docs/tasks.py.html">kodama_docs/tasks.py</a></td><td>83</td><td>6</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/testing.py.html">kodama_docs/testing.py</a></td><td>517</td><td>20</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/tui.py.html">kodama_docs/tui.py</a></td><td>257</td><td>16</td><td>0</td></tr>
+<tr><td><a href="files/kodama_docs/util.py.html">kodama_docs/util.py</a></td><td>67</td><td>6</td><td>3</td></tr>
+<tr><td><a href="files/prompts/__init__.py.html">prompts/<em>_init_</em>.py</a></td><td>5</td><td>0</td><td>0</td></tr>
+<tr><td><a href="files/tests/test_cache_safety.py.html">tests/test_cache_safety.py</a></td><td>178</td><td>8</td><td>1</td></tr>
+<tr><td><a href="files/tests/test_cli.py.html">tests/test_cli.py</a></td><td>95</td><td>7</td><td>2</td></tr>
+<tr><td><a href="files/tests/test_context.py.html">tests/test_context.py</a></td><td>58</td><td>4</td><td>0</td></tr>
+<tr><td><a href="files/tests/test_cpp_backend.py.html">tests/test_cpp_backend.py</a></td><td>319</td><td>19</td><td>0</td></tr>
+<tr><td><a href="files/tests/test_js_bundle.py.html">tests/test_js_bundle.py</a></td><td>261</td><td>8</td><td>6</td></tr>
+<tr><td><a href="files/tests/test_manual.py.html">tests/test_manual.py</a></td><td>180</td><td>12</td><td>0</td></tr>
+<tr><td><a href="files/tests/test_prompts.py.html">tests/test_prompts.py</a></td><td>106</td><td>7</td><td>0</td></tr>
+<tr><td><a href="files/tests/test_render_list.py.html">tests/test_render_list.py</a></td><td>108</td><td>8</td><td>0</td></tr>
+<tr><td><a href="files/tests/test_render_md.py.html">tests/test_render_md.py</a></td><td>82</td><td>10</td><td>0</td></tr>
+<tr><td><a href="files/tests/test_resolver.py.html">tests/test_resolver.py</a></td><td>611</td><td>37</td><td>2</td></tr>
+<tr><td><a href="files/tests/test_static_site.py.html">tests/test_static_site.py</a></td><td>368</td><td>10</td><td>2</td></tr>
+<tr><td><a href="files/tests/test_web_manual.py.html">tests/test_web_manual.py</a></td><td>169</td><td>13</td><td>1</td></tr>
+<tr><td><a href="files/web/__init__.py.html">web/<em>_init_</em>.py</a></td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td><a href="files/web/render.py.html">web/render.py</a></td><td>269</td><td>13</td><td>13</td></tr>
+<tr><td><a href="files/web/server.py.html">web/server.py</a></td><td>403</td><td>24</td><td>2</td></tr>
+</tbody>
+</table>
+<h2>Analysis summary</h2>
+<ul>
+<li>Files: 37 analyzed — 37 ok, 0 failed, 0 binary
+</li>
+<li>Call references: 1499 external, 113 inferred, <strong>0 ambiguous</strong> (recorded, not linked), 128 unresolved import(s)
+</li>
+<li>Resolution: <strong>2068/3567</strong> call references and <strong>64/188</strong> imports resolved successfully. References that did not resolve are highlighted <span style="color:#e67e22">orange</span> on each page.
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs.</em></p>
+</main>
+</div>
+</body>
+</html>

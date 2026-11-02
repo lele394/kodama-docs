@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/js_bundle.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/js_bundle.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_names-43">_names</a></td><td>43</td><td>spec_text</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-parse_module-63">parse_module</a></td><td>63</td><td>source</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_resolve-92">_resolve</a></td><td>92</td><td>mid, spec</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-bundle-98">bundle</a></td><td>98</td><td>webdir, entry</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-read-103">read</a></td><td>103</td><td>mid</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-visit-114">visit</a></td><td>114</td><td>mid</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-transform-131">transform</a></td><td>131</td><td>mid</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-imp_repl-135">imp_repl</a></td><td>135</td><td>m</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_names <a id="fn-_names-43"></a></h3>
+<p><em>kodama_docs/js_bundle.py:43-60</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>spec_text</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="js_bundle.py.html#variables">_IDENT_RE</a>
+</li>
+<li>re.sub
+</li>
+<li><span style="color:#e67e22">spec_text.split</span>
+</li>
+<li><span style="color:#e67e22">part.strip</span>
+</li>
+<li><span style="color:#e67e22">p.strip</span>
+</li>
+<li><span style="color:#e67e22">part.split</span>
+</li>
+<li><span style="color:#e67e22">_IDENT_RE.match</span>
+</li>
+<li>ValueError
+</li>
+<li><span style="color:#e67e22">out.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _names(spec_text: str):
+    &quot;&quot;&quot;&#x27;a, b as c&#x27; -&gt; [(&#x27;a&#x27;, None), (&#x27;b&#x27;, &#x27;c&#x27;)]  (local, alias)&quot;&quot;&quot;
+    # comments inside the braces are legal JS: drop them before splitting
+    spec_text = re.sub(r&#x27;/\*.*?\*/&#x27;, &#x27;&#x27;, spec_text, flags=re.S)
+    spec_text = re.sub(r&#x27;//[^\n]*&#x27;, &#x27;&#x27;, spec_text)
+    out = []
+    for part in spec_text.split(&#x27;,&#x27;):
+        part = part.strip()
+        if not part:
+            continue
+        if &#x27; as &#x27; in part:
+            local, alias = [p.strip() for p in part.split(&#x27; as &#x27;, 1)]
+        else:
+            local = alias = part
+        if not _IDENT_RE.match(local):
+            raise ValueError(&#x27;unparseable import/export name: %r&#x27; % part)
+        out.append((local, alias))
+    return out</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html#fn-parse_module-63">parse_module:70</a>
+</li>
+<li><a href="js_bundle.py.html#fn-parse_module-63">parse_module:78</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>parse_module <a id="fn-parse_module-63"></a></h3>
+<p><em>kodama_docs/js_bundle.py:63-89</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>source</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="js_bundle.py.html#variables">_EXPORT_DECL_RE</a>
+</li>
+<li><a href="js_bundle.py.html#variables">_EXPORT_LIST_RE</a>
+</li>
+<li><a href="js_bundle.py.html#variables">_IMPORT_RE</a>
+</li>
+<li><span style="color:#e67e22">_IMPORT_RE.finditer</span>
+</li>
+<li><a href="js_bundle.py.html#fn-_names-43">_names</a>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><span style="color:#e67e22">m.span</span>
+</li>
+<li><span style="color:#e67e22">rx.finditer</span>
+</li>
+<li><span style="color:#e67e22">_EXPORT_DECL_RE.finditer</span>
+</li>
+<li><span style="color:#e67e22">exports.append</span>
+</li>
+<li>start (inferred)
+</li>
+<li><span style="color:#e67e22">_EXPORT_LIST_RE.finditer</span>
+</li>
+<li>sorted
+</li>
+<li>re.finditer
+</li>
+<li>any
+</li>
+<li>ValueError
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def parse_module(source: str) -&gt; dict:
+    &quot;&quot;&quot;(imports, exports, spans) for the supported subset.
+
+    imports: [(spec, [(local, alias), ...])] in source order
+    exports: [(exported, local)] in source order
+    spans:   all matched import/export regions (to catch strays)
+    &quot;&quot;&quot;
+    imports = [(m.group(2), _names(m.group(1))) for m in _IMPORT_RE.finditer(source)]
+    spans = [m.span() for rx in (_IMPORT_RE, _EXPORT_DECL_RE, _EXPORT_LIST_RE)
+             for m in rx.finditer(source)]
+
+    exports = []
+    for m in _EXPORT_DECL_RE.finditer(source):
+        exports.append((m.start(), (m.group(3), m.group(3))))
+    for m in _EXPORT_LIST_RE.finditer(source):
+        for local, alias in _names(m.group(1)):
+            exports.append((m.start(), (alias if alias else local, local)))
+    exports = [pair for _pos, pair in sorted(exports)]
+
+    # any import/export token outside the matched regions is unsupported
+    for word in (&#x27;import&#x27;, &#x27;export&#x27;):
+        for m in re.finditer(r&#x27;\b&#x27; + word + r&#x27;\b&#x27;, source):
+            if not any(s &lt;= m.start() &lt; e for s, e in spans):
+                raise ValueError(
+                    &#x27;unsupported %r syntax in bundled JS (extend &#x27;
+                    &#x27;kodama_docs/js_bundle.py first)&#x27; % word)
+    return {&#x27;imports&#x27;: imports, &#x27;exports&#x27;: exports}</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html#fn-visit-114">visit:121</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_js_bundle.py.html">tests/test_js_bundle.py</a>
+<ul>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_parse_module_subset-55">test_parse_module_subset:56</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_parse_module_subset-55">test_parse_module_subset:71</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_parse_module_subset-55">test_parse_module_subset:73</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_parse_module_subset-55">test_parse_module_subset:75</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_parse_module_subset-55">test_parse_module_subset:77</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_parse_module_subset-55">test_parse_module_subset:79</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_resolve <a id="fn-_resolve-92"></a></h3>
+<p><em>kodama_docs/js_bundle.py:92-95</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>mid</code></td><td></td></tr>
+<tr><td><code>spec</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">spec.startswith</span>
+</li>
+<li>ValueError
+</li>
+<li><span style="color:#e67e22">posixpath.dirname</span>
+</li>
+<li><span style="color:#e67e22">posixpath.join</span>
+</li>
+<li><span style="color:#e67e22">posixpath.normpath</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _resolve(mid: str, spec: str) -&gt; str:
+    if not (spec.startswith(&#x27;./&#x27;) or spec.startswith(&#x27;../&#x27;)):
+        raise ValueError(&#x27;only relative imports can be bundled: %r&#x27; % spec)
+    return posixpath.normpath(posixpath.join(posixpath.dirname(mid), spec))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html#fn-visit-114">visit:123</a>
+</li>
+<li><a href="js_bundle.py.html#fn-imp_repl-135">imp_repl:136</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>bundle <a id="fn-bundle-98"></a></h3>
+<p><em>kodama_docs/js_bundle.py:98-182</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>webdir</code></td><td></td></tr>
+<tr><td><code>entry</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="js_bundle.py.html#variables">_EXPORT_DECL_RE</a>
+</li>
+<li><a href="js_bundle.py.html#variables">_EXPORT_LIST_RE</a>
+</li>
+<li><a href="js_bundle.py.html#variables">_IMPORT_RE</a>
+</li>
+<li>set
+</li>
+<li><a href="js_bundle.py.html#fn-visit-114">visit</a>
+</li>
+<li><span style="color:#e67e22">parts.append</span>
+</li>
+<li><a href="js_bundle.py.html#fn-transform-131">transform</a>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def bundle(webdir: str, entry: str) -&gt; str:
+    &quot;&quot;&quot;Bundle webdir/entry (web/-relative, e.g. &#x27;sidebar.js&#x27;) plus its
+    transitive relative imports into one classic-script string.
+
+    Raises ValueError on cycles, missing files, or unsupported syntax.&quot;&quot;&quot;
+    def read(mid: str) -&gt; str:
+        path = os.path.join(webdir, *mid.split(&#x27;/&#x27;))
+        if not os.path.isfile(path):
+            raise ValueError(&#x27;bundled module not found: %s&#x27; % mid)
+        with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            return fh.read()
+
+    modules = {}
+    order = []
+    done, visiting = set(), set()
+
+    def visit(mid: str):
+        if mid in done:
+            return
+        if mid in visiting:
+            raise ValueError(&#x27;import cycle at %s&#x27; % mid)
+        visiting.add(mid)
+        source = read(mid)
+        mod = parse_module(source)
+        for spec, _names_ in mod[&#x27;imports&#x27;]:
+            visit(_resolve(mid, spec))
+        visiting.discard(mid)
+        modules[mid] = (source, mod)
+        order.append(mid)
+        done.add(mid)
+
+    visit(entry)
+
+    def transform(mid: str) -&gt; str:
+        source, mod = modules[mid]
+        by_spec = {spec: names for spec, names in mod[&#x27;imports&#x27;]}
+
+        def imp_repl(m):
+            dep = _resolve(mid, m.group(2))
+            # destructuring renames use &#x27;:&#x27; (unlike import&#x27;s &#x27;as&#x27;)
+            parts = [local + (&#x27;: &#x27; + alias if alias and alias != local else &#x27;&#x27;)
+                     for local, alias in by_spec[m.group(2)]]
+            return &#x27;var { %s } = __kodama_require(%r);&#x27; % (&#x27;, &#x27;.join(parts), dep)
+
+        out = _IMPORT_RE.sub(imp_repl, source)
+        # &#x27;export function f&#x27; -&gt; &#x27;function f&#x27;  (keep the declaration)
+        out = _EXPORT_DECL_RE.sub(lambda m: &#x27;%s%s %s&#x27; % (
+            m.group(1), m.group(2), m.group(3)), out)
+        out = _EXPORT_LIST_RE.sub(&#x27;&#x27;, out)
+        if mod[&#x27;exports&#x27;]:
+            if not out.endswith(&#x27;\n&#x27;):
+                out += &#x27;\n&#x27;
+            out += &#x27;\n&#x27;.join(&#x27;__kodama_exports.%s = %s;&#x27; % (exp, loc)
+                             for exp, loc in mod[&#x27;exports&#x27;]) + &#x27;\n&#x27;
+        return out
+
+    parts = [
+        &#x27;// auto-generated by kodama_docs/js_bundle.py — do not edit by hand.\n&#x27;
+        &#x27;// Sources: the ES modules in web/ (edit those, rebuild the static\n&#x27;
+        &#x27;// site). This classic-script bundle exists because browsers refuse\n&#x27;
+        &#x27;// external ES modules over file:// — see STATIC_SITE.md.\n&#x27;
+        &#x27;(function () {\n&#x27;
+        &quot;  &#x27;use strict&#x27;;\n&quot;
+        &#x27;  var __kodama_modules = {};\n&#x27;
+        &#x27;  var __kodama_cache = {};\n&#x27;
+        &#x27;  function __kodama_define(id, factory) { __kodama_modules[id] = factory; }\n&#x27;
+        &#x27;  function __kodama_require(id) {\n&#x27;
+        &#x27;    var hit = __kodama_cache[id];\n&#x27;
+        &#x27;    if (hit) return hit.exports; // cache holds the module object\n&#x27;
+        &#x27;    var mod = { exports: {} };\n&#x27;
+        &#x27;    __kodama_cache[id] = mod; // registered before evaluation\n&#x27;
+        &#x27;    if (!__kodama_modules[id])\n&#x27;
+        &quot;      throw new Error(&#x27;kodama bundle: no such module: &#x27; + id);\n&quot;
+        &#x27;    __kodama_modules[id](mod, mod.exports, __kodama_require);\n&#x27;
+        &#x27;    return mod.exports;\n&#x27;
+        &#x27;  }\n\n&#x27;,
+    ]
+    for mid in order:
+        parts.append(&#x27;  __kodama_define(%r, function (module, __kodama_exports, &#x27;
+                     &#x27;__kodama_require) {\n&#x27; % mid)
+        parts.append(transform(mid))
+        parts.append(&#x27;  });\n\n&#x27;)
+    parts.append(&#x27;  __kodama_require(%r);\n&#x27; % entry)
+    parts.append(&#x27;})();\n&#x27;)
+    return &#x27;&#x27;.join(parts)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html">top-level:187</a>
+</li>
+</ul>
+</li>
+<li><a href="static_site.py.html">kodama_docs/static_site.py</a>
+<ul>
+<li><a href="static_site.py.html#fn-_write_bundles-198">_write_bundles:205</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_js_bundle.py.html">tests/test_js_bundle.py</a>
+<ul>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_bundle_errors-83">test_bundle_errors:91</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_bundle_errors-83">test_bundle_errors:95</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_bundle_errors-83">test_bundle_errors:99</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_bundle_shape-102">test_bundle_shape:111</a>
+</li>
+<li><a href="../tests/test_js_bundle.py.html#fn-test_real_bundles-207">test_real_bundles:219</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>read <a id="fn-read-103"></a></h3>
+<p><em>kodama_docs/js_bundle.py:103-108</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>mid</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">mid.split</span>
+</li>
+<li>os.path.join
+</li>
+<li>os.path.isfile
+</li>
+<li>ValueError
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def read(mid: str) -&gt; str:
+        path = os.path.join(webdir, *mid.split(&#x27;/&#x27;))
+        if not os.path.isfile(path):
+            raise ValueError(&#x27;bundled module not found: %s&#x27; % mid)
+        with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            return fh.read()</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html#fn-read-103">read:108</a>
+</li>
+<li><a href="js_bundle.py.html#fn-visit-114">visit:120</a>
+</li>
+</ul>
+</li>
+<li><a href="llm.py.html">kodama_docs/llm.py</a>
+<ul>
+<li><a href="llm.py.html#fn-chat-33">LLMClient.chat:56</a>
+</li>
+</ul>
+</li>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:91</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-file_md5-49">file_md5:52</a>
+</li>
+<li><a href="scan.py.html#fn-analyze_files-67">analyze_files:82</a>
+</li>
+</ul>
+</li>
+<li><a href="static_site.py.html">kodama_docs/static_site.py</a>
+<ul>
+<li><a href="static_site.py.html#fn-_read-50">_read:52</a>
+</li>
+</ul>
+</li>
+<li><a href="tasks.py.html">kodama_docs/tasks.py</a>
+<ul>
+<li><a href="tasks.py.html#fn-settings_fp-29">settings_fp:36</a>
+</li>
+</ul>
+</li>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:441</a>
+</li>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:471</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cli.py.html">tests/test_cli.py</a>
+<ul>
+<li><a href="../tests/test_cli.py.html#fn-test_init_creates_settings_and_prompts-46">test_init_creates_settings_and_prompts:53</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_prompts.py.html">tests/test_prompts.py</a>
+<ul>
+<li><a href="../tests/test_prompts.py.html#fn-test_shipped_prompts_use_the_shared_language_key-67">test_shipped_prompts_use_the_shared_language_key:79</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="../tests/test_static_site.py.html#fn-_read-48">_read:50</a>
+</li>
+<li><a href="../tests/test_static_site.py.html#fn-main-168">main:329</a>
+</li>
+</ul>
+</li>
+<li><a href="../web/server.py.html">web/server.py</a>
+<ul>
+<li><a href="../web/server.py.html#fn-_load_template-30">_load_template:34</a>
+</li>
+<li><a href="../web/server.py.html#fn-_set_theme-153">DocsHandler._set_theme:155</a>
+</li>
+<li><a href="../web/server.py.html#fn-_load_doc-200">DocsHandler._load_doc:209</a>
+</li>
+<li><a href="../web/server.py.html#fn-_docfile-291">DocsHandler._docfile:298</a>
+</li>
+<li><a href="../web/server.py.html#fn-_webfile-313">DocsHandler._webfile:318</a>
+</li>
+<li><a href="../web/server.py.html#fn-_iconfile-321">DocsHandler._iconfile:329</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>visit <a id="fn-visit-114"></a></h3>
+<p><em>kodama_docs/js_bundle.py:114-127</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>mid</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>ValueError
+</li>
+<li><span style="color:#e67e22">visiting.add</span>
+</li>
+<li><a href="js_bundle.py.html#fn-read-103">read</a>
+</li>
+<li><a href="js_bundle.py.html#fn-parse_module-63">parse_module</a>
+</li>
+<li><a href="js_bundle.py.html#fn-_resolve-92">_resolve</a>
+</li>
+<li><a href="js_bundle.py.html#fn-visit-114">visit</a>
+</li>
+<li><span style="color:#e67e22">visiting.discard</span>
+</li>
+<li><span style="color:#e67e22">order.append</span>
+</li>
+<li><span style="color:#e67e22">done.add</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def visit(mid: str):
+        if mid in done:
+            return
+        if mid in visiting:
+            raise ValueError(&#x27;import cycle at %s&#x27; % mid)
+        visiting.add(mid)
+        source = read(mid)
+        mod = parse_module(source)
+        for spec, _names_ in mod[&#x27;imports&#x27;]:
+            visit(_resolve(mid, spec))
+        visiting.discard(mid)
+        modules[mid] = (source, mod)
+        order.append(mid)
+        done.add(mid)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html#fn-visit-114">visit:123</a>
+</li>
+<li><a href="js_bundle.py.html#fn-bundle-98">bundle:129</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>transform <a id="fn-transform-131"></a></h3>
+<p><em>kodama_docs/js_bundle.py:131-152</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>mid</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="js_bundle.py.html#variables">_EXPORT_DECL_RE</a>
+</li>
+<li><a href="js_bundle.py.html#variables">_EXPORT_LIST_RE</a>
+</li>
+<li><a href="js_bundle.py.html#variables">_IMPORT_RE</a>
+</li>
+<li><span style="color:#e67e22">_IMPORT_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">_EXPORT_DECL_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><span style="color:#e67e22">_EXPORT_LIST_RE.sub</span>
+</li>
+<li><span style="color:#e67e22">out.endswith</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def transform(mid: str) -&gt; str:
+        source, mod = modules[mid]
+        by_spec = {spec: names for spec, names in mod[&#x27;imports&#x27;]}
+
+        def imp_repl(m):
+            dep = _resolve(mid, m.group(2))
+            # destructuring renames use &#x27;:&#x27; (unlike import&#x27;s &#x27;as&#x27;)
+            parts = [local + (&#x27;: &#x27; + alias if alias and alias != local else &#x27;&#x27;)
+                     for local, alias in by_spec[m.group(2)]]
+            return &#x27;var { %s } = __kodama_require(%r);&#x27; % (&#x27;, &#x27;.join(parts), dep)
+
+        out = _IMPORT_RE.sub(imp_repl, source)
+        # &#x27;export function f&#x27; -&gt; &#x27;function f&#x27;  (keep the declaration)
+        out = _EXPORT_DECL_RE.sub(lambda m: &#x27;%s%s %s&#x27; % (
+            m.group(1), m.group(2), m.group(3)), out)
+        out = _EXPORT_LIST_RE.sub(&#x27;&#x27;, out)
+        if mod[&#x27;exports&#x27;]:
+            if not out.endswith(&#x27;\n&#x27;):
+                out += &#x27;\n&#x27;
+            out += &#x27;\n&#x27;.join(&#x27;__kodama_exports.%s = %s;&#x27; % (exp, loc)
+                             for exp, loc in mod[&#x27;exports&#x27;]) + &#x27;\n&#x27;
+        return out</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="js_bundle.py.html">kodama_docs/js_bundle.py</a>
+<ul>
+<li><a href="js_bundle.py.html#fn-bundle-98">bundle:178</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>imp_repl <a id="fn-imp_repl-135"></a></h3>
+<p><em>kodama_docs/js_bundle.py:135-140</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>m</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="js_bundle.py.html#fn-_resolve-92">_resolve</a>
+</li>
+<li><span style="color:#e67e22">m.group</span>
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def imp_repl(m):
+            dep = _resolve(mid, m.group(2))
+            # destructuring renames use &#x27;:&#x27; (unlike import&#x27;s &#x27;as&#x27;)
+            parts = [local + (&#x27;: &#x27; + alias if alias and alias != local else &#x27;&#x27;)
+                     for local, alias in by_spec[m.group(2)]]
+            return &#x27;var { %s } = __kodama_require(%r);&#x27; % (&#x27;, &#x27;.join(parts), dep)</code></pre>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>_IMPORT_RE</code></td><td>29</td><td>call</td><td>import { a, b as c } from &#x27;./x.js&#x27;; (the braces may span lines)</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_EXPORT_DECL_RE</code></td><td>32</td><td>call</td><td>export function|const|let|var name</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_EXPORT_LIST_RE</code></td><td>36</td><td>call</td><td>export { a, b };</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_IDENT_RE</code></td><td>40</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 24: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 25: import of <span style="color:#e67e22">posixpath</span> — no matching file in the project
+</li>
+<li>line 26: import of <span style="color:#e67e22">re</span> — no matching file in the project
+</li>
+<li>line 186: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

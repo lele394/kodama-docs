@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM phase</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>LLM phase</h1>
+<p>The LLM phase turns the fixed structure into prose. It builds a list of jobs — one per function, variable, file summary, and chunk — runs them on a pool of parallel agents, and caches each result separately. It returns how many jobs failed, and that count decides whether the run is considered complete.</p>
+<h2>What a job is</h2>
+<p>Each job asks the model for a <strong>JSON object</strong> of a specific kind, validated against a schema before it is accepted:</p>
+<table>
+<thead><tr>
+<th>Kind</th>
+<th>Describes</th>
+</tr></thead>
+<tbody>
+<tr><td><code>function</code></td><td>One function or method.</td></tr>
+<tr><td><code>variable</code></td><td>One file-level variable.</td></tr>
+<tr><td><code>summary</code></td><td>The whole file.</td></tr>
+<tr><td><code>chunk</code></td><td>One part of a long function body (see <a href="06%20-%20Chunk%20and%20Merge.html">Chunk and Merge</a>).</td></tr>
+</tbody>
+</table>
+<p>The model receives two messages — a <strong>system</strong> prompt (the task and the required format) and a <strong>user</strong> message (the code and its context) — against an OpenAI-compatible endpoint: <code>POST {base_url}/chat/completions</code> with <code>{model, temperature, max_tokens, messages}</code>.</p>
+<h2>The settings that shape a job</h2>
+<ul>
+<li><code>prompts.{function,variable,summary,chunk}</code> — the system prompt for each kind (see <a href="../04%20-%20Reference/03%20-%20Prompts.html">Prompts</a>).
+</li>
+<li><code>context.*</code> — how much surrounding code (imports, call targets, referenced variables) is included in each job&#x27;s user message.
+</li>
+<li><code>llm.temperature</code> (default <code>0.1</code>), <code>llm.max_tokens</code> (default <code>900</code>), <code>llm.timeout</code> (default <code>300</code> seconds).
+</li>
+<li><code>concurrency</code> — how many agents run in parallel.
+</li>
+</ul>
+<h2>Retries and validation</h2>
+<p>The client retries up to <code>llm.max_retries</code> times on transport errors, and the generator retries up to <code>documentation.retry_invalid_json</code> (default <code>2</code>) times when the model returns invalid JSON. A job that still fails is counted and reported, and its file still ships with placeholder prose so the build never silently loses content.</p>
+<h2>Progress</h2>
+<p>When <code>tui.enabled</code> is set, a live view shows each file as its jobs move through the stages (chunk, then function, variable, summary). <code>tui.interval</code> sets the refresh rate.</p>
+<h2>Skipping it</h2>
+<p><code>--no-llm</code> runs the same job list but never calls the model: every job becomes a <strong>stub</strong>, cached as <code>stubbed</code>, and a later full run replaces the stubs. See <a href="08%20-%20Caching.html">Caching</a>.</p>
+<p>The request shape, error handling, and the JSON validation are in <a href="../03%20-%20Components/04%20-%20LLM%20Client.html">LLM Client</a>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C/C++/CUDA backend</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>C/C++/CUDA backend</h1>
+<p><code>backends/cpp/</code> — the C-family backend (manifest name <code>kodama-cpp</code>). It claims <code>.c</code>, <code>.h</code>, <code>.cc</code>, <code>.cpp</code>, <code>.cxx</code>, <code>.hh</code>, <code>.hpp</code>, <code>.hxx</code>, <code>.cu</code> and <code>.cuh</code>, using <strong>tree-sitter-cpp</strong> for C/C++ and <strong>tree-sitter-cuda</strong> for CUDA.</p>
+<p><code>__init__.py</code> is a thin entrypoint; the implementation is split into <code>constants.py</code>, <code>builtins.py</code>, <code>parser.py</code>, <code>comments.py</code>, <code>nodes.py</code>, <code>values.py</code>, <code>calls.py</code>, <code>includes.py</code>, <code>pybind.py</code>, and <code>extract.py</code>.</p>
+<h2>What it extracts</h2>
+<table>
+<thead><tr>
+<th>Construct</th>
+<th>How it appears in the record</th>
+</tr></thead>
+<tbody>
+<tr><td><code>int f(...)</code>, <code>Engine::step(...)</code>, methods, constructors/destructors, operators</td><td><code>functions</code> — <code>name</code>, dotted <code>qualified</code> (e.g. <code>mixed.Engine.step</code>), <code>line</code>/<code>end_line</code>, <code>params</code>, <code>vararg</code>, exact <code>body</code>, optional <code>developer_comment</code>.</td></tr>
+<tr><td><code>class</code> / <code>struct</code> / <code>union</code></td><td><code>classes</code> — <code>name</code>, dotted <code>qualified</code>, line range, developer comment. Forward declarations with no body are skipped.</td></tr>
+<tr><td>globals and object-like macros</td><td><code>file_vars</code> — <code>name</code>, <code>line</code>, <code>init</code>, optional <code>value</code>. Include guards are not treated as API variables.</td></tr>
+<tr><td><code>#define ADD(a, b) ...</code></td><td>a function-like macro, with its parameters.</td></tr>
+<tr><td><code>#include &quot;local.h&quot;</code></td><td><code>imports</code> — quoted includes only; angle-bracket system headers are skipped. Resolution tries the including directory, the source root, then <code>include/</code>.</td></tr>
+<tr><td><code>f(x)</code>, <code>ns::f(x)</code>, <code>obj.method(x)</code>, <code>ptr-&gt;method(x)</code></td><td><code>calls</code> — dotted receiver plus method where applicable; <code>this-&gt;m()</code> is bound to the enclosing class.</td></tr>
+<tr><td><code>kernel&lt;&lt;&lt;grid, block&gt;&gt;&gt;(args)</code></td><td>a normal call in the tree-sitter-cuda grammar, so kernel launches appear in the graph.</td></tr>
+</tbody>
+</table>
+<p>Function prototypes in headers are not documented; the definition in the <code>.c</code>/<code>.cpp</code> file is. Header-only inline and template definitions are recorded.</p>
+<h2>pybind11 bridge</h2>
+<p>The backend reads explicit pybind11 declarations from <code>PYBIND11_MODULE</code>, <code>m.def(...)</code>, and <code>py::class_&lt;T&gt;(m, &quot;Name&quot;).def(...)</code>. Those become <code>bindings</code> records; the graph turns them into:</p>
+<ul>
+<li><code>EXPORTS</code> — binding file → C++ class/function/method
+</li>
+<li><code>BRIDGES</code> — Python facade class → the C++ class it wraps
+</li>
+</ul>
+<p><code>mixed_native.Engine(...)</code> calls resolve exactly through the binding instead of being guessed by name. ctypes/Cython/torch-extension boundaries are not declarative and stay inferred/unresolved.</p>
+<h2>Developer comments and LLM skips</h2>
+<p>The usual glue rule applies to functions, classes, globals and macros, including multiline <code>/* ... */</code> blocks. If the first non-empty line of the comment is <code>kodama-docs-llm:skip</code>, no LLM task is created for that symbol; a class-level skip also covers its methods, constructors and nested classes. See <a href="../04%20-%20Reference/03%20-%20Prompts.html">Prompts</a> for the template keys.</p>
+<h2>Requirements and limits</h2>
+<ul>
+<li>python: <code>tree-sitter==0.26.0</code>, <code>tree-sitter-cpp==0.23.4</code>,
+</li>
+</ul>
+<p><code>tree-sitter-cuda==0.21.2</code> (declared in the manifest).</p>
+<ul>
+<li>tree-sitter is syntactic: overload resolution, macro expansion, template
+</li>
+</ul>
+<p>instantiation and include directories are best-effort. The graph marks inferred and ambiguous links instead of guessing.</p>
+<ul>
+<li>The mixed fixture <code>test_codebases/mixed-c-cpp-cu-py/</code> exercises C, C++,
+</li>
+</ul>
+<p>CUDA and Python together, including the pybind11 bridge and skip directives. <code>tests/test_cpp_backend.py</code> covers extraction and graph behavior directly.</p>
+<p>Related: <a href="01%20-%20Backends.html">Backends</a>, <a href="../08%20-%20Contributing/01%20-%20Adding%20a%20Language.html">Adding a Language</a>.</p>
+</main>
+</div>
+</body>
+</html>

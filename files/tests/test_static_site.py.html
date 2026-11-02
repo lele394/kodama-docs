@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_static_site.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_static_site.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-check-31">check</a></td><td>31</td><td>cond, msg</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_tree-39">_tree</a></td><td>39</td><td>base, files</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_read-48">_read</a></td><td>48</td><td>p</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_inline_json_in-53">_inline_json_in</a></td><td>53</td><td>html, marker</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_base_for-63">test_base_for</a></td><td>63</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_rewrite_md_links-72">test_rewrite_md_links</a></td><td>72</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_inline_json-87">test_inline_json</a></td><td>87</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_diet_graph-96">test_diet_graph</a></td><td>96</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-build_fixture-115">build_fixture</a></td><td>115</td><td>root</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-168">main</a></td><td>168</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>check <a id="fn-check-31"></a></h3>
+<p><em>tests/test_static_site.py:31-36</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cond</code></td><td></td></tr>
+<tr><td><code>msg</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_static_site.py.html#variables">FAILS</a>
+</li>
+<li>print
+</li>
+<li><span style="color:#e67e22">FAILS.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def check(cond, msg):
+    if cond:
+        print(f&#x27;ok   {msg}&#x27;)
+    else:
+        print(f&#x27;FAIL {msg}&#x27;)
+        FAILS.append(msg)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-test_base_for-63">test_base_for:64</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_base_for-63">test_base_for:65</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_base_for-63">test_base_for:66</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_base_for-63">test_base_for:68</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links:74</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links:75</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links:76</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links:79</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links:81</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links:82</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links:83</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_inline_json-87">test_inline_json:89</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_inline_json-87">test_inline_json:90</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_inline_json-87">test_inline_json:91</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_inline_json-87">test_inline_json:92</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_diet_graph-96">test_diet_graph:105</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_diet_graph-96">test_diet_graph:107</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_diet_graph-96">test_diet_graph:109</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_diet_graph-96">test_diet_graph:111</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:179</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:191</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:195</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:197</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:202</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:203</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:205</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:207</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:210</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:212</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:217</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:220</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:222</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:224</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:225</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:227</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:230</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:232</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:234</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:238</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:240</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:243</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:244</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:246</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:249</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:250</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:251</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:253</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:256</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:257</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:259</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:261</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:263</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:265</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:270</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:272</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:276</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:279</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:281</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:285</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:291</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:293</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:296</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:298</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:300</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:302</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:304</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:306</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:310</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:311</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:312</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:313</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:315</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:317</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:321</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:322</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:325</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:329</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:333</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:335</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:336</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:346</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:352</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:358</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_tree <a id="fn-_tree-39"></a></h3>
+<p><em>tests/test_static_site.py:39-45</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>base</code></td><td></td></tr>
+<tr><td><code>files</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">files.items</span>
+</li>
+<li>os.path.join
+</li>
+<li>os.makedirs
+</li>
+<li>os.path.dirname
+</li>
+<li>isinstance
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">fh.write</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _tree(base, files):
+    for rel, content in files.items():
+        p = os.path.join(base, rel)
+        os.makedirs(os.path.dirname(p) or base, exist_ok=True)
+        with open(p, &#x27;wb&#x27; if isinstance(content, bytes) else &#x27;w&#x27;,
+                  encoding=None if isinstance(content, bytes) else &#x27;utf-8&#x27;) as fh:
+            fh.write(content)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-build_fixture-115">build_fixture:117</a>
+</li>
+<li><a href="test_static_site.py.html#fn-build_fixture-115">build_fixture:154</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_read <a id="fn-_read-48"></a></h3>
+<p><em>tests/test_static_site.py:48-50</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>p</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _read(p):
+    with open(p, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        return fh.read()</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-main-168">main:201</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:219</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:229</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:242</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:252</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:269</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:278</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:285</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:290</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:320</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:324</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:332</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:345</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:351</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_inline_json_in <a id="fn-_inline_json_in-53"></a></h3>
+<p><em>tests/test_static_site.py:53-59</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>html</code></td><td></td></tr>
+<tr><td><code>marker</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>html.index
+</li>
+<li>len
+</li>
+<li>json.loads
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _inline_json_in(html: str, marker: str):
+    &quot;&quot;&quot;Parse the JSON inlined after ``marker`` in a rendered page: it runs
+    from the marker to the first literal ``&lt;/script&gt;`` (the builder escapes
+    ``&lt;/`` in the data to ``&lt;\\/``, so nothing inside can terminate the tag
+    early and the first real ``&lt;/script&gt;`` is the tag&#x27;s own end).&quot;&quot;&quot;
+    i = html.index(marker) + len(marker)
+    return json.loads(html[i:html.index(&#x27;&lt;/script&gt;&#x27;, i)])</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-main-168">main:306</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_base_for <a id="fn-test_base_for-63"></a></h3>
+<p><em>tests/test_static_site.py:63-69</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>------------------------------------------------------------- pure bits</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>base_for (inferred)
+</li>
+<li><a href="test_static_site.py.html#fn-check-31">check</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_base_for():
+    check(static_site.base_for(&#x27;index.html&#x27;) == &#x27;&#x27;, &#x27;base_for(index) is empty&#x27;)
+    check(static_site.base_for(&#x27;files/a.html&#x27;) == &#x27;../&#x27;, &#x27;base_for(files) is ../&#x27;)
+    check(static_site.base_for(&#x27;files/a/b.html&#x27;) == &#x27;../../&#x27;,
+          &#x27;base_for(deep file) is ../../&#x27;)
+    check(static_site.base_for(&#x27;manual/x/y.html&#x27;) == &#x27;../../&#x27;,
+          &#x27;base_for(manual page) is ../../&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-main-168">main:169</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_rewrite_md_links <a id="fn-test_rewrite_md_links-72"></a></h3>
+<p><em>tests/test_static_site.py:72-84</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_static_site.py.html#fn-check-31">check</a>
+</li>
+<li><span style="color:#e67e22">rw</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_rewrite_md_links():
+    rw = static_site.rewrite_md_links
+    check(rw(&#x27;&lt;a href=&quot;x.md&quot;&gt;&#x27;) == &#x27;&lt;a href=&quot;x.html&quot;&gt;&#x27;, &#x27;plain .md -&gt; .html&#x27;)
+    check(rw(&#x27;&lt;a href=&quot;x.md#a&quot;&gt;&#x27;) == &#x27;&lt;a href=&quot;x.html#a&quot;&gt;&#x27;, &#x27;fragment kept&#x27;)
+    check(rw(&#x27;&lt;a href=&quot;../y.md#b&quot;&gt;&#x27;) == &#x27;&lt;a href=&quot;../y.html#b&quot;&gt;&#x27;,
+          &#x27;relative link + fragment&#x27;)
+    ext = &#x27;&lt;a href=&quot;https://e.com/x.md&quot;&gt;&#x27;
+    check(rw(ext) == ext, &#x27;https link untouched&#x27;)
+    rel = &#x27;&lt;a href=&quot;//cdn/x.md&quot;&gt;&#x27;
+    check(rw(rel) == rel, &#x27;protocol-relative link untouched&#x27;)
+    check(rw(&#x27;&lt;a href=&quot;#a&quot;&gt;&#x27;) == &#x27;&lt;a href=&quot;#a&quot;&gt;&#x27;, &#x27;anchor untouched&#x27;)
+    check(rw(&#x27;&lt;a href=&quot;g/01%20-%20P.md#c&quot;&gt;&#x27;)
+          == &#x27;&lt;a href=&quot;g/01%20-%20P.html#c&quot;&gt;&#x27;, &#x27;%20-encoded link rewritten&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-main-168">main:170</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_inline_json <a id="fn-test_inline_json-87"></a></h3>
+<p><em>tests/test_static_site.py:87-93</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li>_inline_json (inferred)
+</li>
+<li><a href="test_static_site.py.html#fn-check-31">check</a>
+</li>
+<li>json.loads
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_inline_json():
+    out = static_site._inline_json({&#x27;x&#x27;: &#x27;&lt;/script&gt;&#x27;})
+    check(&#x27;&lt;/script&gt;&#x27; not in out, &#x27;_inline_json: no raw &lt;/script&gt;&#x27;)
+    check(&#x27;&lt;\\/script&gt;&#x27; in out, &#x27;_inline_json: &lt;/ escaped&#x27;)
+    check(json.loads(out) == {&#x27;x&#x27;: &#x27;&lt;/script&gt;&#x27;}, &#x27;_inline_json: round-trips&#x27;)
+    check(static_site._inline_json({&#x27;a&#x27;: 1, &#x27;b&#x27;: [1, 2]}) == &#x27;{&quot;a&quot;:1,&quot;b&quot;:[1,2]}&#x27;,
+          &#x27;_inline_json: compact separators&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-main-168">main:171</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_diet_graph <a id="fn-test_diet_graph-96"></a></h3>
+<p><em>tests/test_static_site.py:96-111</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">gmod.nx.MultiDiGraph</span>
+</li>
+<li><span style="color:#e67e22">g.add_node</span>
+</li>
+<li>add_edge (inferred)
+</li>
+<li><span style="color:#e67e22">gmod.nx.node_link_data</span>
+</li>
+<li>diet_graph_data (inferred)
+</li>
+<li>any
+</li>
+<li><a href="test_static_site.py.html#fn-check-31">check</a>
+</li>
+<li><span style="color:#e67e22">n.get</span>
+</li>
+<li>all
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_diet_graph():
+    g = gmod.nx.MultiDiGraph()
+    g.add_node(&#x27;fn:a.py::f@1&#x27;, kind=&#x27;function&#x27;, relpath=&#x27;a.py&#x27;, name=&#x27;f&#x27;,
+               line=1, end_line=9, params=[&#x27;x&#x27;], vararg=False,
+               body=&#x27;SECRET-SOURCE&#x27;, file_id=&#x27;file:a.py&#x27;)
+    g.add_node(&#x27;file:a.py&#x27;, kind=&#x27;file&#x27;, relpath=&#x27;a.py&#x27;)
+    g.add_edge(&#x27;file:a.py&#x27;, &#x27;fn:a.py::f@1&#x27;, type=&#x27;CONTAINS&#x27;)
+    full = gmod.nx.node_link_data(g, edges=&#x27;edges&#x27;)
+    diet = gmod.diet_graph_data(g)
+    check(any(n.get(&#x27;body&#x27;) for n in full[&#x27;nodes&#x27;]),
+          &#x27;diet: full graph keeps bodies&#x27;)
+    check(all(&#x27;body&#x27; not in n for n in diet[&#x27;nodes&#x27;]),
+          &#x27;diet: drops source bodies&#x27;)
+    check(all(&#x27;params&#x27; not in n and &#x27;end_line&#x27; not in n
+              for n in diet[&#x27;nodes&#x27;]), &#x27;diet: drops pipeline-only fields&#x27;)
+    check(diet[&#x27;edges&#x27;] == full[&#x27;edges&#x27;], &#x27;diet: keeps all relationships&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-main-168">main:172</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>build_fixture <a id="fn-build_fixture-115"></a></h3>
+<p><em>tests/test_static_site.py:115-165</em></p>
+<p><strong>Developer comment</strong></p>
+<blockquote><p>---------------------------------------------------------------- fixture</p></blockquote>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>root</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_static_site.py.html#variables">REPO</a>
+</li>
+<li>os.path.join
+</li>
+<li><a href="test_static_site.py.html#fn-_tree-39">_tree</a>
+</li>
+<li>json.dumps
+</li>
+<li>os.makedirs
+</li>
+<li>shutil.copy2
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def build_fixture(root):
+    docs = os.path.join(root, &#x27;docs&#x27;)
+    _tree(docs, {
+        &#x27;index.md&#x27;: (&#x27;# Home\n\nSee [the file](files/src/a.md), the &#x27;
+                     &#x27;[sibling](files/src/a.md#fn-go-4), the &#x27;
+                     &#x27;[manual](manual/g/01%20-%20Page.md#anchor), and an &#x27;
+                     &#x27;[external](https://example.com/x.md) link.\n&#x27;),
+        &#x27;files/src/a.md&#x27;: (&#x27;# A\n\nBack [home](../../index.md), &#x27;
+                           &#x27;[sibling](../b.md#fn-go-4).\n&#x27;),
+        &#x27;files/b.md&#x27;: &#x27;# B\n\n[home](../index.md)\n&#x27;,
+        &#x27;manual/g/01 - Page.md&#x27;: &#x27;# Page\n&#x27;,
+        &#x27;manual/img/pic.png&#x27;: b&#x27;PNGDATA&#x27;,
+        &#x27;meta/symbols.json&#x27;: json.dumps({
+            &#x27;schema&#x27;: &#x27;kodama_docs/symbols@1&#x27;,
+            &#x27;file_count&#x27;: 2,
+            &#x27;files&#x27;: [
+                {&#x27;relpath&#x27;: &#x27;src/a.md&#x27;, &#x27;lines&#x27;: 10,
+                 &#x27;functions&#x27;: [{&#x27;name&#x27;: &#x27;go&#x27;, &#x27;qualified&#x27;: &#x27;go&#x27;, &#x27;line&#x27;: 4},
+                               {&#x27;name&#x27;: &#x27;other&#x27;, &#x27;qualified&#x27;: &#x27;other&#x27;,
+                                &#x27;line&#x27;: 9, &#x27;body&#x27;: &#x27;SECRET-BODY-TEXT&#x27;}],
+                 &#x27;file_vars&#x27;: [{&#x27;name&#x27;: &#x27;X&#x27;, &#x27;line&#x27;: 1}],
+                 &#x27;calls&#x27;: [&#x27;MUST-NOT-LEAK&#x27;], &#x27;imports&#x27;: [&#x27;MUST-NOT-LEAK2&#x27;],
+                 &#x27;classes&#x27;: [&#x27;MUST-NOT-LEAK3&#x27;]},
+                {&#x27;relpath&#x27;: &#x27;b.md&#x27;, &#x27;lines&#x27;: 2, &#x27;functions&#x27;: [],
+                 &#x27;file_vars&#x27;: []},
+            ]}, indent=1),
+        &#x27;meta/graph.json&#x27;: json.dumps({&#x27;directed&#x27;: True, &#x27;nodes&#x27;: [],
+                                       &#x27;edges&#x27;: []}),
+        &#x27;meta/manual.json&#x27;: json.dumps({
+            &#x27;count&#x27;: 1,
+            &#x27;pages&#x27;: [{&#x27;rel&#x27;: &#x27;g/01 - Page.md&#x27;, &#x27;title&#x27;: &#x27;Page&#x27;, &#x27;dir&#x27;: &#x27;g&#x27;,
+                       &#x27;href&#x27;: &#x27;manual/g/01 - Page.md&#x27;}]}),
+    })
+
+    webdir = os.path.join(root, &#x27;web&#x27;)
+    os.makedirs(os.path.join(webdir, &#x27;templates&#x27;), exist_ok=True)
+    for name in (&#x27;page.html&#x27;, &#x27;graph.html&#x27;):
+        shutil.copy2(os.path.join(REPO, &#x27;web&#x27;, &#x27;templates&#x27;, name),
+                     os.path.join(webdir, &#x27;templates&#x27;, name))
+    _tree(webdir, {
+        &#x27;web_settings.yaml&#x27;: &#x27;host: 127.0.0.1\ndefault_theme: dark\n&#x27;,
+        &#x27;app.js&#x27;: &#x27;// stub app\n&#x27;,
+        &#x27;sidebar.js&#x27;: &#x27;// stub sidebar\n&#x27;,
+        &#x27;fuzzy.js&#x27;: &#x27;// stub fuzzy\n&#x27;,
+        &#x27;graph.js&#x27;: &#x27;// stub graph\n&#x27;,
+        &#x27;graph/state.js&#x27;: &#x27;// stub state\n&#x27;,
+        &#x27;lib/hi.css&#x27;: &#x27;/* stub lib */\n&#x27;,
+        &#x27;themes/light/style.css&#x27;: &#x27;/* light */\n&#x27;,
+        &#x27;themes/dark/style.css&#x27;: &#x27;/* dark */\n&#x27;,
+    })
+    return docs, webdir</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html#fn-main-168">main:175</a>
+</li>
+<li><a href="test_static_site.py.html#fn-main-168">main:341</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>main <a id="fn-main-168"></a></h3>
+<p><em>tests/test_static_site.py:168-364</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_static_site.py.html#variables">FAILS</a>
+</li>
+<li><a href="test_static_site.py.html#variables">REPO</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_base_for-63">test_base_for</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_rewrite_md_links-72">test_rewrite_md_links</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_inline_json-87">test_inline_json</a>
+</li>
+<li><a href="test_static_site.py.html#fn-test_diet_graph-96">test_diet_graph</a>
+</li>
+<li>tempfile.TemporaryDirectory
+</li>
+<li><a href="test_static_site.py.html#fn-build_fixture-115">build_fixture</a>
+</li>
+<li>os.path.join
+</li>
+<li>build (inferred)
+</li>
+<li><a href="test_static_site.py.html#fn-check-31">check</a>
+</li>
+<li>os.path.isfile
+</li>
+<li>os.path.exists
+</li>
+<li>os.path.isdir
+</li>
+<li><a href="test_static_site.py.html#fn-_read-48">_read</a>
+</li>
+<li><span style="color:#e67e22">idx.index</span>
+</li>
+<li>json.loads
+</li>
+<li><span style="color:#e67e22">?.rstrip</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li><span style="color:#e67e22">sd.split</span>
+</li>
+<li><a href="test_static_site.py.html#fn-_inline_json_in-53">_inline_json_in</a>
+</li>
+<li>open
+</li>
+<li>read (inferred)
+</li>
+<li>os.remove
+</li>
+<li><span style="color:#e67e22">fh.write</span>
+</li>
+<li>subprocess.run
+</li>
+<li>print
+</li>
+<li>len
+</li>
+<li>sys.exit
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    test_base_for()
+    test_rewrite_md_links()
+    test_inline_json()
+    test_diet_graph()
+
+    with tempfile.TemporaryDirectory() as tmp:
+        docs, webdir = build_fixture(tmp)
+        cfg = {&#x27;output_dir&#x27;: docs, &#x27;data_dir&#x27;: os.path.join(docs, &#x27;data&#x27;)}
+
+        site = static_site.build(cfg, webdir=webdir)
+        check(site == os.path.join(docs, &#x27;site&#x27;), &#x27;site lives in &lt;out&gt;/site&#x27;)
+
+        # ---- layout ------------------------------------------------------
+        for rel in (
+                &#x27;index.html&#x27;, &#x27;graph.html&#x27;, &#x27;404.html&#x27;, &#x27;.nojekyll&#x27;,
+                &#x27;files/src/a.html&#x27;, &#x27;files/b.html&#x27;,
+                &#x27;manual/g/01 - Page.html&#x27;, &#x27;manual/img/pic.png&#x27;,
+                &#x27;app.js&#x27;, &#x27;sidebar.js&#x27;, &#x27;graph.js&#x27;,
+                &#x27;lib/hi.css&#x27;,
+                &#x27;theme/dark/style.css&#x27;, &#x27;theme/light/style.css&#x27;,
+                &#x27;symbols.json&#x27;, &#x27;symbols-data.js&#x27;, &#x27;graph.json&#x27;,
+        ):
+            check(os.path.isfile(os.path.join(site, rel)), f&#x27;present: {rel}&#x27;)
+        # the module sub-files ship INSIDE the bundles (file:// cannot load
+        # external ES modules), so the raw copies are absent
+        for rel in (&#x27;fuzzy.js&#x27;, &#x27;graph/state.js&#x27;):
+            check(not os.path.exists(os.path.join(site, rel)),
+                  f&#x27;absent: {rel} (inlined into the bundle)&#x27;)
+        check(not os.path.isdir(os.path.join(site, &#x27;graph&#x27;)),
+              &#x27;absent: graph/ dir (inlined into the bundle)&#x27;)
+
+        # ---- theme (dark, from the fixture web_settings.yaml) -----------
+        idx = _read(os.path.join(site, &#x27;index.html&#x27;))
+        check(&#x27;theme/dark/style.css&#x27; in idx, &#x27;index: dark theme baked in&#x27;)
+        check(&#x27;theme/light/style.css&#x27; not in idx,
+              &#x27;index: no light theme reference&#x27;)
+        check(&#x27;href=&quot;lib/github.min.css&quot; disabled&gt;&#x27; in idx,
+              &#x27;index: light hljs css disabled&#x27;)
+        check(&#x27;href=&quot;lib/github-dark.min.css&quot;&gt;&#x27; in idx
+              and &#x27;lib/github-dark.min.css&quot; disabled&gt;&#x27; not in idx,
+              &#x27;index: dark hljs css enabled&#x27;)
+        check(&#x27;localStorage.getItem(&quot;kodama.theme&quot;)&#x27; in idx,
+              &#x27;index: saved theme applied during head parsing&#x27;)
+        check(idx.index(&#x27;localStorage.getItem(&quot;kodama.theme&quot;)&#x27;)
+              &lt; idx.index(&#x27;src=&quot;app.js&quot;&#x27;),
+              &#x27;index: theme bootstrap runs before app.js&#x27;)
+
+        # ---- JS switch + base prefix -------------------------------------
+        check(&#x27;window.__KODAMA_BASE__ = \&#x27;\&#x27;&#x27; in idx,
+              &#x27;index: __KODAMA_BASE__ is empty string (site root)&#x27;)
+        a = _read(os.path.join(site, &#x27;files/src/a.html&#x27;))
+        check(&#x27;window.__KODAMA_BASE__ = \&#x27;../../\&#x27;&#x27; in a,
+              &#x27;file page: __KODAMA_BASE__ = ../../ (depth 2)&#x27;)
+        check(&#x27;href=&quot;../../index.html&quot;&#x27; in a,
+              &#x27;file page: brand -&gt; ../../index.html&#x27;)
+        check(&#x27;src=&quot;../../sidebar.js&quot;&#x27; in a, &#x27;file page: sidebar.js prefixed&#x27;)
+        check(&#x27;href=&quot;../../theme/dark/style.css?v=2&quot;&#x27; in a,
+              &#x27;file page: theme css prefixed&#x27;)
+        check(&#x27;href=&quot;../../lib/github-dark.min.css&quot;&gt;&#x27; in a,
+              &#x27;file page: hljs css prefixed&#x27;)
+        m = _read(os.path.join(site, &#x27;manual/g/01 - Page.html&#x27;))
+        check(&#x27;window.__KODAMA_BASE__ = \&#x27;../../\&#x27;&#x27; in m,
+              &#x27;manual page: __KODAMA_BASE__ = ../../&#x27;)
+        check(&#x27;href=&quot;../../index.html&quot;&#x27; in m,
+              &#x27;manual page: brand -&gt; ../../index.html&#x27;)
+        check(&#x27;href=&quot;../../graph.html&quot;&#x27; in m,
+              &#x27;manual page: nav -&gt; ../../graph.html&#x27;)
+
+        # ---- nav / brand / graph page ------------------------------------
+        check(&#x27;&lt;a class=&quot;brand&quot; href=&quot;index.html&quot;&gt;&#x27; in idx,
+              &#x27;index: brand -&gt; index.html&#x27;)
+        check(&#x27;&lt;a class=&quot;nav&quot; href=&quot;graph.html&quot;&gt;graph&lt;/a&gt;&#x27; in idx,
+              &#x27;index: nav -&gt; graph.html&#x27;)
+        g = _read(os.path.join(site, &#x27;graph.html&#x27;))
+        check(&#x27;window.__KODAMA_BASE__ = \&#x27;\&#x27;&#x27; in g, &#x27;graph: base empty&#x27;)
+        check(&#x27;&lt;a class=&quot;brand&quot; href=&quot;index.html&quot;&gt;&#x27; in g,
+              &#x27;graph: brand -&gt; index.html&#x27;)
+        check(&#x27;src=&quot;graph.js&quot;&#x27; in g, &#x27;graph: classic script relative&#x27;)
+
+        # ---- title --------------------------------------------------------
+        check(&#x27;&lt;title&gt;Home&lt;/title&gt;&#x27; in idx, &#x27;index: title from first h1&#x27;)
+        check(&#x27;&lt;title&gt;A&lt;/title&gt;&#x27; in a, &#x27;file page: title from first h1&#x27;)
+        check(&#x27;&lt;title&gt;Page&lt;/title&gt;&#x27; in m, &#x27;manual page: title from first h1&#x27;)
+        b = _read(os.path.join(site, &#x27;files/b.html&#x27;))
+        check(&#x27;&lt;title&gt;B&lt;/title&gt;&#x27; in b, &#x27;second file page: title from h1&#x27;)
+
+        # ---- link rewrite --------------------------------------------------
+        check(&#x27;href=&quot;files/src/a.html&quot;&#x27; in idx, &#x27;index: .md link -&gt; .html&#x27;)
+        check(&#x27;href=&quot;files/src/a.html#fn-go-4&quot;&#x27; in idx,
+              &#x27;index: fragment link rewritten&#x27;)
+        check(&#x27;href=&quot;manual/g/01%20-%20Page.html#anchor&quot;&#x27; in idx,
+              &#x27;index: manual link rewritten&#x27;)
+        check(&#x27;href=&quot;https://example.com/x.md&quot;&#x27; in idx,
+              &#x27;index: external link untouched&#x27;)
+        check(&#x27;href=&quot;../b.html#fn-go-4&quot;&#x27; in a,
+              &#x27;file page: sibling .md link rewritten&#x27;)
+        check(&#x27;href=&quot;../index.html&quot;&#x27; in b,
+              &#x27;file page: parent .md link rewritten&#x27;)
+
+        # ---- symbols payload (slim: no bodies, no extra fields) ----------
+        sl = json.loads(_read(os.path.join(site, &#x27;symbols.json&#x27;)))
+        check(sl[&#x27;file_count&#x27;] == 2, &#x27;symbols: file_count&#x27;)
+        f0 = sl[&#x27;files&#x27;][0]
+        check(f0[&#x27;functions&#x27;] == [
+            {&#x27;name&#x27;: &#x27;go&#x27;, &#x27;qualified&#x27;: &#x27;go&#x27;, &#x27;line&#x27;: 4},
+            {&#x27;name&#x27;: &#x27;other&#x27;, &#x27;qualified&#x27;: &#x27;other&#x27;, &#x27;line&#x27;: 9}],
+            &#x27;symbols: functions slim to name/qualified/line&#x27;)
+        check(f0[&#x27;vars&#x27;] == [{&#x27;name&#x27;: &#x27;X&#x27;, &#x27;line&#x27;: 1}],
+              &#x27;symbols: vars slim to name/line&#x27;)
+        blob = _read(os.path.join(site, &#x27;symbols.json&#x27;))
+        check(&#x27;SECRET-BODY-TEXT&#x27; not in blob and &#x27;MUST-NOT-LEAK&#x27; not in blob,
+              &#x27;symbols: no bodies or graph edges shipped&#x27;)
+        check(sl[&#x27;manual&#x27;] == [
+            {&#x27;rel&#x27;: &#x27;g/01 - Page.md&#x27;, &#x27;title&#x27;: &#x27;Page&#x27;, &#x27;dir&#x27;: &#x27;g&#x27;,
+             &#x27;href&#x27;: &#x27;manual/g/01 - Page.md&#x27;}],
+            &#x27;symbols: manual list merged in&#x27;)
+        check(json.loads(_read(os.path.join(site, &#x27;graph.json&#x27;)))
+              == {&#x27;directed&#x27;: True, &#x27;nodes&#x27;: [], &#x27;edges&#x27;: []},
+              &#x27;graph.json copied&#x27;)
+
+        # ---- shared data (file:// forbids fetch of local JSON) -----------
+        sd = _read(os.path.join(site, &#x27;symbols-data.js&#x27;))
+        check(&#x27;window.__KODAMA_SYMBOLS__ = &#x27; in sd,
+              &#x27;symbols-data.js: defines the search index&#x27;)
+        check(json.loads(sd.split(&#x27;window.__KODAMA_SYMBOLS__ = &#x27;, 1)[1]
+                         .strip().rstrip(&#x27;;&#x27;)) == sl,
+              &#x27;symbols-data.js: data == symbols.json (slim)&#x27;)
+        check(&#x27;window.__KODAMA_SYMBOLS__&#x27; not in idx,
+              &#x27;index: symbols are not duplicated inline&#x27;)
+        check(&#x27;window.__KODAMA_SYMBOLS__&#x27; not in a,
+              &#x27;file page: symbols are not duplicated inline&#x27;)
+        check(&#x27;&lt;script src=&quot;symbols-data.js&quot; defer&gt;&lt;/script&gt;&#x27; in idx,
+              &#x27;index: shared symbols-data.js script&#x27;)
+        check(&#x27;&lt;script src=&quot;../../symbols-data.js&quot; defer&gt;&lt;/script&gt;&#x27; in a,
+              &#x27;file page: shared symbols-data.js script depth-prefixed&#x27;)
+        check(&#x27;window.__KODAMA_GRAPH__ =&#x27; in g,
+              &#x27;graph: data inlined into graph.html&#x27;)
+        check(_inline_json_in(g, &#x27;window.__KODAMA_GRAPH__ = &#x27;)
+              == {&#x27;directed&#x27;: True, &#x27;nodes&#x27;: [], &#x27;edges&#x27;: []},
+              &#x27;graph: inlined data == graph.json&#x27;)
+        # ---- classic scripts (no ES modules under file://) -----------------
+        check(&#x27;type=&quot;module&quot;&#x27; not in idx, &#x27;index: no ES-module scripts&#x27;)
+        check(&#x27;type=&quot;module&quot;&#x27; not in a, &#x27;file page: no ES-module scripts&#x27;)
+        check(&#x27;type=&quot;module&quot;&#x27; not in g, &#x27;graph: no ES-module scripts&#x27;)
+        check(&#x27;&lt;script src=&quot;sidebar.js&quot; defer&gt;&lt;/script&gt;&#x27; in idx,
+              &#x27;index: classic sidebar script at site root&#x27;)
+        check(&#x27;&lt;script src=&quot;../../sidebar.js&quot; defer&gt;&lt;/script&gt;&#x27; in a,
+              &#x27;file page: classic sidebar script depth-prefixed&#x27;)
+        check(&#x27;&lt;script src=&quot;graph.js&quot; defer&gt;&lt;/script&gt;&#x27; in g,
+              &#x27;graph: classic graph script at site root&#x27;)
+        # the bundle is a self-contained classic script: no import/export
+        sb = _read(os.path.join(site, &#x27;sidebar.js&#x27;))
+        check(&#x27;__kodama_define&#x27; in sb, &#x27;sidebar.js: bundled (define present)&#x27;)
+        check(&#x27;import &#x27; not in sb and &#x27;\nexport &#x27; not in sb,
+              &#x27;sidebar.js: no raw import/export statements&#x27;)
+        gr = _read(os.path.join(site, &#x27;graph.js&#x27;))
+        check(&#x27;__kodama_define&#x27; in gr, &#x27;graph.js: bundled (define present)&#x27;)
+
+        # ---- verbatim manual asset -----------------------------------------
+        with open(os.path.join(site, &#x27;manual/img/pic.png&#x27;), &#x27;rb&#x27;) as fh:
+            check(fh.read() == b&#x27;PNGDATA&#x27;, &#x27;manual asset copied verbatim&#x27;)
+
+        # ---- 404 ------------------------------------------------------------
+        nf = _read(os.path.join(site, &#x27;404.html&#x27;))
+        check(&#x27;&lt;a href=&quot;index.html&quot;&gt;Back to the docs home&lt;/a&gt;&#x27; in nf,
+              &#x27;404: links back to the index&#x27;)
+        check(&#x27;theme/dark/style.css&#x27; in nf, &#x27;404: same baked-in theme&#x27;)
+        check(&#x27;lib/github.min.css&quot; disabled&gt;&#x27; in nf,
+              &#x27;404: light hljs css disabled&#x27;)
+
+    # ---- theme fallbacks ---------------------------------------------------
+    with tempfile.TemporaryDirectory() as tmp:
+        docs, webdir = build_fixture(tmp)
+        # no web_settings.yaml, no theme_state.json -&gt; light
+        os.remove(os.path.join(webdir, &#x27;web_settings.yaml&#x27;))
+        static_site.build({&#x27;output_dir&#x27;: docs}, webdir=webdir)
+        idx = _read(os.path.join(docs, &#x27;site&#x27;, &#x27;index.html&#x27;))
+        check(&#x27;theme/light/style.css&#x27; in idx, &#x27;fallback: light without config&#x27;)
+        # theme_state.json (server&#x27;s {&quot;theme&quot;: ...} format) is the fallback
+        with open(os.path.join(webdir, &#x27;theme_state.json&#x27;), &#x27;w&#x27;) as fh:
+            fh.write(&#x27;{&quot;theme&quot;: &quot;dark&quot;}&#x27;)
+        static_site.build({&#x27;output_dir&#x27;: docs}, webdir=webdir)
+        idx = _read(os.path.join(docs, &#x27;site&#x27;, &#x27;index.html&#x27;))
+        check(&#x27;theme/dark/style.css&#x27; in idx, &#x27;fallback: theme_state.json&#x27;)
+
+    # ---- CLI -----------------------------------------------------------------
+    help_txt = subprocess.run(
+        [sys.executable, os.path.join(REPO, &#x27;main.py&#x27;), &#x27;--help&#x27;],
+        capture_output=True, text=True, cwd=REPO).stdout
+    check(&#x27;--static&#x27; in help_txt, &#x27;main.py --help lists --static&#x27;)
+
+    print()
+    if FAILS:
+        print(f&#x27;{len(FAILS)} assertion(s) FAILED&#x27;)
+        sys.exit(1)
+    print(&#x27;all static-site tests passed&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="test_static_site.py.html">top-level:368</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>REPO</code></td><td>21</td><td>call</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>FAILS</code></td><td>28</td><td>table</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 14: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 15: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 16: import of <span style="color:#e67e22">shutil</span> — no matching file in the project
+</li>
+<li>line 17: import of <span style="color:#e67e22">subprocess</span> — no matching file in the project
+</li>
+<li>line 18: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+<li>line 19: import of <span style="color:#e67e22">tempfile</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

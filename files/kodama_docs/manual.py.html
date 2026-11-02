@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/manual.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/manual.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-_abspath-26">_abspath</a></td><td>26</td><td>p</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_nested-30">_nested</a></td><td>30</td><td>a, b</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-is_markdown-37">is_markdown</a></td><td>37</td><td>relpath</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_title_of-41">_title_of</a></td><td>41</td><td>path, fallback</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-list_manual_pages-53">list_manual_pages</a></td><td>53</td><td>src</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-copy_manual_docs-77">copy_manual_docs</a></td><td>77</td><td>src, output_dir</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-manual_payload-101">manual_payload</a></td><td>101</td><td>pages</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-write_manual_meta-111">write_manual_meta</a></td><td>111</td><td>output_dir, pages</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>_abspath <a id="fn-_abspath-26"></a></h3>
+<p><em>kodama_docs/manual.py:26-27</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>p</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.abspath
+</li>
+<li>os.path.normpath
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _abspath(p):
+    return os.path.normpath(os.path.abspath(p))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="manual.py.html">kodama_docs/manual.py</a>
+<ul>
+<li><a href="manual.py.html#fn-_nested-30">_nested:32</a>
+</li>
+<li><a href="manual.py.html#fn-copy_manual_docs-77">copy_manual_docs:86</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_nested <a id="fn-_nested-30"></a></h3>
+<p><em>kodama_docs/manual.py:30-34</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>a</code></td><td></td></tr>
+<tr><td><code>b</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="manual.py.html#fn-_abspath-26">_abspath</a>
+</li>
+<li><span style="color:#e67e22">a.startswith</span>
+</li>
+<li><span style="color:#e67e22">b.startswith</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _nested(a, b):
+    &quot;&quot;&quot;True if ``a == b`` or one path contains the other.&quot;&quot;&quot;
+    a, b = _abspath(a), _abspath(b)
+    return (a == b or a.startswith(b + os.sep)
+            or b.startswith(a + os.sep))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="manual.py.html">kodama_docs/manual.py</a>
+<ul>
+<li><a href="manual.py.html#fn-copy_manual_docs-77">copy_manual_docs:87</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>is_markdown <a id="fn-is_markdown-37"></a></h3>
+<p><em>kodama_docs/manual.py:37-38</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>relpath</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="manual.py.html#variables">MD_EXTENSIONS</a>
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li>os.path.splitext
+</li>
+<li>str
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def is_markdown(relpath) -&gt; bool:
+    return os.path.splitext(str(relpath))[1].lower() in MD_EXTENSIONS</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="manual.py.html">kodama_docs/manual.py</a>
+<ul>
+<li><a href="manual.py.html#fn-list_manual_pages-53">list_manual_pages:65</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_title_of <a id="fn-_title_of-41"></a></h3>
+<p><em>kodama_docs/manual.py:41-50</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+<tr><td><code>fallback</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>open
+</li>
+<li><span style="color:#e67e22">line.startswith</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _title_of(path, fallback):
+    &quot;&quot;&quot;First ``# `` heading in the file, else ``fallback``.&quot;&quot;&quot;
+    try:
+        with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+            for line in fh:
+                if line.startswith(&#x27;# &#x27;):
+                    return line[2:].strip()
+    except OSError:
+        pass
+    return fallback</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="manual.py.html">kodama_docs/manual.py</a>
+<ul>
+<li><a href="manual.py.html#fn-list_manual_pages-53">list_manual_pages:70</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>list_manual_pages <a id="fn-list_manual_pages-53"></a></h3>
+<p><em>kodama_docs/manual.py:53-74</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>src</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.walk
+</li>
+<li><span style="color:#e67e22">dirs.sort</span>
+</li>
+<li>sorted
+</li>
+<li>os.path.join
+</li>
+<li>os.path.relpath
+</li>
+<li><a href="manual.py.html#fn-is_markdown-37">is_markdown</a>
+</li>
+<li>os.path.basename
+</li>
+<li>os.path.splitext
+</li>
+<li><span style="color:#e67e22">pages.append</span>
+</li>
+<li><span style="color:#e67e22">rel.replace</span>
+</li>
+<li><a href="manual.py.html#fn-_title_of-41">_title_of</a>
+</li>
+<li><span style="color:#e67e22">?.replace</span>
+</li>
+<li>os.path.dirname
+</li>
+<li><span style="color:#e67e22">pages.sort</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def list_manual_pages(src: str):
+    &quot;&quot;&quot;Sorted markdown pages under ``src``.
+
+    Returns ``[{&#x27;rel&#x27;: &lt;path rel to src, e.g. &#x27;guide/setup.md&#x27;&gt;,
+    &#x27;title&#x27;: str, &#x27;dir&#x27;: &lt;subfolder, &#x27;&#x27; = root&gt;}, ...]``, sorted by ``rel``.
+    Non-markdown files are ignored here (they are still copied as assets).&quot;&quot;&quot;
+    pages = []
+    for root, dirs, files in os.walk(src):
+        dirs.sort()
+        for name in sorted(files):
+            full = os.path.join(root, name)
+            rel = os.path.relpath(full, src)
+            if not is_markdown(rel):
+                continue
+            base = os.path.basename(os.path.splitext(name)[0])
+            pages.append({
+                &#x27;rel&#x27;: rel.replace(os.sep, &#x27;/&#x27;),
+                &#x27;title&#x27;: _title_of(full, base),
+                &#x27;dir&#x27;: os.path.dirname(rel).replace(os.sep, &#x27;/&#x27;),
+            })
+    pages.sort(key=lambda p: p[&#x27;rel&#x27;])
+    return pages</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="manual.py.html">kodama_docs/manual.py</a>
+<ul>
+<li><a href="manual.py.html#fn-copy_manual_docs-77">copy_manual_docs:96</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_manual.py.html">tests/test_manual.py</a>
+<ul>
+<li><a href="../tests/test_manual.py.html#fn-test_list_marks_only_md_sorted-31">test_list_marks_only_md_sorted:40</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_web_manual.py.html">tests/test_web_manual.py</a>
+<ul>
+<li><a href="../tests/test_web_manual.py.html#fn-_mkdocs-61">_mkdocs:75</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>copy_manual_docs <a id="fn-copy_manual_docs-77"></a></h3>
+<p><em>kodama_docs/manual.py:77-98</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>src</code></td><td></td></tr>
+<tr><td><code>output_dir</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="manual.py.html#variables">MANUAL_DIRNAME</a>
+</li>
+<li>os.path.isdir
+</li>
+<li>log
+</li>
+<li><a href="manual.py.html#fn-_abspath-26">_abspath</a>
+</li>
+<li><a href="manual.py.html#fn-_nested-30">_nested</a>
+</li>
+<li>os.makedirs
+</li>
+<li>os.path.join
+</li>
+<li>shutil.rmtree
+</li>
+<li>shutil.copytree
+</li>
+<li><a href="manual.py.html#fn-list_manual_pages-53">list_manual_pages</a>
+</li>
+<li>len
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def copy_manual_docs(src, output_dir):
+    &quot;&quot;&quot;Copy ``src`` into ``&lt;output_dir&gt;/manual/`` and return the page list.
+
+    Refuses (warns, returns ``[]``) when the folder is missing or when ``src``
+    and ``output_dir`` nest each other (that would recurse forever). The target
+    is pruned first, so the copy is always fresh and never stale.&quot;&quot;&quot;
+    if not src or not os.path.isdir(src):
+        log(f&#x27;manual: folder not found — skipping manual docs: {src!r}&#x27;)
+        return []
+    out = _abspath(output_dir)
+    if _nested(src, out):
+        log(f&#x27;manual: refusing — {src} and {out} nest each other; &#x27;
+            f&#x27;skipping manual docs (would copy the output into itself)&#x27;)
+        return []
+    os.makedirs(out, exist_ok=True)
+    target = os.path.join(out, MANUAL_DIRNAME)
+    if os.path.isdir(target):
+        shutil.rmtree(target)
+    shutil.copytree(src, target)
+    pages = list_manual_pages(src)
+    log(f&#x27;manual: copied {len(pages)} page(s) -&gt; {target}&#x27;)
+    return pages</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:116</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_manual.py.html">tests/test_manual.py</a>
+<ul>
+<li><a href="../tests/test_manual.py.html#fn-test_copy_creates_manual_dir_with_assets-52">test_copy_creates_manual_dir_with_assets:56</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_copy_is_fresh_each_run-64">test_copy_is_fresh_each_run:69</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_copy_is_fresh_each_run-64">test_copy_is_fresh_each_run:71</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_copy_missing_folder_skips-77">test_copy_missing_folder_skips:79</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_copy_nested_guard-84">test_copy_nested_guard:89</a>
+</li>
+<li><a href="../tests/test_manual.py.html#fn-test_copy_nested_guard-84">test_copy_nested_guard:94</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>manual_payload <a id="fn-manual_payload-101"></a></h3>
+<p><em>kodama_docs/manual.py:101-108</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>pages</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="manual.py.html#variables">MANUAL_DIRNAME</a>
+</li>
+<li>len
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def manual_payload(pages):
+    &quot;&quot;&quot;JSON-able dict for ``meta/manual.json`` and the web API payload.&quot;&quot;&quot;
+    return {
+        &#x27;count&#x27;: len(pages),
+        &#x27;pages&#x27;: [{&#x27;rel&#x27;: p[&#x27;rel&#x27;], &#x27;title&#x27;: p[&#x27;title&#x27;], &#x27;dir&#x27;: p[&#x27;dir&#x27;],
+                   &#x27;href&#x27;: MANUAL_DIRNAME + &#x27;/&#x27; + p[&#x27;rel&#x27;]}
+                  for p in pages],
+    }</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="manual.py.html">kodama_docs/manual.py</a>
+<ul>
+<li><a href="manual.py.html#fn-write_manual_meta-111">write_manual_meta:117</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_manual.py.html">tests/test_manual.py</a>
+<ul>
+<li><a href="../tests/test_manual.py.html#fn-test_payload_shape-97">test_payload_shape:99</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>write_manual_meta <a id="fn-write_manual_meta-111"></a></h3>
+<p><em>kodama_docs/manual.py:111-118</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>output_dir</code></td><td></td></tr>
+<tr><td><code>pages</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.join
+</li>
+<li>os.makedirs
+</li>
+<li>open
+</li>
+<li>json.dump
+</li>
+<li><a href="manual.py.html#fn-manual_payload-101">manual_payload</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def write_manual_meta(output_dir, pages):
+    &quot;&quot;&quot;Write ``&lt;output_dir&gt;/meta/manual.json`` (the sidebar/API source).&quot;&quot;&quot;
+    meta_dir = os.path.join(output_dir, &#x27;meta&#x27;)
+    os.makedirs(meta_dir, exist_ok=True)
+    path = os.path.join(meta_dir, &#x27;manual.json&#x27;)
+    with open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        json.dump(manual_payload(pages), fh, ensure_ascii=False, indent=1)
+    return path</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:150</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_manual.py.html">tests/test_manual.py</a>
+<ul>
+<li><a href="../tests/test_manual.py.html#fn-test_write_manual_meta_roundtrip-105">test_write_manual_meta_roundtrip:110</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_web_manual.py.html">tests/test_web_manual.py</a>
+<ul>
+<li><a href="../tests/test_web_manual.py.html#fn-_mkdocs-61">_mkdocs:75</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>MANUAL_DIRNAME</code></td><td>22</td><td>string</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>MD_EXTENSIONS</code></td><td>23</td><td>table</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 16: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 17: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 18: import of <span style="color:#e67e22">shutil</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

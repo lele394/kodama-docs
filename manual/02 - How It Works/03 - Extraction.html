@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extraction</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Extraction</h1>
+<p>Extraction is the step where a file becomes a structured <strong>record</strong>. Each file is handed to exactly one backend, and the backend returns a fixed, language-neutral shape that the rest of the pipeline depends on.</p>
+<h2>The record contract</h2>
+<p>Every backend&#x27;s <code>extract(source, relpath)</code> returns the same four top-level keys (plus one optional one):</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>functions</code></td><td>list</td><td>Functions defined in the file: <code>name</code>, <code>qualified</code>, <code>line</code>, <code>end_line</code>, <code>params</code>, <code>vararg</code>, the exact source <code>body</code>, an optional <code>developer_comment</code>, and a stable <code>id</code>.</td></tr>
+<tr><td><code>file_vars</code></td><td>list</td><td>File-level variables: <code>name</code>, <code>line</code>, and an <code>init</code> form (<code>empty</code>/<code>table</code>/<code>string</code>/<code>number</code>/<code>function</code>/<code>call</code>/<code>expr</code>).</td></tr>
+<tr><td><code>calls</code></td><td>list</td><td>Call sites: <code>callee</code> (possibly dotted, or <code>None</code> for a computed receiver), <code>line</code>, and (for methods) <code>method</code>.</td></tr>
+<tr><td><code>imports</code></td><td>list</td><td>Import statements: <code>module</code>, <code>line</code>, <code>bind</code>, <code>name</code>, and <code>level</code> (relative-import depth).</td></tr>
+<tr><td><code>classes</code></td><td>list (optional)</td><td>Class definitions: <code>name</code>, <code>qualified</code>, <code>line</code>, <code>end_line</code>. Absent in languages without classes.</td></tr>
+</tbody>
+</table>
+<p>Line numbers are 1-based and point into the same <code>source</code> string that was passed in; <code>body</code> must be exactly the source lines from <code>line</code> to <code>end_line</code>. Backends may add language-specific extras on top of these, but these keys are the contract. The graph and the renderers only ever read this shape, which is what lets a new language drop in without touching the pipeline. Optional extras include <code>lang</code>/<code>dialect</code>, <code>developer_comment</code> + <code>skip_llm</code> on symbols, and <code>bindings</code> (explicit cross-language exports such as pybind11). The full contract, with the invariants the pipeline relies on, is in <code>backends/backend_design.md</code> in the repository.</p>
+<h2>How files are routed</h2>
+<p>At scan time each file&#x27;s extension is matched to a backend by the registry. A file with no ready backend, or one that is excluded or too large, is skipped and reported rather than fatal — an unavailable or conflicted backend degrades gracefully, and <code>--list-backends</code> explains why.</p>
+<h2>Where the backends live</h2>
+<ul>
+<li><code>backends/lua/</code> — the Lua backend (tree-sitter).
+</li>
+<li><code>backends/python/</code> — the Python backend (tree-sitter).
+</li>
+<li><code>backends/cpp/</code> — the C/C++/CUDA backend (tree-sitter-cpp + tree-sitter-cuda).
+</li>
+<li><code>backends/_shared.py</code> — comment-glue/directive helpers shared by all.
+</li>
+<li><code>backends/backend_design.md</code> — the contract for backend authors.
+</li>
+</ul>
+<p>Each backend package keeps <code>__init__.py</code> as a thin entrypoint and splits the implementation into modules (<code>extract.py</code>, <code>nodes.py</code>, <code>builtins.py</code>, …).</p>
+<p>The general model is in <a href="../03%20-%20Components/01%20-%20Backends.html">Backends</a>; the <a href="../03%20-%20Components/02%20-%20Lua%20Backend.html">Lua</a>, <a href="../03%20-%20Components/03%20-%20Python%20Backend.html">Python</a> and <a href="../03%20-%20Components/03b%20-%20C%20C%2B%2B%20CUDA%20Backend.html">C/C++/CUDA</a> backends each get their own page.</p>
+</main>
+</div>
+</body>
+</html>

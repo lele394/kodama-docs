@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tests/test_cpp_backend.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>tests/test_cpp_backend.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-mk-14">mk</a></td><td>14</td><td>src, rel</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-fn_names-23">fn_names</a></td><td>23</td><td>r</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-calls_out-27">calls_out</a></td><td>27</td><td>g, node_id</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-reads_out-32">reads_out</a></td><td>32</td><td>g, node_id</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_c_extraction-37">test_c_extraction</a></td><td>37</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_header_prototypes_are_not_duplicate_functions-61">test_header_prototypes_are_not_duplicate_functions</a></td><td>61</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_cpp_class_methods_and_qualified_names-72">test_cpp_class_methods_and_qualified_names</a></td><td>72</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_cuda_kernel_launch_is_a_call-96">test_cuda_kernel_launch_is_a_call</a></td><td>96</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_include_candidates-117">test_include_candidates</a></td><td>117</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_mixed_graph_links_c_family-125">test_mixed_graph_links_c_family</a></td><td>125</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_c_included_variable_is_a_reads_edge-141">test_c_included_variable_is_a_reads_edge</a></td><td>141</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_multiline_comments_and_llm_skip_directive-150">test_multiline_comments_and_llm_skip_directive</a></td><td>150</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_cross_file_class_skip_propagates-188">test_cross_file_class_skip_propagates</a></td><td>188</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_python_multiline_comments_and_skip-201">test_python_multiline_comments_and_skip</a></td><td>201</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_lua_multiline_comment_and_skip-225">test_lua_multiline_comment_and_skip</a></td><td>225</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_pybind_bindings_create_exports_and_bridges-245">test_pybind_bindings_create_exports_and_bridges</a></td><td>245</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_c_header_dialect_and_include_guard-279">test_c_header_dialect_and_include_guard</a></td><td>279</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-test_cpp_namespace_call_resolves_but_python_bare_method_does_not-288">test_cpp_namespace_call_resolves_but_python_bare_method_does_not</a></td><td>288</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-main-299">main</a></td><td>299</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>mk <a id="fn-mk-14"></a></h3>
+<p><em>tests/test_cpp_backend.py:14-20</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>src</code></td><td></td></tr>
+<tr><td><code>rel</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">backends.extract</span>
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">src.splitlines</span>
+</li>
+<li><span style="color:#e67e22">src.encode</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def mk(src, rel):
+    r = backends.extract(src, rel)
+    r[&#x27;relpath&#x27;] = rel
+    r[&#x27;lines&#x27;] = len(src.splitlines())
+    r[&#x27;size&#x27;] = len(src.encode())
+    r[&#x27;status&#x27;] = &#x27;ok&#x27;
+    return r</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cpp_backend.py.html">tests/test_cpp_backend.py</a>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-test_c_extraction-37">test_c_extraction:46</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_header_prototypes_are_not_duplicate_functions-61">test_header_prototypes_are_not_duplicate_functions:67</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cpp_class_methods_and_qualified_names-72">test_cpp_class_methods_and_qualified_names:83</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cuda_kernel_launch_is_a_call-96">test_cuda_kernel_launch_is_a_call:107</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_mixed_graph_links_c_family-125">test_mixed_graph_links_c_family:126</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_mixed_graph_links_c_family-125">test_mixed_graph_links_c_family:127</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_mixed_graph_links_c_family-125">test_mixed_graph_links_c_family:129</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_c_included_variable_is_a_reads_edge-141">test_c_included_variable_is_a_reads_edge:142</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_c_included_variable_is_a_reads_edge-141">test_c_included_variable_is_a_reads_edge:143</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_multiline_comments_and_llm_skip_directive-150">test_multiline_comments_and_llm_skip_directive:172</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cross_file_class_skip_propagates-188">test_cross_file_class_skip_propagates:189</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cross_file_class_skip_propagates-188">test_cross_file_class_skip_propagates:194</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_python_multiline_comments_and_skip-201">test_python_multiline_comments_and_skip:212</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_lua_multiline_comment_and_skip-225">test_lua_multiline_comment_and_skip:237</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_pybind_bindings_create_exports_and_bridges-245">test_pybind_bindings_create_exports_and_bridges:246</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_pybind_bindings_create_exports_and_bridges-245">test_pybind_bindings_create_exports_and_bridges:248</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_pybind_bindings_create_exports_and_bridges-245">test_pybind_bindings_create_exports_and_bridges:250</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_pybind_bindings_create_exports_and_bridges-245">test_pybind_bindings_create_exports_and_bridges:256</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_c_header_dialect_and_include_guard-279">test_c_header_dialect_and_include_guard:280</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_c_header_dialect_and_include_guard-279">test_c_header_dialect_and_include_guard:282</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cpp_namespace_call_resolves_but_python_bare_method_does_not-288">test_cpp_namespace_call_resolves_but_python_bare_method_does_not:289</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>fn_names <a id="fn-fn_names-23"></a></h3>
+<p><em>tests/test_cpp_backend.py:23-24</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>r</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def fn_names(r):
+    return [f[&#x27;name&#x27;] for f in r[&#x27;functions&#x27;]]</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cpp_backend.py.html">tests/test_cpp_backend.py</a>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-test_c_extraction-37">test_c_extraction:49</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cpp_class_methods_and_qualified_names-72">test_cpp_class_methods_and_qualified_names:88</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cuda_kernel_launch_is_a_call-96">test_cuda_kernel_launch_is_a_call:110</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>calls_out <a id="fn-calls_out-27"></a></h3>
+<p><em>tests/test_cpp_backend.py:27-29</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>node_id</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+<li>sorted
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def calls_out(g, node_id):
+    return sorted((v, d.get(&#x27;status&#x27;)) for _u, v, d in g.edges(node_id, data=True)
+                  if d.get(&#x27;type&#x27;) == &#x27;CALLS&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cpp_backend.py.html">tests/test_cpp_backend.py</a>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-test_mixed_graph_links_c_family-125">test_mixed_graph_links_c_family:133</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_mixed_graph_links_c_family-125">test_mixed_graph_links_c_family:135</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_pybind_bindings_create_exports_and_bridges-245">test_pybind_bindings_create_exports_and_bridges:275</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-test_cpp_namespace_call_resolves_but_python_bare_method_does_not-288">test_cpp_namespace_call_resolves_but_python_bare_method_does_not:295</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>reads_out <a id="fn-reads_out-32"></a></h3>
+<p><em>tests/test_cpp_backend.py:32-34</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>node_id</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def reads_out(g, node_id):
+    return sorted(v for _u, v, d in g.edges(node_id, data=True)
+                  if d.get(&#x27;type&#x27;) == &#x27;READS&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cpp_backend.py.html">tests/test_cpp_backend.py</a>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-test_c_included_variable_is_a_reads_edge-141">test_c_included_variable_is_a_reads_edge:146</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>test_c_extraction <a id="fn-test_c_extraction-37"></a></h3>
+<p><em>tests/test_cpp_backend.py:37-58</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-fn_names-23">fn_names</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_c_extraction():
+    src = &quot;&quot;&quot;#include &quot;core.h&quot;
+#define MAX 100
+#define ADD(a, b) ((a) + (b))
+static int counter = 0;
+/* Add two integers. */
+int c_add(int a, int b) { return a + b; }
+int c_scale(int value, int factor) { return c_add(value, 0) * factor; }
+&quot;&quot;&quot;
+    r = mk(src, &#x27;c/core.c&#x27;)
+    assert r[&#x27;lang&#x27;] == &#x27;c-family&#x27;
+    assert r[&#x27;dialect&#x27;] == &#x27;c&#x27;
+    assert fn_names(r) == [&#x27;ADD&#x27;, &#x27;c_add&#x27;, &#x27;c_scale&#x27;]
+    add = r[&#x27;functions&#x27;][1]
+    assert add[&#x27;params&#x27;] == [&#x27;a&#x27;, &#x27;b&#x27;]
+    assert add[&#x27;qualified&#x27;] == &#x27;c_add&#x27;
+    assert add[&#x27;developer_comment&#x27;] == &#x27;Add two integers.&#x27;
+    assert add[&#x27;body&#x27;] == &#x27;int c_add(int a, int b) { return a + b; }&#x27;
+    assert [v[&#x27;name&#x27;] for v in r[&#x27;file_vars&#x27;]] == [&#x27;MAX&#x27;, &#x27;counter&#x27;]
+    assert r[&#x27;file_vars&#x27;][0][&#x27;init&#x27;] == &#x27;number&#x27;
+    assert r[&#x27;imports&#x27;] == [{&#x27;module&#x27;: &#x27;core.h&#x27;, &#x27;line&#x27;: 1}]
+    assert {&#x27;callee&#x27;: &#x27;c_add&#x27;, &#x27;line&#x27;: 7, &#x27;method&#x27;: None} in r[&#x27;calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_header_prototypes_are_not_duplicate_functions <a id="fn-test_header_prototypes_are_not_duplicate_functions-61"></a></h3>
+<p><em>tests/test_cpp_backend.py:61-69</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_header_prototypes_are_not_duplicate_functions():
+    hdr = &quot;&quot;&quot;#ifndef CORE_H
+#define CORE_H
+int c_add(int a, int b);
+#endif
+&quot;&quot;&quot;
+    r = mk(hdr, &#x27;c/core.h&#x27;)
+    assert r[&#x27;functions&#x27;] == []
+    assert r[&#x27;file_vars&#x27;] == []  # include guards are plumbing, not API</code></pre>
+</details>
+<hr>
+<h3>test_cpp_class_methods_and_qualified_names <a id="fn-test_cpp_class_methods_and_qualified_names-72"></a></h3>
+<p><em>tests/test_cpp_backend.py:72-93</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li><span style="color:#e67e22">cls.get</span>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-fn_names-23">fn_names</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_cpp_class_methods_and_qualified_names():
+    src = &quot;&quot;&quot;namespace mixed {
+class Engine {
+public:
+    Engine(int n);
+    int step(int x);
+};
+Engine::Engine(int n) : size_(n) {}
+int Engine::step(int x) { return helper_.run(c_add(x, size_)); }
+}
+&quot;&quot;&quot;
+    r = mk(src, &#x27;cpp/engine.cpp&#x27;)
+    cls = r[&#x27;classes&#x27;][0]
+    assert (cls[&#x27;name&#x27;], cls[&#x27;qualified&#x27;], cls[&#x27;line&#x27;], cls[&#x27;end_line&#x27;]) == \
+        (&#x27;Engine&#x27;, &#x27;mixed.Engine&#x27;, 2, 6)
+    assert cls.get(&#x27;developer_comment&#x27;) is None
+    assert fn_names(r) == [&#x27;Engine&#x27;, &#x27;step&#x27;]
+    step = r[&#x27;functions&#x27;][1]
+    assert step[&#x27;qualified&#x27;] == &#x27;mixed.Engine.step&#x27;
+    assert step[&#x27;params&#x27;] == [&#x27;x&#x27;]
+    assert {&#x27;callee&#x27;: &#x27;helper_&#x27;, &#x27;line&#x27;: 8, &#x27;method&#x27;: &#x27;run&#x27;} in r[&#x27;calls&#x27;]
+    assert {&#x27;callee&#x27;: &#x27;c_add&#x27;, &#x27;line&#x27;: 8, &#x27;method&#x27;: None} in r[&#x27;calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_cuda_kernel_launch_is_a_call <a id="fn-test_cuda_kernel_launch_is_a_call-96"></a></h3>
+<p><em>tests/test_cpp_backend.py:96-114</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-fn_names-23">fn_names</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_cuda_kernel_launch_is_a_call():
+    src = &quot;&quot;&quot;#include &quot;kernels.cuh&quot;
+__global__ void k(float* x, int n) {
+    int i = threadIdx.x;
+    if (i &lt; n) x[i] = i;
+}
+void launch(float* x, int n) {
+    k&lt;&lt;&lt;1, 256&gt;&gt;&gt;(x, n);
+    cudaDeviceSynchronize();
+}
+&quot;&quot;&quot;
+    r = mk(src, &#x27;cuda/kernels.cu&#x27;)
+    assert r[&#x27;lang&#x27;] == &#x27;c-family&#x27;
+    assert r[&#x27;dialect&#x27;] == &#x27;cuda&#x27;
+    assert fn_names(r) == [&#x27;k&#x27;, &#x27;launch&#x27;]
+    assert r[&#x27;functions&#x27;][0][&#x27;params&#x27;] == [&#x27;x&#x27;, &#x27;n&#x27;]
+    assert {&#x27;callee&#x27;: &#x27;k&#x27;, &#x27;line&#x27;: 7, &#x27;method&#x27;: None} in r[&#x27;calls&#x27;]
+    assert {&#x27;callee&#x27;: &#x27;cudaDeviceSynchronize&#x27;, &#x27;line&#x27;: 8,
+            &#x27;method&#x27;: None} in r[&#x27;calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_include_candidates <a id="fn-test_include_candidates-117"></a></h3>
+<p><em>tests/test_cpp_backend.py:117-122</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">backends.module_candidates</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_include_candidates():
+    assert &#x27;c/core.h&#x27; in backends.module_candidates(&#x27;core.h&#x27;, &#x27;c/impl.c&#x27;)
+    assert &#x27;c/core.h&#x27; in backends.module_candidates(
+        &#x27;../c/core.h&#x27;, &#x27;cpp/engine.cpp&#x27;)
+    assert &#x27;include/mixed/version.h&#x27; in backends.module_candidates(
+        &#x27;../include/mixed/version.h&#x27;, &#x27;c/core.c&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_mixed_graph_links_c_family <a id="fn-test_mixed_graph_links_c_family-125"></a></h3>
+<p><em>tests/test_cpp_backend.py:125-138</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_cpp_backend.py.html#fn-calls_out-27">calls_out</a>
+</li>
+<li>set
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_mixed_graph_links_c_family():
+    c = mk(&quot;int c_add(int a, int b) { return a + b; }\n&quot;, &#x27;c/core.c&#x27;)
+    cpp = mk(&quot;&quot;&quot;int step(int x) { return c_add(x, 0); }
+&quot;&quot;&quot;, &#x27;cpp/engine.cpp&#x27;)
+    cu = mk(&quot;&quot;&quot;__global__ void k(float* x) { x[0] = 0; }
+void launch(float* x) { k&lt;&lt;&lt;1, 1&gt;&gt;&gt;(x); cudaDeviceSynchronize(); }
+&quot;&quot;&quot;, &#x27;cuda/kernels.cu&#x27;)
+    g, diag = gmod.build_graph([c, cpp, cu])
+    assert calls_out(g, &#x27;fn:cpp/engine.cpp::step@1&#x27;) == \
+        [(&#x27;fn:c/core.c::c_add@1&#x27;, &#x27;inferred&#x27;)]
+    assert set(calls_out(g, &#x27;fn:cuda/kernels.cu::launch@2&#x27;)) == {
+        (&#x27;fn:cuda/kernels.cu::k@1&#x27;, &#x27;resolved&#x27;),
+        (&#x27;builtin:cudaDeviceSynchronize&#x27;, &#x27;builtin&#x27;)}
+    assert not diag[&#x27;ambiguous_calls&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_c_included_variable_is_a_reads_edge <a id="fn-test_c_included_variable_is_a_reads_edge-141"></a></h3>
+<p><em>tests/test_cpp_backend.py:141-147</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_cpp_backend.py.html#fn-reads_out-32">reads_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_c_included_variable_is_a_reads_edge():
+    hdr = mk(&quot;#define VERSION 1\nint version(void);\n&quot;, &#x27;include/version.h&#x27;)
+    src = mk(&#x27;#include &quot;../include/version.h&quot;\n&#x27;
+             &#x27;int get_version(void) { return VERSION; }\n&#x27;, &#x27;c/use.c&#x27;)
+    g, _diag = gmod.build_graph([hdr, src])
+    assert reads_out(g, &#x27;fn:c/use.c::get_version@2&#x27;) == \
+        [&#x27;var:include/version.h::VERSION@1&#x27;]</code></pre>
+</details>
+<hr>
+<h3>test_multiline_comments_and_llm_skip_directive <a id="fn-test_multiline_comments_and_llm_skip_directive-150"></a></h3>
+<p><em>tests/test_cpp_backend.py:150-185</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li>next
+</li>
+<li><span style="color:#e67e22">old.get</span>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">g.nodes.values</span>
+</li>
+<li><span style="color:#e67e22">n.get</span>
+</li>
+<li><span style="color:#e67e22">run.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_multiline_comments_and_llm_skip_directive():
+    src = &#x27;&#x27;&#x27;/*
+This
+is
+multiline comment
+*/
+int main() { return 0; }
+
+/*
+kodama-docs-llm:skip
+Skip this one.
+*/
+class Legacy {
+public:
+    int run() { return 1; }
+};
+
+/*
+kodama-docs-llm:skip
+*/
+#define OLD 1
+&#x27;&#x27;&#x27;
+    r = mk(src, &#x27;cpp/demo.cpp&#x27;)
+    main = next(fn for fn in r[&#x27;functions&#x27;] if fn[&#x27;name&#x27;] == &#x27;main&#x27;)
+    assert main[&#x27;developer_comment&#x27;] == &#x27;This\nis\nmultiline comment&#x27;
+    legacy = next(c for c in r[&#x27;classes&#x27;] if c[&#x27;name&#x27;] == &#x27;Legacy&#x27;)
+    assert legacy[&#x27;skip_llm&#x27;] is True
+    assert legacy[&#x27;developer_comment&#x27;] == &#x27;Skip this one.&#x27;
+    old = next(v for v in r[&#x27;file_vars&#x27;] if v[&#x27;name&#x27;] == &#x27;OLD&#x27;)
+    assert old[&#x27;skip_llm&#x27;] is True
+    assert old.get(&#x27;developer_comment&#x27;) is None
+
+    g, _diag = gmod.build_graph([r])
+    run = next(n for n in g.nodes.values()
+               if n.get(&#x27;kind&#x27;) == &#x27;function&#x27; and n.get(&#x27;name&#x27;) == &#x27;run&#x27;)
+    assert run.get(&#x27;skip_llm&#x27;) is True  # class skip propagated</code></pre>
+</details>
+<hr>
+<h3>test_cross_file_class_skip_propagates <a id="fn-test_cross_file_class_skip_propagates-188"></a></h3>
+<p><em>tests/test_cpp_backend.py:188-198</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">g.nodes.values</span>
+</li>
+<li>next
+</li>
+<li><span style="color:#e67e22">n.get</span>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_cross_file_class_skip_propagates():
+    hdr = mk(&#x27;&#x27;&#x27;/*
+kodama-docs-llm:skip
+*/
+namespace n { class A { public: int f(); }; }
+&#x27;&#x27;&#x27;, &#x27;cpp/a.hpp&#x27;)
+    impl = mk(&#x27;int n::A::f() { return 1; }\n&#x27;, &#x27;cpp/a.cpp&#x27;)
+    g, _diag = gmod.build_graph([hdr, impl])
+    f = next(n for n in g.nodes.values()
+             if n.get(&#x27;kind&#x27;) == &#x27;function&#x27; and n.get(&#x27;name&#x27;) == &#x27;f&#x27;)
+    assert f.get(&#x27;skip_llm&#x27;) is True</code></pre>
+</details>
+<hr>
+<h3>test_python_multiline_comments_and_skip <a id="fn-test_python_multiline_comments_and_skip-201"></a></h3>
+<p><em>tests/test_cpp_backend.py:201-222</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li><span style="color:#e67e22">legacy.get</span>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">g.nodes.values</span>
+</li>
+<li>next
+</li>
+<li><span style="color:#e67e22">n.get</span>
+</li>
+<li><span style="color:#e67e22">run.get</span>
+</li>
+<li><span style="color:#e67e22">keep.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_python_multiline_comments_and_skip():
+    src = &#x27;&#x27;&#x27;# kodama-docs-llm:skip
+# first line
+# second line
+class Legacy:
+    def run(self):
+        return 1
+
+def keep():
+    return 2
+&#x27;&#x27;&#x27;
+    r = mk(src, &#x27;py/demo.py&#x27;)
+    legacy = r[&#x27;classes&#x27;][0]
+    assert legacy[&#x27;developer_comment&#x27;] == &#x27;first line\nsecond line&#x27;
+    assert legacy.get(&#x27;skip_llm&#x27;) is True
+    g, _diag = gmod.build_graph([r])
+    run = next(n for n in g.nodes.values()
+               if n.get(&#x27;kind&#x27;) == &#x27;function&#x27; and n.get(&#x27;name&#x27;) == &#x27;run&#x27;)
+    keep = next(n for n in g.nodes.values()
+                if n.get(&#x27;kind&#x27;) == &#x27;function&#x27; and n.get(&#x27;name&#x27;) == &#x27;keep&#x27;)
+    assert run.get(&#x27;skip_llm&#x27;) is True
+    assert not keep.get(&#x27;skip_llm&#x27;)</code></pre>
+</details>
+<hr>
+<h3>test_lua_multiline_comment_and_skip <a id="fn-test_lua_multiline_comment_and_skip-225"></a></h3>
+<p><em>tests/test_cpp_backend.py:225-242</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li>next
+</li>
+<li><span style="color:#e67e22">legacy.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_lua_multiline_comment_and_skip():
+    src = &#x27;&#x27;&#x27;--[[
+first
+second
+]]
+function keep()
+    return 1
+end
+
+-- kodama-docs-llm:skip
+local legacy = 1
+&#x27;&#x27;&#x27;
+    r = mk(src, &#x27;lua/demo.lua&#x27;)
+    keep = next(fn for fn in r[&#x27;functions&#x27;] if fn[&#x27;name&#x27;] == &#x27;keep&#x27;)
+    legacy = next(v for v in r[&#x27;file_vars&#x27;] if v[&#x27;name&#x27;] == &#x27;legacy&#x27;)
+    assert keep[&#x27;developer_comment&#x27;] == &#x27;first\nsecond&#x27;
+    assert legacy[&#x27;skip_llm&#x27;] is True
+    assert legacy.get(&#x27;developer_comment&#x27;) is None</code></pre>
+</details>
+<hr>
+<h3>test_pybind_bindings_create_exports_and_bridges <a id="fn-test_pybind_bindings_create_exports_and_bridges-245"></a></h3>
+<p><em>tests/test_cpp_backend.py:245-276</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><span style="color:#e67e22">g.has_edge</span>
+</li>
+<li>any
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+<li><span style="color:#e67e22">?.values</span>
+</li>
+<li><span style="color:#e67e22">g.get_edge_data</span>
+</li>
+<li><a href="test_cpp_backend.py.html#fn-calls_out-27">calls_out</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_pybind_bindings_create_exports_and_bridges():
+    hdr = mk(&quot;namespace ns { class Engine { public: int step(int); }; }\n&quot;,
+             &#x27;cpp/engine.hpp&#x27;)
+    impl = mk(&quot;int ns::Engine::step(int x) { return x; }\n&quot;,
+              &#x27;cpp/engine.cpp&#x27;)
+    bind = mk(&quot;&quot;&quot;int py_add(int a, int b) { return a + b; }
+PYBIND11_MODULE(mixed_native, m) {
+    m.def(&quot;add&quot;, &amp;py_add);
+    py::class_&lt;ns::Engine&gt;(m, &quot;Engine&quot;).def(&quot;step&quot;, &amp;ns::Engine::step);
+}
+&quot;&quot;&quot;, &#x27;cpp/bindings.cpp&#x27;)
+    py = mk(&quot;&quot;&quot;import mixed_native as native
+class Engine:
+    def __init__(self):
+        self.native = native.Engine()
+&quot;&quot;&quot;, &#x27;py/facade.py&#x27;)
+
+    recs = {(b[&#x27;kind&#x27;], b[&#x27;name&#x27;]): b[&#x27;target&#x27;] for b in bind[&#x27;bindings&#x27;]}
+    assert recs[(&#x27;function&#x27;, &#x27;add&#x27;)] == &#x27;py_add&#x27;
+    assert recs[(&#x27;class&#x27;, &#x27;Engine&#x27;)] == &#x27;ns.Engine&#x27;
+    assert recs[(&#x27;method&#x27;, &#x27;step&#x27;)] == &#x27;ns.Engine.step&#x27;
+
+    g, _diag = gmod.build_graph([hdr, impl, bind, py])
+    py_cls = &#x27;cls:py/facade.py::Engine@2&#x27;
+    cpp_cls = &#x27;cls:cpp/engine.hpp::Engine@1&#x27;
+    assert g.has_edge(py_cls, cpp_cls)
+    assert any(d.get(&#x27;type&#x27;) == &#x27;BRIDGES&#x27;
+               for d in g.get_edge_data(py_cls, cpp_cls).values())
+    assert g.has_edge(&#x27;file:py/facade.py&#x27;, &#x27;file:cpp/bindings.cpp&#x27;)
+    assert g.has_edge(&#x27;file:cpp/bindings.cpp&#x27;, cpp_cls)
+    assert calls_out(g, &#x27;fn:py/facade.py::__init__@3&#x27;) == \
+        [(cpp_cls, &#x27;resolved&#x27;)]</code></pre>
+</details>
+<hr>
+<h3>test_c_header_dialect_and_include_guard <a id="fn-test_c_header_dialect_and_include_guard-279"></a></h3>
+<p><em>tests/test_cpp_backend.py:279-285</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_c_header_dialect_and_include_guard():
+    c_h = mk(&quot;#ifndef CORE_H\n#define CORE_H\nint f(void);\n#endif\n&quot;,
+             &#x27;c/core.h&#x27;)
+    cpp_h = mk(&quot;#pragma once\nnamespace n { class A {}; }\n&quot;,
+               &#x27;cpp/api.h&#x27;)
+    assert c_h[&#x27;dialect&#x27;] == &#x27;c&#x27; and c_h[&#x27;file_vars&#x27;] == []
+    assert cpp_h[&#x27;dialect&#x27;] == &#x27;cpp&#x27;</code></pre>
+</details>
+<hr>
+<h3>test_cpp_namespace_call_resolves_but_python_bare_method_does_not <a id="fn-test_cpp_namespace_call_resolves_but_python_bare_method_does_not-288"></a></h3>
+<p><em>tests/test_cpp_backend.py:288-296</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="test_cpp_backend.py.html#fn-mk-14">mk</a>
+</li>
+<li>build_graph (inferred)
+</li>
+<li><a href="test_cpp_backend.py.html#fn-calls_out-27">calls_out</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def test_cpp_namespace_call_resolves_but_python_bare_method_does_not():
+    cpp = mk(&quot;&quot;&quot;namespace mixed {
+int helper() { return 1; }
+int run() { return helper(); }
+}
+&quot;&quot;&quot;, &#x27;cpp/use.cpp&#x27;)
+    g, _diag = gmod.build_graph([cpp])
+    assert calls_out(g, &#x27;fn:cpp/use.cpp::run@3&#x27;) == \
+        [(&#x27;fn:cpp/use.cpp::helper@2&#x27;, &#x27;resolved&#x27;)]</code></pre>
+</details>
+<hr>
+<h3>main <a id="fn-main-299"></a></h3>
+<p><em>tests/test_cpp_backend.py:299-315</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+<li><span style="color:#e67e22">globals</span>
+</li>
+<li>sorted
+</li>
+<li>callable
+</li>
+<li><span style="color:#e67e22">k.startswith</span>
+</li>
+<li><span style="color:#e67e22">t</span>
+</li>
+<li>print
+</li>
+<li>len
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def main():
+    tests = [v for k, v in sorted(globals().items())
+             if k.startswith(&#x27;test_&#x27;) and callable(v)]
+    failed = 0
+    for t in tests:
+        try:
+            t()
+            print(f&#x27;ok   {t.__name__}&#x27;)
+        except AssertionError as e:
+            failed += 1
+            print(f&#x27;FAIL {t.__name__}: {e}&#x27;)
+    print()
+    if failed:
+        print(f&#x27;{failed} cpp backend test(s) failed&#x27;)
+        return 1
+    print(f&#x27;{len(tests)} cpp backend tests passed&#x27;)
+    return 0</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="test_cpp_backend.py.html">tests/test_cpp_backend.py</a>
+<ul>
+<li><a href="test_cpp_backend.py.html">top-level:319</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 5: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 6: import of <span style="color:#e67e22">sys</span> — no matching file in the project
+</li>
+<li>line 10: import of <span style="color:#e67e22">backends</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

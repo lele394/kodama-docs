@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/config.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/config.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-load_config-9">load_config</a></td><td>9</td><td>path, require_llm</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-rp-15">rp</a></td><td>15</td><td>p</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>load_config <a id="fn-load_config-9"></a></h3>
+<p><em>kodama_docs/config.py:9-65</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+<tr><td><code>require_llm</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">ruamel.yaml.YAML</span>
+</li>
+<li>open
+</li>
+<li><span style="color:#e67e22">yaml.load</span>
+</li>
+<li>os.path.abspath
+</li>
+<li>os.path.dirname
+</li>
+<li>dict
+</li>
+<li><span style="color:#e67e22">raw.get</span>
+</li>
+<li>os.path.join
+</li>
+<li>os.path.isfile
+</li>
+<li><a href="util.py.html#fn-read_env_file-46">read_env_file</a>
+</li>
+<li><span style="color:#e67e22">llm.get</span>
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li><span style="color:#e67e22">?.strip</span>
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">envfile.get</span>
+</li>
+<li>SystemExit
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><a href="config.py.html#fn-rp-15">rp</a>
+</li>
+<li>int
+</li>
+<li>bool
+</li>
+<li><span style="color:#e67e22">?.items</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def load_config(path: str, require_llm: bool = True) -&gt; dict:
+    yaml = ruamel.yaml.YAML()
+    with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        raw = yaml.load(fh)
+    base = os.path.dirname(os.path.abspath(path))
+
+    def rp(p):
+        p = str(p)
+        return p if os.path.isabs(p) else os.path.normpath(os.path.join(base, p))
+
+    llm = dict(raw.get(&#x27;llm&#x27;) or {})
+    # api_key / base_url: the literal value &quot;env&quot; (or a missing value, the
+    # default) means &quot;read it from a .env file&quot; instead of the config.
+    # .env lives at the project root (next to main.py) no matter which
+    # config file is used; a .env next to the config file also works.
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    envfile = {}
+    looked = (os.path.join(root, &#x27;.env&#x27;), os.path.join(base, &#x27;.env&#x27;))
+    for cand in looked:
+        if os.path.isfile(cand):
+            envfile = read_env_file(cand)
+            break
+    for key in (&#x27;api_key&#x27;, &#x27;base_url&#x27;):
+        val = llm.get(key)
+        if val is None or str(val).strip().lower() == &#x27;env&#x27;:
+            resolved = envfile.get(key)
+            if resolved:
+                llm[key] = resolved
+            elif require_llm:
+                raise SystemExit(f&#x27;settings: llm.{key} is &quot;env&quot; but {key}&#x27;
+                                 f&#x27; was not found in .env (looked in: &#x27;
+                                 f&#x27;{&quot;, &quot;.join(looked)})&#x27;)
+            else:
+                # Serve/purge/--no-llm do not call the model. Keep a stable
+                # empty value so those modes work with no .env at all.
+                llm[key] = &#x27;&#x27;
+
+    # manual_doc: an optional folder of human-written docs (see
+    # kodama_docs/manual.py). Resolved like every other path here.
+    manual_doc = (raw[&#x27;project&#x27;].get(&#x27;manual_doc&#x27;) or &#x27;&#x27;).strip()
+    manual_doc = rp(manual_doc) if manual_doc else None
+
+    return {
+        &#x27;source_dir&#x27;: rp(raw[&#x27;project&#x27;][&#x27;source_dir&#x27;]),
+        &#x27;output_dir&#x27;: rp(raw[&#x27;project&#x27;][&#x27;output_dir&#x27;]),
+        &#x27;data_dir&#x27;: rp(raw[&#x27;project&#x27;][&#x27;data_dir&#x27;]),
+        &#x27;exclude&#x27;: [str(x) for x in (raw[&#x27;project&#x27;].get(&#x27;exclude&#x27;) or [])],
+        &#x27;max_file_bytes&#x27;: int(raw[&#x27;project&#x27;].get(&#x27;max_file_bytes&#x27;, 26214400)),
+        &#x27;llm&#x27;: llm,
+        &#x27;context&#x27;: dict(raw.get(&#x27;context&#x27;) or {}),
+        &#x27;documentation&#x27;: dict(raw.get(&#x27;documentation&#x27;) or {}),
+        &#x27;copy_meta&#x27;: bool(raw[&#x27;project&#x27;].get(&#x27;copy_meta&#x27;, False)),
+        &#x27;manual_doc&#x27;: manual_doc,
+        &#x27;concurrency&#x27;: int(raw.get(&#x27;concurrency&#x27;) or 2),
+        &#x27;tui&#x27;: dict(raw.get(&#x27;tui&#x27;) or {}),
+        &#x27;prompts&#x27;: {k: rp(v) for k, v in (raw.get(&#x27;prompts&#x27;) or {}).items()},
+    }</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="static_site.py.html">kodama_docs/static_site.py</a>
+<ul>
+<li><a href="static_site.py.html">top-level:398</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:280</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_config_without_credentials_for_non_llm_modes-118">test_config_without_credentials_for_non_llm_modes:133</a>
+</li>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_config_without_credentials_for_non_llm_modes-118">test_config_without_credentials_for_non_llm_modes:137</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>rp <a id="fn-rp-15"></a></h3>
+<p><em>kodama_docs/config.py:15-17</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>p</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>str
+</li>
+<li>os.path.isabs
+</li>
+<li>os.path.join
+</li>
+<li>os.path.normpath
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def rp(p):
+        p = str(p)
+        return p if os.path.isabs(p) else os.path.normpath(os.path.join(base, p))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="config.py.html">kodama_docs/config.py</a>
+<ul>
+<li><a href="config.py.html#fn-load_config-9">load_config:49</a>
+</li>
+<li><a href="config.py.html#fn-load_config-9">load_config:52</a>
+</li>
+<li><a href="config.py.html#fn-load_config-9">load_config:53</a>
+</li>
+<li><a href="config.py.html#fn-load_config-9">load_config:54</a>
+</li>
+<li><a href="config.py.html#fn-load_config-9">load_config:64</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 2: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 4: import of <span style="color:#e67e22">ruamel.yaml</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code organization</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Code organization</h1>
+<p>A map of the repository, so a change can be routed to the right file. (See <a href="01%20-%20Adding%20a%20Language.html">Adding a Language</a> for the backend contract.)</p>
+<h2>Top level</h2>
+<table>
+<thead><tr>
+<th>Path</th>
+<th>What it is</th>
+</tr></thead>
+<tbody>
+<tr><td><code>pyproject.toml</code> / <code>MANIFEST.in</code></td><td>package metadata, version (<code>kodama_docs.__version__</code>), console script, dependencies and package data.</td></tr>
+<tr><td><code>main.py</code></td><td>the CLI implementation. Parses the flags (in precedence order: <code>--list-backends</code>/<code>--install</code>/<code>--remove</code>, <code>test-backend</code>, <code>--purge</code>/<code>--regenerate</code>, <code>--serve</code>, pipeline), then drives the four phases. The installed <code>kodama-docs</code> script calls the same code. See <a href="../03%20-%20Components/06%20-%20CLI.html">CLI</a>.</td></tr>
+<tr><td><code>settings.yaml</code></td><td>the default config. All runtime configuration lives here (see <a href="../04%20-%20Reference/01%20-%20Config%20Reference.html">Config Reference</a>).</td></tr>
+<tr><td><code>kodama_docs/</code></td><td>the core Python package — the pipeline itself.</td></tr>
+<tr><td><code>backends/</code></td><td>the language backends: <code>lua/</code>, <code>python/</code>, <code>cpp/</code>, the shared <code>_shared.py</code>, the registry (<code>__init__.py</code>), and <code>backend_design.md</code> (the authoring contract). Each backend keeps a thin <code>__init__.py</code> and splits its implementation into modules.</td></tr>
+<tr><td><code>web/</code></td><td>the <code>--serve</code>/<code>--static</code> web app: <code>server.py</code> (routing), <code>render.py</code> (the deterministic markdown→HTML subset), the JS (<code>app.js</code>, <code>sidebar.js</code>, <code>graph.js</code>, <code>fuzzy.js</code>), <code>themes/</code>, and <code>web_settings.yaml</code>.</td></tr>
+<tr><td><code>prompts/</code></td><td>the four LLM prompt <strong>templates</strong> (see <a href="../04%20-%20Reference/03%20-%20Prompts.html">Prompts</a>).</td></tr>
+<tr><td><code>configs/</code></td><td>example configs: <code>self.yaml</code> (dogfooding), <code>test.yaml</code>, <code>cloudcfg.yaml</code>.</td></tr>
+<tr><td><code>manual_doc/</code></td><td>this manual (human-written; embedded into the generated docs via <code>manual_doc</code>).</td></tr>
+<tr><td><code>doc_self/</code>, <code>data_self/</code></td><td>local generated self-documentation/cache (git-ignored; see <a href="../05%20-%20Examples/02%20-%20Documenting%20kodama-docs%20Itself.html">Documenting kodama-docs Itself</a>).</td></tr>
+<tr><td><code>test_codebases/</code></td><td>the Lua/Python N-body samples plus the mixed C/C++/CUDA/Python fixture (see its README).</td></tr>
+<tr><td><code>tests/</code></td><td>test scripts: resolver, backend, prompt templates, rendering, static site, web/manual.</td></tr>
+<tr><td><code>requirements.txt</code></td><td>pinned dependencies (mirrored in <code>pyproject.toml</code>).</td></tr>
+<tr><td><code>DESIGN.md</code></td><td>the original design notes (historical).</td></tr>
+<tr><td><code>LICENSE</code></td><td>MIT, plus an explicit &quot;not for AI/ML training data&quot; clause.</td></tr>
+</tbody>
+</table>
+<h2><code>kodama_docs/</code> — one module per phase</h2>
+<table>
+<thead><tr>
+<th>Module</th>
+<th>Responsibility</th>
+</tr></thead>
+<tbody>
+<tr><td><code>config.py</code></td><td>load <code>settings.yaml</code> + <code>.env</code> (project root first, then the config&#x27;s directory); resolve the <code>llm</code> block.</td></tr>
+<tr><td><code>init_project.py</code> / <code>default_settings.yaml</code></td><td><code>kodama-docs init</code>: write a starter config and copy the prompt templates.</td></tr>
+<tr><td><code>scan.py</code></td><td>walk the tree, route files to backends, extract symbols, cache <code>symbols.json</code>, write <code>diagnostics.json</code>, report.</td></tr>
+<tr><td><code>graph.py</code></td><td>build the resolution graph and the per-reference statuses (resolved/inferred/builtin/external/ambiguous) — see <a href="../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>.</td></tr>
+<tr><td><code>context.py</code></td><td>build the deterministic per-kind prompt context (function / variable / summary) and the chunk splitter.</td></tr>
+<tr><td><code>prompt_templates.py</code></td><td>render <code>{language}</code> / <code>{file}</code> / <code>{symbol}</code> … placeholders in prompt templates.</td></tr>
+<tr><td><code>llm.py</code></td><td>the <code>LLMClient</code> (transport + retries), <code>generate()</code> (validate + invalid-JSON retry), and the <code>--no-llm</code> stubs.</td></tr>
+<tr><td><code>llm_phase.py</code></td><td>run the task queue over functions → variables → summaries, with the TUI.</td></tr>
+<tr><td><code>records.py</code></td><td>save / load / delete the per-task LLM records and their fingerprints.</td></tr>
+<tr><td><code>models.py</code></td><td>the per-kind JSON schemas and the deterministic validator (the same schemas embedded verbatim in prompts).</td></tr>
+<tr><td><code>markdown.py</code></td><td>render <code>index.md</code> and the per-file pages (the deterministic structure + links).</td></tr>
+<tr><td><code>static_site.py</code></td><td>build the self-contained <code>&lt;output&gt;/site/</code> (<code>--static</code>).</td></tr>
+<tr><td><code>js_bundle.py</code></td><td>bundle the ES modules for <code>file://</code>-safe static pages.</td></tr>
+<tr><td><code>testing.py</code></td><td>backend self-test harness (<code>test-backend</code>).</td></tr>
+<tr><td><code>manual.py</code></td><td>copy + surface a user-supplied <code>manual_doc</code> folder.</td></tr>
+<tr><td><code>outputs.py</code></td><td><code>--purge</code> / <code>--regenerate</code> dir handling and the <code>.doc_cache</code> write/check.</td></tr>
+<tr><td><code>tui.py</code></td><td>the Rich terminal panel for the LLM phase.</td></tr>
+<tr><td><code>util.py</code></td><td>small shared helpers (logging, id sanitizing, truncation).</td></tr>
+</tbody>
+</table>
+<h2>How a change usually lands</h2>
+<ul>
+<li><strong>Prose style / which fields</strong> → the <code>prompts/</code> files (never the shape — that&#x27;s <code>models.py</code>).
+</li>
+<li><strong>A link is wrong or missing</strong> → <code>graph.py</code> resolution policy (and <code>BUILTIN_NAMES</code> / <code>module_candidates</code> in the relevant backend).
+</li>
+<li><strong>A page looks wrong</strong> → <code>markdown.py</code> (render) or the LLM record (data), not the graph.
+</li>
+<li><strong>A cache seems stale</strong> → <code>records.py</code> fingerprints or <code>.doc_cache</code> in <code>outputs.py</code>; see <a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>.
+</li>
+<li><strong>A new language</strong> → a new <code>backends/&lt;lang&gt;/</code> package; see <a href="01%20-%20Adding%20a%20Language.html">Adding a Language</a>.
+</li>
+</ul>
+<h2>Conventions worth keeping</h2>
+<ul>
+<li><strong>Determinism first</strong> — structure, links, ordering, and line numbers are produced without the LLM; the model only supplies prose.
+</li>
+<li><strong>Per-file isolation</strong> — one bad file never aborts the run; failures are reported, not raised.
+</li>
+<li><strong>Failures stay visible</strong> — unresolved/ambiguous references are surfaced (orange, <code>(inferred)</code>, diagnostics), never silently dropped or guessed.
+</li>
+<li><strong>Stable keys</strong> — node IDs (<code>fn:&lt;relpath&gt;::&lt;name&gt;@&lt;line&gt;</code>) and the <code>functions/file_vars/calls/imports/classes</code> record shapes are load-bearing for the cache and the graph; don&#x27;t change them casually.
+</li>
+</ul>
+<p>Related: <a href="../03%20-%20Components/06%20-%20CLI.html">CLI</a>, <a href="../02%20-%20How%20It%20Works/01%20-%20Overview.html">How It Works: Overview</a>.</p>
+</main>
+</div>
+</body>
+</html>

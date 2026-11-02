@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Graph</h1>
+<p>The records are joined into a single directed graph (a <code>networkx</code> MultiDiGraph). It is saved as <code>&lt;data_dir&gt;/graph.json</code>, and — when <code>project.copy_meta</code> is set — copied to <code>meta/graph.json</code> in the output folder. The graph is the source of truth for every cross-link and for the interactive call-graph view served at <code>/graph</code>.</p>
+<h2>Nodes</h2>
+<table>
+<thead><tr>
+<th>Kind</th>
+<th>Node id</th>
+<th>What it is</th>
+</tr></thead>
+<tbody>
+<tr><td><code>file</code></td><td><code>file:&lt;relpath&gt;</code></td><td>A source file.</td></tr>
+<tr><td><code>class</code></td><td><code>cls:&lt;relpath&gt;::&lt;name&gt;@&lt;line&gt;</code></td><td>A class definition (recorded by backends that report classes).</td></tr>
+<tr><td><code>function</code></td><td><code>fn:&lt;relpath&gt;::&lt;name&gt;@&lt;line&gt;</code></td><td>A function or method.</td></tr>
+<tr><td><code>variable</code></td><td><code>var:&lt;relpath&gt;::&lt;name&gt;@&lt;line&gt;</code></td><td>A file-level variable.</td></tr>
+<tr><td><code>module</code></td><td><code>mod:&lt;module&gt;</code></td><td>Synthetic: an import that could not be resolved to a documented file.</td></tr>
+<tr><td><code>builtin</code></td><td><code>builtin:&lt;name&gt;</code></td><td>Synthetic: a call to a language/stdlib builtin, so it never dangles.</td></tr>
+<tr><td><code>external</code></td><td><code>ext:&lt;name&gt;</code></td><td>Synthetic: a call the resolver could not place in the project.</td></tr>
+</tbody>
+</table>
+<h2>Edges</h2>
+<table>
+<thead><tr>
+<th>Type</th>
+<th>From</th>
+<th>To</th>
+<th>Resolved when</th>
+</tr></thead>
+<tbody>
+<tr><td><code>CONTAINS</code></td><td>file</td><td>function, variable, or class</td><td>always</td></tr>
+<tr><td><code>CALLS</code></td><td>function (or file)</td><td>function, class (constructor), builtin, or external</td><td>the target exists in the documented set</td></tr>
+<tr><td><code>IMPORTS</code></td><td>file</td><td>file, or module</td><td>the module maps to a documented file</td></tr>
+<tr><td><code>READS</code></td><td>function</td><td>variable</td><td>the variable is in the same file</td></tr>
+</tbody>
+</table>
+<p>Every reference edge — <code>CALLS</code>, <code>IMPORTS</code>, <code>READS</code> — carries a <code>status</code> (<code>resolved</code> / <code>inferred</code> / <code>builtin</code> / <code>external</code> / <code>unresolved</code>) and a <code>resolution_success</code> flag; only <code>resolved</code>, <code>inferred</code>, and <code>builtin</code> count as successful.</p>
+<h2>Resolution and diagnostics</h2>
+<p>Unresolvable references are not dropped — they are <strong>recorded</strong>. Each file&#x27;s diagnostics are collected in <code>diagnostics.json</code> (in the data directory, and copied to <code>meta/</code> with <code>copy_meta</code> set) under five keys:</p>
+<ul>
+<li><code>ambiguous_calls</code> — the name matched 2+ candidates, so no edge is drawn (the candidates are listed);
+</li>
+<li><code>external_calls</code> — the name resolved to nothing in the project (a synthetic <code>ext:</code> node);
+</li>
+<li><code>builtin_calls</code> — a language builtin or stdlib call (a synthetic <code>builtin:</code> node);
+</li>
+<li><code>unresolved_imports</code> — a module that maps to no documented file (a <code>module</code> node);
+</li>
+<li><code>inferred_calls</code> — resolved with lower confidence: the name is unique project-wide but not bound by a visible import, so the resolver <em>infers</em> the target (flagged as such on the edge).
+</li>
+</ul>
+<p>The renderers highlight unresolved references, so gaps stay visible instead of silent. See <a href="07%20-%20Rendering.html">Rendering</a> and <a href="../06%20-%20Troubleshooting/02%20-%20Parsing%20and%20Resolution.html">Parsing and Resolution</a>.</p>
+<p>The node and edge model, and the resolution vocabulary, are defined in more depth in <a href="../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a>.</p>
+</main>
+</div>
+</body>
+</html>

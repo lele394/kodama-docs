@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web server</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Web server</h1>
+<p><code>main.py --serve</code> (implemented in <code>web/server.py</code>, a stdlib <code>ThreadingHTTPServer</code>) serves the rendered documentation set over HTTP. It is a <em>presentation layer only</em>: it reads the output of a previous run and never generates anything.</p>
+<h2>What it serves</h2>
+<table>
+<thead><tr>
+<th>Route</th>
+<th>What</th>
+</tr></thead>
+<tbody>
+<tr><td><code>/</code></td><td>redirect to <code>/index.md</code>.</td></tr>
+<tr><td><code>/&lt;path&gt;.md</code></td><td>a documentation page, rendered to HTML (markdown subset + code highlighting via highlight.js; raw <code>&lt;a id&gt;</code> anchors are preserved, so <code>#fn-…</code> links from the generated pages work).</td></tr>
+<tr><td><code>/page/&lt;path&gt;.md</code></td><td>the same page&#x27;s body <strong>without</strong> the page shell — used by the graph view to jump into a page.</td></tr>
+<tr><td><code>/graph</code></td><td>the interactive call-graph page (d3-free custom canvas/JS in <code>web/graph/</code>), fed by <code>/api/graph</code>.</td></tr>
+<tr><td><code>/api/graph</code></td><td><code>meta/graph.json</code> (so the graph view needs <code>project.copy_meta</code> or a previous run with it).</td></tr>
+<tr><td><code>/api/symbols</code></td><td>a compact symbol index for the graph search box.</td></tr>
+<tr><td><code>/manual/&lt;asset&gt;</code></td><td>non-markdown files that shipped with a configured <code>project.manual_doc</code> folder (images, css, …) — served raw, never rendered.</td></tr>
+<tr><td><code>/theme/{light,dark}/style.css</code></td><td>the two themes.</td></tr>
+<tr><td><code>/lib/…</code>, <code>/app.js</code>, <code>/graph.js</code>, <code>/sidebar.js</code>, <code>/fuzzy.js</code></td><td>the server&#x27;s own static assets (highlight.js included, no CDN — the server works fully offline).</td></tr>
+</tbody>
+</table>
+<h2>Settings — <code>web/web_settings.yaml</code></h2>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr><td><code>host</code></td><td><code>127.0.0.1</code></td><td>bind address (set <code>0.0.0.0</code> to reach it from other machines).</td></tr>
+<tr><td><code>port</code></td><td><code>8123</code></td><td>listen port.</td></tr>
+<tr><td><code>default_theme</code></td><td><code>light</code></td><td>initial theme; the page button switches at runtime.</td></tr>
+<tr><td><code>docs_dir</code></td><td>(empty)</td><td>serve <em>this</em> docs directory instead of the main config&#x27;s <code>project.output_dir</code> — handy for previewing a different build without re-running.</td></tr>
+</tbody>
+</table>
+<h2>Theme switching</h2>
+<p>The theme button posts to <code>POST /api/theme</code> (<code>light</code> or <code>dark</code>); the choice is persisted in <code>web/theme_state.json</code> next to the server code, which overrides <code>default_theme</code> until changed again, and applies to every connection.</p>
+<h2>Static site (no server)</h2>
+<p><code>main.py --static</code> combines with a normal run and, afterwards, builds <code>&lt;output_dir&gt;/site/</code> — the same documentation as a fully self-contained folder of <code>.html</code> files:</p>
+<ul>
+<li><strong>No server, no fetch endpoints.</strong> Every page is rendered with relative paths computed from its depth (<code>files/a.html</code> uses <code>../</code>, <code>manual/x/y.html</code> uses <code>../../</code>), the assets (JS, CSS, icons, highlight.js) are copied in, and the two data endpoints become files: <code>symbols.json</code> and <code>graph.json</code> at the site root.
+</li>
+<li><strong>One template, two modes.</strong> The page templates and all the <code>web/*.js</code> know both layouts: served mode keeps its root-absolute <code>/…</code> paths, static mode prefixes the depth-relative base. <code>site/index.html</code> opens directly from disk (<code>file://</code>) or from any host subpath — e.g. a GitHub Pages repo pointed at <code>site/</code>.
+</li>
+<li><strong>404 page included.</strong> <code>site/404.html</code> links back to <code>index.html</code>, so GitHub Pages dead-ends land somewhere useful.
+</li>
+<li><strong>Theme.</strong> The build bakes in <code>web_settings.yaml</code>&#x27;s <code>default_theme</code> (overridable by <code>web/theme_state.json</code>, falling back to <code>light</code>). In static mode the page button switches per browser via <code>localStorage</code> — there is no server to share one choice.
+</li>
+<li><strong><code>file://</code> caveat.</strong> Content, sidebar, search, theme and the graph canvas work from disk. The graph panel fetches a rendered page when you click a node, which browsers block on <code>file://</code>; serve the site over http(s) (GitHub Pages included) for that interaction.
+</li>
+<li>It is a <em>copy</em>, not a view: rebuild with another <code>--static</code> run to refresh it.
+</li>
+</ul>
+<p>Design notes live in <code>STATIC_SITE.md</code> at the repo root.</p>
+<h2>Notes</h2>
+<ul>
+<li>The server needs a previous documentation run (it reads <code>&lt;output_dir&gt;/index.md</code>, <code>files/</code>, and <code>meta/graph.json</code>); there is no in-memory generation.
+</li>
+<li><code>--serve</code> is a separate mode from the pipeline: the backend-management flags (<code>--list-backends</code> / <code>--install</code> / <code>--remove</code>) run first and exit, so they never combine with <code>--serve</code> in one invocation.
+</li>
+<li>Paths are served strictly inside the docs root (a <code>..</code> escape returns 404), so it is safe to expose on a LAN.
+</li>
+</ul>
+<p>Related: <a href="../01%20-%20Getting%20Started/04%20-%20Serving.html">Serving</a>, <a href="../02%20-%20How%20It%20Works/07%20-%20Rendering.html">Rendering</a>, <a href="06%20-%20CLI.html">CLI</a>.</p>
+</main>
+</div>
+</body>
+</html>

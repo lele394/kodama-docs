@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding a language</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Adding a language</h1>
+<p>A language backend is a <strong>self-contained package</strong> inside <code>backends/</code>. The pipeline is language-agnostic: it routes each file to the backend that claims its extension and consumes a fixed shape. The authoritative contract is <code>backends/backend_design.md</code> in the repository — this page is the manual-level summary of it.</p>
+<details class="src"><summary>Source</summary>
+<pre><code>backends/&lt;dir&gt;/
+    manifest.toml   # identity, capabilities, requirements
+    __init__.py     # thin entrypoint: re-export the public API
+    constants.py    # language tag, extension/node sets
+    builtins.py     # language/stdlib names
+    parser.py       # parser instance / parser selection
+    comments.py     # comment cleaning
+    nodes.py        # name/declarator/parameter/value helpers
+    includes.py     # import/#include resolution candidates
+    extract.py      # the walk that returns the neutral records</code></pre>
+</details>
+<p>A new backend is live the moment its directory exists and its requirements are met — there is no registry line to add.</p>
+<h2>1. The manifest (<code>manifest.toml</code>)</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-toml">[backend]
+name = &quot;kodama-clang&quot;                     # required, [a-z0-9][a-z0-9_-]*
+description = &quot;Kodama C backend built on clang&quot;   # required
+source = &quot;https://github.com/you/kodama-clang&quot;    # optional
+version = &quot;0.1.0&quot;                        # required (arbitrary string)
+api_version = &quot;1&quot;                        # required; this registry supports &quot;1&quot;
+
+[capabilities]
+languages = [&quot;c&quot;, &quot;cpp&quot;, &quot;cuda&quot;]         # optional, informational
+extensions = [&quot;.c&quot;, &quot;.cpp&quot;, &quot;.cc&quot;, &quot;.cu&quot;]  # required; the routing keys
+symbols = true                           # optional bools (metadata today)
+references = true
+call_graph = true
+types = false
+
+[requirements]
+executables = [&quot;clang&quot;]                  # optional; each must be on PATH
+python = [&quot;clang-libs==1.8&quot;]             # optional pip specs (import-checked)</code></pre>
+</details>
+<ul>
+<li><strong><code>extensions</code> is required</strong> — it is how the scan decides which files to route to you.
+</li>
+<li>Two backends claiming the <strong>same <code>name</code> or the same extension</strong> put <strong>both</strong> into <code>conflict</code> status: neither routes (no silent shadowing).
+</li>
+<li><strong><code>api_version</code></strong> must be in the registry&#x27;s supported set (currently <code>&quot;1&quot;</code>); a mismatched version is refused with a clear message instead of silently emitting a shape the pipeline doesn&#x27;t understand.
+</li>
+<li><strong><code>requirements</code></strong> are checked at load: each <code>executables</code> entry via <code>shutil.which</code>, each <code>python</code> spec for importability (PEP 503 normalized: <code>tree-sitter</code> → <code>tree_sitter</code>). Unmet requirements mark the backend <code>unavailable</code> — the other backends keep working.
+</li>
+</ul>
+<h2>2. The <code>extract()</code> contract</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-python">def extract(source: str, relpath: str) -&gt; dict: ...</code></pre>
+</details>
+<p>Returns a dict with these keys (names and shapes must not change — the render, graph, and LLM-context layers depend on them):</p>
+<ul>
+<li><strong><code>functions</code></strong> — list of <code>{id, name, qualified, line, end_line, params, vararg, body, developer_comment}</code>.
+</li>
+<li><strong><code>file_vars</code></strong> — list of <code>{name, line, init}</code> where <code>init ∈ {empty, table, string, number, function, call, expr}</code>.
+</li>
+<li><strong><code>calls</code></strong> — list of <code>{callee, line, method}</code>. Method calls split into <code>callee</code> + <code>method</code>; <code>callee</code> is <code>None</code> when the receiver is computed at runtime (still recorded so the reference stays visible and classifies as external).
+</li>
+<li><strong><code>imports</code></strong> — list of <code>{module, line, bind, name, level}</code>.
+</li>
+<li><strong><code>classes</code></strong> — list of <code>{name, qualified, line, end_line}</code> (optional for languages without classes).
+</li>
+</ul>
+<h3>Invariants the pipeline relies on</h3>
+<ul>
+<li><strong>1-based line numbers</strong> — <code>line</code> and <code>end_line</code> index into the same <code>source</code> passed to <code>extract()</code>.
+</li>
+<li><strong>Exact body</strong> — <code>body</code> must be exactly <code>source.splitlines()[line-1:end_line]</code> joined with <code>\n</code>; the render layer slices by these lines.
+</li>
+<li><strong>Document order</strong> — lists in source order; output must be deterministic for identical input.
+</li>
+<li><strong>Per file</strong> — one file at a time; cross-file links are resolved later by <code>graph.py</code>. Do not open other files.
+</li>
+<li><strong>No exceptions for unnameable constructs</strong> — skip them, don&#x27;t raise (a raise aborts that file&#x27;s analysis).
+</li>
+<li><strong>Definitions are kept, not collapsed</strong> — a name defined more than once yields one record per definition (keyed by name+line). The resolver disambiguates call sites by scope. Do not dedupe redefinitions away.
+</li>
+<li><strong>Dedup is by identity</strong> — the same (name, line) is never recorded twice.
+</li>
+<li><strong>File vars: one record per name</strong> (first assignment wins); class attributes must not leak into <code>file_vars</code>.
+</li>
+</ul>
+<h3>Optional module-level exports</h3>
+<ul>
+<li><strong><code>BUILTIN_NAMES: set[str]</code></strong> — names that are <em>not</em> cross-file links (builtins, stdlib, <code>self</code>/<code>cls</code>). Without it, every undefined name becomes a dangling edge.
+</li>
+<li><strong><code>LANG: str</code></strong> — the language family (<code>python</code>, <code>lua</code>, <code>c-family</code>, …), stamped onto analysis records and used for language-scoped graph resolution.
+</li>
+<li><strong><code>module_candidates(module, relpath) -&gt; list[str]</code></strong> — the relpaths a language import of <code>module</code> could resolve to. Without it the registry falls back to <code>&lt;module&gt;&lt;ext&gt;</code> and <code>&lt;module&gt;/init&lt;ext&gt;</code> (plus the dotted→path form).
+</li>
+<li><strong><code>bindings</code></strong> — optional explicit cross-language exports (the C-family backend emits pybind11 <code>EXPORTS</code>/<code>BRIDGES</code> records).
+</li>
+<li><strong>Comment-glue helpers</strong> — use <code>backends/_shared.py</code>&#x27;s <code>_all_comments</code>, <code>_dev_comment</code>, and <code>parse_llm_directive</code> so <code>developer_comment</code> and <code>kodama-docs-llm:skip</code> behave identically across languages.
+</li>
+</ul>
+<h2>3. Ship steps</h2>
+<ol>
+<li>Create <code>backends/&lt;lang&gt;/__init__.py</code> with <code>extract()</code> (and optionally <code>BUILTIN_NAMES</code>, <code>module_candidates</code>).
+</li>
+<li>Add <code>backends/&lt;lang&gt;/manifest.toml</code> — declare <code>name</code>, <code>version</code>, <code>api_version = &quot;1&quot;</code>, <code>extensions</code>, and <code>requirements</code>.
+</li>
+<li>Make its requirements available (<code>pip install</code> the python specs; executables on PATH).
+</li>
+<li><code>python main.py --list-backends</code> → status <code>ready</code>. Done — the pipeline picks up its files automatically.
+</li>
+</ol>
+<h2>External backends</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --install &lt;git-url&gt;   # clone into backends/&lt;name&gt;/, pip-install its deps, report status
+python main.py --remove &lt;manifest-name&gt;</code></pre>
+</details>
+<blockquote><p><strong>Trust note (from the contract):</strong> installing a backend runs third-party code at import time and <code>pip install</code>s whatever it declares — the same trust decision as any dependency. Review the backend repo before <code>--install</code>.</p></blockquote>
+<h2>Reference implementations</h2>
+<p><code>backends/lua/</code> (tree-sitter-lua), <code>backends/python/</code> (tree-sitter-python), and <code>backends/cpp/</code> (tree-sitter-cpp + tree-sitter-cuda) are the reference implementations. All use <code>tree-sitter</code> (pinned in <code>requirements.txt</code>, <code>pyproject.toml</code>, and re-declared in their manifests) and the <code>_shared.py</code> comment/directive helpers. <strong>No hand-rolled tokenizers.</strong> A language-agnostic self-test harness lives in <code>kodama_docs/testing.py</code> (run it with <code>test-backend --backend &lt;name&gt;</code>): a backend that implements the <code>collect_truth()</code> / <code>parse_markers()</code> protocol can check its extraction against the fixture&#x27;s <code># expect:</code> markers — the Python backend implements it (249/249), the Lua backend does not. It&#x27;s an optional extra, not required to route.</p>
+<p>Related: <a href="../03%20-%20Components/01%20-%20Backends.html">Backends</a>, <a href="../03%20-%20Components/02%20-%20Lua%20Backend.html">Lua Backend</a>, <a href="../03%20-%20Components/03%20-%20Python%20Backend.html">Python Backend</a>, <a href="../03%20-%20Components/03b%20-%20C%20C%2B%2B%20CUDA%20Backend.html">C/C++/CUDA Backend</a>, <a href="02%20-%20Code%20Organization.html">Code Organization</a>.</p>
+</main>
+</div>
+</body>
+</html>

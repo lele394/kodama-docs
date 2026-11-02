@@ -1,0 +1,3085 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/graph.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/graph.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-node_id_file-51">node_id_file</a></td><td>51</td><td>relpath</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-node_id_fn-55">node_id_fn</a></td><td>55</td><td>relpath, name, line</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-node_id_var-59">node_id_var</a></td><td>59</td><td>relpath, name, line</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-node_id_cls-63">node_id_cls</a></td><td>63</td><td>relpath, name, line</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-lang_of_file-71">lang_of_file</a></td><td>71</td><td>f</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-apply_llm_class_skips-90">apply_llm_class_skips</a></td><td>90</td><td>files</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_var_reads-120">_var_reads</a></td><td>120</td><td>body, name, is_py, params</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-fingerprint-143">fingerprint</a></td><td>143</td><td>files</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_edge_attrs-153">_edge_attrs</a></td><td>153</td><td>g, u, v</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-graph_neighbor_names-157">graph_neighbor_names</a></td><td>157</td><td>g, node_id</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-graph_read_names-184">graph_read_names</a></td><td>184</td><td>g, node_id</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_cand_display-199">_cand_display</a></td><td>199</td><td>nid</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_enclosing_class-208">_enclosing_class</a></td><td>208</td><td>fentry, fn</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_parent_of-221">_parent_of</a></td><td>221</td><td>f, fn_list</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_is_plain_def-239">_is_plain_def</a></td><td>239</td><td>fn</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_is_direct_method-250">_is_direct_method</a></td><td>250</td><td>fn, fns, classes</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_resolve_in_scope-264">_resolve_in_scope</a></td><td>264</td><td>fn_list, name, line, plain_ids</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-is_plain-273">is_plain</a></td><td>273</td><td>f</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-encloses-278">encloses</a></td><td>278</td><td>f, L</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-depth-281">depth</a></td><td>281</td><td>f</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-build_graph-312">build_graph</a></td><td>312</td><td>files</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-add_edge-329">add_edge</a></td><td>329</td><td>src, tgt, etype, attrs</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-mod_file-459">mod_file</a></td><td>459</td><td>mod, from_rp</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-binding_info_for-489">binding_info_for</a></td><td>489</td><td>rp, local</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-resolve-499">resolve</a></td><td>499</td><td>rp, name, method, line, owner_fn</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-dedup-520">dedup</a></td><td>520</td><td>seq</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-ambiguous-525">ambiguous</a></td><td>525</td><td>cands</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-one_or_ambiguous-531">one_or_ambiguous</a></td><td>531</td><td>cands</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-owner_class-538">owner_class</a></td><td>538</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-file_named_hits-542">file_named_hits</a></td><td>542</td><td>bf, plain</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-binding_for-549">binding_for</a></td><td>549</td><td>local</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-owner-738">owner</a></td><td>738</td><td>call_line, fns</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-resolution_summary-874">resolution_summary</a></td><td>874</td><td>g</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-save_graph-896">save_graph</a></td><td>896</td><td>g, path</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-diet_graph_data-910">diet_graph_data</a></td><td>910</td><td>g</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-save_diet_graph-923">save_diet_graph</a></td><td>923</td><td>g, path</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-load_graph-930">load_graph</a></td><td>930</td><td>path</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>node_id_file <a id="fn-node_id_file-51"></a></h3>
+<p><em>kodama_docs/graph.py:51-52</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>relpath</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def node_id_file(relpath):
+    return &#x27;file:&#x27; + relpath</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:354</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:448</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:735</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:805</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:811</a>
+</li>
+</ul>
+</li>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-_owner_node-88">_owner_node:105</a>
+</li>
+<li><a href="testing.py.html#fn-check_truth_imports-150">check_truth_imports:155</a>
+</li>
+<li><a href="testing.py.html#fn-check_truth_imports-150">check_truth_imports:157</a>
+</li>
+<li><a href="testing.py.html#fn-_check_one_marker-335">_check_one_marker:357</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>node_id_fn <a id="fn-node_id_fn-55"></a></h3>
+<p><em>kodama_docs/graph.py:55-56</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>relpath</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def node_id_fn(relpath, name, line):
+    return f&#x27;fn:{relpath}::{name}@{line}&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:377</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:680</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:794</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:839</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:867</a>
+</li>
+</ul>
+</li>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-llm_phase-81">llm_phase:126</a>
+</li>
+</ul>
+</li>
+<li><a href="markdown.py.html">kodama_docs/markdown.py</a>
+<ul>
+<li><a href="markdown.py.html#fn-callgraph_section-106">callgraph_section:108</a>
+</li>
+<li><a href="markdown.py.html#fn-static_references-203">static_references:210</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:231</a>
+</li>
+</ul>
+</li>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-_owner_node-88">_owner_node:104</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:84</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:73</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>node_id_var <a id="fn-node_id_var-59"></a></h3>
+<p><em>kodama_docs/graph.py:59-60</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>relpath</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def node_id_var(relpath, name, line):
+    return f&#x27;var:{relpath}::{name}@{line}&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:397</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:832</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:860</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>node_id_cls <a id="fn-node_id_cls-63"></a></h3>
+<p><em>kodama_docs/graph.py:63-64</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>relpath</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+</tbody>
+</table>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def node_id_cls(relpath, name, line):
+    return f&#x27;cls:{relpath}::{name}@{line}&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:362</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:686</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:760</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>lang_of_file <a id="fn-lang_of_file-71"></a></h3>
+<p><em>kodama_docs/graph.py:71-87</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>f</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#variables">_C_FAMILY_EXTS</a>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li>isinstance
+</li>
+<li><span style="color:#e67e22">lang.strip</span>
+</li>
+<li><span style="color:#e67e22">?.lower</span>
+</li>
+<li>os.path.splitext
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">ext.lstrip</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def lang_of_file(f: dict) -&gt; str:
+    &quot;&quot;&quot;Language family for an analysis record.
+
+    The backend supplies ``lang`` (``python``, ``lua``, ``c-family``, ...);
+    older cached records and third-party backends fall back to the extension.
+    &quot;&quot;&quot;
+    lang = f.get(&#x27;lang&#x27;)
+    if isinstance(lang, str) and lang.strip():
+        return lang.strip()
+    ext = os.path.splitext(str(f.get(&#x27;relpath&#x27;) or &#x27;&#x27;))[1].lower()
+    if ext in (&#x27;.py&#x27;, &#x27;.pyi&#x27;):
+        return &#x27;python&#x27;
+    if ext == &#x27;.lua&#x27;:
+        return &#x27;lua&#x27;
+    if ext in _C_FAMILY_EXTS:
+        return &#x27;c-family&#x27;
+    return ext.lstrip(&#x27;.&#x27;)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-apply_llm_class_skips-90">apply_llm_class_skips:100</a>
+</li>
+<li><a href="graph.py.html#fn-apply_llm_class_skips-90">apply_llm_class_skips:109</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:353</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:693</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:753</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:848</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>apply_llm_class_skips <a id="fn-apply_llm_class_skips-90"></a></h3>
+<p><em>kodama_docs/graph.py:90-117</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>files</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#fn-lang_of_file-71">lang_of_file</a>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><span style="color:#e67e22">prefixes.setdefault</span>
+</li>
+<li><span style="color:#e67e22">prefixes.get</span>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li>any
+</li>
+<li><span style="color:#e67e22">q.startswith</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def apply_llm_class_skips(files) -&gt; None:
+    &quot;&quot;&quot;Propagate a class-level ``kodama-docs-llm:skip`` to its members.
+
+    Classes do not have their own LLM task today, so a class-level directive
+    means &quot;skip the class and everything qualified under it&quot; — methods,
+    constructors/destructors, nested classes. The match is language-scoped
+    and prefix-based (``mixed.Engine`` covers ``mixed.Engine.step``).
+    &quot;&quot;&quot;
+    prefixes = {}
+    for f in files:
+        lang = lang_of_file(f)
+        for c in f.get(&#x27;classes&#x27;) or []:
+            if c.get(&#x27;skip_llm&#x27;):
+                q = c.get(&#x27;qualified&#x27;) or c.get(&#x27;name&#x27;)
+                if q:
+                    prefixes.setdefault(lang, []).append(q)
+    if not prefixes:
+        return
+    for f in files:
+        ps = prefixes.get(lang_of_file(f)) or []
+        if not ps:
+            continue
+        for fn in f.get(&#x27;functions&#x27;) or []:
+            if fn.get(&#x27;skip_llm&#x27;):
+                continue
+            q = fn.get(&#x27;qualified&#x27;) or fn.get(&#x27;name&#x27;) or &#x27;&#x27;
+            if any(q == p or q.startswith(p + &#x27;.&#x27;) for p in ps):
+                fn[&#x27;skip_llm&#x27;] = True</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:325</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-analyze_files-67">analyze_files:105</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_var_reads <a id="fn-_var_reads-120"></a></h3>
+<p><em>kodama_docs/graph.py:120-140</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>body</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>is_py</code></td><td></td></tr>
+<tr><td><code>params</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>re.escape
+</li>
+<li>re.search
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _var_reads(body: str, name: str, is_py: bool, params=()) -&gt; bool:
+    &quot;&quot;&quot;True if `body` references file variable `name`.
+
+    A reference is an identifier use. A reference is not counted when the
+    function shadows the name itself — its own parameter, its own name, or
+    a local declared/assigned in its body.
+    &quot;&quot;&quot;
+    if name in (params or ()):
+        return False
+    e = re.escape(name)
+    if not re.search(r&#x27;(?&lt;![\w.])&#x27; + e + r&#x27;(?!\w)&#x27;, body):
+        return False
+    if is_py:
+        shadowed = re.search(r&#x27;(?m)^\s*&#x27; + e + r&#x27;\s*=[^=]&#x27;, body) \
+            or re.search(r&#x27;\b&#x27; + e + r&#x27;\s*[-+*/%&amp;|^]=&#x27;, body) \
+            or re.search(r&#x27;\bfor\s+[^\n:]*\b&#x27; + e + r&#x27;\b[^\n]*\bin\b&#x27;, body) \
+            or re.search(r&#x27;\bas\s+&#x27; + e + r&#x27;\b&#x27;, body) \
+            or re.search(r&#x27;\b&#x27; + e + r&#x27;\s*:=&#x27;, body)
+    else:
+        shadowed = re.search(r&#x27;\blocal\s+&#x27; + e + r&#x27;\b&#x27;, body)
+    return not shadowed</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:837</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:865</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>fingerprint <a id="fn-fingerprint-143"></a></h3>
+<p><em>kodama_docs/graph.py:143-150</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>files</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>hashlib.sha256
+</li>
+<li>sorted
+</li>
+<li><span style="color:#e67e22">?.encode</span>
+</li>
+<li><span style="color:#e67e22">h.update</span>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li>len
+</li>
+<li>str
+</li>
+<li><span style="color:#e67e22">h.hexdigest</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def fingerprint(files):
+    h = hashlib.sha256()
+    for f in sorted(files, key=lambda x: x[&#x27;relpath&#x27;]):
+        h.update(f[&#x27;relpath&#x27;].encode(&#x27;utf-8&#x27;))
+        h.update(str(len(f.get(&#x27;functions&#x27;) or [])).encode())
+        if f.get(&#x27;size&#x27;) is not None:
+            h.update(str(f[&#x27;size&#x27;]).encode())
+    return h.hexdigest()</code></pre>
+</details>
+<hr>
+<h3>_edge_attrs <a id="fn-_edge_attrs-153"></a></h3>
+<p><em>kodama_docs/graph.py:153-154</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>u</code></td><td></td></tr>
+<tr><td><code>v</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.values</span>
+</li>
+<li><span style="color:#e67e22">g.get_edge_data</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _edge_attrs(g, u, v):
+    return (g.get_edge_data(u, v) or {}).values()</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-graph_neighbor_names-157">graph_neighbor_names:168</a>
+</li>
+<li><a href="graph.py.html#fn-graph_neighbor_names-157">graph_neighbor_names:175</a>
+</li>
+<li><a href="graph.py.html#fn-graph_read_names-184">graph_read_names:190</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>graph_neighbor_names <a id="fn-graph_neighbor_names-157"></a></h3>
+<p><em>kodama_docs/graph.py:157-181</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>node_id</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.has_node</span>
+</li>
+<li><span style="color:#e67e22">g.predecessors</span>
+</li>
+<li><a href="graph.py.html#fn-_edge_attrs-153">_edge_attrs</a>
+</li>
+<li><span style="color:#e67e22">data.get</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><span style="color:#e67e22">ins.append</span>
+</li>
+<li><span style="color:#e67e22">g.successors</span>
+</li>
+<li><span style="color:#e67e22">outs.append</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def graph_neighbor_names(g, node_id):
+    &quot;&quot;&quot;(called_by, calls) name lists from a node&#x27;s CALLS edges.
+
+    Used both for the LLM context (&quot;Called by:&quot; / &quot;Calls:&quot;) and for the
+    record fingerprint, so cached prose is invalidated when the
+    call-relationship set of a symbol changes. O(in+out degree) instead of
+    scanning every edge in the graph.&quot;&quot;&quot;
+    ins, outs = [], []
+    if not g.has_node(node_id):
+        return ins, outs
+    for u in g.predecessors(node_id):
+        for data in _edge_attrs(g, u, node_id):
+            if data.get(&#x27;type&#x27;) == &#x27;CALLS&#x27;:
+                nm = g.nodes[u].get(&#x27;name&#x27;)
+                if nm:
+                    ins.append(nm)
+                break
+    for v in g.successors(node_id):
+        for data in _edge_attrs(g, node_id, v):
+            if data.get(&#x27;type&#x27;) == &#x27;CALLS&#x27;:
+                nm = g.nodes[v].get(&#x27;name&#x27;) if g.has_node(v) else None
+                if nm:
+                    outs.append(nm)
+                break
+    return ins, outs</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:182</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:232</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:85</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:74</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>graph_read_names <a id="fn-graph_read_names-184"></a></h3>
+<p><em>kodama_docs/graph.py:184-196</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>node_id</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.has_node</span>
+</li>
+<li><span style="color:#e67e22">g.successors</span>
+</li>
+<li><a href="graph.py.html#fn-_edge_attrs-153">_edge_attrs</a>
+</li>
+<li><span style="color:#e67e22">data.get</span>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><span style="color:#e67e22">out.append</span>
+</li>
+<li>dict.fromkeys
+</li>
+<li>list
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def graph_read_names(g, node_id):
+    &quot;&quot;&quot;File-level variable names a function reads (READS edges).&quot;&quot;&quot;
+    out = []
+    if not g.has_node(node_id):
+        return out
+    for v in g.successors(node_id):
+        for data in _edge_attrs(g, node_id, v):
+            if data.get(&#x27;type&#x27;) == &#x27;READS&#x27;:
+                nm = g.nodes[v].get(&#x27;name&#x27;) if g.has_node(v) else None
+                if nm:
+                    out.append(nm)
+                break
+    return list(dict.fromkeys(out))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm_phase.py.html">kodama_docs/llm_phase.py</a>
+<ul>
+<li><a href="llm_phase.py.html#fn-run-174">run:183</a>
+</li>
+</ul>
+</li>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:233</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-_valid_records-54">_valid_records:86</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_cand_display <a id="fn-_cand_display-199"></a></h3>
+<p><em>kodama_docs/graph.py:199-205</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>nid</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">nid.partition</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _cand_display(nid: str) -&gt; str:
+    &quot;&quot;&quot;Human-readable candidate form: &#x27;fn:a.py::b@3&#x27; / &#x27;cls:a.py::B@2&#x27;
+    -&gt; &#x27;a.py::b@3&#x27; / &#x27;a.py::B@2&#x27;.&quot;&quot;&quot;
+    prefix, _, rest = nid.partition(&#x27;:&#x27;)
+    if prefix in (&#x27;fn&#x27;, &#x27;var&#x27;, &#x27;cls&#x27;):
+        return rest
+    return nid</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-ambiguous-525">ambiguous:529</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_enclosing_class <a id="fn-_enclosing_class-208"></a></h3>
+<p><em>kodama_docs/graph.py:208-218</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fentry</code></td><td></td></tr>
+<tr><td><code>fn</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><span style="color:#e67e22">fentry.get</span>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li><span style="color:#e67e22">q.startswith</span>
+</li>
+<li><span style="color:#e67e22">hits.append</span>
+</li>
+<li>len
+</li>
+<li>max
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _enclosing_class(fentry, fn):
+    &quot;&quot;&quot;Innermost class in ``fentry`` whose qualified name owns ``fn``.&quot;&quot;&quot;
+    q = fn.get(&#x27;qualified&#x27;) or fn.get(&#x27;name&#x27;) or &#x27;&#x27;
+    hits = []
+    for c in fentry.get(&#x27;classes&#x27;) or []:
+        cq = c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;]
+        if q == cq or q.startswith(cq + &#x27;.&#x27;):
+            hits.append(c)
+    if not hits:
+        return None
+    return max(hits, key=lambda c: len(c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;]))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:758</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_parent_of <a id="fn-_parent_of-221"></a></h3>
+<p><em>kodama_docs/graph.py:221-236</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>f</code></td><td></td></tr>
+<tr><td><code>fn_list</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.get</span>
+</li>
+<li><span style="color:#e67e22">best.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _parent_of(f, fn_list):
+    &quot;&quot;&quot;Innermost function that strictly contains ``f``&#x27;s def line, or None.
+
+    Two defs at the same depth never contain each other, so the innermost
+    container is unambiguously the one whose body ends earliest.&quot;&quot;&quot;
+    best = None
+    for g in fn_list:
+        if g is f:
+            continue
+        if g[&#x27;line&#x27;] &lt; f[&#x27;line&#x27;] \
+                and f[&#x27;line&#x27;] &lt;= g.get(&#x27;end_line&#x27;, g[&#x27;line&#x27;]) \
+                and (best is None
+                     or g.get(&#x27;end_line&#x27;, g[&#x27;line&#x27;])
+                     &lt; best.get(&#x27;end_line&#x27;, best[&#x27;line&#x27;])):
+            best = g
+    return best</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope:299</a>
+</li>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope:303</a>
+</li>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope:307</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_is_plain_def <a id="fn-_is_plain_def-239"></a></h3>
+<p><em>kodama_docs/graph.py:239-247</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fn</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _is_plain_def(fn) -&gt; bool:
+    &quot;&quot;&quot;True for a function that is callable by its bare name.
+
+    Methods / table functions (``Class.method``, ``M.helper``) are only
+    reachable through their receiver, so they must not participate in
+    bare-name lookup or bare-name inference. Nested functions inside a
+    method are still plain: they are local to that method.
+    &quot;&quot;&quot;
+    return (fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;]) == fn[&#x27;name&#x27;]</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-is_plain-273">is_plain:276</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_is_direct_method <a id="fn-_is_direct_method-250"></a></h3>
+<p><em>kodama_docs/graph.py:250-261</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fn</code></td><td></td></tr>
+<tr><td><code>fns</code></td><td></td></tr>
+<tr><td><code>classes</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>any
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li><span style="color:#e67e22">g.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _is_direct_method(fn, fns, classes) -&gt; bool:
+    &quot;&quot;&quot;Direct member of a class/table (not a nested function inside one).&quot;&quot;&quot;
+    in_class = any(c[&#x27;line&#x27;] &lt; fn[&#x27;line&#x27;] &lt;= c.get(&#x27;end_line&#x27;, c[&#x27;line&#x27;])
+                   for c in classes)
+    if not classes:
+        # Lua has no class records: a qualified name is the table receiver
+        # (`M.helper`); a nested local function stays plain (`helper`).
+        return (fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;]) != fn[&#x27;name&#x27;]
+    if not in_class:
+        return False
+    return not any(g is not fn and g[&#x27;line&#x27;] &lt; fn[&#x27;line&#x27;]
+                   &lt;= g.get(&#x27;end_line&#x27;, g[&#x27;line&#x27;]) for g in fns)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:392</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_resolve_in_scope <a id="fn-_resolve_in_scope-264"></a></h3>
+<p><em>kodama_docs/graph.py:264-309</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>fn_list</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+<tr><td><code>plain_ids</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#fn-encloses-278">encloses</a>
+</li>
+<li><a href="graph.py.html#fn-depth-281">depth</a>
+</li>
+<li><a href="graph.py.html#fn-is_plain-273">is_plain</a>
+</li>
+<li><a href="graph.py.html#fn-_parent_of-221">_parent_of</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _resolve_in_scope(fn_list, name, line, plain_ids=None):
+    &quot;&quot;&quot;The definition of ``name`` visible at ``line`` (Python scoping).
+
+    Walks out from the innermost function enclosing the call to the module;
+    in each scope the most recent definition of ``name`` before the call
+    wins, so a redefinition shadows the earlier one from that point on.
+    Only plain (non-method) definitions are considered. ``plain_ids`` is
+    the set of ``id(fn)`` values that are bare-callable; when omitted the
+    qualified-name heuristic is used.&quot;&quot;&quot;
+    def is_plain(f):
+        if plain_ids is not None:
+            return id(f) in plain_ids
+        return _is_plain_def(f)
+
+    def encloses(f, L):
+        return f[&#x27;line&#x27;] &lt;= L &lt;= f.get(&#x27;end_line&#x27;, f[&#x27;line&#x27;])
+
+    def depth(f):
+        d = 0
+        for g in fn_list:
+            if g is not f and g[&#x27;line&#x27;] &lt; f[&#x27;line&#x27;] and f[&#x27;line&#x27;] &lt;= g.get(&#x27;end_line&#x27;, g[&#x27;line&#x27;]):
+                d += 1
+        return d
+
+    inner, best_depth = None, -1
+    for f in fn_list:
+        if encloses(f, line):
+            d = depth(f)
+            if d &gt; best_depth:
+                inner, best_depth = f, d
+
+    scope = inner
+    while scope is not None:
+        cands = [f for f in fn_list
+                 if is_plain(f) and f[&#x27;name&#x27;] == name
+                 and _parent_of(f, fn_list) is scope
+                 and f[&#x27;line&#x27;] &lt; line]
+        if cands:
+            return cands[-1]
+        scope = _parent_of(scope, fn_list)
+
+    cands = [f for f in fn_list
+             if is_plain(f) and f[&#x27;name&#x27;] == name
+             and _parent_of(f, fn_list) is None
+             and f[&#x27;line&#x27;] &lt; line]
+    return cands[-1] if cands else None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-resolve-499">resolve:677</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>is_plain <a id="fn-is_plain-273"></a></h3>
+<p><em>kodama_docs/graph.py:273-276</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>f</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">id</span>
+</li>
+<li><a href="graph.py.html#fn-_is_plain_def-239">_is_plain_def</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def is_plain(f):
+        if plain_ids is not None:
+            return id(f) in plain_ids
+        return _is_plain_def(f)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope:298</a>
+</li>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope:306</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>encloses <a id="fn-encloses-278"></a></h3>
+<p><em>kodama_docs/graph.py:278-279</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>f</code></td><td></td></tr>
+<tr><td><code>L</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def encloses(f, L):
+        return f[&#x27;line&#x27;] &lt;= L &lt;= f.get(&#x27;end_line&#x27;, f[&#x27;line&#x27;])</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope:290</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>depth <a id="fn-depth-281"></a></h3>
+<p><em>kodama_docs/graph.py:281-286</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>f</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def depth(f):
+        d = 0
+        for g in fn_list:
+            if g is not f and g[&#x27;line&#x27;] &lt; f[&#x27;line&#x27;] and f[&#x27;line&#x27;] &lt;= g.get(&#x27;end_line&#x27;, g[&#x27;line&#x27;]):
+                d += 1
+        return d</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope:291</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>build_graph <a id="fn-build_graph-312"></a></h3>
+<p><em>kodama_docs/graph.py:312-871</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>files</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#fn-apply_llm_class_skips-90">apply_llm_class_skips</a>
+</li>
+<li><span style="color:#e67e22">nx.MultiDiGraph</span>
+</li>
+<li>set
+</li>
+<li><a href="graph.py.html#fn-lang_of_file-71">lang_of_file</a>
+</li>
+<li><a href="graph.py.html#fn-node_id_file-51">node_id_file</a>
+</li>
+<li><span style="color:#e67e22">f.get</span>
+</li>
+<li><span style="color:#e67e22">g.add_node</span>
+</li>
+<li>len
+</li>
+<li><a href="graph.py.html#fn-node_id_cls-63">node_id_cls</a>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li>bool
+</li>
+<li><a href="graph.py.html#fn-add_edge-329">add_edge</a>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><span style="color:#e67e22">qual_cls_cands.setdefault</span>
+</li>
+<li><span style="color:#e67e22">top_name_cands.setdefault</span>
+</li>
+<li><span style="color:#e67e22">name_cands.setdefault</span>
+</li>
+<li><a href="graph.py.html#fn-node_id_fn-55">node_id_fn</a>
+</li>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+<li>list
+</li>
+<li><span style="color:#e67e22">qual_cands.setdefault</span>
+</li>
+<li><span style="color:#e67e22">file_named.setdefault</span>
+</li>
+<li><a href="graph.py.html#fn-_is_direct_method-250">_is_direct_method</a>
+</li>
+<li><span style="color:#e67e22">id</span>
+</li>
+<li><span style="color:#e67e22">plain_ids.add</span>
+</li>
+<li><a href="graph.py.html#fn-node_id_var-59">node_id_var</a>
+</li>
+<li><span style="color:#e67e22">v.get</span>
+</li>
+<li><span style="color:#e67e22">qual_cands.values</span>
+</li>
+<li><span style="color:#e67e22">qual_cls_cands.values</span>
+</li>
+<li><span style="color:#e67e22">name_cands.values</span>
+</li>
+<li><span style="color:#e67e22">top_name_cands.values</span>
+</li>
+<li><span style="color:#e67e22">file_named.values</span>
+</li>
+<li><span style="color:#e67e22">ids.sort</span>
+</li>
+<li><span style="color:#e67e22">rec.get</span>
+</li>
+<li><span style="color:#e67e22">binding_modules.setdefault</span>
+</li>
+<li><span style="color:#e67e22">qual_cls_cands.get</span>
+</li>
+<li><span style="color:#e67e22">qual_cands.get</span>
+</li>
+<li><span style="color:#e67e22">binding_modules.items</span>
+</li>
+<li><span style="color:#e67e22">imp.get</span>
+</li>
+<li><span style="color:#e67e22">bs.append</span>
+</li>
+<li><span style="color:#e67e22">mod.rsplit</span>
+</li>
+<li><a href="graph.py.html#fn-mod_file-459">mod_file</a>
+</li>
+<li><span style="color:#e67e22">binding_modules.get</span>
+</li>
+<li><a href="graph.py.html#fn-owner-738">owner</a>
+</li>
+<li><a href="graph.py.html#fn-binding_info_for-489">binding_info_for</a>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><a href="graph.py.html#fn-_enclosing_class-208">_enclosing_class</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve</a>
+</li>
+<li><span style="color:#e67e22">g.has_node</span>
+</li>
+<li><span style="color:#e67e22">tgt.startswith</span>
+</li>
+<li><span style="color:#e67e22">tgt.split</span>
+</li>
+<li><span style="color:#e67e22">?.endswith</span>
+</li>
+<li><span style="color:#e67e22">rp.lower</span>
+</li>
+<li><a href="graph.py.html#fn-_var_reads-120">_var_reads</a>
+</li>
+<li><span style="color:#e67e22">binds.get</span>
+</li>
+<li><span style="color:#e67e22">b.get</span>
+</li>
+<li><span style="color:#e67e22">files_by_rp.get</span>
+</li>
+<li><span style="color:#e67e22">bfile.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def build_graph(files):
+    &quot;&quot;&quot;files: list of per-file dicts with relpath/lines/functions/file_vars/calls.
+
+    Class-level LLM skips are propagated to members before the graph is
+    built, so the LLM phase, renderer and checks all see the same flags.
+
+    Returns (graph, diagnostics) where diagnostics is:
+        {&#x27;ambiguous_calls&#x27;:    [{file, line, name, candidates[]}, ...],
+         &#x27;inferred_calls&#x27;:     [{file, line, name}, ...],
+         &#x27;external_calls&#x27;:     [{file, line, name}, ...],
+         &#x27;builtin_calls&#x27;:      [{file, line, name}, ...],
+         &#x27;unresolved_imports&#x27;: [{file, line, module}, ...]}
+    &quot;&quot;&quot;
+    apply_llm_class_skips(files)
+    g = nx.MultiDiGraph()
+    edge_keys = set()
+
+    def add_edge(src, tgt, etype, **attrs):
+        # include the call/import line so every call site keeps its own edge
+        key = (src, tgt, etype, attrs.get(&#x27;line&#x27;))
+        if key in edge_keys:
+            return
+        edge_keys.add(key)
+        g.add_edge(src, tgt, type=etype, **attrs)
+
+    diag = {&#x27;ambiguous_calls&#x27;: [], &#x27;inferred_calls&#x27;: [],
+            &#x27;external_calls&#x27;: [], &#x27;builtin_calls&#x27;: [],
+            &#x27;unresolved_imports&#x27;: []}
+
+    # ---- pass 1: nodes -------------------------------------------------
+    qual_cands = {}    # qualified name -&gt; [fn ids]
+    qual_cls_cands = {}  # qualified name -&gt; [class ids]
+    name_cands = {}    # plain name     -&gt; [fn/class ids] (method inference)
+    top_name_cands = {}  # plain name  -&gt; [module-level fn/class ids]
+    file_fn = {}       # (relpath, plain name) -&gt; module-level fn id
+    file_fn_q = {}     # (relpath, qualified)  -&gt; fn id
+    file_named = {}    # (relpath, plain name) -&gt; [all fn ids with that name]
+    file_cls = {}      # (relpath, class name) -&gt; class node id
+    plain_ids = set()  # id(fn) for functions callable by their bare name
+    for f in files:
+        rp = f[&#x27;relpath&#x27;]
+        lang = lang_of_file(f)
+        fid = node_id_file(rp)
+        classes_all = f.get(&#x27;classes&#x27;) or []
+        fns_all = f.get(&#x27;functions&#x27;) or []
+        g.add_node(fid, kind=&#x27;file&#x27;, relpath=rp, lang=lang,
+                   lines=f.get(&#x27;lines&#x27;),
+                   function_count=len(fns_all),
+                   variable_count=len(f.get(&#x27;file_vars&#x27;) or []))
+        for c in classes_all:
+            cid = node_id_cls(rp, c[&#x27;name&#x27;], c[&#x27;line&#x27;])
+            g.add_node(cid, kind=&#x27;class&#x27;, relpath=rp, lang=lang,
+                       name=c[&#x27;name&#x27;],
+                       qualified=c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;],
+                       line=c[&#x27;line&#x27;],
+                       end_line=c.get(&#x27;end_line&#x27;, c[&#x27;line&#x27;]), file_id=fid,
+                       skip_llm=bool(c.get(&#x27;skip_llm&#x27;)))
+            add_edge(fid, cid, &#x27;CONTAINS&#x27;)
+            cq = c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;]
+            qual_cls_cands.setdefault(cq, []).append(cid)
+            if cq == c[&#x27;name&#x27;]:
+                file_cls[(rp, c[&#x27;name&#x27;])] = cid
+                top_name_cands.setdefault(c[&#x27;name&#x27;], []).append(cid)
+            name_cands.setdefault(c[&#x27;name&#x27;], []).append(cid)
+        for fn in fns_all:
+            nid = node_id_fn(rp, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+            g.add_node(nid, kind=&#x27;function&#x27;, relpath=rp, lang=lang,
+                       name=fn[&#x27;name&#x27;],
+                       qualified=fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;],
+                       line=fn[&#x27;line&#x27;], end_line=fn.get(&#x27;end_line&#x27;, fn[&#x27;line&#x27;]),
+                       params=list(fn.get(&#x27;params&#x27;) or []),
+                       vararg=bool(fn.get(&#x27;vararg&#x27;)), file_id=fid,
+                       body=fn.get(&#x27;body&#x27;, &#x27;&#x27;),
+                       skip_llm=bool(fn.get(&#x27;skip_llm&#x27;)))
+            add_edge(fid, nid, &#x27;CONTAINS&#x27;)
+            qual = fn.get(&#x27;qualified&#x27;) or fn[&#x27;name&#x27;]
+            qual_cands.setdefault(qual, []).append(nid)
+            name_cands.setdefault(fn[&#x27;name&#x27;], []).append(nid)
+            file_fn_q[(rp, qual)] = nid
+            file_named.setdefault((rp, fn[&#x27;name&#x27;]), []).append(nid)
+            if not _is_direct_method(fn, fns_all, classes_all):
+                plain_ids.add(id(fn))
+                file_fn[(rp, fn[&#x27;name&#x27;])] = nid
+                top_name_cands.setdefault(fn[&#x27;name&#x27;], []).append(nid)
+        for v in f.get(&#x27;file_vars&#x27;) or []:
+            vid = node_id_var(rp, v[&#x27;name&#x27;], v[&#x27;line&#x27;])
+            g.add_node(vid, kind=&#x27;variable&#x27;, relpath=rp, lang=lang,
+                       name=v[&#x27;name&#x27;],
+                       line=v[&#x27;line&#x27;], init=v.get(&#x27;init&#x27;, &#x27;expr&#x27;),
+                       file_id=fid, skip_llm=bool(v.get(&#x27;skip_llm&#x27;)))
+            add_edge(fid, vid, &#x27;CONTAINS&#x27;)
+    for ids in (list(qual_cands.values()) + list(qual_cls_cands.values())
+                + list(name_cands.values())
+                + list(top_name_cands.values())
+                + list(file_named.values())):
+        ids.sort()
+
+    # ---- pass 2: edges ----------------------------------------------------
+    known_files = {f[&#x27;relpath&#x27;] for f in files}
+    files_by_rp = {f[&#x27;relpath&#x27;]: f for f in files}
+
+    # Explicit cross-language exports (currently pybind11). A binding record
+    # names a Python export and the C++ symbol it exposes; resolving the C++
+    # target here is exact, never a same-name guess.
+    #   {module: {&#x27;file&#x27;, &#x27;classes&#x27;: {py: [ids]},
+    #             &#x27;functions&#x27;: {py: [ids]}, &#x27;methods&#x27;: {(owner, py): [ids]}}}
+    binding_modules = {}
+    for f in files:
+        rp = f[&#x27;relpath&#x27;]
+        for rec in f.get(&#x27;bindings&#x27;) or []:
+            mod = rec.get(&#x27;module&#x27;)
+            kind = rec.get(&#x27;kind&#x27;)
+            name = rec.get(&#x27;name&#x27;)
+            target = rec.get(&#x27;target&#x27;)
+            if not mod or not kind or not name or not target:
+                continue
+            info = binding_modules.setdefault(
+                mod, {&#x27;file&#x27;: rp, &#x27;classes&#x27;: {}, &#x27;functions&#x27;: {},
+                      &#x27;methods&#x27;: {}, &#x27;records&#x27;: []})
+            info[&#x27;records&#x27;].append(rec)
+            if kind == &#x27;class&#x27;:
+                ids = qual_cls_cands.get(target) or []
+                if ids:
+                    info[&#x27;classes&#x27;][name] = ids
+            elif kind == &#x27;function&#x27;:
+                ids = qual_cands.get(target) or []
+                if ids:
+                    info[&#x27;functions&#x27;][name] = ids
+            elif kind == &#x27;method&#x27; and rec.get(&#x27;owner&#x27;):
+                ids = qual_cands.get(target) or []
+                if ids:
+                    info[&#x27;methods&#x27;][(rec[&#x27;owner&#x27;], name)] = ids
+
+    # The binding file exports its targets; this is visible in both graph
+    # views (file -&gt; C++ file/class/function).
+    for mod, info in binding_modules.items():
+        bfid = node_id_file(info[&#x27;file&#x27;])
+        for rec in info[&#x27;records&#x27;]:
+            if rec.get(&#x27;kind&#x27;) == &#x27;class&#x27;:
+                ids = qual_cls_cands.get(rec.get(&#x27;target&#x27;)) or []
+            else:
+                ids = qual_cands.get(rec.get(&#x27;target&#x27;)) or []
+            for tid in ids:
+                add_edge(bfid, tid, &#x27;EXPORTS&#x27;, line=rec.get(&#x27;line&#x27;),
+                         status=&#x27;resolved&#x27;, resolution_success=True,
+                         module=mod)
+
+    def mod_file(mod, from_rp):
+        for c in module_candidates(mod, from_rp):
+            if c in known_files:
+                return c
+        return None
+
+    # Per-file name bindings: imports (with optional bind/name) plus
+    # module-alias variables (Lua require / dofile).
+    #   {&#x27;bind&#x27;: local name, &#x27;file&#x27;: project file or None,
+    #    &#x27;name&#x27;: target symbol inside that module or None}
+    binds = {}
+    for f in files:
+        rp = f[&#x27;relpath&#x27;]
+        bs = []
+        for imp in f.get(&#x27;imports&#x27;) or []:
+            mod = imp.get(&#x27;module&#x27;)
+            if not mod:
+                continue
+            bs.append({&#x27;bind&#x27;: imp.get(&#x27;bind&#x27;) or mod.rsplit(&#x27;.&#x27;, 1)[-1],
+                       &#x27;file&#x27;: mod_file(mod, rp),
+                       &#x27;name&#x27;: imp.get(&#x27;name&#x27;),
+                       &#x27;binding&#x27;: binding_modules.get(mod)})
+        for v in f.get(&#x27;file_vars&#x27;) or []:
+            mod = v.get(&#x27;module&#x27;)
+            if mod:
+                bs.append({&#x27;bind&#x27;: v[&#x27;name&#x27;],
+                           &#x27;file&#x27;: mod_file(mod, rp),
+                           &#x27;name&#x27;: None})
+        binds[rp] = bs
+
+    def binding_info_for(rp, local):
+        &quot;&quot;&quot;Binding info for `local` (module name or import alias) in a file.&quot;&quot;&quot;
+        info = binding_modules.get(local)
+        if info is not None:
+            return info
+        for b in binds.get(rp, []):
+            if b.get(&#x27;bind&#x27;) == local and b.get(&#x27;binding&#x27;):
+                return b[&#x27;binding&#x27;]
+        return None
+
+    def resolve(rp, name, method, line, owner_fn=None):
+        &quot;&quot;&quot;Resolve one call site using the context of file `rp`.
+
+        Returns (target_node_id, status) or None when the candidates are
+        ambiguous (the call site is recorded in diag; no edge is written).
+
+        ``owner_fn`` is the innermost function enclosing the call; it is
+        what lets ``self.method()`` / ``cls.method()`` resolve inside the
+        right class instead of being mistaken for a builtin.
+        &quot;&quot;&quot;
+        file_bs = binds.get(rp, [])
+        builtins = builtins_for(rp)
+        if name is None:
+            # The callee is computed at runtime (`open(..).read()`,
+            # `cfg[&#x27;k&#x27;].update(..)`, `getattr(..)(..)`): no static target
+            # exists, so the call stays VISIBLE as an external reference
+            # (`?.method` / `?`) rather than being silently dropped.
+            label = f&#x27;?.{method}&#x27; if method else &#x27;?&#x27;
+            return &#x27;ext:&#x27; + label, &#x27;external&#x27;
+        label = f&#x27;{name}.{method}&#x27; if method else name
+
+        def dedup(seq):
+            # a file can bind the same name twice (e.g. a require recorded
+            # as both an import and a module-alias var) — same target
+            return list(dict.fromkeys(seq))
+
+        def ambiguous(cands):
+            cands = dedup(cands)
+            diag[&#x27;ambiguous_calls&#x27;].append({
+                &#x27;file&#x27;: rp, &#x27;line&#x27;: line, &#x27;name&#x27;: label,
+                &#x27;candidates&#x27;: [_cand_display(c) for c in cands]})
+
+        def one_or_ambiguous(cands):
+            cands = dedup(cands)
+            if not cands:
+                return None
+            return (cands[0], &#x27;resolved&#x27;) if len(cands) == 1 \
+                else ambiguous(cands)
+
+        def owner_class():
+            q = (owner_fn or {}).get(&#x27;qualified&#x27;) or (owner_fn or {}).get(&#x27;name&#x27;)
+            return q.rsplit(&#x27;.&#x27;, 1)[0] if q and &#x27;.&#x27; in q else None
+
+        def file_named_hits(bf, plain):
+            &quot;&quot;&quot;All functions in file ``bf`` with plain name ``plain``.
+            Top-level functions win; methods/table functions are only used
+            when there is no module-level candidate.&quot;&quot;&quot;
+            top = file_fn.get((bf, plain))
+            return [top] if top else list(file_named.get((bf, plain), []))
+
+        def binding_for(local):
+            &quot;&quot;&quot;Binding info for `local` (a module name or an import alias).&quot;&quot;&quot;
+            return binding_info_for(rp, local)
+
+        if method and name:
+            # 0) explicit pybind11 exports: `mixed_native.Engine`,
+            #    `mixed_native.add`, `mixed_native.Engine.step`. These are
+            #    declared by the binding, not guessed from a shared name.
+            info = binding_for(name)
+            if info:
+                ids = (info[&#x27;classes&#x27;].get(method)
+                       or info[&#x27;functions&#x27;].get(method))
+                if ids:
+                    return one_or_ambiguous(ids)
+            if &#x27;.&#x27; in name:
+                mod, _, owner = name.partition(&#x27;.&#x27;)
+                info = binding_for(mod)
+                if info:
+                    ids = info[&#x27;methods&#x27;].get((owner, method))
+                    if ids:
+                        return one_or_ambiguous(ids)
+
+            # 0b) self/cls: the enclosing class is known statically. Resolve
+            #    `Class.method` directly; never classify self/cls as a
+            #    builtin (they are not callables).
+            if name in (&#x27;self&#x27;, &#x27;cls&#x27;):
+                cls = owner_class()
+                if cls:
+                    cands = qual_cands.get(f&#x27;{cls}.{method}&#x27;)
+                    if cands:
+                        return one_or_ambiguous(cands)
+
+            # 1) dotted receiver that is a project MODULE path
+            #    (e.g. `deep.pack.mod.launch(...)`): resolve the module to
+            #    its file, then the method within that file
+            if &#x27;.&#x27; in name:
+                mf = mod_file(name, rp)
+                if mf:
+                    hit = (file_fn_q.get((mf, f&#x27;{name}.{method}&#x27;))
+                           or file_fn.get((mf, method))
+                           or file_cls.get((mf, method)))
+                    if hit:
+                        return hit, &#x27;resolved&#x27;
+                    hits = file_named_hits(mf, method)
+                    if hits:
+                        return one_or_ambiguous(hits)
+
+            # 2) object bound to a project module in this file -&gt; its method
+            hits = []
+            for b in file_bs:
+                if b[&#x27;bind&#x27;] != name or not b[&#x27;file&#x27;]:
+                    continue
+                bf, target = b[&#x27;file&#x27;], b.get(&#x27;name&#x27;)
+                if target:
+                    hit = file_fn_q.get((bf, f&#x27;{target}.{method}&#x27;))
+                    if hit:
+                        hits.append(hit)
+                        continue
+                hit = (file_fn.get((bf, method))
+                       or file_cls.get((bf, method)))
+                if hit:
+                    hits.append(hit)
+                else:
+                    hits.extend(file_named_hits(bf, method))
+            if hits:
+                return one_or_ambiguous(hits)
+
+            # 3) exact qualified name `name.method` defined in the project
+            #    (covers `V.add`, `Body.reset`, Lua `M.helper`, ...)
+            cands = qual_cands.get(f&#x27;{name}.{method}&#x27;)
+            if cands:
+                return one_or_ambiguous(cands)
+
+            # 4) object (or its root) is a stdlib/builtin name — never
+            #    guess a project function with the same method name.
+            #    self/cls are deliberately excluded (see step 0).
+            if name not in (&#x27;self&#x27;, &#x27;cls&#x27;) and (
+                    name in builtins or name.split(&#x27;.&#x27;, 1)[0] in builtins):
+                return &#x27;builtin:&#x27; + label, &#x27;builtin&#x27;
+
+            # 5) method name unique project-wide (unbound object, e.g. a
+            #    local table instance) — documented inference
+            cands = name_cands.get(method)
+            if cands:
+                return (cands[0], &#x27;inferred&#x27;) if len(cands) == 1 \
+                    else ambiguous(cands)
+            return &#x27;ext:&#x27; + label, &#x27;external&#x27;
+
+        if &#x27;.&#x27; in name:
+            base, _, rest = name.partition(&#x27;.&#x27;)
+            # 0) explicit pybind11 module export (`mixed_native.add(...)`)
+            info = binding_for(base)
+            if info:
+                ids = (info[&#x27;functions&#x27;].get(rest)
+                       or info[&#x27;classes&#x27;].get(rest))
+                if ids:
+                    return one_or_ambiguous(ids)
+            # 1) base bound to a project module in this file
+            hits = []
+            for b in file_bs:
+                if b[&#x27;bind&#x27;] != base or not b[&#x27;file&#x27;]:
+                    continue
+                bf, target = b[&#x27;file&#x27;], b.get(&#x27;name&#x27;)
+                if target:
+                    hit = file_fn_q.get((bf, f&#x27;{target}.{rest}&#x27;))
+                    if hit:
+                        hits.append(hit)
+                        continue
+                hits.extend(file_named_hits(bf, rest))
+            if hits:
+                return one_or_ambiguous(hits)
+            # 2) exact qualified name in the project (`M.helper`, `V.add`)
+            cands = qual_cands.get(name)
+            if cands:
+                return one_or_ambiguous(cands)
+            # 3) builtin namespace (math.sqrt, io.open, os.path.join, ...)
+            if base in builtins:
+                return &#x27;builtin:&#x27; + name, &#x27;builtin&#x27;
+            return &#x27;ext:&#x27; + name, &#x27;external&#x27;
+
+        # bare name
+        # 1) defined in the same file — scope-aware: the definition visible
+        #    at the call line wins (a nested def shadows the module level,
+        #    and a redefinition shadows the earlier one from that point on).
+        #    Only plain functions/classes participate; methods are not
+        #    callable bare.
+        fentry = files_by_rp.get(rp)
+        if fentry is not None:
+            fn = _resolve_in_scope(fentry.get(&#x27;functions&#x27;) or [], name, line,
+                                   plain_ids=plain_ids)
+            if fn is not None:
+                return node_id_fn(rp, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;]), &#x27;resolved&#x27;
+            cands = [c for c in (fentry.get(&#x27;classes&#x27;) or [])
+                     if (c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;]) == c[&#x27;name&#x27;]
+                     and c[&#x27;name&#x27;] == name and c[&#x27;line&#x27;] &lt; line]
+            if cands:
+                c = cands[-1]
+                return node_id_cls(rp, c[&#x27;name&#x27;], c[&#x27;line&#x27;]), &#x27;resolved&#x27;
+        # 1b) C-family only: a bare call inside a namespace/class is
+        #     addressable through the enclosing scope (`clamp_value` inside
+        #     `mixed.Engine.describe` -&gt; `mixed.clamp_value`; an implicit
+        #     `this-&gt;helper()` in a method).  This must NOT apply to Python
+        #     or Lua: there a bare `helper()` is not a method call, and
+        #     inventing `A.helper` would be wrong.
+        if lang_of_file(files_by_rp.get(rp) or {}) == &#x27;c-family&#x27;:
+            owner_q = ((owner_fn or {}).get(&#x27;qualified&#x27;)
+                       or (owner_fn or {}).get(&#x27;name&#x27;))
+            scope = owner_q.rsplit(&#x27;.&#x27;, 1)[0] if owner_q and &#x27;.&#x27; in owner_q \
+                else None
+            while scope:
+                cands = qual_cands.get(f&#x27;{scope}.{name}&#x27;)
+                if cands:
+                    return one_or_ambiguous(cands)
+                scope = scope.rsplit(&#x27;.&#x27;, 1)[0] if &#x27;.&#x27; in scope else None
+
+        # 2) bound by this file&#x27;s imports to a project file
+        #    (`from users import validate` then `validate()`, or
+        #    `from physics.body import Body` then `Body(...)`)
+        hits = []
+        for b in file_bs:
+            if b[&#x27;bind&#x27;] == name and b.get(&#x27;binding&#x27;):
+                info = b[&#x27;binding&#x27;]
+                key = b.get(&#x27;name&#x27;) or name
+                ids = (info[&#x27;classes&#x27;].get(key)
+                       or info[&#x27;functions&#x27;].get(key))
+                if ids:
+                    return one_or_ambiguous(ids)
+            if b[&#x27;bind&#x27;] == name and b[&#x27;file&#x27;] and b[&#x27;name&#x27;]:
+                hit = (file_fn.get((b[&#x27;file&#x27;], b[&#x27;name&#x27;]))
+                       or file_cls.get((b[&#x27;file&#x27;], b[&#x27;name&#x27;])))
+                if hit:
+                    hits.append(hit)
+        if hits:
+            return one_or_ambiguous(hits)
+        # 3) builtin
+        if name in builtins:
+            return &#x27;builtin:&#x27; + name, &#x27;builtin&#x27;
+        # 4) module-level name unique project-wide — documented inference
+        cands = top_name_cands.get(name)
+        if cands:
+            return (cands[0], &#x27;inferred&#x27;) if len(cands) == 1 \
+                else ambiguous(cands)
+        return &#x27;ext:&#x27; + name, &#x27;external&#x27;
+
+    for f in files:
+        rp = f[&#x27;relpath&#x27;]
+        fid = node_id_file(rp)
+        fns = f.get(&#x27;functions&#x27;) or []
+
+        def owner(call_line, fns=fns):
+            best = None
+            for fn in fns:
+                if fn[&#x27;line&#x27;] &lt;= call_line &lt;= fn.get(&#x27;end_line&#x27;, fn[&#x27;line&#x27;]):
+                    span = fn.get(&#x27;end_line&#x27;, fn[&#x27;line&#x27;]) - fn[&#x27;line&#x27;]
+                    if best is None or span &lt; best[0]:
+                        best = (span, fn)
+            return best[1] if best else None
+
+        for c in f.get(&#x27;calls&#x27;) or []:
+            fn = owner(c[&#x27;line&#x27;])
+
+            # Python facade -&gt; C++ class bridge: a method of a Python class
+            # constructs/uses a pybind11-exported class. The binding record
+            # says which C++ class it is, so this is declaration-driven.
+            if lang_of_file(f) == &#x27;python&#x27; and fn is not None:
+                info = binding_info_for(rp, c.get(&#x27;callee&#x27;))
+                class_ids = (info[&#x27;classes&#x27;].get(c.get(&#x27;method&#x27;))
+                             if info and c.get(&#x27;method&#x27;) else None)
+                if class_ids:
+                    owner_cls = _enclosing_class(f, fn)
+                    if owner_cls is not None:
+                        py_cls = node_id_cls(rp, owner_cls[&#x27;name&#x27;],
+                                             owner_cls[&#x27;line&#x27;])
+                        for cid in class_ids:
+                            add_edge(py_cls, cid, &#x27;BRIDGES&#x27;,
+                                     line=c[&#x27;line&#x27;], status=&#x27;resolved&#x27;,
+                                     resolution_success=True,
+                                     module=c.get(&#x27;callee&#x27;))
+
+            res = resolve(rp, c[&#x27;callee&#x27;], c.get(&#x27;method&#x27;), c[&#x27;line&#x27;],
+                          owner_fn=fn)
+            if res is None:  # ambiguous: diagnostic recorded, no edge
+                continue
+            tgt, status = res
+            if not g.has_node(tgt) and tgt.startswith((&#x27;builtin:&#x27;, &#x27;ext:&#x27;)):
+                kind, nm = tgt.split(&#x27;:&#x27;, 1)
+                g.add_node(tgt, kind=kind, name=nm)
+            callee, mth = c.get(&#x27;callee&#x27;), c.get(&#x27;method&#x27;)
+            if callee is None:
+                label = f&#x27;?.{mth}&#x27; if mth else &#x27;?&#x27;
+            elif mth:
+                label = f&#x27;{callee}.{mth}&#x27;
+            else:
+                label = callee
+            if status == &#x27;external&#x27;:
+                diag[&#x27;external_calls&#x27;].append(
+                    {&#x27;file&#x27;: rp, &#x27;line&#x27;: c[&#x27;line&#x27;], &#x27;name&#x27;: label})
+            elif status == &#x27;inferred&#x27;:
+                diag[&#x27;inferred_calls&#x27;].append(
+                    {&#x27;file&#x27;: rp, &#x27;line&#x27;: c[&#x27;line&#x27;], &#x27;name&#x27;: label})
+            elif status == &#x27;builtin&#x27;:
+                diag[&#x27;builtin_calls&#x27;].append(
+                    {&#x27;file&#x27;: rp, &#x27;line&#x27;: c[&#x27;line&#x27;], &#x27;name&#x27;: label})
+            src = fid
+            if fn is not None:
+                src = node_id_fn(rp, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+            add_edge(src, tgt, &#x27;CALLS&#x27;, line=c[&#x27;line&#x27;], status=status,
+                     resolution_success=status in (&#x27;resolved&#x27;, &#x27;inferred&#x27;,
+                                                    &#x27;builtin&#x27;))
+
+        for imp in f.get(&#x27;imports&#x27;) or []:
+            mod = imp[&#x27;module&#x27;]
+            binfo = binding_modules.get(mod)
+            if binfo:
+                # `import mixed_native` -&gt; the file that declares the
+                # pybind11 module, not an unresolved `mod:` placeholder.
+                add_edge(fid, node_id_file(binfo[&#x27;file&#x27;]), &#x27;IMPORTS&#x27;,
+                         line=imp.get(&#x27;line&#x27;), status=&#x27;resolved&#x27;,
+                         resolution_success=True, cross_language=True)
+                continue
+            hit = mod_file(mod, rp)
+            if hit:
+                add_edge(fid, node_id_file(hit), &#x27;IMPORTS&#x27;,
+                         line=imp.get(&#x27;line&#x27;), status=&#x27;resolved&#x27;,
+                         resolution_success=True)
+            else:
+                tid = &#x27;mod:&#x27; + mod
+                if not g.has_node(tid):
+                    g.add_node(tid, kind=&#x27;module&#x27;, name=mod)
+                add_edge(fid, tid, &#x27;IMPORTS&#x27;, line=imp.get(&#x27;line&#x27;),
+                         status=&#x27;unresolved&#x27;, resolution_success=False)
+                diag[&#x27;unresolved_imports&#x27;].append(
+                    {&#x27;file&#x27;: rp, &#x27;line&#x27;: imp.get(&#x27;line&#x27;), &#x27;module&#x27;: mod})
+
+        # function -&gt; file variable READS edges
+        is_py = rp.lower().endswith((&#x27;.py&#x27;, &#x27;.pyi&#x27;))
+        for v in f.get(&#x27;file_vars&#x27;) or []:
+            if v.get(&#x27;module&#x27;):
+                # module aliases are represented by IMPORTS, not READS
+                continue
+            if not (v.get(&#x27;init&#x27;) in (&#x27;table&#x27;, &#x27;string&#x27;, &#x27;number&#x27;)
+                    or v.get(&#x27;value&#x27;) is not None):
+                continue
+            vid = node_id_var(rp, v[&#x27;name&#x27;], v[&#x27;line&#x27;])
+            for fn in fns:
+                body = fn.get(&#x27;body&#x27;) or &#x27;&#x27;
+                if v[&#x27;name&#x27;] == fn[&#x27;name&#x27;]:
+                    continue
+                if body and _var_reads(body, v[&#x27;name&#x27;], is_py,
+                                       fn.get(&#x27;params&#x27;) or ()):
+                    src = node_id_fn(rp, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+                    # A same-file READS edge is always resolved.
+                    add_edge(src, vid, &#x27;READS&#x27;, resolution_success=True)
+
+        # C-family: a quoted #include is textual inclusion, so a file-level
+        # variable/macro in a directly included project file is visible to
+        # this TU too (`mixed_version()` reads MIXED_VERSION from version.h).
+        # Only direct includes are followed; transitive includes and
+        # #define shadowing are deliberately left to the compiler.
+        if lang_of_file(f) == &#x27;c-family&#x27;:
+            for b in binds.get(rp, []):
+                bf = b.get(&#x27;file&#x27;)
+                if not bf or bf == rp:
+                    continue
+                bfile = files_by_rp.get(bf) or {}
+                for v in bfile.get(&#x27;file_vars&#x27;) or []:
+                    if v.get(&#x27;module&#x27;):
+                        continue
+                    if not (v.get(&#x27;init&#x27;) in (&#x27;table&#x27;, &#x27;string&#x27;, &#x27;number&#x27;)
+                            or v.get(&#x27;value&#x27;) is not None):
+                        continue
+                    vid = node_id_var(bf, v[&#x27;name&#x27;], v[&#x27;line&#x27;])
+                    for fn in fns:
+                        body = fn.get(&#x27;body&#x27;) or &#x27;&#x27;
+                        if not body or v[&#x27;name&#x27;] == fn[&#x27;name&#x27;]:
+                            continue
+                        if _var_reads(body, v[&#x27;name&#x27;], False,
+                                      fn.get(&#x27;params&#x27;) or ()):
+                            src = node_id_fn(rp, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;])
+                            add_edge(src, vid, &#x27;READS&#x27;,
+                                     resolution_success=True)
+
+    return g, diag</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="testing.py.html">kodama_docs/testing.py</a>
+<ul>
+<li><a href="testing.py.html#fn-test_backend-398">test_backend:462</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:332</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cache_safety.py.html">tests/test_cache_safety.py</a>
+<ul>
+<li><a href="../tests/test_cache_safety.py.html#fn-test_render_filters_stale_and_disabled_records-68">test_render_filters_stale_and_disabled_records:72</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_cpp_backend.py.html">tests/test_cpp_backend.py</a>
+<ul>
+<li><a href="../tests/test_cpp_backend.py.html#fn-test_mixed_graph_links_c_family-125">test_mixed_graph_links_c_family:132</a>
+</li>
+<li><a href="../tests/test_cpp_backend.py.html#fn-test_c_included_variable_is_a_reads_edge-141">test_c_included_variable_is_a_reads_edge:145</a>
+</li>
+<li><a href="../tests/test_cpp_backend.py.html#fn-test_multiline_comments_and_llm_skip_directive-150">test_multiline_comments_and_llm_skip_directive:182</a>
+</li>
+<li><a href="../tests/test_cpp_backend.py.html#fn-test_cross_file_class_skip_propagates-188">test_cross_file_class_skip_propagates:195</a>
+</li>
+<li><a href="../tests/test_cpp_backend.py.html#fn-test_python_multiline_comments_and_skip-201">test_python_multiline_comments_and_skip:216</a>
+</li>
+<li><a href="../tests/test_cpp_backend.py.html#fn-test_pybind_bindings_create_exports_and_bridges-245">test_pybind_bindings_create_exports_and_bridges:267</a>
+</li>
+<li><a href="../tests/test_cpp_backend.py.html#fn-test_cpp_namespace_call_resolves_but_python_bare_method_does_not-288">test_cpp_namespace_call_resolves_but_python_bare_method_does_not:294</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_resolver.py.html">tests/test_resolver.py</a>
+<ul>
+<li><a href="../tests/test_resolver.py.html#fn-test_from_import_binding_resolves_to_imported_module-39">test_from_import_binding_resolves_to_imported_module:56</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_builtin_wins_over_project_function_same_name-62">test_builtin_wins_over_project_function_same_name:74</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_aliased_imports_disambiguate-80">test_aliased_imports_disambiguate:93</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_double_bound_name_is_ambiguous_not_guessed-100">test_double_bound_name_is_ambiguous_not_guessed:112</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_lua_require_alias_resolves_method-120">test_lua_require_alias_resolves_method:138</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_unbound_object_unique_method_is_inference-144">test_unbound_object_unique_method_is_inference:159</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_import_as_module_binding-164">test_import_as_module_binding:176</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_local_scope_wins_over_same_name_elsewhere-181">test_local_scope_wins_over_same_name_elsewhere:193</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_unbound_multiple_project_names_are_ambiguous-199">test_unbound_multiple_project_names_are_ambiguous:214</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_lua_builtin_math_sqrt-221">test_lua_builtin_math_sqrt:227</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_python_class_constructor_resolves_via_import-231">test_python_class_constructor_resolves_via_import:245</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_module_dot_class_constructor_resolves-254">test_module_dot_class_constructor_resolves:264</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_external_call_has_resolution_success_false-270">test_external_call_has_resolution_success_false:277</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_unbound_unique_class_is_inferred-284">test_unbound_unique_class_is_inferred:289</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_unbound_multiple_classes_are_ambiguous-294">test_unbound_multiple_classes_are_ambiguous:300</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_nested_def_shadows_module_level-307">test_nested_def_shadows_module_level:323</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_module_redefinition_last_def_wins-331">test_module_redefinition_last_def_wins:344</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_dynamic_receiver_is_external_not_dropped-350">test_dynamic_receiver_is_external_not_dropped:357</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_dotted_module_path_resolves_to_module_method-362">test_dotted_module_path_resolves_to_module_method:372</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_relative_import_resolves_sibling-378">test_relative_import_resolves_sibling:388</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_self_method_resolves_to_enclosing_class-505">test_self_method_resolves_to_enclosing_class:514</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_lua_self_method_resolves_to_enclosing_table-520">test_lua_self_method_resolves_to_enclosing_table:530</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_class_qualified_method_uses_right_class-536">test_class_qualified_method_uses_right_class:553</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_bare_method_is_not_a_global_name-558">test_bare_method_is_not_a_global_name:568</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_parameter_shadow_does_not_create_reads_edge-574">test_parameter_shadow_does_not_create_reads_edge:582</a>
+</li>
+<li><a href="../tests/test_resolver.py.html#fn-test_lua_parameter_shadow_does_not_create_reads_edge-588">test_lua_parameter_shadow_does_not_create_reads_edge:595</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>add_edge <a id="fn-add_edge-329"></a></h3>
+<p><em>kodama_docs/graph.py:329-335</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>src</code></td><td></td></tr>
+<tr><td><code>tgt</code></td><td></td></tr>
+<tr><td><code>etype</code></td><td></td></tr>
+<tr><td><code>attrs</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">attrs.get</span>
+</li>
+<li><span style="color:#e67e22">edge_keys.add</span>
+</li>
+<li>add_edge (inferred)
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def add_edge(src, tgt, etype, **attrs):
+        # include the call/import line so every call site keeps its own edge
+        key = (src, tgt, etype, attrs.get(&#x27;line&#x27;))
+        if key in edge_keys:
+            return
+        edge_keys.add(key)
+        g.add_edge(src, tgt, type=etype, **attrs)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-add_edge-329">add_edge:335</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:369</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:386</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:402</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:455</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:763</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:795</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:805</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:811</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:818</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:841</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:868</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="../tests/test_static_site.py.html#fn-test_diet_graph-96">test_diet_graph:102</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>mod_file <a id="fn-mod_file-459"></a></h3>
+<p><em>kodama_docs/graph.py:459-463</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>mod</code></td><td></td></tr>
+<tr><td><code>from_rp</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">module_candidates</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def mod_file(mod, from_rp):
+        for c in module_candidates(mod, from_rp):
+            if c in known_files:
+                return c
+        return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:478</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:485</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:585</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:809</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>binding_info_for <a id="fn-binding_info_for-489"></a></h3>
+<p><em>kodama_docs/graph.py:489-497</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rp</code></td><td></td></tr>
+<tr><td><code>local</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">binding_modules.get</span>
+</li>
+<li><span style="color:#e67e22">binds.get</span>
+</li>
+<li><span style="color:#e67e22">b.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def binding_info_for(rp, local):
+        &quot;&quot;&quot;Binding info for `local` (module name or import alias) in a file.&quot;&quot;&quot;
+        info = binding_modules.get(local)
+        if info is not None:
+            return info
+        for b in binds.get(rp, []):
+            if b.get(&#x27;bind&#x27;) == local and b.get(&#x27;binding&#x27;):
+                return b[&#x27;binding&#x27;]
+        return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-binding_for-549">binding_for:551</a>
+</li>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:754</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>resolve <a id="fn-resolve-499"></a></h3>
+<p><em>kodama_docs/graph.py:499-731</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>rp</code></td><td></td></tr>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>method</code></td><td></td></tr>
+<tr><td><code>line</code></td><td></td></tr>
+<tr><td><code>owner_fn</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">binds.get</span>
+</li>
+<li><span style="color:#e67e22">builtins_for</span>
+</li>
+<li><a href="graph.py.html#fn-binding_for-549">binding_for</a>
+</li>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><a href="graph.py.html#fn-one_or_ambiguous-531">one_or_ambiguous</a>
+</li>
+<li><span style="color:#e67e22">name.partition</span>
+</li>
+<li><a href="graph.py.html#fn-owner_class-538">owner_class</a>
+</li>
+<li><span style="color:#e67e22">qual_cands.get</span>
+</li>
+<li><a href="graph.py.html#fn-mod_file-459">mod_file</a>
+</li>
+<li><span style="color:#e67e22">file_fn_q.get</span>
+</li>
+<li><span style="color:#e67e22">file_fn.get</span>
+</li>
+<li><span style="color:#e67e22">file_cls.get</span>
+</li>
+<li><a href="graph.py.html#fn-file_named_hits-542">file_named_hits</a>
+</li>
+<li><span style="color:#e67e22">b.get</span>
+</li>
+<li><span style="color:#e67e22">hits.append</span>
+</li>
+<li><span style="color:#e67e22">hits.extend</span>
+</li>
+<li><span style="color:#e67e22">name.split</span>
+</li>
+<li><span style="color:#e67e22">name_cands.get</span>
+</li>
+<li>len
+</li>
+<li><a href="graph.py.html#fn-ambiguous-525">ambiguous</a>
+</li>
+<li><span style="color:#e67e22">files_by_rp.get</span>
+</li>
+<li><a href="graph.py.html#fn-_resolve_in_scope-264">_resolve_in_scope</a>
+</li>
+<li><span style="color:#e67e22">fentry.get</span>
+</li>
+<li><a href="graph.py.html#fn-node_id_fn-55">node_id_fn</a>
+</li>
+<li><span style="color:#e67e22">c.get</span>
+</li>
+<li><a href="graph.py.html#fn-node_id_cls-63">node_id_cls</a>
+</li>
+<li><a href="graph.py.html#fn-lang_of_file-71">lang_of_file</a>
+</li>
+<li><span style="color:#e67e22">owner_q.rsplit</span>
+</li>
+<li><span style="color:#e67e22">scope.rsplit</span>
+</li>
+<li><span style="color:#e67e22">top_name_cands.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def resolve(rp, name, method, line, owner_fn=None):
+        &quot;&quot;&quot;Resolve one call site using the context of file `rp`.
+
+        Returns (target_node_id, status) or None when the candidates are
+        ambiguous (the call site is recorded in diag; no edge is written).
+
+        ``owner_fn`` is the innermost function enclosing the call; it is
+        what lets ``self.method()`` / ``cls.method()`` resolve inside the
+        right class instead of being mistaken for a builtin.
+        &quot;&quot;&quot;
+        file_bs = binds.get(rp, [])
+        builtins = builtins_for(rp)
+        if name is None:
+            # The callee is computed at runtime (`open(..).read()`,
+            # `cfg[&#x27;k&#x27;].update(..)`, `getattr(..)(..)`): no static target
+            # exists, so the call stays VISIBLE as an external reference
+            # (`?.method` / `?`) rather than being silently dropped.
+            label = f&#x27;?.{method}&#x27; if method else &#x27;?&#x27;
+            return &#x27;ext:&#x27; + label, &#x27;external&#x27;
+        label = f&#x27;{name}.{method}&#x27; if method else name
+
+        def dedup(seq):
+            # a file can bind the same name twice (e.g. a require recorded
+            # as both an import and a module-alias var) — same target
+            return list(dict.fromkeys(seq))
+
+        def ambiguous(cands):
+            cands = dedup(cands)
+            diag[&#x27;ambiguous_calls&#x27;].append({
+                &#x27;file&#x27;: rp, &#x27;line&#x27;: line, &#x27;name&#x27;: label,
+                &#x27;candidates&#x27;: [_cand_display(c) for c in cands]})
+
+        def one_or_ambiguous(cands):
+            cands = dedup(cands)
+            if not cands:
+                return None
+            return (cands[0], &#x27;resolved&#x27;) if len(cands) == 1 \
+                else ambiguous(cands)
+
+        def owner_class():
+            q = (owner_fn or {}).get(&#x27;qualified&#x27;) or (owner_fn or {}).get(&#x27;name&#x27;)
+            return q.rsplit(&#x27;.&#x27;, 1)[0] if q and &#x27;.&#x27; in q else None
+
+        def file_named_hits(bf, plain):
+            &quot;&quot;&quot;All functions in file ``bf`` with plain name ``plain``.
+            Top-level functions win; methods/table functions are only used
+            when there is no module-level candidate.&quot;&quot;&quot;
+            top = file_fn.get((bf, plain))
+            return [top] if top else list(file_named.get((bf, plain), []))
+
+        def binding_for(local):
+            &quot;&quot;&quot;Binding info for `local` (a module name or an import alias).&quot;&quot;&quot;
+            return binding_info_for(rp, local)
+
+        if method and name:
+            # 0) explicit pybind11 exports: `mixed_native.Engine`,
+            #    `mixed_native.add`, `mixed_native.Engine.step`. These are
+            #    declared by the binding, not guessed from a shared name.
+            info = binding_for(name)
+            if info:
+                ids = (info[&#x27;classes&#x27;].get(method)
+                       or info[&#x27;functions&#x27;].get(method))
+                if ids:
+                    return one_or_ambiguous(ids)
+            if &#x27;.&#x27; in name:
+                mod, _, owner = name.partition(&#x27;.&#x27;)
+                info = binding_for(mod)
+                if info:
+                    ids = info[&#x27;methods&#x27;].get((owner, method))
+                    if ids:
+                        return one_or_ambiguous(ids)
+
+            # 0b) self/cls: the enclosing class is known statically. Resolve
+            #    `Class.method` directly; never classify self/cls as a
+            #    builtin (they are not callables).
+            if name in (&#x27;self&#x27;, &#x27;cls&#x27;):
+                cls = owner_class()
+                if cls:
+                    cands = qual_cands.get(f&#x27;{cls}.{method}&#x27;)
+                    if cands:
+                        return one_or_ambiguous(cands)
+
+            # 1) dotted receiver that is a project MODULE path
+            #    (e.g. `deep.pack.mod.launch(...)`): resolve the module to
+            #    its file, then the method within that file
+            if &#x27;.&#x27; in name:
+                mf = mod_file(name, rp)
+                if mf:
+                    hit = (file_fn_q.get((mf, f&#x27;{name}.{method}&#x27;))
+                           or file_fn.get((mf, method))
+                           or file_cls.get((mf, method)))
+                    if hit:
+                        return hit, &#x27;resolved&#x27;
+                    hits = file_named_hits(mf, method)
+                    if hits:
+                        return one_or_ambiguous(hits)
+
+            # 2) object bound to a project module in this file -&gt; its method
+            hits = []
+            for b in file_bs:
+                if b[&#x27;bind&#x27;] != name or not b[&#x27;file&#x27;]:
+                    continue
+                bf, target = b[&#x27;file&#x27;], b.get(&#x27;name&#x27;)
+                if target:
+                    hit = file_fn_q.get((bf, f&#x27;{target}.{method}&#x27;))
+                    if hit:
+                        hits.append(hit)
+                        continue
+                hit = (file_fn.get((bf, method))
+                       or file_cls.get((bf, method)))
+                if hit:
+                    hits.append(hit)
+                else:
+                    hits.extend(file_named_hits(bf, method))
+            if hits:
+                return one_or_ambiguous(hits)
+
+            # 3) exact qualified name `name.method` defined in the project
+            #    (covers `V.add`, `Body.reset`, Lua `M.helper`, ...)
+            cands = qual_cands.get(f&#x27;{name}.{method}&#x27;)
+            if cands:
+                return one_or_ambiguous(cands)
+
+            # 4) object (or its root) is a stdlib/builtin name — never
+            #    guess a project function with the same method name.
+            #    self/cls are deliberately excluded (see step 0).
+            if name not in (&#x27;self&#x27;, &#x27;cls&#x27;) and (
+                    name in builtins or name.split(&#x27;.&#x27;, 1)[0] in builtins):
+                return &#x27;builtin:&#x27; + label, &#x27;builtin&#x27;
+
+            # 5) method name unique project-wide (unbound object, e.g. a
+            #    local table instance) — documented inference
+            cands = name_cands.get(method)
+            if cands:
+                return (cands[0], &#x27;inferred&#x27;) if len(cands) == 1 \
+                    else ambiguous(cands)
+            return &#x27;ext:&#x27; + label, &#x27;external&#x27;
+
+        if &#x27;.&#x27; in name:
+            base, _, rest = name.partition(&#x27;.&#x27;)
+            # 0) explicit pybind11 module export (`mixed_native.add(...)`)
+            info = binding_for(base)
+            if info:
+                ids = (info[&#x27;functions&#x27;].get(rest)
+                       or info[&#x27;classes&#x27;].get(rest))
+                if ids:
+                    return one_or_ambiguous(ids)
+            # 1) base bound to a project module in this file
+            hits = []
+            for b in file_bs:
+                if b[&#x27;bind&#x27;] != base or not b[&#x27;file&#x27;]:
+                    continue
+                bf, target = b[&#x27;file&#x27;], b.get(&#x27;name&#x27;)
+                if target:
+                    hit = file_fn_q.get((bf, f&#x27;{target}.{rest}&#x27;))
+                    if hit:
+                        hits.append(hit)
+                        continue
+                hits.extend(file_named_hits(bf, rest))
+            if hits:
+                return one_or_ambiguous(hits)
+            # 2) exact qualified name in the project (`M.helper`, `V.add`)
+            cands = qual_cands.get(name)
+            if cands:
+                return one_or_ambiguous(cands)
+            # 3) builtin namespace (math.sqrt, io.open, os.path.join, ...)
+            if base in builtins:
+                return &#x27;builtin:&#x27; + name, &#x27;builtin&#x27;
+            return &#x27;ext:&#x27; + name, &#x27;external&#x27;
+
+        # bare name
+        # 1) defined in the same file — scope-aware: the definition visible
+        #    at the call line wins (a nested def shadows the module level,
+        #    and a redefinition shadows the earlier one from that point on).
+        #    Only plain functions/classes participate; methods are not
+        #    callable bare.
+        fentry = files_by_rp.get(rp)
+        if fentry is not None:
+            fn = _resolve_in_scope(fentry.get(&#x27;functions&#x27;) or [], name, line,
+                                   plain_ids=plain_ids)
+            if fn is not None:
+                return node_id_fn(rp, fn[&#x27;name&#x27;], fn[&#x27;line&#x27;]), &#x27;resolved&#x27;
+            cands = [c for c in (fentry.get(&#x27;classes&#x27;) or [])
+                     if (c.get(&#x27;qualified&#x27;) or c[&#x27;name&#x27;]) == c[&#x27;name&#x27;]
+                     and c[&#x27;name&#x27;] == name and c[&#x27;line&#x27;] &lt; line]
+            if cands:
+                c = cands[-1]
+                return node_id_cls(rp, c[&#x27;name&#x27;], c[&#x27;line&#x27;]), &#x27;resolved&#x27;
+        # 1b) C-family only: a bare call inside a namespace/class is
+        #     addressable through the enclosing scope (`clamp_value` inside
+        #     `mixed.Engine.describe` -&gt; `mixed.clamp_value`; an implicit
+        #     `this-&gt;helper()` in a method).  This must NOT apply to Python
+        #     or Lua: there a bare `helper()` is not a method call, and
+        #     inventing `A.helper` would be wrong.
+        if lang_of_file(files_by_rp.get(rp) or {}) == &#x27;c-family&#x27;:
+            owner_q = ((owner_fn or {}).get(&#x27;qualified&#x27;)
+                       or (owner_fn or {}).get(&#x27;name&#x27;))
+            scope = owner_q.rsplit(&#x27;.&#x27;, 1)[0] if owner_q and &#x27;.&#x27; in owner_q \
+                else None
+            while scope:
+                cands = qual_cands.get(f&#x27;{scope}.{name}&#x27;)
+                if cands:
+                    return one_or_ambiguous(cands)
+                scope = scope.rsplit(&#x27;.&#x27;, 1)[0] if &#x27;.&#x27; in scope else None
+
+        # 2) bound by this file&#x27;s imports to a project file
+        #    (`from users import validate` then `validate()`, or
+        #    `from physics.body import Body` then `Body(...)`)
+        hits = []
+        for b in file_bs:
+            if b[&#x27;bind&#x27;] == name and b.get(&#x27;binding&#x27;):
+                info = b[&#x27;binding&#x27;]
+                key = b.get(&#x27;name&#x27;) or name
+                ids = (info[&#x27;classes&#x27;].get(key)
+                       or info[&#x27;functions&#x27;].get(key))
+                if ids:
+                    return one_or_ambiguous(ids)
+            if b[&#x27;bind&#x27;] == name and b[&#x27;file&#x27;] and b[&#x27;name&#x27;]:
+                hit = (file_fn.get((b[&#x27;file&#x27;], b[&#x27;name&#x27;]))
+                       or file_cls.get((b[&#x27;file&#x27;], b[&#x27;name&#x27;])))
+                if hit:
+                    hits.append(hit)
+        if hits:
+            return one_or_ambiguous(hits)
+        # 3) builtin
+        if name in builtins:
+            return &#x27;builtin:&#x27; + name, &#x27;builtin&#x27;
+        # 4) module-level name unique project-wide — documented inference
+        cands = top_name_cands.get(name)
+        if cands:
+            return (cands[0], &#x27;inferred&#x27;) if len(cands) == 1 \
+                else ambiguous(cands)
+        return &#x27;ext:&#x27; + name, &#x27;external&#x27;</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:768</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>dedup <a id="fn-dedup-520"></a></h3>
+<p><em>kodama_docs/graph.py:520-523</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>seq</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>dict.fromkeys
+</li>
+<li>list
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def dedup(seq):
+            # a file can bind the same name twice (e.g. a require recorded
+            # as both an import and a module-alias var) — same target
+            return list(dict.fromkeys(seq))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-ambiguous-525">ambiguous:526</a>
+</li>
+<li><a href="graph.py.html#fn-one_or_ambiguous-531">one_or_ambiguous:532</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>ambiguous <a id="fn-ambiguous-525"></a></h3>
+<p><em>kodama_docs/graph.py:525-529</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cands</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#fn-dedup-520">dedup</a>
+</li>
+<li><span style="color:#e67e22">?.append</span>
+</li>
+<li><a href="graph.py.html#fn-_cand_display-199">_cand_display</a>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def ambiguous(cands):
+            cands = dedup(cands)
+            diag[&#x27;ambiguous_calls&#x27;].append({
+                &#x27;file&#x27;: rp, &#x27;line&#x27;: line, &#x27;name&#x27;: label,
+                &#x27;candidates&#x27;: [_cand_display(c) for c in cands]})</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-one_or_ambiguous-531">one_or_ambiguous:536</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:634</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:730</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>one_or_ambiguous <a id="fn-one_or_ambiguous-531"></a></h3>
+<p><em>kodama_docs/graph.py:531-536</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>cands</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#fn-dedup-520">dedup</a>
+</li>
+<li>len
+</li>
+<li><a href="graph.py.html#fn-ambiguous-525">ambiguous</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def one_or_ambiguous(cands):
+            cands = dedup(cands)
+            if not cands:
+                return None
+            return (cands[0], &#x27;resolved&#x27;) if len(cands) == 1 \
+                else ambiguous(cands)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-resolve-499">resolve:562</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:569</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:579</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:594</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:614</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:620</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:645</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:659</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:663</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:701</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:715</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:722</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>owner_class <a id="fn-owner_class-538"></a></h3>
+<p><em>kodama_docs/graph.py:538-540</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">?.get</span>
+</li>
+<li><span style="color:#e67e22">q.rsplit</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def owner_class():
+            q = (owner_fn or {}).get(&#x27;qualified&#x27;) or (owner_fn or {}).get(&#x27;name&#x27;)
+            return q.rsplit(&#x27;.&#x27;, 1)[0] if q and &#x27;.&#x27; in q else None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-resolve-499">resolve:575</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>file_named_hits <a id="fn-file_named_hits-542"></a></h3>
+<p><em>kodama_docs/graph.py:542-547</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>bf</code></td><td></td></tr>
+<tr><td><code>plain</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">file_fn.get</span>
+</li>
+<li><span style="color:#e67e22">file_named.get</span>
+</li>
+<li>list
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def file_named_hits(bf, plain):
+            &quot;&quot;&quot;All functions in file ``bf`` with plain name ``plain``.
+            Top-level functions win; methods/table functions are only used
+            when there is no module-level candidate.&quot;&quot;&quot;
+            top = file_fn.get((bf, plain))
+            return [top] if top else list(file_named.get((bf, plain), []))</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-resolve-499">resolve:592</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:612</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:657</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>binding_for <a id="fn-binding_for-549"></a></h3>
+<p><em>kodama_docs/graph.py:549-551</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>local</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#fn-binding_info_for-489">binding_info_for</a>
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def binding_for(local):
+            &quot;&quot;&quot;Binding info for `local` (a module name or an import alias).&quot;&quot;&quot;
+            return binding_info_for(rp, local)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-resolve-499">resolve:557</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:565</a>
+</li>
+<li><a href="graph.py.html#fn-resolve-499">resolve:640</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>owner <a id="fn-owner-738"></a></h3>
+<p><em>kodama_docs/graph.py:738-745</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>call_line</code></td><td></td></tr>
+<tr><td><code>fns</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">fn.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def owner(call_line, fns=fns):
+            best = None
+            for fn in fns:
+                if fn[&#x27;line&#x27;] &lt;= call_line &lt;= fn.get(&#x27;end_line&#x27;, fn[&#x27;line&#x27;]):
+                    span = fn.get(&#x27;end_line&#x27;, fn[&#x27;line&#x27;]) - fn[&#x27;line&#x27;]
+                    if best is None or span &lt; best[0]:
+                        best = (span, fn)
+            return best[1] if best else None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-build_graph-312">build_graph:748</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>resolution_summary <a id="fn-resolution_summary-874"></a></h3>
+<p><em>kodama_docs/graph.py:874-893</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">g.edges</span>
+</li>
+<li><span style="color:#e67e22">d.get</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def resolution_summary(g) -&gt; dict:
+    &quot;&quot;&quot;Aggregate the ``resolution_success`` flag across reference edges.
+
+    Returns ``{&#x27;calls&#x27;: {...}, &#x27;imports&#x27;: {...}, &#x27;reads&#x27;: {...}}`` where each
+    has ``success`` / ``failed`` edge counts. ``failed`` means the reference
+    did not resolve (external call, unresolved import) — exactly the
+    references the renderers highlight in orange.&quot;&quot;&quot;
+    ok = {&#x27;CALLS&#x27;: 0, &#x27;IMPORTS&#x27;: 0, &#x27;READS&#x27;: 0}
+    fail = {&#x27;CALLS&#x27;: 0, &#x27;IMPORTS&#x27;: 0, &#x27;READS&#x27;: 0}
+    for _u, _v, d in g.edges(data=True):
+        et = d.get(&#x27;type&#x27;)
+        if et not in ok:
+            continue
+        if d.get(&#x27;resolution_success&#x27;):
+            ok[et] += 1
+        else:
+            fail[et] += 1
+    return {&#x27;calls&#x27;: {&#x27;success&#x27;: ok[&#x27;CALLS&#x27;], &#x27;failed&#x27;: fail[&#x27;CALLS&#x27;]},
+            &#x27;imports&#x27;: {&#x27;success&#x27;: ok[&#x27;IMPORTS&#x27;], &#x27;failed&#x27;: fail[&#x27;IMPORTS&#x27;]},
+            &#x27;reads&#x27;: {&#x27;success&#x27;: ok[&#x27;READS&#x27;], &#x27;failed&#x27;: fail[&#x27;READS&#x27;]}}</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="scan.py.html">kodama_docs/scan.py</a>
+<ul>
+<li><a href="scan.py.html#fn-save_diagnostics-109">save_diagnostics:120</a>
+</li>
+<li><a href="scan.py.html#fn-report_scan-191">report_scan:311</a>
+</li>
+</ul>
+</li>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-render_all-108">render_all:142</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>save_graph <a id="fn-save_graph-896"></a></h3>
+<p><em>kodama_docs/graph.py:896-901</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>path</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.makedirs
+</li>
+<li>os.path.dirname
+</li>
+<li><span style="color:#e67e22">nx.node_link_data</span>
+</li>
+<li>open
+</li>
+<li>json.dump
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def save_graph(g, path) -&gt; str:
+    os.makedirs(os.path.dirname(path) or &#x27;.&#x27;, exist_ok=True)
+    data = nx.node_link_data(g, edges=&#x27;edges&#x27;)
+    with open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        json.dump(data, fh, ensure_ascii=False, indent=1)
+    return path</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:334</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>diet_graph_data <a id="fn-diet_graph_data-910"></a></h3>
+<p><em>kodama_docs/graph.py:910-920</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="graph.py.html#variables">_DIET_NODE_DROP</a>
+</li>
+<li><span style="color:#e67e22">nx.node_link_data</span>
+</li>
+<li><span style="color:#e67e22">data.get</span>
+</li>
+<li><span style="color:#e67e22">node.pop</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def diet_graph_data(g) -&gt; dict:
+    &quot;&quot;&quot;node-link data for serving: same relationships, no source bodies.
+
+    The full graph remains complete on disk (``graph.json``). This is only
+    what a browser needs to draw it, so large function bodies are not sent
+    over the wire or inlined into the static site.&quot;&quot;&quot;
+    data = nx.node_link_data(g, edges=&#x27;edges&#x27;)
+    for node in data.get(&#x27;nodes&#x27;, []):
+        for key in _DIET_NODE_DROP:
+            node.pop(key, None)
+    return data</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="graph.py.html">kodama_docs/graph.py</a>
+<ul>
+<li><a href="graph.py.html#fn-save_diet_graph-923">save_diet_graph:926</a>
+</li>
+</ul>
+</li>
+<li><a href="../tests/test_static_site.py.html">tests/test_static_site.py</a>
+<ul>
+<li><a href="../tests/test_static_site.py.html#fn-test_diet_graph-96">test_diet_graph:104</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>save_diet_graph <a id="fn-save_diet_graph-923"></a></h3>
+<p><em>kodama_docs/graph.py:923-927</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>g</code></td><td></td></tr>
+<tr><td><code>path</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.makedirs
+</li>
+<li>os.path.dirname
+</li>
+<li>open
+</li>
+<li><a href="graph.py.html#fn-diet_graph_data-910">diet_graph_data</a>
+</li>
+<li>json.dump
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def save_diet_graph(g, path) -&gt; str:
+    os.makedirs(os.path.dirname(path) or &#x27;.&#x27;, exist_ok=True)
+    with open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        json.dump(diet_graph_data(g), fh, ensure_ascii=False, indent=1)
+    return path</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="../main.py.html">main.py</a>
+<ul>
+<li><a href="../main.py.html#fn-main-166">main:335</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>load_graph <a id="fn-load_graph-930"></a></h3>
+<p><em>kodama_docs/graph.py:930-935</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>path</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>os.path.exists
+</li>
+<li>open
+</li>
+<li>json.load
+</li>
+<li><span style="color:#e67e22">nx.node_link_graph</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def load_graph(path):
+    if not os.path.exists(path):
+        return None
+    with open(path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as fh:
+        data = json.load(fh)
+    return nx.node_link_graph(data, multigraph=True, edges=&#x27;edges&#x27;)</code></pre>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>_C_FAMILY_EXTS</code></td><td>67</td><td>table</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><code>_DIET_NODE_DROP</code></td><td>907</td><td>table</td><td>: Node attributes only useful to the analysis pipeline, not to the graph : viewer. The full graph keeps them (it is the reusable artifact); …</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 41: import of <span style="color:#e67e22">hashlib</span> — no matching file in the project
+</li>
+<li>line 42: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+<li>line 43: import of <span style="color:#e67e22">os</span> — no matching file in the project
+</li>
+<li>line 44: import of <span style="color:#e67e22">re</span> — no matching file in the project
+</li>
+<li>line 46: import of <span style="color:#e67e22">networkx</span> — no matching file in the project
+</li>
+<li>line 48: import of <span style="color:#e67e22">backends</span> — no matching file in the project
+</li>
+<li>line 48: import of <span style="color:#e67e22">backends</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>

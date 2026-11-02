@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama-docs</title>
+<link rel="icon" type="image/x-icon" href="../icon/icon.ico">
+<link rel="icon" type="image/png" href="../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../symbols-data.js" defer></script>
+<script src="../lib/highlight.min.js" defer></script>
+<script src="../app.js" defer></script>
+<script src="../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../index.html"><img class="brand-icon"
+     src="../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama-docs</h1>
+<p>kodama-docs reads a source codebase and turns it into browsable, cross-linked documentation. The exact, structural parts — which files exist, what each function is, which symbols call or import which — are computed <strong>deterministically</strong> from the code. A local or remote LLM then writes only the human prose (summaries and explanations) around that fixed structure. The result is a static site: an <code>index.md</code>, one page per source file, and this manual.</p>
+<h2>What this manual is</h2>
+<p>The project README (in the repository root) is a quick overview. This manual is the deeper, sectioned reference: how each part of the tool works, every configuration key, each language backend, and the things that go wrong and how to fix them.</p>
+<p>This &quot;Manual&quot; group is <strong>section 0</strong> of every build — the one place where hand-written content sits at the top of the sidebar, above the generated docs. No LLM is involved in this content.</p>
+<h2>How it is organized</h2>
+<ul>
+<li><a href="01%20-%20Getting%20Started/01%20-%20Install.html">01 - Getting Started</a> — install, your first run, configuration, serving.
+</li>
+<li><a href="02%20-%20How%20It%20Works/01%20-%20Overview.html">02 - How It Works</a> — the pipeline, determinism, the graph, chunk-and-merge, caching.
+</li>
+<li><a href="03%20-%20Components/01%20-%20Backends.html">03 - Components</a> — backends, the Lua, Python and C/C++/CUDA backends, the LLM client, the web server, the CLI.
+</li>
+<li><a href="04%20-%20Reference/01%20-%20Config%20Reference.html">04 - Reference</a> — every config key, the output and data formats, the prompts.
+</li>
+<li><a href="05%20-%20Examples/01%20-%20Documenting%20a%20Lua%20Project.html">05 - Examples</a> — end-to-end walkthroughs, including kodama-docs documenting itself.
+</li>
+<li><a href="06%20-%20Troubleshooting/01%20-%20LLM%20Problems.html">06 - Troubleshooting</a> — LLM, parsing, and performance problems.
+</li>
+<li><a href="07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.html">07 - Concepts</a> — the symbol/graph model and a glossary.
+</li>
+<li><a href="08%20-%20Contributing/01%20-%20Adding%20a%20Language.html">08 - Contributing</a> — how to add a language and how the code is organized.
+</li>
+<li><a href="09%20-%20FAQ.html">09 - FAQ</a> — common questions.
+</li>
+</ul>
+</main>
+</div>
+</body>
+</html>

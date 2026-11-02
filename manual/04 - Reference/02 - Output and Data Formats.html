@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Output and Data Formats</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Output and Data Formats</h1>
+<p>A run produces two families of artifacts: the <strong>human-readable docs</strong> under <code>output_dir</code>, and the <strong>machine data</strong> (analysis cache, LLM records, graph, diagnostics) under <code>data_dir</code>. This page lists every file, its location, its exact on-disk shape, and which component writes it.</p>
+<h2>Output directory (<code>output_dir</code>)</h2>
+<table>
+<thead><tr>
+<th>Path</th>
+<th>Writer</th>
+<th>What it is</th>
+</tr></thead>
+<tbody>
+<tr><td><code>index.md</code></td><td>render</td><td>the index: <code># Documentation index</code>, a &quot;Manual documentation&quot; nested bullet list mirroring the manual&#x27;s folder hierarchy (if <code>manual_doc</code> is set), the &quot;N files documented.&quot; line, a per-file table (File / Lines / Functions / Variables), and an &quot;Analysis summary&quot; section.</td></tr>
+<tr><td><code>files/&lt;relpath&gt;.md</code></td><td>render</td><td>one page per source file (see <a href="../02%20-%20How%20It%20Works/07%20-%20Rendering.html">Rendering</a> for the exact page layout).</td></tr>
+<tr><td><code>manual/…</code></td><td>manual copy</td><td>a verbatim copy of the configured <code>manual_doc</code> folder (all files, so relative images/links work), plus <code>manual/</code> entries surfaced on the index.</td></tr>
+<tr><td><code>site/</code></td><td>static build (<code>--static</code>)</td><td>a self-contained, server-free build: every <code>.md</code> page rendered to <code>.html</code> with depth-relative paths (links rewritten <code>.md</code>→<code>.html</code>), <code>graph.html</code>, <code>404.html</code>, the web assets copied to the root (<code>app.js</code>, <code>sidebar.js</code>, <code>fuzzy.js</code>, <code>graph.js</code>, <code>graph/</code>, <code>lib/</code>, <code>theme/</code>, <code>icon/</code>), and the two API payloads as root files <code>symbols.json</code> (slim index) and <code>graph.json</code>. Open <code>site/index.html</code> directly or host the folder (e.g. GitHub Pages).</td></tr>
+<tr><td><code>meta/graph.json</code></td><td>render (when <code>copy_meta</code>)</td><td>copy of the graph for the web graph view.</td></tr>
+<tr><td><code>meta/symbols.json</code></td><td>render (when <code>copy_meta</code>)</td><td>copy of the analysis cache.</td></tr>
+<tr><td><code>meta/diagnostics.json</code></td><td>render (when <code>copy_meta</code>)</td><td>copy of the diagnostics.</td></tr>
+<tr><td><code>.doc_cache</code></td><td>outputs</td><td><code>{&quot;schema&quot;: &quot;kodama_docs/doc_cache@1&quot;, &quot;files&quot;: {relpath: md5}}</code> — the dirty/stale tracker (see <a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>).</td></tr>
+</tbody>
+</table>
+<h2>Data directory (<code>data_dir</code>)</h2>
+<table>
+<thead><tr>
+<th>Path</th>
+<th>Writer</th>
+<th>What it is</th>
+</tr></thead>
+<tbody>
+<tr><td><code>symbols.json</code></td><td>scan</td><td>the per-file analysis cache. <code>{&quot;schema&quot;: &quot;kodama_docs/symbols@1&quot;, fingerprint, file_count, backends: {&quot;.lua&quot;: &quot;kodama-lua@0.1.0&quot;, …}, files: […]}</code>. Each <code>files[]</code> entry carries <code>relpath</code>, <code>lines</code>, <code>size</code>, <code>status</code>, plus the extracted <code>functions</code> / <code>file_vars</code> / <code>calls</code> / <code>imports</code> / <code>classes</code>. The <code>backends</code> stamp is <code>active_backend_ids()</code> — if a backend&#x27;s <code>name@version</code> for a given extension changes, the whole analysis is invalidated (a backend upgrade forces re-extraction).</td></tr>
+<tr><td><code>graph.json</code></td><td>graph</td><td>the call/reference graph in <strong>networkx node-link format</strong> (<code>edges=&#x27;edges&#x27;</code>, multigraph). Nodes carry <code>id</code> and <code>kind</code> (<code>file</code> / <code>class</code> / <code>function</code> / <code>variable</code> / <code>module</code> / <code>builtin</code> / <code>external</code>); edges carry <code>relation</code> (<code>CONTAINS</code> / <code>CALLS</code> / <code>IMPORTS</code> / <code>READS</code>) and, for <code>CALLS</code>, a <code>status</code> (<code>resolved</code> / <code>inferred</code> / <code>builtin</code> / <code>external</code> / <code>unresolved</code>).</td></tr>
+<tr><td><code>diagnostics.json</code></td><td>scan</td><td><code>{&quot;schema&quot;: &quot;kodama_docs/diagnostics@1&quot;, …}</code> — see below.</td></tr>
+<tr><td><code>functions/*.json</code></td><td>LLM phase</td><td>one record per function (see <a href="#records">Records</a>).</td></tr>
+<tr><td><code>variables/*.json</code></td><td>LLM phase</td><td>one record per file-level variable.</td></tr>
+<tr><td><code>summaries/*.json</code></td><td>LLM phase</td><td>one record per file summary.</td></tr>
+<tr><td><code>chunks/*.json</code></td><td>LLM phase</td><td>one record per chunk of a long function.</td></tr>
+</tbody>
+</table>
+<h3>Records</h3>
+<p>One JSON file per task, under the kind&#x27;s subdirectory, named <code>{kind}_{md5(relpath)[:10]}_{sanitized_name}_{line}.json</code>. Shape:</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-json">{
+  &quot;schema&quot;: &quot;kodama_docs/record@1&quot;,
+  &quot;kind&quot;: &quot;function&quot;,                 // function | variable | summary | chunk
+  &quot;file&quot;: &quot;src/foo.lua&quot;,
+  &quot;name&quot;: &quot;do_thing&quot;,
+  &quot;line&quot;: 42,
+  &quot;symbol&quot;: { …the symbol this prose was generated for… },
+  &quot;prose&quot;: { …the generated fields, per the kind&#x27;s schema… },
+  &quot;fingerprint&quot;: &quot;&lt;sha256&gt;&quot;,
+  &quot;stubbed&quot;: true                     // only for --no-llm placeholder prose
+}</code></pre>
+</details>
+<ul>
+<li><strong><code>fingerprint</code></strong> is the invalidation key: it folds in the symbol&#x27;s source, its callers/callees, the settings that shaped its prompt, and the model. A mismatch is a cache miss (see <a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a>).
+</li>
+<li><strong><code>stubbed: true</code></strong> marks <code>--no-llm</code> placeholder prose. A full run treats stub records as misses and overwrites them; <code>--no-llm</code> runs may reuse them.
+</li>
+</ul>
+<h3><code>diagnostics.json</code> (detail)</h3>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-json">{
+  &quot;schema&quot;: &quot;kodama_docs/diagnostics@1&quot;,
+  &quot;fingerprint&quot;: &quot;&lt;scan fingerprint&gt;&quot;,
+  &quot;resolution_success&quot;: {
+    &quot;calls&quot;:  { &quot;success&quot;: 1619, &quot;failed&quot;: 1286 },
+    &quot;imports&quot;: { &quot;success&quot;: 51,   &quot;failed&quot;: 162 },
+    &quot;reads&quot;:  { &quot;success&quot;: 60,   &quot;failed&quot;: 0 }
+  },
+  &quot;analysis&quot;: {
+    &quot;counts&quot;: { &quot;ok&quot;: 89, &quot;failed&quot;: 0, &quot;binary&quot;: 0 },
+    &quot;files&quot;: { &quot;&lt;relpath&gt;&quot;: { &quot;status&quot;: &quot;ok&quot; } }
+  },
+  &quot;graph&quot;: {
+    &quot;ambiguous_calls&quot;: [ {&quot;file&quot;: &quot;a/lua.lua&quot;, &quot;line&quot;: 10, &quot;name&quot;: &quot;add&quot;,
+                          &quot;candidates&quot;: [&quot;x/vec3.lua::add@10&quot;, &quot;y/vec3.py::add@21&quot;]} ],
+    &quot;inferred_calls&quot;:  [ {&quot;file&quot;: &quot;a/lua.lua&quot;, &quot;line&quot;: 40, &quot;name&quot;: &quot;helper&quot;} ],
+    &quot;external_calls&quot;:  [ {&quot;file&quot;: &quot;a/lua.lua&quot;, &quot;line&quot;: 20, &quot;name&quot;: &quot;print&quot;} ],
+    &quot;builtin_calls&quot;:   [ {&quot;file&quot;: &quot;a/lua.lua&quot;, &quot;line&quot;: 5, &quot;name&quot;: &quot;pairs&quot;} ],
+    &quot;unresolved_imports&quot;: [ {&quot;file&quot;: &quot;a/lua.lua&quot;, &quot;line&quot;: 1, &quot;module&quot;: &quot;mod&quot;} ]
+  }
+}</code></pre>
+</details>
+<p>The <code>graph.*</code> values are <strong>sorted lists of diagnostic objects</strong> (not counts) — each entry names the file, line, and the call/involved symbol (ambiguous calls also carry their <code>candidates</code>), so a reviewer can jump straight to the site. These lists feed the index&#x27;s &quot;Analysis summary&quot; and the &quot;Call references: … external, … inferred, … ambiguous, … unresolved&quot; line (which shows their lengths).</p>
+<h2>Related</h2>
+<ul>
+<li><a href="../02%20-%20How%20It%20Works/07%20-%20Rendering.html">Rendering</a> — the exact markdown page layout.
+</li>
+<li><a href="../02%20-%20How%20It%20Works/08%20-%20Caching.html">Caching</a> — how the fingerprints and <code>.doc_cache</code> interact.
+</li>
+<li><a href="../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.html">Symbols and Graph</a> — node/edge semantics.
+</li>
+<li><a href="../07%20-%20Concepts/02%20-%20Glossary.html">Glossary</a>.
+</li>
+</ul>
+</main>
+</div>
+</body>
+</html>

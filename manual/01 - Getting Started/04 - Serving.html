@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serving</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>Serving</h1>
+<p>kodama-docs ships a small, dependency-free web server (stdlib <code>http.server</code>). It serves the rendered <code>doc/</code> folder and adds a sidebar, search, theme switching, and a call-graph view. It binds to loopback by default, so it is safe to run on a workstation.</p>
+<h2>Start it</h2>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --config settings.yaml --serve</code></pre>
+</details>
+<p><code>--serve</code> needs a previous run (it reads the rendered <code>doc/</code> and <code>meta/</code> folders). The bind address, port, theme, and docs folder come from <code>web_settings.yaml</code> (below) or the server defaults.</p>
+<h2>web_settings.yaml</h2>
+<ul>
+<li><code>host</code> — bind address (default <code>127.0.0.1</code>).
+</li>
+<li><code>port</code> — HTTP port.
+</li>
+<li><code>default_theme</code> — <code>light</code> or <code>dark</code>.
+</li>
+<li><code>docs_dir</code> — the folder to serve (defaults to <code>output_dir</code>).
+</li>
+</ul>
+<h2>What it serves</h2>
+<ul>
+<li><code>/</code> — the app shell (sidebar + content pane).
+</li>
+<li><code>/index.md</code>, <code>/files/...md</code> — rendered documentation pages.
+</li>
+<li><code>/manual/...</code> — this manual (section 0); non-markdown files under it are served as raw assets.
+</li>
+<li><code>/graph</code> — the interactive call-graph view.
+</li>
+<li><code>/api/symbols</code> — the symbol index (drives search and the sidebar).
+</li>
+<li><code>/api/graph</code> — the graph JSON used by the graph view.
+</li>
+<li><code>/theme/&lt;light|dark&gt;/style.css</code>, <code>/app.js</code>, <code>/sidebar.js</code>, <code>/fuzzy.js</code>, <code>/graph.js</code> — the front-end assets.
+</li>
+</ul>
+<h2>No server needed: <code>--static</code></h2>
+<p>If you&#x27;d rather not run anything, build a static site:</p>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-bash">python main.py --config settings.yaml --static</code></pre>
+</details>
+<p>The run happens as usual, and afterwards <code>&lt;output_dir&gt;/site/</code> is written: the same documentation as plain <code>.html</code> files with relative paths, all assets copied in, and a <code>404.html</code>. <code>site/index.html</code> opens straight from disk, or point a GitHub Pages repo at <code>site/</code> and push — no server, no endpoints. Details in <a href="../03%20-%20Components/05%20-%20Web%20Server.html">Web Server</a> and <code>STATIC_SITE.md</code>.</p>
+<p>The full route list and how the front-end assembles a page is in <a href="../03%20-%20Components/05%20-%20Web%20Server.html">Web Server</a>.</p>
+</main>
+</div>
+</body>
+</html>

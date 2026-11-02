@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kodama_docs/models.py</title>
+<link rel="icon" type="image/x-icon" href="../../icon/icon.ico">
+<link rel="icon" type="image/png" href="../../icon/icon.png">
+<link id="doc-theme" rel="stylesheet" href="../../theme/light/style.css?v=2">
+<link id="hljs-light" rel="stylesheet"
+      href="../../lib/github.min.css">
+<link id="hljs-dark" rel="stylesheet"
+      href="../../lib/github-dark.min.css" disabled>
+<script>window.__KODAMA_BASE__ = '../../'</script>
+<script>(function(){try{var t=localStorage.getItem("kodama.theme");if(t!=="light"&&t!=="dark")return;var l=document.getElementById("doc-theme");if(l)l.href="../../theme/"+t+"/style.css?v=2";var a=document.getElementById("hljs-light"),b=document.getElementById("hljs-dark");if(a&&b){a.disabled=t!=="light";b.disabled=t!=="dark";}}catch(e){}})();</script>
+<script src="../../symbols-data.js" defer></script>
+<script src="../../lib/highlight.min.js" defer></script>
+<script src="../../app.js" defer></script>
+<script src="../../sidebar.js" defer></script>
+</head>
+<body class="docs-page">
+<header class="topbar">
+  <a class="brand" href="../../index.html"><img class="brand-icon"
+     src="../../icon/icon.png" alt="">kodama-docs</a>
+  <a class="nav" href="../../graph.html">graph</a>
+  <span class="topbar-spacer"></span>
+  <button id="theme-toggle" type="button"></button>
+</header>
+<div class="docs-layout">
+<aside class="sidebar" id="sidebar">
+  <input id="sb-search" class="sb-search" type="text"
+    placeholder="search…  @fn  @var  @file:path"
+    autocomplete="off" spellcheck="false"
+    title="words AND together; @fn/@var/@file filter by type; @file:src @var:i scopes — / focuses, Enter opens the first hit, Esc clears">
+  <div id="sb-tree" class="sb-tree"></div>
+  <div class="sb-resizer" title="drag to resize" aria-hidden="true"></div>
+</aside>
+<main class="page">
+<h1>kodama_docs/models.py</h1>
+<h2>Summary</h2>
+<p>No summary generated (<code>--no-llm</code>) <strong>Main purpose:</strong> No summary generated (<code>--no-llm</code>) <strong>Role in project:</strong> No summary generated (<code>--no-llm</code>)</p>
+<h2>Functions</h2>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Line</th>
+<th>Parameters</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><a href="#fn-schema_text-62">schema_text</a></td><td>62</td><td>name</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-validate-66">validate</a></td><td>66</td><td>name, obj</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_type_ok-73">_type_ok</a></td><td>73</td><td>t, v</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-_check-91">_check</a></td><td>91</td><td>spec, v, path, errs</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+<tr><td><a href="#fn-extract_json_object-120">extract_json_object</a></td><td>120</td><td>text</td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h3>schema_text <a id="fn-schema_text-62"></a></h3>
+<p><em>kodama_docs/models.py:62-63</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="models.py.html#variables">SCHEMA</a>
+</li>
+<li>json.dumps
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def schema_text(name: str) -&gt; str:
+    return json.dumps(SCHEMA[name], indent=2)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm.py.html">kodama_docs/llm.py</a>
+<ul>
+<li><a href="llm.py.html#fn-generate-81">generate:93</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>validate <a id="fn-validate-66"></a></h3>
+<p><em>kodama_docs/models.py:66-70</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td></td></tr>
+<tr><td><code>obj</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="models.py.html#variables">SCHEMA</a>
+</li>
+<li>_check (inferred)
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def validate(name: str, obj) -&gt; list:
+    &quot;&quot;&quot;Return a list of human-readable errors (empty list if valid).&quot;&quot;&quot;
+    errs = []
+    _check(SCHEMA[name], obj, &#x27;$&#x27;, errs)
+    return errs</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm.py.html">kodama_docs/llm.py</a>
+<ul>
+<li><a href="llm.py.html#fn-generate-81">generate:107</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_type_ok <a id="fn-_type_ok-73"></a></h3>
+<p><em>kodama_docs/models.py:73-88</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>t</code></td><td></td></tr>
+<tr><td><code>v</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li>isinstance
+</li>
+</ul>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _type_ok(t, v) -&gt; bool:
+    if t == &#x27;string&#x27;:
+        return isinstance(v, str)
+    if t == &#x27;number&#x27;:
+        return isinstance(v, (int, float)) and not isinstance(v, bool)
+    if t == &#x27;integer&#x27;:
+        return isinstance(v, int) and not isinstance(v, bool)
+    if t == &#x27;boolean&#x27;:
+        return isinstance(v, bool)
+    if t == &#x27;array&#x27;:
+        return isinstance(v, list)
+    if t == &#x27;object&#x27;:
+        return isinstance(v, dict)
+    if t == &#x27;null&#x27;:
+        return v is None
+    return True</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="models.py.html">kodama_docs/models.py</a>
+<ul>
+<li><a href="models.py.html#fn-_check-91">_check:95</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>_check <a id="fn-_check-91"></a></h3>
+<p><em>kodama_docs/models.py:91-117</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>spec</code></td><td></td></tr>
+<tr><td><code>v</code></td><td></td></tr>
+<tr><td><code>path</code></td><td></td></tr>
+<tr><td><code>errs</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">spec.get</span>
+</li>
+<li>isinstance
+</li>
+<li><a href="models.py.html#fn-_type_ok-73">_type_ok</a>
+</li>
+<li>any
+</li>
+<li><span style="color:#e67e22">?.join</span>
+</li>
+<li><span style="color:#e67e22">errs.append</span>
+</li>
+<li>type
+</li>
+<li>len
+</li>
+<li><span style="color:#e67e22">v.strip</span>
+</li>
+<li>enumerate
+</li>
+<li><a href="models.py.html#fn-_check-91">_check</a>
+</li>
+<li><span style="color:#e67e22">props.items</span>
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def _check(spec, v, path, errs):
+    t = spec.get(&#x27;type&#x27;)
+    if t is not None:
+        types = t if isinstance(t, list) else [t]
+        if not any(_type_ok(x, v) for x in types):
+            errs.append(f&#x27;{path}: expected type {&quot;/&quot;.join(types)}, got {type(v).__name__}&#x27;)
+            return
+    if isinstance(v, str) and &#x27;minLength&#x27; in spec and len(v.strip()) &lt; spec[&#x27;minLength&#x27;]:
+        errs.append(f&#x27;{path}: string shorter than {spec[&quot;minLength&quot;]} chars&#x27;)
+    if isinstance(v, list):
+        if &#x27;maxItems&#x27; in spec and len(v) &gt; spec[&#x27;maxItems&#x27;]:
+            errs.append(f&#x27;{path}: more than {spec[&quot;maxItems&quot;]} items&#x27;)
+        if &#x27;items&#x27; in spec:
+            for i, item in enumerate(v):
+                _check(spec[&#x27;items&#x27;], item, f&#x27;{path}[{i}]&#x27;, errs)
+    if isinstance(v, dict):
+        for req in spec.get(&#x27;required&#x27;, []):
+            if req not in v:
+                errs.append(f&#x27;{path}: missing required key &quot;{req}&quot;&#x27;)
+        props = spec.get(&#x27;properties&#x27;, {})
+        if spec.get(&#x27;additionalProperties&#x27;) is False:
+            for k in v:
+                if k not in props:
+                    errs.append(f&#x27;{path}: unknown key &quot;{k}&quot;&#x27;)
+        for k, sub in props.items():
+            if k in v:
+                _check(sub, v[k], f&#x27;{path}.{k}&#x27;, errs)</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="models.py.html">kodama_docs/models.py</a>
+<ul>
+<li><a href="models.py.html#fn-validate-66">validate:69</a>
+</li>
+<li><a href="models.py.html#fn-_check-91">_check:105</a>
+</li>
+<li><a href="models.py.html#fn-_check-91">_check:117</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<hr>
+<h3>extract_json_object <a id="fn-extract_json_object-120"></a></h3>
+<p><em>kodama_docs/models.py:120-154</em></p>
+<p><strong>Description</strong></p>
+<p>No description generated (<code>--no-llm</code>)</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>text</code></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>References</strong></p>
+<ul>
+<li><span style="color:#e67e22">text.find</span>
+</li>
+<li>len
+</li>
+<li>range
+</li>
+<li>json.loads
+</li>
+</ul>
+<blockquote><p>Note: <span style="color:#e67e22">orange</span> references could not be resolved to a symbol in this project (no link is written for them).</p></blockquote>
+<details class="src"><summary>Source</summary>
+<pre><code class="lang-py">def extract_json_object(text: str):
+    &quot;&quot;&quot;Deterministically pull the first balanced JSON object out of a text.
+
+    String literals are respected; returns the parsed object or None.
+    &quot;&quot;&quot;
+    if not text:
+        return None
+    start = text.find(&#x27;{&#x27;)
+    while start != -1:
+        depth = 0
+        in_str = False
+        esc = False
+        for i in range(start, len(text)):
+            ch = text[i]
+            if in_str:
+                if esc:
+                    esc = False
+                elif ch == &#x27;\\&#x27;:
+                    esc = True
+                elif ch == &#x27;&quot;&#x27;:
+                    in_str = False
+                continue
+            if ch == &#x27;&quot;&#x27;:
+                in_str = True
+            elif ch == &#x27;{&#x27;:
+                depth += 1
+            elif ch == &#x27;}&#x27;:
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[start:i + 1])
+                    except (ValueError, TypeError):
+                        break
+        start = text.find(&#x27;{&#x27;, start + 1)
+    return None</code></pre>
+</details>
+<details class="cg"><summary>Call graph</summary>
+<ul>
+<li><a href="llm.py.html">kodama_docs/llm.py</a>
+<ul>
+<li><a href="llm.py.html#fn-generate-81">generate:103</a>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<h2>File-level variables <a id="variables"></a></h2>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Line</th>
+<th>Init</th>
+<th>Developer comment</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr><td><code>SCHEMA</code></td><td>8</td><td>table</td><td></td><td>No description generated (<code>--no-llm</code>)</td></tr>
+</tbody>
+</table>
+<h2>Unresolved references</h2>
+<p>The following references could not be resolved to a single symbol and are <strong>not linked</strong>; the analyzer recorded them instead of guessing:</p>
+<ul>
+<li>line 6: import of <span style="color:#e67e22">json</span> — no matching file in the project
+</li>
+</ul>
+<hr>
+<p><em>Generated by kodama-docs. Prose produced by an LLM; structure and links generated deterministically.</em></p>
+</main>
+</div>
+</body>
+</html>
