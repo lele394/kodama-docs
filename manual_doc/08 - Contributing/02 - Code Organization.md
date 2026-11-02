@@ -27,6 +27,7 @@ A map of the repository, so a change can be routed to the right file. (See [Addi
 | Module | Responsibility |
 | --- | --- |
 | `config.py` | load `settings.yaml` + `.env` (project root first, then the config's directory); resolve the `llm` block. |
+| `init_project.py` / `default_settings.yaml` | `kodama-docs init`: write a starter config and copy the prompt templates. |
 | `scan.py` | walk the tree, route files to backends, extract symbols, cache `symbols.json`, write `diagnostics.json`, report. |
 | `graph.py` | build the resolution graph and the per-reference statuses (resolved/inferred/builtin/external/ambiguous) — see [Symbols and Graph](../07%20-%20Concepts/01%20-%20Symbols%20and%20Graph.md). |
 | `context.py` | build the deterministic per-kind prompt context (function / variable / summary) and the chunk splitter. |

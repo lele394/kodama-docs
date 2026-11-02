@@ -49,11 +49,13 @@ include-package-data = true
 version = {attr = "kodama_docs.__version__"}
 
 [tool.setuptools.packages.find]
-include = ["kodama_docs*", "backends*", "web*"]
+include = ["kodama_docs*", "backends*", "web*", "prompts*"]
 namespaces = true
 
 [tool.setuptools.package-data]
 backends = ["*/manifest.toml"]
+kodama_docs = ["default_settings.yaml"]
+prompts = ["*.txt"]
 web = [
     "*.js",
     "*.py",

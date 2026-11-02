@@ -165,16 +165,20 @@ def render_all(cfg: dict, files, g, diag=None, astatus=None):
 
 def main():
     ap = argparse.ArgumentParser(description='kodama-docs')
-    ap.add_argument('command', nargs='?', choices=[None, 'test-backend'],
-                    help="subcommand: 'test-backend' runs a backend's "
-                         "self-test against its own test codebase; omit for "
-                         "a normal documentation run")
+    ap.add_argument('command', nargs='?',
+                    choices=[None, 'init', 'test-backend'],
+                    help="subcommands: 'init' writes a starter settings.yaml "
+                         "+ prompts; 'test-backend' runs a backend self-test; "
+                         "omit for a normal documentation run")
     ap.add_argument('--backend', metavar='NAME',
                     help='backend name for test-backend (e.g. python)')
     ap.add_argument('--config', metavar='PATH',
                     help='settings file (required for pipeline, --serve, '
                          '--purge and --regenerate; run with no arguments '
                          'to print this help)')
+    ap.add_argument('--force', action='store_true',
+                    help='init: overwrite an existing settings.yaml and '
+                         'prompt files')
     ap.add_argument('--fresh', action='store_true',
                     help='ignore analysis cache')
     ap.add_argument('--no-llm', action='store_true',
@@ -230,6 +234,25 @@ def main():
                 'subdirectories)')
             return
         _print_backends(bs)
+        return
+
+    if args.command == 'init':
+        from kodama_docs.init_project import init_project
+        try:
+            rep = init_project('.', force=args.force)
+        except FileExistsError as e:
+            raise SystemExit(f'init: {e}')
+        log(f'init: wrote {rep["settings"]}')
+        if rep['created']:
+            log(f'init: wrote {len(rep["created"])} prompt(s) to '
+                f'{rep["prompts_dir"]}')
+        if rep['kept']:
+            log(f'init: kept existing prompt(s): '
+                + ', '.join(rep['kept']))
+        print('\nNext:')
+        print('  1. edit settings.yaml (source_dir and llm.model)')
+        print('  2. add .env with api_key/base_url, or use --no-llm')
+        print('  3. kodama-docs --config settings.yaml --no-llm')
         return
 
     if args.command == 'test-backend':

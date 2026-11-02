@@ -45,6 +45,15 @@ That is all the `.env` carries. The model name is **not** a `.env` key — it co
 python main.py --list-backends
 ```
 
+For a new project, scaffold the config and prompt templates:
+
+```bash
+kodama-docs init
+```
+
+That writes `settings.yaml` and `prompts/` into the current directory and
+refuses to overwrite without `--force`.
+
 A healthy install lists the built-in `kodama-lua`, `kodama-python` and
 `kodama-cpp` backends, each `ready`, with routing for `.lua`, `.py`, and the
 C/C++/CUDA extensions. The Python backend also ships an end-to-end self-test

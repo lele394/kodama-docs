@@ -9,12 +9,15 @@ python main.py --config settings.yaml
 kodama-docs --config settings.yaml
 ```
 
-All flags live on one flat parser (no subcommands except `test-backend`).
+All flags live on one flat parser; the two subcommands are `init` and
+`test-backend`.
 
 ## All flags
 
 | Flag | Default | Meaning |
 | --- | --- | --- |
+| `init` | — | write a starter `settings.yaml` and `prompts/` into the current directory. Refuses to overwrite without `--force`. |
+| `--force` | off | `init` only: overwrite an existing `settings.yaml` and prompt files. |
 | `--config PATH` | — | config file (`.yaml` or `.yml`), required for pipeline/`--serve`/`--purge`/`--regenerate`; a relative path resolves against the config's own directory for sibling keys. Bare `kodama-docs` prints help instead of guessing `settings.yaml`. |
 | `--no-llm` | off | offline mode: no model calls, stub prose, no per-task delays. Fast first pass / structure check. See [Caching](../02%20-%20How%20It%20Works/08%20-%20Caching.md). |
 | `--fresh` | off | ignore the per-file analysis cache (`<data_dir>/symbols.json`) and re-extract every file. Records and docs are still reused. |
@@ -32,10 +35,11 @@ All flags live on one flat parser (no subcommands except `test-backend`).
 The CLI is evaluated in this order; the first matching mode wins and exits:
 
 1. **`--list-backends` / `--install` / `--remove`** — printed, executed, done.
-2. **`test-backend`** — runs the harness with the named backend (status must be `ready`); exit code 0 on a full pass, non-zero on any failed check.
-3. **`--purge`** / **`--regenerate`** — delete `output_dir`, `data_dir`, and the record caches (`--regenerate` continues, `--purge` stops).
-4. **`--serve`** — web server on the config's output dir (or `docs_dir`).
-5. **the pipeline run** — scan → analyze → graph → [LLM phase](../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.md) → [render](../02%20-%20How%20It%20Works/07%20-%20Rendering.md) → (with `--static`) the static site build.
+2. **`init`** — write starter `settings.yaml` + `prompts/` and exit.
+3. **`test-backend`** — runs the harness with the named backend (status must be `ready`); exit code 0 on a full pass, non-zero on any failed check.
+4. **`--purge`** / **`--regenerate`** — delete `output_dir`, `data_dir`, and the record caches (`--regenerate` continues, `--purge` stops).
+5. **`--serve`** — web server on the config's output dir (or `docs_dir`).
+6. **the pipeline run** — scan → analyze → graph → [LLM phase](../02%20-%20How%20It%20Works/05%20-%20LLM%20Phase.md) → [render](../02%20-%20How%20It%20Works/07%20-%20Rendering.md) → (with `--static`) the static site build.
 
 ## Exit codes
 
@@ -48,6 +52,9 @@ The CLI is evaluated in this order; the first matching mode wins and exits:
 ## Typical invocations
 
 ```bash
+# scaffold a new project (settings.yaml + prompts/)
+kodama-docs init
+
 # inspect the project, no model (console script works too)
 python main.py --config settings.yaml --no-llm
 kodama-docs --config settings.yaml --no-llm

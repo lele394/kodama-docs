@@ -43,6 +43,35 @@ def test_backend_listing_needs_no_config():
         assert 'kodama-python' in r.stdout
 
 
+def test_init_creates_settings_and_prompts():
+    with tempfile.TemporaryDirectory() as td:
+        r = run(['init'], td)
+        assert r.returncode == 0, r
+        settings = os.path.join(td, 'settings.yaml')
+        assert os.path.isfile(settings)
+        with open(settings, 'r', encoding='utf-8') as fh:
+            text = fh.read()
+        assert 'source_dir: "."' in text
+        for name in ('function.txt', 'function_chunk.txt',
+                     'variable.txt', 'summary.txt'):
+            assert os.path.isfile(os.path.join(td, 'prompts', name))
+        # refuse to clobber an existing config without --force
+        r = run(['init'], td)
+        assert r.returncode != 0, r
+        assert 'already exists' in (r.stdout + r.stderr)
+        r = run(['init', '--force'], td)
+        assert r.returncode == 0, r
+
+
+def test_init_config_runs_without_llm():
+    with tempfile.TemporaryDirectory() as td:
+        r = run(['init'], td)
+        assert r.returncode == 0, r
+        r = run(['--config', 'settings.yaml', '--no-llm'], td)
+        assert r.returncode == 0, r
+        assert os.path.isfile(os.path.join(td, 'doc', 'index.md'))
+
+
 def main():
     tests = [v for k, v in sorted(globals().items())
              if k.startswith('test_') and callable(v)]

@@ -160,10 +160,20 @@ int legacy_entry(int value);
    .venv/bin/python -X utf8 main.py --config settings.yaml
    ```
 
-CLI flags:
+   For a new project, generate the starter config and prompts first:
+
+   ```bash
+   cd /path/to/project
+   kodama-docs init
+   # edit settings.yaml (source_dir, llm.model), then:
+   kodama-docs --config settings.yaml --no-llm
+   ```
+
+CLI commands/flags:
 
 | flag | effect |
 |---|---|
+| `kodama-docs init` | write a starter `settings.yaml` + local `prompts/` into the current directory (`--force` overwrites) |
 | `--config PATH` | settings file — required for pipeline, `--serve`, `--purge` and `--regenerate`; bare `kodama-docs` prints help |
 | `--fresh` | ignore the analysis cache and re-extract everything |
 | `--no-llm` | skip the LLM **model calls** only: placeholder prose is cached (flagged), all deterministic sections — parameters, references, call graph — are still generated |
@@ -497,9 +507,15 @@ pyproject.toml     # package metadata, version, console script, build config
 main.py            # CLI + pipeline orchestration (thin; the phases live in kodama_docs/)
 kodama_docs/          # all pipeline modules
   config.py        # settings + .env loading
+  init_project.py  # `kodama-docs init` starter config/prompt copy
+  default_settings.yaml  # template used by init
   scan.py          # file scanning, analysis cache, per-file analysis
   graph.py         # call/import/containment graph (networkx MultiDiGraph)
   context.py       # LLM prompt context assembly
+  prompt_templates.py  # {language}/{file}/... prompt rendering
+  static_site.py   # --static: self-contained site/
+  js_bundle.py     # ES-module bundling for file:// static pages
+  testing.py       # backend self-test harness
   records.py       # read/write LLM records (data/functions|variables|summaries)
   outputs.py       # doc cache, purge
   llm.py           # LLM client (urllib, OpenAI-compatible)
