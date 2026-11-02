@@ -33,6 +33,10 @@ backend. pybind11 exports (`PYBIND11_MODULE`, `py::class_`, `.def`) are read
 statically and become `EXPORTS` / `BRIDGES` graph edges, so a Python facade
 class can link to the C++ class it wraps.
 
+<p align="center">
+  <a href='https://www.nebuleo.org/kodama-docs/index.html'><strong>Github-pages compatible, test it and its static site here!</strong></a><br />
+</p>
+
 ---
 
 ## Developer notes 
