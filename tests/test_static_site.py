@@ -22,6 +22,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
+from kodama_docs import graph as gmod  # noqa: E402
 from kodama_docs import static_site  # noqa: E402
 
 FAILS = []
@@ -92,6 +93,24 @@ def test_inline_json():
           '_inline_json: compact separators')
 
 
+def test_diet_graph():
+    g = gmod.nx.MultiDiGraph()
+    g.add_node('fn:a.py::f@1', kind='function', relpath='a.py', name='f',
+               line=1, end_line=9, params=['x'], vararg=False,
+               body='SECRET-SOURCE', file_id='file:a.py')
+    g.add_node('file:a.py', kind='file', relpath='a.py')
+    g.add_edge('file:a.py', 'fn:a.py::f@1', type='CONTAINS')
+    full = gmod.nx.node_link_data(g, edges='edges')
+    diet = gmod.diet_graph_data(g)
+    check(any(n.get('body') for n in full['nodes']),
+          'diet: full graph keeps bodies')
+    check(all('body' not in n for n in diet['nodes']),
+          'diet: drops source bodies')
+    check(all('params' not in n and 'end_line' not in n
+              for n in diet['nodes']), 'diet: drops pipeline-only fields')
+    check(diet['edges'] == full['edges'], 'diet: keeps all relationships')
+
+
 # ---------------------------------------------------------------- fixture
 def build_fixture(root):
     docs = os.path.join(root, 'docs')
@@ -150,6 +169,7 @@ def main():
     test_base_for()
     test_rewrite_md_links()
     test_inline_json()
+    test_diet_graph()
 
     with tempfile.TemporaryDirectory() as tmp:
         docs, webdir = build_fixture(tmp)
@@ -166,7 +186,7 @@ def main():
                 'app.js', 'sidebar.js', 'graph.js',
                 'lib/hi.css',
                 'theme/dark/style.css', 'theme/light/style.css',
-                'symbols.json', 'graph.json',
+                'symbols.json', 'symbols-data.js', 'graph.json',
         ):
             check(os.path.isfile(os.path.join(site, rel)), f'present: {rel}')
         # the module sub-files ship INSIDE the bundles (file:// cannot load
@@ -261,18 +281,23 @@ def main():
               == {'directed': True, 'nodes': [], 'edges': []},
               'graph.json copied')
 
-        # ---- inline data (file:// forbids fetch of local JSON) ------------
-        check('window.__KODAMA_SYMBOLS__ =' in idx,
-              'index: symbols inlined into the page')
-        check('window.__KODAMA_SYMBOLS__ =' in a,
-              'file page: symbols inlined into the page')
+        # ---- shared data (file:// forbids fetch of local JSON) -----------
+        sd = _read(os.path.join(site, 'symbols-data.js'))
+        check('window.__KODAMA_SYMBOLS__ = ' in sd,
+              'symbols-data.js: defines the search index')
+        check(json.loads(sd.split('window.__KODAMA_SYMBOLS__ = ', 1)[1]
+                         .strip().rstrip(';')) == sl,
+              'symbols-data.js: data == symbols.json (slim)')
+        check('window.__KODAMA_SYMBOLS__' not in idx,
+              'index: symbols are not duplicated inline')
+        check('window.__KODAMA_SYMBOLS__' not in a,
+              'file page: symbols are not duplicated inline')
+        check('<script src="symbols-data.js" defer></script>' in idx,
+              'index: shared symbols-data.js script')
+        check('<script src="../../symbols-data.js" defer></script>' in a,
+              'file page: shared symbols-data.js script depth-prefixed')
         check('window.__KODAMA_GRAPH__ =' in g,
               'graph: data inlined into graph.html')
-        # the inlined JSON must parse and match the shipped data files
-        check(_inline_json_in(idx, 'window.__KODAMA_SYMBOLS__ = ') == sl,
-              'index: inlined symbols == symbols.json (slim)')
-        check(_inline_json_in(a, 'window.__KODAMA_SYMBOLS__ = ') == sl,
-              'file page: inlined symbols == symbols.json (slim)')
         check(_inline_json_in(g, 'window.__KODAMA_GRAPH__ = ')
               == {'directed': True, 'nodes': [], 'edges': []},
               'graph: inlined data == graph.json')

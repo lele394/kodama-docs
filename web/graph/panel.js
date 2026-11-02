@@ -31,6 +31,10 @@ function urlFor(v) {
   if (v.kind === 'variable') {
     return { url: docUrl(v.relpath), frag: 'variables' };
   }
+  if (v.kind === 'class') {
+    return { url: docUrl(v.relpath),
+             frag: 'cls-' + sanitize(v.name) + '-' + v.line };
+  }
   return null;
 }
 

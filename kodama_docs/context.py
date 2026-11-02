@@ -46,8 +46,12 @@ def fn_chunks(body: str, max_lines: int, target_tokens: int = 0,
     return chunks
 
 
+def _name_list(names, limit):
+    return ', '.join(list(dict.fromkeys(names))[:limit])
+
+
 def fn_context_text(fn: dict, calls_in, calls_out, ctx_cfg: dict,
-                    body_note: str = None) -> str:
+                    body_note: str = None, reads=None, imports=None) -> str:
     max_list = int(ctx_cfg.get('max_symbols_per_list', 25))
     max_lines = int(ctx_cfg.get('max_source_lines', 300))
     body = fn.get('body', '')
@@ -62,9 +66,13 @@ def fn_context_text(fn: dict, calls_in, calls_out, ctx_cfg: dict,
         + (' + varargs' if fn.get('vararg') else ''),
     ]
     if calls_in:
-        parts.append('Called by: ' + ', '.join(dict.fromkeys(calls_in))[:500])
+        parts.append('Called by: ' + _name_list(calls_in, max_list))
     if calls_out:
-        parts.append('Calls: ' + ', '.join(dict.fromkeys(calls_out))[:500])
+        parts.append('Calls: ' + _name_list(calls_out, max_list))
+    if reads:
+        parts.append('Reads file variables: ' + _name_list(reads, max_list))
+    if imports:
+        parts.append('Imports: ' + _name_list(imports, max_list))
     if body_note is not None:
         parts.append(body_note)
     else:
@@ -79,8 +87,10 @@ def var_context_text(var: dict, ctx_cfg: dict) -> str:
         f"File: {var['relpath']}",
         f"Initialization: {var.get('init', 'unknown')}",
     ]
-    if var.get('init') == 'string' and var.get('value'):
-        parts.append('Value: ' + trunc(str(var['value']), 200))
+    if var.get('module'):
+        parts.append('Loaded module: ' + str(var['module']))
+    if var.get('value'):
+        parts.append('Initializer: ' + trunc(str(var['value']), 300))
     return '\n'.join(parts)
 
 
@@ -88,9 +98,14 @@ def summary_context_text(finfo: dict, ctx_cfg: dict) -> str:
     max_list = int(ctx_cfg.get('max_symbols_per_list', 25))
     fns = finfo.get('functions') or []
     vars_ = finfo.get('file_vars') or []
+    classes = finfo.get('classes') or []
+    imports = [i.get('module') for i in (finfo.get('imports') or [])
+               if i.get('module')]
     fns_txt = ', '.join(
         (f.get('qualified') or f['name']) for f in fns[:max_list])
     vars_txt = ', '.join(v['name'] for v in vars_[:max_list])
+    cls_txt = ', '.join((c.get('qualified') or c['name'])
+                        for c in classes[:max_list])
     heads = [f for f in fns[:6] if (f.get('body') or '').strip()]
     head_txt = ''
     for h in heads:
@@ -101,5 +116,7 @@ def summary_context_text(finfo: dict, ctx_cfg: dict) -> str:
         f"Function count: {len(fns)}" + (f" (showing {max_list})" if len(fns) > max_list else ''),
         'Functions: ' + (fns_txt or '(none)'),
         'File-level variables: ' + (vars_txt or '(none)'),
+        'Classes: ' + (cls_txt or '(none)'),
+        'Imports: ' + (_name_list(imports, max_list) or '(none)'),
         'Representative code:' + (head_txt or ' (none)'),
     ])

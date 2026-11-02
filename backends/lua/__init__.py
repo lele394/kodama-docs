@@ -26,7 +26,7 @@ BUILTIN_NAMES = {
     'print', 'pairs', 'ipairs', 'next', 'type', 'tonumber', 'tostring',
     'pcall', 'xpcall', 'error', 'assert', 'select', 'unpack', 'rawget',
     'rawset', 'rawequal', 'setmetatable', 'getmetatable', 'require',
-    'dofile', 'collectgarbage', 'self', '_G', '_VERSION', 'math', 'string',
+    'dofile', 'collectgarbage', '_G', '_VERSION', 'math', 'string',
     'table', 'os', 'io', 'coroutine', 'bit32', 'utf8', 'module',
 }
 
@@ -250,6 +250,10 @@ def extract(source: str, relpath: str) -> dict:
             for nm in names:
                 rec = {'name': nm, 'line': _row(asm),
                        'init': _classify(first_val)}
+                if first_val is not None:
+                    val = _text(first_val).strip()
+                    if val:
+                        rec['value'] = val[:400]
                 if mod:
                     rec['module'] = mod
                 file_vars.append(rec)

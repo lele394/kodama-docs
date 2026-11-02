@@ -64,20 +64,24 @@ def node_id_cls(relpath, name, line):
     return f'cls:{relpath}::{name}@{line}'
 
 
-def _var_reads(body: str, name: str, is_py: bool) -> bool:
+def _var_reads(body: str, name: str, is_py: bool, params=()) -> bool:
     """True if `body` references file variable `name`.
 
-    A reference is a bare identifier use: `x.name` (method/namespace
-    access) and longer identifiers never count. A reference is not
-    counted when the function shadows the name itself — its own
-    parameter, or a local declared/assigned in its body.
+    A reference is an identifier use. A reference is not counted when the
+    function shadows the name itself — its own parameter, its own name, or
+    a local declared/assigned in its body.
     """
+    if name in (params or ()):
+        return False
     e = re.escape(name)
     if not re.search(r'(?<![\w.])' + e + r'(?!\w)', body):
         return False
     if is_py:
         shadowed = re.search(r'(?m)^\s*' + e + r'\s*=[^=]', body) \
-            or re.search(r'\b' + e + r'\s*[-+*/%&|^]=', body)
+            or re.search(r'\b' + e + r'\s*[-+*/%&|^]=', body) \
+            or re.search(r'\bfor\s+[^\n:]*\b' + e + r'\b[^\n]*\bin\b', body) \
+            or re.search(r'\bas\s+' + e + r'\b', body) \
+            or re.search(r'\b' + e + r'\s*:=', body)
     else:
         shadowed = re.search(r'\blocal\s+' + e + r'\b', body)
     return not shadowed
@@ -93,26 +97,50 @@ def fingerprint(files):
     return h.hexdigest()
 
 
+def _edge_attrs(g, u, v):
+    return (g.get_edge_data(u, v) or {}).values()
+
+
 def graph_neighbor_names(g, node_id):
     """(called_by, calls) name lists from a node's CALLS edges.
 
     Used both for the LLM context ("Called by:" / "Calls:") and for the
     record fingerprint, so cached prose is invalidated when the
-    call-relationship set of a symbol changes."""
+    call-relationship set of a symbol changes. O(in+out degree) instead of
+    scanning every edge in the graph."""
     ins, outs = [], []
-    for u, v, data in g.edges(data=True):
-        if data.get('type') != 'CALLS':
-            continue
-        if v == node_id:
-            nm = g.nodes[u].get('name')
-            if nm:
-                ins.append(nm)
-        if u == node_id:
-            t = g.nodes.get(v)
-            nm = t.get('name') if t else None
-            if nm:
-                outs.append(nm)
+    if not g.has_node(node_id):
+        return ins, outs
+    for u in g.predecessors(node_id):
+        for data in _edge_attrs(g, u, node_id):
+            if data.get('type') == 'CALLS':
+                nm = g.nodes[u].get('name')
+                if nm:
+                    ins.append(nm)
+                break
+    for v in g.successors(node_id):
+        for data in _edge_attrs(g, node_id, v):
+            if data.get('type') == 'CALLS':
+                nm = g.nodes[v].get('name') if g.has_node(v) else None
+                if nm:
+                    outs.append(nm)
+                break
     return ins, outs
+
+
+def graph_read_names(g, node_id):
+    """File-level variable names a function reads (READS edges)."""
+    out = []
+    if not g.has_node(node_id):
+        return out
+    for v in g.successors(node_id):
+        for data in _edge_attrs(g, node_id, v):
+            if data.get('type') == 'READS':
+                nm = g.nodes[v].get('name') if g.has_node(v) else None
+                if nm:
+                    out.append(nm)
+                break
+    return list(dict.fromkeys(out))
 
 
 def _cand_display(nid: str) -> str:
@@ -139,12 +167,45 @@ def _parent_of(f, fn_list):
     return best
 
 
-def _resolve_in_scope(fn_list, name, line):
+def _is_plain_def(fn) -> bool:
+    """True for a function that is callable by its bare name.
+
+    Methods / table functions (``Class.method``, ``M.helper``) are only
+    reachable through their receiver, so they must not participate in
+    bare-name lookup or bare-name inference. Nested functions inside a
+    method are still plain: they are local to that method.
+    """
+    return (fn.get('qualified') or fn['name']) == fn['name']
+
+
+def _is_direct_method(fn, fns, classes) -> bool:
+    """Direct member of a class/table (not a nested function inside one)."""
+    in_class = any(c['line'] < fn['line'] <= c.get('end_line', c['line'])
+                   for c in classes)
+    if not classes:
+        # Lua has no class records: a qualified name is the table receiver
+        # (`M.helper`); a nested local function stays plain (`helper`).
+        return (fn.get('qualified') or fn['name']) != fn['name']
+    if not in_class:
+        return False
+    return not any(g is not fn and g['line'] < fn['line']
+                   <= g.get('end_line', g['line']) for g in fns)
+
+
+def _resolve_in_scope(fn_list, name, line, plain_ids=None):
     """The definition of ``name`` visible at ``line`` (Python scoping).
 
     Walks out from the innermost function enclosing the call to the module;
     in each scope the most recent definition of ``name`` before the call
-    wins, so a redefinition shadows the earlier one from that point on."""
+    wins, so a redefinition shadows the earlier one from that point on.
+    Only plain (non-method) definitions are considered. ``plain_ids`` is
+    the set of ``id(fn)`` values that are bare-callable; when omitted the
+    qualified-name heuristic is used."""
+    def is_plain(f):
+        if plain_ids is not None:
+            return id(f) in plain_ids
+        return _is_plain_def(f)
+
     def encloses(f, L):
         return f['line'] <= L <= f.get('end_line', f['line'])
 
@@ -165,14 +226,16 @@ def _resolve_in_scope(fn_list, name, line):
     scope = inner
     while scope is not None:
         cands = [f for f in fn_list
-                 if f['name'] == name and _parent_of(f, fn_list) is scope
+                 if is_plain(f) and f['name'] == name
+                 and _parent_of(f, fn_list) is scope
                  and f['line'] < line]
         if cands:
             return cands[-1]
         scope = _parent_of(scope, fn_list)
 
     cands = [f for f in fn_list
-             if f['name'] == name and _parent_of(f, fn_list) is None
+             if is_plain(f) and f['name'] == name
+             and _parent_of(f, fn_list) is None
              and f['line'] < line]
     return cands[-1] if cands else None
 
@@ -203,28 +266,35 @@ def build_graph(files):
             'unresolved_imports': []}
 
     # ---- pass 1: nodes -------------------------------------------------
-    qual_cands = {}  # qualified name -> [fn ids]
-    name_cands = {}  # plain name     -> [fn ids]
-    file_fn = {}     # (relpath, plain name) -> first fn id in that file
-    file_cls = {}    # (relpath, class name) -> class node id
+    qual_cands = {}    # qualified name -> [fn ids]
+    name_cands = {}    # plain name     -> [fn/class ids] (method inference)
+    top_name_cands = {}  # plain name  -> [module-level fn/class ids]
+    file_fn = {}       # (relpath, plain name) -> module-level fn id
+    file_fn_q = {}     # (relpath, qualified)  -> fn id
+    file_named = {}    # (relpath, plain name) -> [all fn ids with that name]
+    file_cls = {}      # (relpath, class name) -> class node id
+    plain_ids = set()  # id(fn) for functions callable by their bare name
     for f in files:
         rp = f['relpath']
         fid = node_id_file(rp)
+        classes_all = f.get('classes') or []
+        fns_all = f.get('functions') or []
         g.add_node(fid, kind='file', relpath=rp,
                    lines=f.get('lines'),
-                   function_count=len(f.get('functions') or []),
+                   function_count=len(fns_all),
                    variable_count=len(f.get('file_vars') or []))
-        for c in f.get('classes') or []:
+        for c in classes_all:
             cid = node_id_cls(rp, c['name'], c['line'])
             g.add_node(cid, kind='class', relpath=rp, name=c['name'],
                        qualified=c.get('qualified') or c['name'],
                        line=c['line'],
                        end_line=c.get('end_line', c['line']), file_id=fid)
             add_edge(fid, cid, 'CONTAINS')
-            if (rp, c['name']) not in file_cls:
+            if (c.get('qualified') or c['name']) == c['name']:
                 file_cls[(rp, c['name'])] = cid
+                top_name_cands.setdefault(c['name'], []).append(cid)
             name_cands.setdefault(c['name'], []).append(cid)
-        for fn in f.get('functions') or []:
+        for fn in fns_all:
             nid = node_id_fn(rp, fn['name'], fn['line'])
             g.add_node(nid, kind='function', relpath=rp, name=fn['name'],
                        qualified=fn.get('qualified') or fn['name'],
@@ -236,15 +306,21 @@ def build_graph(files):
             qual = fn.get('qualified') or fn['name']
             qual_cands.setdefault(qual, []).append(nid)
             name_cands.setdefault(fn['name'], []).append(nid)
-            if (rp, fn['name']) not in file_fn:
+            file_fn_q[(rp, qual)] = nid
+            file_named.setdefault((rp, fn['name']), []).append(nid)
+            if not _is_direct_method(fn, fns_all, classes_all):
+                plain_ids.add(id(fn))
                 file_fn[(rp, fn['name'])] = nid
+                top_name_cands.setdefault(fn['name'], []).append(nid)
         for v in f.get('file_vars') or []:
             vid = node_id_var(rp, v['name'], v['line'])
             g.add_node(vid, kind='variable', relpath=rp, name=v['name'],
                        line=v['line'], init=v.get('init', 'expr'),
                        file_id=fid)
             add_edge(fid, vid, 'CONTAINS')
-    for ids in list(qual_cands.values()) + list(name_cands.values()):
+    for ids in (list(qual_cands.values()) + list(name_cands.values())
+                + list(top_name_cands.values())
+                + list(file_named.values())):
         ids.sort()
 
     # ---- pass 2: edges ----------------------------------------------------
@@ -280,11 +356,15 @@ def build_graph(files):
                            'name': None})
         binds[rp] = bs
 
-    def resolve(rp, name, method, line):
+    def resolve(rp, name, method, line, owner_fn=None):
         """Resolve one call site using the context of file `rp`.
 
         Returns (target_node_id, status) or None when the candidates are
         ambiguous (the call site is recorded in diag; no edge is written).
+
+        ``owner_fn`` is the innermost function enclosing the call; it is
+        what lets ``self.method()`` / ``cls.method()`` resolve inside the
+        right class instead of being mistaken for a builtin.
         """
         file_bs = binds.get(rp, [])
         builtins = builtins_for(rp)
@@ -309,39 +389,84 @@ def build_graph(files):
                 'candidates': [_cand_display(c) for c in cands]})
             return None
 
+        def one_or_ambiguous(cands):
+            cands = dedup(cands)
+            if not cands:
+                return None
+            return (cands[0], 'resolved') if len(cands) == 1 \
+                else ambiguous(cands)
+
+        def owner_class():
+            q = (owner_fn or {}).get('qualified') or (owner_fn or {}).get('name')
+            return q.rsplit('.', 1)[0] if q and '.' in q else None
+
+        def file_named_hits(bf, plain):
+            """All functions in file ``bf`` with plain name ``plain``.
+            Top-level functions win; methods/table functions are only used
+            when there is no module-level candidate."""
+            top = file_fn.get((bf, plain))
+            return [top] if top else list(file_named.get((bf, plain), []))
+
         if method and name:
-            # 0) dotted receiver that is a project MODULE path
+            # 0) self/cls: the enclosing class is known statically. Resolve
+            #    `Class.method` directly; never classify self/cls as a
+            #    builtin (they are not callables).
+            if name in ('self', 'cls'):
+                cls = owner_class()
+                if cls:
+                    cands = qual_cands.get(f'{cls}.{method}')
+                    if cands:
+                        return one_or_ambiguous(cands)
+
+            # 1) dotted receiver that is a project MODULE path
             #    (e.g. `deep.pack.mod.launch(...)`): resolve the module to
             #    its file, then the method within that file
             if '.' in name:
                 mf = mod_file(name, rp)
                 if mf:
-                    hit = (file_fn.get((mf, method))
+                    hit = (file_fn_q.get((mf, f'{name}.{method}'))
+                           or file_fn.get((mf, method))
                            or file_cls.get((mf, method)))
                     if hit:
                         return hit, 'resolved'
-            # 1) object bound to a project module in this file -> its method
+                    hits = file_named_hits(mf, method)
+                    if hits:
+                        return one_or_ambiguous(hits)
+
+            # 2) object bound to a project module in this file -> its method
             hits = []
             for b in file_bs:
-                if b['bind'] == name and b['file']:
-                    hit = (file_fn.get((b['file'], method))
-                           or file_cls.get((b['file'], method)))
+                if b['bind'] != name or not b['file']:
+                    continue
+                bf, target = b['file'], b.get('name')
+                if target:
+                    hit = file_fn_q.get((bf, f'{target}.{method}'))
                     if hit:
                         hits.append(hit)
+                        continue
+                hit = (file_fn.get((bf, method))
+                       or file_cls.get((bf, method)))
+                if hit:
+                    hits.append(hit)
+                else:
+                    hits.extend(file_named_hits(bf, method))
             if hits:
-                hits = dedup(hits)
-                return (hits[0], 'resolved') if len(hits) == 1 \
-                    else ambiguous(hits)
-            # 2) exact qualified name name.method defined in the project
+                return one_or_ambiguous(hits)
+
+            # 3) exact qualified name `name.method` defined in the project
+            #    (covers `V.add`, `Body.reset`, Lua `M.helper`, ...)
             cands = qual_cands.get(f'{name}.{method}')
             if cands:
-                return (cands[0], 'resolved') if len(cands) == 1 \
-                    else ambiguous(cands)
-            # 3) object (or its root) is a stdlib/builtin name — never
-            #    guess a project function with the same method name
-            if name in builtins or name.split('.', 1)[0] in builtins:
+                return one_or_ambiguous(cands)
+
+            # 4) object (or its root) is a stdlib/builtin name — never
+            #    guess a project function with the same method name.
+            #    self/cls are deliberately excluded (see step 0).
+            if name not in ('self', 'cls') and (
+                    name in builtins or name.split('.', 1)[0] in builtins):
                 return 'builtin:' + label, 'builtin'
-            # 4) method name unique project-wide (unbound object, e.g. a
+
+            # 5) method name unique project-wide (unbound object, e.g. a
             #    local table instance) — documented inference
             cands = name_cands.get(method)
             if cands:
@@ -354,20 +479,21 @@ def build_graph(files):
             # 1) base bound to a project module in this file
             hits = []
             for b in file_bs:
-                if b['bind'] == base and b['file']:
-                    hit = (file_fn.get((b['file'], b['name'] or rest))
-                           or file_cls.get((b['file'], b['name'] or rest)))
+                if b['bind'] != base or not b['file']:
+                    continue
+                bf, target = b['file'], b.get('name')
+                if target:
+                    hit = file_fn_q.get((bf, f'{target}.{rest}'))
                     if hit:
                         hits.append(hit)
+                        continue
+                hits.extend(file_named_hits(bf, rest))
             if hits:
-                hits = dedup(hits)
-                return (hits[0], 'resolved') if len(hits) == 1 \
-                    else ambiguous(hits)
-            # 2) exact qualified name in the project
+                return one_or_ambiguous(hits)
+            # 2) exact qualified name in the project (`M.helper`, `V.add`)
             cands = qual_cands.get(name)
             if cands:
-                return (cands[0], 'resolved') if len(cands) == 1 \
-                    else ambiguous(cands)
+                return one_or_ambiguous(cands)
             # 3) builtin namespace (math.sqrt, io.open, os.path.join, ...)
             if base in builtins:
                 return 'builtin:' + name, 'builtin'
@@ -376,14 +502,18 @@ def build_graph(files):
         # bare name
         # 1) defined in the same file — scope-aware: the definition visible
         #    at the call line wins (a nested def shadows the module level,
-        #    and a redefinition shadows the earlier one from that point on)
+        #    and a redefinition shadows the earlier one from that point on).
+        #    Only plain functions/classes participate; methods are not
+        #    callable bare.
         fentry = files_by_rp.get(rp)
         if fentry is not None:
-            fn = _resolve_in_scope(fentry.get('functions') or [], name, line)
+            fn = _resolve_in_scope(fentry.get('functions') or [], name, line,
+                                   plain_ids=plain_ids)
             if fn is not None:
                 return node_id_fn(rp, fn['name'], fn['line']), 'resolved'
             cands = [c for c in (fentry.get('classes') or [])
-                     if c['name'] == name and c['line'] < line]
+                     if (c.get('qualified') or c['name']) == c['name']
+                     and c['name'] == name and c['line'] < line]
             if cands:
                 c = cands[-1]
                 return node_id_cls(rp, c['name'], c['line']), 'resolved'
@@ -398,14 +528,12 @@ def build_graph(files):
                 if hit:
                     hits.append(hit)
         if hits:
-            hits = dedup(hits)
-            return (hits[0], 'resolved') if len(hits) == 1 \
-                else ambiguous(hits)
+            return one_or_ambiguous(hits)
         # 3) builtin
         if name in builtins:
             return 'builtin:' + name, 'builtin'
-        # 4) name unique project-wide — documented inference
-        cands = name_cands.get(name)
+        # 4) module-level name unique project-wide — documented inference
+        cands = top_name_cands.get(name)
         if cands:
             return (cands[0], 'inferred') if len(cands) == 1 \
                 else ambiguous(cands)
@@ -426,7 +554,9 @@ def build_graph(files):
             return best[1] if best else None
 
         for c in f.get('calls') or []:
-            res = resolve(rp, c['callee'], c.get('method'), c['line'])
+            fn = owner(c['line'])
+            res = resolve(rp, c['callee'], c.get('method'), c['line'],
+                          owner_fn=fn)
             if res is None:  # ambiguous: diagnostic recorded, no edge
                 continue
             tgt, status = res
@@ -450,7 +580,6 @@ def build_graph(files):
                 diag['builtin_calls'].append(
                     {'file': rp, 'line': c['line'], 'name': label})
             src = fid
-            fn = owner(c['line'])
             if fn is not None:
                 src = node_id_fn(rp, fn['name'], fn['line'])
             add_edge(src, tgt, 'CALLS', line=c['line'], status=status,
@@ -476,13 +605,19 @@ def build_graph(files):
         # function -> file variable READS edges
         is_py = rp.lower().endswith(('.py', '.pyi'))
         for v in f.get('file_vars') or []:
+            if v.get('module'):
+                # module aliases are represented by IMPORTS, not READS
+                continue
             if not (v.get('init') in ('table', 'string', 'number')
                     or v.get('value') is not None):
                 continue
             vid = node_id_var(rp, v['name'], v['line'])
             for fn in fns:
                 body = fn.get('body') or ''
-                if body and _var_reads(body, v['name'], is_py):
+                if v['name'] == fn['name']:
+                    continue
+                if body and _var_reads(body, v['name'], is_py,
+                                       fn.get('params') or ()):
                     src = node_id_fn(rp, fn['name'], fn['line'])
                     # A READS edge only exists when the variable is defined
                     # in the same file, so it is always resolved.
@@ -518,6 +653,32 @@ def save_graph(g, path) -> str:
     data = nx.node_link_data(g, edges='edges')
     with open(path, 'w', encoding='utf-8') as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1)
+    return path
+
+
+#: Node attributes only useful to the analysis pipeline, not to the graph
+#: viewer. The full graph keeps them (it is the reusable artifact); the
+#: "diet" graph used by /api/graph and the static site drops them.
+_DIET_NODE_DROP = {'body', 'params', 'vararg', 'end_line', 'file_id'}
+
+
+def diet_graph_data(g) -> dict:
+    """node-link data for serving: same relationships, no source bodies.
+
+    The full graph remains complete on disk (``graph.json``). This is only
+    what a browser needs to draw it, so large function bodies are not sent
+    over the wire or inlined into the static site."""
+    data = nx.node_link_data(g, edges='edges')
+    for node in data.get('nodes', []):
+        for key in _DIET_NODE_DROP:
+            node.pop(key, None)
+    return data
+
+
+def save_diet_graph(g, path) -> str:
+    os.makedirs(os.path.dirname(path) or '.', exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as fh:
+        json.dump(diet_graph_data(g), fh, ensure_ascii=False, indent=1)
     return path
 
 

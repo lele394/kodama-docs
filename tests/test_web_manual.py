@@ -130,6 +130,29 @@ def test_manual_missing_404():
     print('ok   test_manual_missing_404')
 
 
+def test_error_escapes_request_path():
+    d = _mkdocs()
+    status, ctype, body = _get(d, '/files/%3Cscript%3E.md')
+    assert '404' in status, status
+    assert b'<script>' not in body, body
+    assert b'&lt;script&gt;' in body, body
+    print('ok   test_error_escapes_request_path')
+
+
+def test_api_graph_prefers_diet():
+    d = _mkdocs()
+    with open(os.path.join(d, 'meta', 'graph.json'), 'w',
+              encoding='utf-8') as fh:
+        json.dump({'nodes': [{'body': 'SECRET'}]}, fh)
+    with open(os.path.join(d, 'meta', 'graph_diet.json'), 'w',
+              encoding='utf-8') as fh:
+        json.dump({'nodes': [{'id': 'x'}]}, fh)
+    status, ctype, body = _get(d, '/api/graph')
+    assert '200' in status, status
+    assert json.loads(body) == {'nodes': [{'id': 'x'}]}, body
+    print('ok   test_api_graph_prefers_diet')
+
+
 def main():
     test_manual_md_renders()
     test_manual_asset_served_raw()
@@ -137,7 +160,9 @@ def main():
     test_symbols_index_includes_manual()
     test_manual_traversal_blocked()
     test_manual_missing_404()
-    print('\n6 web-manual tests passed')
+    test_error_escapes_request_path()
+    test_api_graph_prefers_diet()
+    print('\n8 web-manual tests passed')
 
 
 if __name__ == '__main__':

@@ -111,8 +111,13 @@ class DocsHandler(BaseHTTPRequestHandler):
         if path == '/graph':
             return self._graph_page()
         if path == '/api/graph':
-            return self._docfile('meta/graph.json',
-                                 'application/json; charset=utf-8')
+            # Serve the diet graph (no function bodies) when the pipeline
+            # wrote one; fall back to the full artifact for old runs.
+            rel = 'meta/graph_diet.json'
+            full = self._safe(self.docs_root, rel)
+            if full is None or not os.path.isfile(full):
+                rel = 'meta/graph.json'
+            return self._docfile(rel, 'application/json; charset=utf-8')
         if path == '/api/symbols':
             return self._symbols_index()
         if path.startswith('/page/') and path.endswith('.md'):
@@ -176,7 +181,7 @@ class DocsHandler(BaseHTTPRequestHandler):
                            # over http, so <script type="module"> works) and
                            # the data via /api/* — the inline slots stay
                            # undefined so the JS falls back to those.
-                           symbols_json='undefined',
+                           symbols_tag='',
                            sidebar_tag='<script type="module" '
                                        'src="/sidebar.js"></script>',
                            body=body)
@@ -345,7 +350,8 @@ class DocsHandler(BaseHTTPRequestHandler):
     def _error(self, code, msg):
         body = (f'<!doctype html><meta charset="utf-8">'
                 f'<link rel="stylesheet" href="/theme/{self.default_theme}'
-                f'/style.css"><body><h1>{code}</h1><p>{msg}</p>'
+                f'/style.css"><body><h1>{code}</h1>'
+                f'<p>{html_escape(str(msg))}</p>'
                 f'<p><a href="/index.md">back to index</a></body>').encode()
         self._send(code, body, 'text/html; charset=utf-8')
 

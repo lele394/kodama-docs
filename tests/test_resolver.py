@@ -502,6 +502,102 @@ class Vec:
         f"got {methods[0]['qualified']!r}"
 
 
+def test_self_method_resolves_to_enclosing_class():
+    """`self.helper()` must link to A.helper, never to `builtin:self.helper`."""
+    f = py("""
+class A:
+    def helper(self):
+        return 1
+    def run(self):
+        return self.helper()
+""", 'selfcall')
+    g, diag = gmod.build_graph([f])
+    assert calls_out(g, 'fn:selfcall.py::run@5') == \
+        [('fn:selfcall.py::helper@3', 'resolved')]
+    assert not diag['builtin_calls']
+
+
+def test_lua_self_method_resolves_to_enclosing_table():
+    f = lua("""
+local M = {}
+function M:new()
+  return self
+end
+function M:step()
+  return self:new()
+end
+""", 'selftable')
+    g, diag = gmod.build_graph([f])
+    assert ('fn:selftable.lua::new@3', 'resolved') in calls_out(
+        g, 'fn:selftable.lua::step@6')
+    assert not diag['builtin_calls']
+
+
+def test_class_qualified_method_uses_right_class():
+    """Two same-named methods: `Body.reset()` must not resolve to
+    `Other.reset` just because Other appears first in the file."""
+    body = py("""
+class Other:
+    def reset(self):
+        return 'other'
+class Body:
+    def reset(self):
+        return 'body'
+""", 'body')
+    use = py("""
+from body import Body
+
+def go():
+    return Body.reset()
+""", 'use')
+    g, diag = gmod.build_graph([body, use])
+    assert calls_out(g, 'fn:use.py::go@4') == \
+        [('fn:body.py::reset@6', 'resolved')]
+
+
+def test_bare_method_is_not_a_global_name():
+    """A method is not callable by its bare name; do not invent a resolved
+    edge from `helper()` to `A.helper`."""
+    f = py("""
+class A:
+    def helper(self):
+        return 1
+    def run(self):
+        return helper()
+""", 'baremethod')
+    g, diag = gmod.build_graph([f])
+    assert calls_out(g, 'fn:baremethod.py::run@5') == \
+        [('ext:helper', 'external')]
+    assert diag['external_calls'][0]['name'] == 'helper'
+
+
+def test_parameter_shadow_does_not_create_reads_edge():
+    """A parameter with the same name as a file variable is a shadow."""
+    f = py("""
+X = 1
+
+def f(X):
+    return X + 1
+""", 'shadow')
+    g, diag = gmod.build_graph([f])
+    reads = [(u, v) for u, v, d in g.edges(data=True)
+             if d.get('type') == 'READS']
+    assert reads == [], reads
+
+
+def test_lua_parameter_shadow_does_not_create_reads_edge():
+    f = lua("""
+local X = 1
+function f(X)
+  return X + 1
+end
+""", 'lshadow')
+    g, diag = gmod.build_graph([f])
+    reads = [(u, v) for u, v, d in g.edges(data=True)
+             if d.get('type') == 'READS']
+    assert reads == [], reads
+
+
 def main():
     fns = [v for k, v in sorted(globals().items())
            if k.startswith('test_') and callable(v)]

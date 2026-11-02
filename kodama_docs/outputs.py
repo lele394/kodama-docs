@@ -15,19 +15,67 @@ def _dangerous_dirs() -> set:
     return {cwd, os.path.abspath(os.path.expanduser('~')), root}
 
 
+def _contains(parent: str, child: str) -> bool:
+    """True when ``child`` is ``parent`` or lives under it (real paths)."""
+    p = os.path.realpath(parent)
+    c = os.path.realpath(child)
+    try:
+        return os.path.commonpath([p, c]) == p
+    except ValueError:  # different drives on Windows
+        return False
+
+
+def _guard_delete(path: str, cfg: dict) -> str:
+    d = os.path.abspath(path)
+    if d in _dangerous_dirs():
+        raise SystemExit(f'refusing to delete dangerous path: {d}')
+    for key, label in (('source_dir', 'source directory'),
+                       ('manual_doc', 'manual-doc source')):
+        protected = cfg.get(key)
+        if protected and _contains(d, protected):
+            raise SystemExit(f'refusing to delete {d}: it contains the '
+                             f'{label} {protected}')
+    return d
+
+
 def purge_outputs(cfg: dict) -> list:
     """Delete the output (docs + meta) and data directories. Returns the
     paths actually removed."""
     removed = []
     for d in (cfg['output_dir'], cfg['data_dir']):
-        d = os.path.abspath(d)
-        if d in _dangerous_dirs():
-            raise SystemExit(f'refusing to delete dangerous path: {d}')
+        d = _guard_delete(d, cfg)
         if os.path.isdir(d):
             shutil.rmtree(d)
             removed.append(d)
             log(f'  purged {d}')
     return removed
+
+
+def reset_output(cfg: dict) -> None:
+    """Remove generated docs before a render, so deleted source files and
+    disabled features cannot leave stale pages behind.
+
+    ``.doc_cache`` is deliberately kept: it is what lets the next run
+    detect changed/removed *sources* without a full analysis. Everything
+    else in the output directory is generated and safe to recreate."""
+    out = _guard_delete(cfg['output_dir'], cfg)
+    data = cfg.get('data_dir')
+    if data and _contains(out, data):
+        raise SystemExit(f'refusing to reset {out}: it contains the data '
+                         f'directory {data}')
+    if not os.path.isdir(out):
+        return
+    for entry in os.listdir(out):
+        if entry == '.doc_cache':
+            continue
+        path = os.path.join(out, entry)
+        if os.path.isdir(path) and not os.path.islink(path):
+            shutil.rmtree(path)
+        else:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
 
 
 def _doc_cache_path(cfg: dict) -> str:

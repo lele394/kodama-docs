@@ -8,13 +8,16 @@ classic scripts sidebar.js / graph.js — the ES modules under web/ inlined
 by kodama_docs/js_bundle.py, because browsers refuse external ES modules
 over file:// — and lib/, theme/, icon/).
 
-The search-bar index and the graph data are inlined into the pages as
-``window.__KODAMA_SYMBOLS__`` / ``window.__KODAMA_GRAPH__`` (file:// also
-forbids fetch of local JSON); ``symbols.json`` / ``graph.json`` are still
-written as a fetch fallback. All paths are relative and depth-aware, so
-the folder works over ``file://`` (open index.html directly), at any host
-subpath, and on GitHub Pages.
+The search-bar index is shipped as one shared classic script
+(``symbols-data.js``) and the graph data is inlined into ``graph.html`` as
+``window.__KODAMA_GRAPH__`` (file:// also forbids fetch of local JSON);
+``symbols.json`` / ``graph.json`` are still written as a fetch fallback.
+All paths are relative and depth-aware, so the folder works over
+``file://`` (open index.html directly), at any host subpath, and on GitHub
+Pages. The graph panel's node-click fetches a rendered page, so that one
+interaction needs an http(s) host (see STATIC_SITE.md).
 """
+import html
 import json
 import os
 import re
@@ -101,14 +104,14 @@ def _load_template(webdir: str, name: str) -> str:
 
 def _render_page(md: str, title: str, theme: str, base: str,
                  index_href: str, graph_href: str, page_tpl: str,
-                 symbols_json: str = 'null',
+                 symbols_tag: str = '',
                  sidebar_tag: str = None) -> str:
     dark = theme == 'dark'
     if sidebar_tag is None:
         # classic bundled script at the site root, depth-prefixed
         sidebar_tag = f'<script src="{base}sidebar.js" defer></script>'
     return page_tpl.format(
-        title=title,
+        title=html.escape(str(title), quote=True),
         theme=theme,
         hljs_light=' disabled' if dark else '',
         hljs_dark='' if dark else ' disabled',
@@ -116,9 +119,10 @@ def _render_page(md: str, title: str, theme: str, base: str,
         # JS static-mode switch (see web/sidebar.js); under --serve the
         # server renders the same slot as `undefined`
         base_json=f"'{base}'",
-        # inline search-bar index (file:// forbids fetch); the server
-        # renders the same slot as `undefined`
-        symbols_json=symbols_json,
+        # external classic script with the search index (file:// forbids
+        # fetch of local JSON). One file shared by every page, instead of
+        # inlining the whole index into every page.
+        symbols_tag=symbols_tag,
         sidebar_tag=sidebar_tag,
         body=rewrite_md_links(md))
 
@@ -261,18 +265,28 @@ def build(cfg: dict, webdir: str = None) -> str:
                 manual_pages = json.load(fh).get('pages', [])
         except (OSError, ValueError):
             manual_pages = []
-    symbols_inline = 'null'
+    has_symbols = False
     symbols_src = os.path.join(meta, 'symbols.json')
     if os.path.isfile(symbols_src):
         with open(symbols_src, 'r', encoding='utf-8') as fh:
             slim = slim_symbols(json.load(fh), manual_pages)
         _write_json(os.path.join(site, 'symbols.json'), slim)
-        symbols_inline = _inline_json(slim)
+        # Classic script, one shared file: browsers may refuse local ES
+        # modules/fetch under file:// but execute external classic scripts.
+        with open(os.path.join(site, 'symbols-data.js'), 'w',
+                  encoding='utf-8') as fh:
+            fh.write('window.__KODAMA_SYMBOLS__ = '
+                     + _inline_json(slim) + ';\n')
+        has_symbols = True
     else:
         log('static: warning — no meta/symbols.json; sidebar search will '
             'find nothing (run the pipeline first)')
     graph_inline = 'null'
-    graph_src = os.path.join(meta, 'graph.json')
+    # Prefer the diet graph (relationships without source bodies); fall
+    # back to the full artifact for old output directories.
+    graph_src = os.path.join(meta, 'graph_diet.json')
+    if not os.path.isfile(graph_src):
+        graph_src = os.path.join(meta, 'graph.json')
     if os.path.isfile(graph_src):
         shutil.copy2(graph_src, os.path.join(site, 'graph.json'))
         with open(graph_src, 'r', encoding='utf-8') as fh:
@@ -299,11 +313,13 @@ def build(cfg: dict, webdir: str = None) -> str:
         title = (m.group(1).strip() if m
                  else os.path.splitext(os.path.basename(src))[0])
         base = base_for(dst_rel)
+        symbols_tag = (f'<script src="{base}symbols-data.js" defer></script>'
+                       if has_symbols else '')
         with open(dst, 'w', encoding='utf-8') as fh:
             fh.write(_render_page(
                 render_md(md), title, theme, base,
                 base + 'index.html', base + 'graph.html', page_tpl,
-                symbols_json=symbols_inline))
+                symbols_tag=symbols_tag))
         pages += 1
 
     # 4. graph.html + 404.html --------------------------------------------
@@ -345,11 +361,13 @@ def build(cfg: dict, webdir: str = None) -> str:
 
     # 5. report ------------------------------------------------------------
     log(f'static: {pages} page(s) + graph.html -> {site}')
-    log('static: fully self-contained — open site/index.html directly, or '
-        'host the folder (GitHub Pages: point Pages at site/)')
+    log('static: self-contained pages — open site/index.html directly, or '
+        'host the folder (GitHub Pages: point Pages at site/). The graph '
+        'panel node-click needs an http(s) host.')
     return site
 
 
 if __name__ == '__main__':  # manual invocation with an explicit config
     from kodama_docs.config import load_config
-    build(load_config(sys.argv[1] if len(sys.argv) > 1 else 'settings.yaml'))
+    build(load_config(sys.argv[1] if len(sys.argv) > 1 else 'settings.yaml',
+                      require_llm=False))

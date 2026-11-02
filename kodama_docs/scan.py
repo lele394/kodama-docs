@@ -224,8 +224,10 @@ def report_scan(cfg: dict, analysis, skipped, g, diag, astatus):
                 tasks += 1
                 nid = gmod.node_id_fn(rel, fn['name'], fn['line'])
                 ins, outs = gmod.graph_neighbor_names(g, nid)
+                reads = gmod.graph_read_names(g, nid)
                 if load_record(dd, rel, 'function', fn['name'],
-                               fn['line'], function_fp(rel, fn, ins, outs, sfn)):
+                               fn['line'], function_fp(rel, fn, ins, outs,
+                                                        sfn, reads=reads)):
                     ok += 1
         for v in f.get('file_vars') or []:
             if want_var:

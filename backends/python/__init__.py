@@ -19,7 +19,6 @@ Record shapes (1-based lines, identical to the Lua backend):
         -- and bare `n()` to that module's definitions.
 """
 import json
-import os
 import re
 import subprocess
 import sys
@@ -41,7 +40,7 @@ BUILTIN_NAMES = {
     'type', 'zip', 'property', 'staticmethod', 'classmethod', 'Exception',
     'ValueError', 'TypeError', 'RuntimeError', 'AttributeError', 'KeyError',
     'IndexError', 'LookupError', 'OSError', 'IOError', 'SystemExit',
-    'StopIteration', 'NotImplementedError', 'self', 'cls',
+    'StopIteration', 'NotImplementedError',
     # common stdlib modules (treated as external, not cross-file links)
     'os', 'sys', 're', 'json', 'hashlib', 'urllib', 'threading', 'atexit',
     'argparse', 'time', 'io', 'math', 'enum', 'itertools', 'functools',
@@ -257,8 +256,12 @@ def extract(source: str, relpath: str) -> dict:
         if not name or name in seen_var:
             return
         seen_var.add(name)
-        file_vars.append({'name': name, 'line': line,
-                          'init': _classify(value)})
+        rec = {'name': name, 'line': line, 'init': _classify(value)}
+        if value is not None:
+            text = _text(value).strip()
+            if text:
+                rec['value'] = text[:400]
+        file_vars.append(rec)
 
     def record_function(fn_node, anchor_line, depth, qual):
         """Record a function/method (name, params, vararg, developer comment,

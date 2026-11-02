@@ -19,8 +19,11 @@ class LLMError(RuntimeError):
 
 class LLMClient:
     def __init__(self, cfg: dict):
-        self.base_url = cfg['base_url'].rstrip('/')
-        self.api_key = cfg['api_key']
+        self.base_url = str(cfg.get('base_url') or '').rstrip('/')
+        self.api_key = str(cfg.get('api_key') or '')
+        if not self.base_url or not self.api_key:
+            raise SystemExit('llm: base_url/api_key are empty — create a '
+                             '.env with api_key/base_url, or use --no-llm')
         self.model = cfg['model']
         self.max_retries = int(cfg.get('max_retries', 5))
         self.temperature = float(cfg.get('temperature', 0.1))

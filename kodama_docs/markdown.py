@@ -2,6 +2,7 @@
 pages and the index. No LLM prose except the record strings passed in.
 """
 import os
+import re
 from urllib.parse import quote
 
 from kodama_docs.graph import node_id_fn
@@ -17,7 +18,10 @@ def enc_path(path: str) -> str:
 
 
 def md_escape(s: str) -> str:
-    return str(s).replace('|', '\\|')
+    # LLM prose may contain newlines; a newline inside a table cell would
+    # split the Markdown row. Normalize all whitespace first.
+    text = re.sub(r'\s+', ' ', str(s)).strip()
+    return text.replace('|', '\\|')
 
 
 def _html_escape(s: str) -> str:
@@ -518,7 +522,6 @@ def render_index(finfos, output_root: str, diag=None, astatus=None,
               '| --- | --- | --- | --- |']
     for finfo in finfos:
         rel = finfo['relpath']
-        mdname = rel.rsplit('/', 1)[-1].rsplit('.', 1)[0]
         lines.append(
             f"| [{rel}]({enc_path('files/' + rel + '.md')}) "
             f"| {finfo.get('lines', '?')} "

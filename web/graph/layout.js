@@ -13,8 +13,9 @@ export function buildLevel() {
   var keep = state.level === 'files'
     ? { file: 1, module: 1 }
     : (state.showExt
-       ? { file: 1, function: 1, variable: 1, ext: 1, builtin: 1 }
-       : { file: 1, function: 1, variable: 1 });
+       ? { file: 1, function: 1, variable: 1, class: 1, ext: 1,
+           builtin: 1 }
+       : { file: 1, function: 1, variable: 1, class: 1 });
   state.nodes = []; state.byId = {};
   state.raw.nodes.forEach(function (n) {
     if (!keep[n.kind]) return;

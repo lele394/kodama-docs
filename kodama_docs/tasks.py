@@ -50,14 +50,14 @@ def settings_fp(cfg: dict, kind: str) -> str:
                    doc.get('chars_per_token'))
 
 
-def function_fp(rel, fn, calls_in, calls_out, settings) -> str:
+def function_fp(rel, fn, calls_in, calls_out, settings, reads=()) -> str:
     return task_fp('function', rel,
                    fn.get('name'), fn.get('line'),
                    fn.get('body') or '',
                    sorted(fn.get('params') or []),
                    bool(fn.get('vararg')),
                    settings,
-                   sorted(calls_in), sorted(calls_out))
+                   sorted(calls_in), sorted(calls_out), sorted(reads))
 
 
 def variable_fp(rel, v, settings) -> str:
@@ -72,7 +72,11 @@ def summary_fp(rel, f, settings) -> str:
                  for fn in (f.get('functions') or []))
     vars_ = sorted((v.get('name'), v.get('line'))
                    for v in (f.get('file_vars') or []))
-    return task_fp('summary', rel, f.get('lines'), fns, vars_, settings)
+    imports = sorted(i.get('module') or '' for i in (f.get('imports') or []))
+    classes = sorted((c.get('qualified') or c.get('name'))
+                     for c in (f.get('classes') or []))
+    return task_fp('summary', rel, f.get('lines'), fns, vars_, imports,
+                   classes, settings)
 
 
 def chunk_fp(rel, chunk_name, line, text, settings) -> str:

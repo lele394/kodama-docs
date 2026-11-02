@@ -21,13 +21,29 @@ def record_path(data_dir: str, relpath: str, kind: str, name: str,
     return os.path.join(data_dir, sub, fname)
 
 
+def _read_record(path):
+    try:
+        with open(path, 'r', encoding='utf-8') as fh:
+            return json.load(fh)
+    except (ValueError, OSError):
+        return None
+
+
 def save_record(data_dir: str, relpath: str, kind: str, name: str, line: int,
                 prose: dict, fingerprint: str, symbol: dict,
                 stubbed: bool = False):
     """Save one record. `stubbed=True` marks it as `--no-llm` placeholder
     prose: full-mode runs treat such records as cache misses (and overwrite
-    them), --no-llm runs may reuse them."""
+    them), --no-llm runs may reuse them.
+
+    A stub never overwrites real prose. ``--no-llm`` is a diagnostic mode;
+    losing paid/generated records because the prompt or a setting changed
+    would be surprising and irreversible."""
     path = record_path(data_dir, relpath, kind, name, line)
+    if stubbed:
+        existing = _read_record(path)
+        if existing is not None and not existing.get('stubbed'):
+            return path
     os.makedirs(os.path.dirname(path), exist_ok=True)
     rec = {
         'schema': 'kodama_docs/record@1',
@@ -41,8 +57,10 @@ def save_record(data_dir: str, relpath: str, kind: str, name: str, line: int,
     }
     if stubbed:
         rec['stubbed'] = True
-    with open(path, 'w', encoding='utf-8') as fh:
+    tmp = path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as fh:
         json.dump(rec, fh, ensure_ascii=False, indent=1)
+    os.replace(tmp, path)
     return path
 
 

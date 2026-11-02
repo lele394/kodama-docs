@@ -23,10 +23,11 @@ The current web UI is server-centric. Every moving part assumes the built-in
 load fine on any http(s) origin (GitHub Pages included) but not from
 `file://` (browser CORS on module scripts) — and their data comes from
 `fetch()`, which browsers also block on `file://`. The static build therefore
-emits the two entry points as **bundled classic scripts** (see §2) and
-**inlines the data into the pages**, so even the sidebar/search/graph work
-straight from disk. (Solved in milestone 5; this doc reflects the final
-behaviour.)
+emits the two entry points as **bundled classic scripts** (see §2), ships the
+search index as a shared `symbols-data.js`, and inlines the graph data into
+`graph.html`, so the sidebar/search/graph work straight from disk. The graph
+panel's node-click page fetch is the one interaction that needs a host.
+(Solved in milestone 5; this doc reflects the final behaviour.)
 
 ## 2. Design
 
@@ -64,7 +65,7 @@ so the same templates and the same JS work in both modes; only the relative
 prefix differs. (The server maps `/theme/*` to `web/themes/*` on disk, hence
 the singular `theme/` in the static layout.)
 
-**The `file://` fix — classic bundles + inline data.** Browsers refuse both
+**The `file://` fix — classic bundles + shared classic data.** Browsers refuse
 external ES-module scripts *and* `fetch()` of local files under `file://`, so
 the static builder does two more things the server never does:
 
@@ -77,14 +78,21 @@ the static builder does two more things the server never does:
    self-contained classic script per entry point. The `web/` sources stay ES
    modules; the server still serves them natively over http — the bundler
    only runs at static-build time.
-2. **Inlines the data into the pages.** Every page gets
-   `window.__KODAMA_SYMBOLS__ = <slim index>`; `graph.html` gets
-   `window.__KODAMA_GRAPH__ = <graph data>`. The JSON is emitted compact with
-   `</` escaped to `<\/` so it can never terminate its own `<script>`.
-   `sidebar.js` / `graph.js` prefer the inline value and fall back to
-   `fetch(<base>symbols.json)` / `fetch(<base>graph.json)` — the path a
-   server or a non-inline context takes. `symbols.json` / `graph.json` are
-   still written to the site, so the fallback and direct links keep working.
+2. **Ships the data as classic scripts.** Every page loads the shared
+   `symbols-data.js`, which assigns `window.__KODAMA_SYMBOLS__ = <slim
+   index>`; `graph.html` gets `window.__KODAMA_GRAPH__ = <graph data>`.
+   The JSON is emitted compact with `</` escaped to `<\/` so it can never
+   terminate its own `<script>`. `sidebar.js` / `graph.js` prefer the
+   in-page/global value and fall back to `fetch(<base>symbols.json)` /
+   `fetch(<base>graph.json)` — the path a server or a non-inline context
+   takes. `symbols.json` / `graph.json` are still written to the site, so
+   the fallback and direct links keep working.
+
+The graph panel is the one exception: opening a node fetches its
+`files/<rel>.html` page and extracts the body, which browsers block under
+`file://`. Content pages, sidebar, search, theme and the graph itself work
+from disk; **clicking a node in the graph panel requires serving the site
+over http(s) or opening that page directly**.
 
 Key decisions:
 
@@ -96,17 +104,18 @@ Key decisions:
   become base-aware: every absolute `/…` asset/link becomes `{base}…`, and
   the server passes `base='/'` (behaviour unchanged) while the static
   builder passes the depth-relative base.
-- **Data inlined, with file fallback.** `symbols.json` (same slim shape the
-  server's `/api/symbols` returns) and `graph.json` are written at the site
-  root at build time — and *also* inlined into the pages as
-  `window.__KODAMA_SYMBOLS__` / `window.__KODAMA_GRAPH__`, because `file://`
-  forbids the fetch. The JS prefers the inline copy and falls back to
-  `fetch(<base>symbols.json)` / `fetch(<base>graph.json)`.
+- **Data shipped for `file://`, with fetch fallback.** `symbols.json` (same
+  slim shape the server's `/api/symbols` returns) and `graph.json` are
+  written at the site root at build time. `symbols-data.js` assigns the
+  shared `window.__KODAMA_SYMBOLS__`; `graph.html` carries
+  `window.__KODAMA_GRAPH__` inline. The JS prefers those values and falls
+  back to `fetch(<base>symbols.json)` / `fetch(<base>graph.json)`.
 - **Static-mode switch in JS: `window.__KODAMA_BASE__`.** The generator
   injects `<script>window.__KODAMA_BASE__ = "<base>"</script>` before the
   page scripts. Its presence = static mode:
-  - `sidebar.js` — data from `window.__KODAMA_SYMBOLS__` (inline; `fetch`
-    of `<base>symbols.json` only as fallback); rows link to
+  - `sidebar.js` — data from `window.__KODAMA_SYMBOLS__` (shared
+    `symbols-data.js`; `fetch` of `<base>symbols.json` only as fallback);
+    rows link to
     `<base>files/<rel>.html`, `<base>index.html`,
     `<base>manual/…` (`.md` → `.html`); current-page detection handles
     `.html` and host subpaths.
@@ -132,15 +141,15 @@ Key decisions:
 
 | File | Change |
 | --- | --- |
-| `kodama_docs/static_site.py` | **new** — `build(cfg)`: render every `.md` under the output dir into `site/…html` (base-aware shell, `.md`→`.html` link rewrite), copy assets, **bundle the entry points**, **inline the data**, write `symbols.json`/`graph.json`, `graph.html`, `404.html` |
+| `kodama_docs/static_site.py` | **new** — `build(cfg)`: render every `.md` under the output dir into `site/…html` (base-aware shell, `.md`→`.html` link rewrite), copy assets, **bundle the entry points**, write shared `symbols-data.js`, `symbols.json`/`graph.json` (diet graph preferred), `graph.html`, `404.html` |
 | `kodama_docs/js_bundle.py` | **new** — `bundle(webdir, entry)`: inlines the entry's ES-module graph onto a `__kodama_define`/`__kodama_require` registry → one classic script. Cycle/missing-file/unsupported-syntax all fail loud |
 | `main.py` | `--static` flag → `render_all` then `static_site.build(cfg)` |
-| `web/templates/page.html`, `graph.html` | `/…` → `{base}…`; `__KODAMA_SYMBOLS__`/`__KODAMA_GRAPH__` inline-data slots + a classic-script tag slot. Server passes `undefined` for the data and `type="module"` tags (behaviour unchanged) |
-| `web/server.py` | pass `base='/'`, `symbols_json='undefined'`, `graph_json='undefined'`, module script tags into the template `.format()` calls (no behaviour change) |
-| `web/sidebar.js` | `__KODAMA_BASE__` mode: inline-first data (fetch fallback), row hrefs, current-page detection |
+| `web/templates/page.html`, `graph.html` | `/…` → `{base}…`; a `symbols_tag` classic-script slot and `__KODAMA_GRAPH__` inline-data slot. Server leaves symbols to `/api/symbols` and uses `type="module"` tags (behaviour unchanged) |
+| `web/server.py` | pass `base='/'`, `symbols_tag=''`, `graph_json='undefined'`, module script tags into the template `.format()` calls; `/api/graph` prefers `graph_diet.json` |
+| `web/sidebar.js` | `__KODAMA_BASE__` mode: shared `symbols-data.js` / fallback fetch, row hrefs, current-page detection |
 | `web/app.js` | `__KODAMA_BASE__` mode: theme via `localStorage` |
-| `web/graph.js` | `__KODAMA_BASE__` mode: inline-first data (fetch fallback) |
-| `web/graph/panel.js` | `__KODAMA_BASE__` mode: page URL + body extraction from full page |
+| `web/graph.js` | `__KODAMA_BASE__` mode: inline-first data (fetch fallback); class nodes included |
+| `web/graph/panel.js` | `__KODAMA_BASE__` mode: page URL + body extraction from full page (needs a host) |
 | `tests/test_static_site.py` | **new** — fixture output dir → built site assertions (layout incl. bundle presence / `fuzzy.js`+`graph/` absence, bases, rewrites, inline JSON == shipped JSON, no `type="module"`, no stray absolute paths) |
 | `tests/test_js_bundle.py` | **new** — bundler subset parse/reject, cycle + missing + bare-specifier errors, and **node-executes both real bundles in a file:// harness** (inline data, DOM stub, `fetch` throws) |
 | `tests/test_static_sidebar.js` | **new** — node guard test: static-mode hrefs/data URL with a `__KODAMA_BASE__` set before import |
@@ -158,19 +167,19 @@ Key decisions:
    inside the bundles.
 3. **Data**: read `out/meta/symbols.json` (+ `out/meta/manual.json` when
    present) → slim index (same shape as `_symbols_index`) →
-   `site/symbols.json`, keeping an escaped compact copy for inlining
-   (`window.__KODAMA_SYMBOLS__`); copy `out/meta/graph.json` →
-   `site/graph.json`, keeping an inline copy
-   (`window.__KODAMA_GRAPH__` for `graph.html`).
+   `site/symbols.json`, plus `site/symbols-data.js` assigning
+   `window.__KODAMA_SYMBOLS__`; copy `out/meta/graph_diet.json` (or the
+   full `graph.json` for old output dirs) → `site/graph.json`, keeping an
+   inline copy (`window.__KODAMA_GRAPH__` for `graph.html`).
 4. **Pages**: for each `.md` under `out` that lives in `files/`, `manual/`,
    or is `index.md`: body = `render_md(md)` (the same renderer the server
    uses, so static pages look exactly like served ones) → internal
    `\.md"` hrefs → `\.html"` → wrap in the base-aware shell with
    `base = '../' × depth`, `theme` from `web/web_settings.yaml`
-   (falling back to `web/theme_state.json`, then `light`), and the
-   **inlined symbols JSON** in the `window.__KODAMA_SYMBOLS__` slot →
-   `site/<same path>.html`. Non-`.md` files under `manual/` are copied
-   verbatim (images etc. keep working via their relative links).
+   (falling back to `web/theme_state.json`, then `light`), and the shared
+   `symbols-data.js` script tag → `site/<same path>.html`. Non-`.md` files
+   under `manual/` are copied verbatim (images etc. keep working via their
+   relative links).
 5. **graph.html** from `graph.html` template (depth 0, with the
    **inlined graph JSON** in `window.__KODAMA_GRAPH__`), plus a small
    `404.html` (GitHub Pages uses it) that offers a link back to `index.html`.
@@ -197,12 +206,13 @@ Both work because the site is fully relative and has no server dependency.
   endpoint paths. Existing tests must keep passing unmodified.
 - Static site over http(s) (GitHub Pages, `python -m http.server`): full
   feature parity — sidebar, search, graph, theme switching (per-browser).
-- Static site over `file://`: **full feature parity** — content, code
-  highlighting, theme, sidebar, search, and graph all work. Browsers block
-  external ES modules and `fetch()` on `file://`, so the static build sidesteps
-  both: the entry points ship as classic bundles and the data is inlined into
-  the pages (§2). The only remaining `fetch` is the documented fallback for a
-  server/host context.
+- Static site over `file://`: content, code highlighting, theme, sidebar,
+  search, and the graph canvas all work. Browsers block external ES modules
+  and `fetch()` on `file://`, so the entry points ship as classic bundles and
+  the data ships as classic scripts / inline globals (§2). The **graph
+  panel** still fetches the rendered page when a node is clicked; that
+  specific interaction requires an http(s) host (or opening the page from
+  the sidebar). This is the documented hosting-requirement trade-off.
 - Theme choice in static mode is per-browser (`localStorage`), since there
   is no server to share a single choice with all visitors — the documented
   trade-off for a static deployment.

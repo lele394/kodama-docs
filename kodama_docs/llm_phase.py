@@ -78,7 +78,7 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                 prompts[k] = fh.read()
         except OSError:
             log(f'  missing prompt file: {v}')
-    client = LLMClient(cfg['llm'])
+    client = None if no_llm else LLMClient(cfg['llm'])
     if no_llm:
         log('llm phase: --no-llm mode — model calls skipped, '
             'stub prose cached (deterministic sections still rendered)')
@@ -159,7 +159,10 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
             cached = False
             if job['kind'] == 'function':
                 ins, outs = gmod.graph_neighbor_names(g, job['nid'])
-                fp = function_fp(rel, sym, ins, outs, sfn)
+                reads = gmod.graph_read_names(g, job['nid'])
+                imports = [i.get('module') for i in (f.get('imports') or [])
+                           if i.get('module')]
+                fp = function_fp(rel, sym, ins, outs, sfn, reads=reads)
                 prose = (load_record(cfg['data_dir'], rel, 'function',
                                      name, sym['line'], fp,
                                      accept_stub=no_llm) if skip else None)
@@ -177,15 +180,15 @@ def llm_phase(cfg: dict, files, g, no_llm: bool = False):
                                                     cpt, stage_cb=report, schunk=schunk)
                             report('merge')
                             ctx = fn_context_text(
-                                {**sym, 'relpath': rel},
-                                *gmod.graph_neighbor_names(g, job['nid']),
-                                cfg['context'], body_note=body_note)
+                                {**sym, 'relpath': rel}, ins, outs,
+                                cfg['context'], body_note=body_note,
+                                reads=reads, imports=imports)
                         else:
                             tui.stage(w, rel, name, 'describe')
                             ctx = fn_context_text(
-                                {**sym, 'relpath': rel},
-                                *gmod.graph_neighbor_names(g, job['nid']),
-                                cfg['context'])
+                                {**sym, 'relpath': rel}, ins, outs,
+                                cfg['context'], reads=reads,
+                                imports=imports)
                         prose = generate(client, 'function',
                                          prompts.get('function', ''), ctx,
                                          retry)

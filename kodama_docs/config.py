@@ -6,7 +6,7 @@ import ruamel.yaml
 from kodama_docs.util import read_env_file
 
 
-def load_config(path: str) -> dict:
+def load_config(path: str, require_llm: bool = True) -> dict:
     yaml = ruamel.yaml.YAML()
     with open(path, 'r', encoding='utf-8') as fh:
         raw = yaml.load(fh)
@@ -31,12 +31,17 @@ def load_config(path: str) -> dict:
     for key in ('api_key', 'base_url'):
         val = llm.get(key)
         if val is None or str(val).strip().lower() == 'env':
-            val = envfile.get(key)
-            if not val:
+            resolved = envfile.get(key)
+            if resolved:
+                llm[key] = resolved
+            elif require_llm:
                 raise SystemExit(f'settings: llm.{key} is "env" but {key}'
                                  f' was not found in .env (looked in: '
                                  f'{", ".join(looked)})')
-            llm[key] = val
+            else:
+                # Serve/purge/--no-llm do not call the model. Keep a stable
+                # empty value so those modes work with no .env at all.
+                llm[key] = ''
 
     # manual_doc: an optional folder of human-written docs (see
     # kodama_docs/manual.py). Resolved like every other path here.

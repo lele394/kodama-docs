@@ -612,9 +612,9 @@ function init() {
   input.value = initialQ;
 
   // fetch the index, then draw
-  // The static site ships the index inline (window.__KODAMA_SYMBOLS__,
-  // set by the page) because file:// forbids fetch; the server leaves
-  // that variable undefined, so this falls back to /api/symbols.
+  // The static site ships the index as a shared classic script
+  // (window.__KODAMA_SYMBOLS__) because file:// forbids fetch; the server
+  // leaves that variable undefined, so this falls back to /api/symbols.
   const INLINE = (typeof window !== 'undefined') &&
     (window.__KODAMA_SYMBOLS__ || null);
   const loadIndex = () => INLINE

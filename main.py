@@ -17,11 +17,14 @@ from kodama_docs.config import load_config
 from kodama_docs.llm_phase import llm_phase
 from kodama_docs.markdown import (build_call_indexes, render_file_md,
                                   render_index, symbol_index, write_md)
-from kodama_docs.outputs import check_doc_cache, purge_outputs, write_doc_cache
+from kodama_docs.outputs import (check_doc_cache, purge_outputs, reset_output,
+                                 write_doc_cache)
 from kodama_docs.records import list_records
 from kodama_docs.scan import (analyze_files, load_symbols, report_scan,
                   save_diagnostics, save_symbols,
                   scan_files, scan_fingerprint)
+from kodama_docs.tasks import (function_fp, settings_fp, summary_fp,
+                               variable_fp)
 from kodama_docs.testing import test_backend
 from kodama_docs.util import log
 
@@ -47,10 +50,62 @@ def _print_backends(bs):
     print(f'routing: {", ".join(exts) or "-"}')
 
 
+def _valid_records(cfg: dict, files, g):
+    """Load only records whose fingerprint matches the current input.
+
+    `list_records` returns every JSON on disk, including records left over
+    from an older prompt, an older model, a changed symbol, or a failed
+    regeneration. Rendering those as if current is worse than rendering a
+    placeholder, so the render phase filters them with the same
+    fingerprints the LLM phase uses."""
+    doccfg = cfg['documentation']
+    want_fn = bool(doccfg.get('generate_function_docs'))
+    want_var = bool(doccfg.get('generate_variable_docs'))
+    want_sum = bool(doccfg.get('generate_file_summaries'))
+    fn_all = list_records(cfg['data_dir'], 'function') if want_fn else {}
+    var_all = list_records(cfg['data_dir'], 'variable') if want_var else {}
+    sum_all = list_records(cfg['data_dir'], 'summary') if want_sum else {}
+    sfn = settings_fp(cfg, 'function') if want_fn else None
+    svar = settings_fp(cfg, 'variable') if want_var else None
+    ssum = settings_fp(cfg, 'summary') if want_sum else None
+
+    fn_recs, var_recs, sum_recs = {}, {}, {}
+    for f in files:
+        rel = f['relpath']
+        if want_fn:
+            for fn in f.get('functions') or []:
+                key = (rel, fn['name'], fn['line'])
+                rec = fn_all.get(key)
+                if rec is None:
+                    continue
+                nid = gmod.node_id_fn(rel, fn['name'], fn['line'])
+                ins, outs = gmod.graph_neighbor_names(g, nid)
+                reads = gmod.graph_read_names(g, nid)
+                fp = function_fp(rel, fn, ins, outs, sfn, reads=reads)
+                if rec.get('fingerprint') == fp:
+                    fn_recs[key] = rec
+        if want_var:
+            for v in f.get('file_vars') or []:
+                key = (rel, v['name'], v['line'])
+                rec = var_all.get(key)
+                if rec is not None and \
+                        rec.get('fingerprint') == variable_fp(rel, v, svar):
+                    var_recs[key] = rec
+        if want_sum:
+            key = (rel, 'file', 1)
+            rec = sum_all.get(key)
+            if rec is not None and \
+                    rec.get('fingerprint') == summary_fp(rel, f, ssum):
+                sum_recs[key] = rec
+    return fn_recs, var_recs, sum_recs
+
+
 def render_all(cfg: dict, files, g, diag=None, astatus=None):
-    fn_recs = list_records(cfg['data_dir'], 'function')
-    var_recs = list_records(cfg['data_dir'], 'variable')
-    sum_recs = list_records(cfg['data_dir'], 'summary')
+    # Recreate the generated output every run. This is simpler than tracking
+    # every stale page/manual/meta file, and guarantees that deleted sources
+    # and disabled features disappear. `.doc_cache` is preserved.
+    reset_output(cfg)
+    fn_recs, var_recs, sum_recs = _valid_records(cfg, files, g)
     # Manual docs: copy the user's folder into <output>/manual (fresh each
     # run) and surface it as section 0 below. No LLM — prose only.
     manual_pages = (manual.copy_manual_docs(cfg['manual_doc'],
@@ -92,7 +147,8 @@ def render_all(cfg: dict, files, g, diag=None, astatus=None):
     if cfg.get('copy_meta'):
         meta_dir = os.path.join(cfg['output_dir'], 'meta')
         copied = []
-        for name in ('graph.json', 'symbols.json', 'diagnostics.json'):
+        for name in ('graph.json', 'graph_diet.json', 'symbols.json',
+                     'diagnostics.json'):
             src = os.path.join(cfg['data_dir'], name)
             if os.path.exists(src):
                 os.makedirs(meta_dir, exist_ok=True)
@@ -175,7 +231,10 @@ def main():
         rc = test_backend(args.backend)
         raise SystemExit(rc)
 
-    cfg = load_config(args.config)
+    # Serve / purge / --no-llm never call the model, so they must not
+    # require credentials in .env.
+    need_llm = not (args.no_llm or args.serve or args.purge)
+    cfg = load_config(args.config, require_llm=need_llm)
 
     if args.serve:
         from web import server as webserver
@@ -185,17 +244,17 @@ def main():
         webserver.serve(ws['docs_dir'] or cfg['output_dir'], ws, webdir)
         return
 
-    log(f'source: {cfg["source_dir"]}')
-    files, skipped = scan_files(cfg)
-    log(f'scanned {len(files)} files '
-        f'({sum(len(v) for v in skipped.values())} skipped)')
-
     if args.purge or args.regenerate:
         if not purge_outputs(cfg):
             log('nothing to purge (no output/data directories found)')
         if args.purge:
             log('purged, nothing else to do')
             return
+
+    log(f'source: {cfg["source_dir"]}')
+    files, skipped = scan_files(cfg)
+    log(f'scanned {len(files)} files '
+        f'({sum(len(v) for v in skipped.values())} skipped)')
 
     stale = check_doc_cache(cfg, files)
 
@@ -230,6 +289,7 @@ def main():
     g, diag = gmod.build_graph(analysis)
     gpath = os.path.join(cfg['data_dir'], 'graph.json')
     gmod.save_graph(g, gpath)
+    gmod.save_diet_graph(g, os.path.join(cfg['data_dir'], 'graph_diet.json'))
     log(f'graph: {g.number_of_nodes()} nodes / {g.number_of_edges()} edges '
         f'-> {gpath}')
 

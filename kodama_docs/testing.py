@@ -22,7 +22,6 @@ Protocol a backend must provide (see ``backends/python/__init__.py``):
 """
 import importlib
 import os
-import sys
 
 from . import graph as gmod
 import backends
