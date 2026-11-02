@@ -8,6 +8,10 @@
   <strong>Deterministic documentation generator for codebases.</strong><br />
 </p>
 
+
+![./readme_src/graph.png](./readme_src/graph.png)
+![./readme_src/doc.png](./readme_src/doc.png)
+
 kodama-docs extracts every function, variable, call and import in a source tree
 with a **deterministic** pipeline (tree-sitter grammars, a networkx call graph,
 content-fingerprint caching) and uses an LLM for **one thing only**: writing
