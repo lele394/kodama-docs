@@ -236,6 +236,26 @@ markers (Lua `comment_content`, Python leading `#` + one space).
 4. `main.py --list-backends` → status `ready`. Done — the pipeline picks
    its files up automatically.
 
+Keep `__init__.py` a **thin entrypoint**. The reference backends split the
+implementation by concern, and new backends should follow the same shape:
+
+```text
+backends/<lang>/
+    __init__.py     # re-export extract / BUILTIN_NAMES / LANG / module_candidates
+    constants.py    # language tag, extension/node-type sets
+    builtins.py     # standard-library/builtin names
+    parser.py       # parser instance / parser selection
+    comments.py     # comment-marker cleaning (developer comments)
+    nodes.py        # name/declarator/parameter/value helpers
+    includes.py     # import or #include resolution candidates
+    extract.py      # the walk that returns the neutral records
+    manifest.toml   # backend metadata + requirements
+```
+
+Extra files are fine when a backend has a specialised concern (for example
+`backends/cpp/pybind.py` and `backends/python/selftest.py`). The registry
+only imports the package and calls the re-exported API.
+
 External backends (not committed here): `main.py --install
 <git-url>` clones the repo into `backends/<name>/`, pip-installs its
 declared python deps, and reports the resulting status.

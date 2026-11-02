@@ -499,9 +499,9 @@ backends/
   __init__.py        # registry: manifest discovery, validation, routing, install/remove
   _shared.py         # comment-glue helpers shared by all backends
   backend_design.md  # the backend contract (read this before adding a language)
-  lua/               # Lua backend: manifest.toml + __init__.py (tree-sitter-lua)
-  python/            # Python backend: manifest.toml + __init__.py (tree-sitter-python)
-  cpp/               # C/C++/CUDA backend (tree-sitter-cpp + tree-sitter-cuda)
+  lua/               # Lua backend package (tree-sitter-lua)
+  python/            # Python backend package (tree-sitter-python)
+  cpp/               # C/C++/CUDA backend package (tree-sitter-cpp + tree-sitter-cuda)
 prompts/           # system prompts: function / chunk / variable / summary
 settings.yaml      # default config (game codebase)
 test_codebases/    # lua + python N-body samples, and the mixed C/C++/CUDA/Python sample
